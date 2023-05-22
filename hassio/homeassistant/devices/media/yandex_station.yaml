@@ -168,12 +168,16 @@ script:
                           text: '{{ _text }}'
                           volume_level: '{{ _volume_level }}'
         else:
-          service: script.yandex_station_play_dialog
-          data:
-            entity_id: '{{ _target }}'
-            text: '{{ _text }}'
-            volume_level: '{{ _volume_level }}'
+          - service: script.turn_on
+            entity_id: script.yandex_station_play_dialog
+            data:
+              variables:
+                entity_id: '{{ _target }}'
+                text: '{{ _text }}'
+                volume_level: '{{ _volume_level }}'
 
+  # Известная особенность: может запуститься несколько экземпляров по одной колонке одновременно
+  # Можно реализовать механизм блокировок, но мне лень
   yandex_station_play_dialog:
     alias: 'Yandex Station: Play dialog'
     mode: parallel

@@ -1,0 +1,15 @@
+binary_sensor:
+  - platform: tod
+    name: Workday Morning
+    after: '06:30'
+    before: '07:50'
+
+  - platform: tod
+    name: Workday End
+    after: '16:40'
+    before: '17:20'
+
+  - platform: tod
+    name: Shorter Workday End
+    after: '15:40'
+    before: '16:20'

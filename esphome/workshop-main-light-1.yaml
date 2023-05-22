@@ -1,0 +1,9 @@
+packages:
+  base: !include generic/workshop_main_light.yaml
+
+substitutions:
+  device_name: Workshop Main Light 1
+
+esphome:
+  name: workshop-main-light-1
+  name_add_mac_suffix: false

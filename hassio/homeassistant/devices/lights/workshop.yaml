@@ -1,0 +1,171 @@
+automation:
+  - id: workshop_main_light_state_update
+    alias: 'Workshop Main Light: State update'
+    description: Включает правую ленту при включении левой, жене лень нажимать две кнопки
+    mode: queued
+    trigger:
+      - platform: state
+        entity_id: light.workshop_main_1_1
+        from:
+          - 'on'
+          - 'off'
+        to:
+          - 'on'
+          - 'off'
+    action:
+      - delay:
+          milliseconds: 500
+
+      - condition: template
+        value_template: >
+          {{ not is_state('light.workshop_main_2_1', trigger.to_state.state) }}
+
+      - if:
+          - condition: template
+            value_template: >
+              {{ trigger.to_state.state == 'on' }}
+        then:
+          - service: light.turn_on
+            entity_id:
+              - light.workshop_main_2_1
+              - light.workshop_main_2_2
+            data:
+              transition: 2
+              brightness_pct: 100
+        else:
+          - service: light.turn_off
+            entity_id:
+              - light.workshop_main_2_1
+              - light.workshop_main_2_2
+
+  - id: workshop_main_light_turn_on
+    alias: 'Workshop Main Light: Turn on'
+    max_exceeded: silent
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.workshop_door
+        from: 'off'
+        to: 'on'
+
+      - platform: state
+        entity_id:
+          - binary_sensor.workshop_desk_motion
+          - binary_sensor.workshop_entrance_motion
+        from: 'off'
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+
+      - condition: state
+        entity_id: light.workshop_main
+        state: 'off'
+    action:
+      - if:
+          - condition: or
+            conditions:
+              - condition: state
+                entity_id: binary_sensor.dim_light
+                state: 'on'
+
+              - condition: state
+                entity_id: input_select.home_mode
+                state: 'Night'
+        then:
+          - service: light.turn_on
+            entity_id: light.workshop_main
+            data:
+              brightness_pct: 15
+        else:
+          - service: light.turn_on
+            entity_id: light.workshop_main
+            data:
+              brightness_pct: 100
+
+  - id: workshop_main_light_turn_off
+    alias: 'Workshop Main Light: Turn off'
+    trigger:
+      - id: day
+        platform: state
+        entity_id: binary_sensor.workshop_motion
+        from: 'on'
+        to: 'off'
+        for:
+          minutes: 10
+
+      - platform: state
+        entity_id: binary_sensor.workshop_motion
+        from: 'on'
+        to: 'off'
+        for:
+          minutes: 2
+    condition:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+
+      - condition: state
+        entity_id: light.workshop_main
+        state: 'on'
+
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: input_select.home_mode
+            state: Night
+
+          - condition: trigger
+            id: day
+    action:
+      - service: light.turn_off
+        entity_id: light.workshop_main
+        data:
+          transition: 10
+
+  - id: workshop_light_control_turn_on
+    alias: 'Workshop Light Control: Turn on'
+    trigger:
+      - platform: state
+        entity_id: light.workshop_main
+        to: 'off'
+    condition:
+      - condition: state
+        entity_id: input_boolean.workshop_light_control
+        state: 'off'
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.workshop_light_control
+
+  - id: workshop_light_control_turn_off
+    alias: 'Workshop Light Control: Turn off'
+    trigger:
+      - platform: event
+        event_type: yandex_intent
+        event_data:
+          text: Не выключай свет в мастерской
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.workshop_light_control
+
+input_boolean:
+  workshop_light_control:
+    name: 'Allow automatic light control (workshop)'
+    initial: true
+    icon: mdi:home-lightbulb-outline
+
+light:
+  - platform: group
+    unique_id: workshop_main_light
+    name: Workshop Main Light
+    entities:
+      - light.workshop_main_1_1
+      - light.workshop_main_1_2
+      - light.workshop_main_2_1
+      - light.workshop_main_2_2
+
+group:
+  workshop_lights:
+    name: Workshop Lights
+    entities:
+      - light.workshop_main

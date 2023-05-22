@@ -1,0 +1,309 @@
+automation:
+  - id: bathroom_path_light_turn_on_night
+    alias: 'Bathroom Path Light: Turn on (night)'
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.bathroom_motion
+          - binary_sensor.hallway_motion
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+
+      - condition: state
+        entity_id: input_select.home_mode
+        state: Night
+
+      - condition: state
+        entity_id:
+          - group.bathroom_path_lights
+          - input_boolean.scene_waking_up
+        state: 'off'
+    action:
+      - service: light.turn_on
+        entity_id:
+          - light.bathroom_sink_path
+          - light.bathroom_toilet_path
+        data:
+          rgbw_color: [255, 0, 0, 0]
+          brightness_pct: 100
+
+  - id: bathroom_path_light_turn_off
+    alias: 'Bathroom Path Light: Turn off'
+    trigger:
+      - id: no_occupancy
+        platform: state
+        entity_id: binary_sensor.bathroom_any_occupancy
+        to: 'off'
+        for:
+          minutes: 1
+
+      - id: no_motion
+        platform: state
+        entity_id: binary_sensor.bathroom_motion
+        to: 'off'
+        for:
+          minutes: 40
+    condition:
+      - condition: state
+        entity_id: input_boolean.scene_sleepy_mood
+        state: 'off'
+
+      - condition: state
+        entity_id:
+          - input_boolean.light_control
+          - input_boolean.bathroom_light_control
+          - group.bathroom_path_lights
+        state: 'on'
+
+      # при отвале датчика присутствия - отключение только по отсутствию движения
+      - condition: or
+        conditions:
+          - condition: trigger
+            id: no_motion
+
+          - condition: state
+            entity_id: binary_sensor.bathroom_occupancy
+            state:
+              - 'on'
+              - 'off'
+    action:
+      - service: light.turn_off
+        entity_id: group.bathroom_path_lights
+
+  - id: hallway_path_light_turn_on_day
+    alias: 'Hallway Path Light: Turn on (day)'
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.hallway_motion
+          - binary_sensor.entrance_motion
+        to: 'on'
+
+      - platform: state
+        entity_id:
+          - light.entrance
+          - light.hallway
+        from: 'on'
+        to: 'off'
+    condition:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+
+      - condition: state
+        entity_id: input_boolean.scene_sleepy_mood
+        state: 'off'
+
+      - condition: state
+        entity_id: input_select.home_mode
+        state:
+          - Day
+          - Vacation
+
+      - condition: or
+        conditions:
+          - condition: numeric_state
+            entity_id: sensor.illuminance_south_side
+            below: 200
+
+          - condition: state
+            entity_id: cover.living_room
+            state: 'off'
+
+      - condition: state
+        entity_id:
+          - light.hallway_path
+          - light.entrance
+          - light.hallway
+        state: 'off'
+    action:
+      - service: light.turn_on
+        entity_id: light.hallway_path
+        data:
+          brightness_pct: 25
+          rgbw_color: [255, 65, 0, 166]
+
+  - id: hallway_path_light_turn_on_night
+    alias: 'Hallway Path Light: Turn on (night)'
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.hallway_motion
+          - binary_sensor.bedroom_motion
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+
+      - condition: state
+        entity_id: input_select.home_mode
+        state: Night
+
+      - condition: state
+        entity_id: light.hallway_path
+        state: 'off'
+    action:
+      - service: light.turn_on
+        entity_id: light.hallway_path
+        data:
+          brightness_pct: 3
+          rgbw_color: [255, 0, 0, 0]
+
+  - id: hallway_path_light_turn_off
+    alias: 'Hallway Path Light: Turn off'
+    trigger:
+      - id: no_motion
+        platform: template
+        value_template: >
+          {{ is_state('binary_sensor.hallway_motion', 'off') and is_state('binary_sensor.entrance_motion', 'off') }}
+        for:
+          minutes: 1
+
+      - platform: state
+        entity_id:
+          - light.entrance
+          - light.hallway
+        from: 'off'
+        to: 'on'
+
+      - platform: state
+        entity_id: input_select.home_mode
+        from: Night
+    condition:
+      - condition: state
+        entity_id: input_boolean.scene_sleepy_mood
+        state: 'off'
+
+      - condition: state
+        entity_id:
+          - input_boolean.light_control
+          - light.hallway_path
+        state: 'on'
+    action:
+      - service: light.turn_off
+        entity_id: light.hallway_path
+
+  - id: kitchen_path_light_turn_on_day
+    alias: 'Kitchen Path Light: Turn on (day)'
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.hallway_motion
+          - binary_sensor.entrance_motion
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+
+      - condition: state
+        entity_id: input_select.home_mode
+        state:
+          - Day
+          - Vacation
+
+      - condition: or
+        conditions:
+          - condition: numeric_state
+            entity_id: sensor.illuminance_north_side
+            below: 150
+
+          - condition: state
+            entity_id: cover.kitchen
+            state: 'off'
+
+      - condition: state
+        entity_id:
+          - group.kitchen_lights
+          - input_boolean.scene_sleepy_mood
+          - light.entrance
+          - light.hallway
+          - light.kitchen_path
+        state: 'off'
+    action:
+      - service: light.turn_on
+        entity_id: light.kitchen_path
+        data:
+          brightness_pct: 40
+          rgbw_color: [255, 65, 0, 133]
+
+  - id: kitchen_path_light_turn_on_night
+    alias: 'Kitchen Path Light: Turn on (night)'
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.hallway_motion
+          - binary_sensor.entrance_motion
+          - binary_sensor.kitchen_motion
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+
+      - condition: state
+        entity_id: input_select.home_mode
+        state: Night
+
+      - condition: state
+        entity_id: light.kitchen_path
+        state: 'off'
+    action:
+      - service: light.turn_on
+        entity_id: light.kitchen_path
+        data:
+          brightness_pct: 20
+          rgbw_color: [255, 0, 0, 0]
+
+  - id: kitchen_path_light_turn_off
+    alias: 'Kitchen Path Light: Turn off'
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.hallway_motion
+          - binary_sensor.kitchen_motion
+        from: 'on'
+        to: 'off'
+        for:
+          minutes: 2
+
+      - platform: state
+        entity_id: group.kitchen_lights
+        from: 'off'
+        to: 'on'
+
+      - platform: state
+        entity_id: input_select.home_mode
+        from: Night
+    condition:
+      - condition: state
+        entity_id: input_boolean.scene_sleepy_mood
+        state: 'off'
+
+      - condition: state
+        entity_id:
+          - input_boolean.light_control
+          - light.kitchen_path
+        state: 'on'
+    action:
+      - service: light.turn_off
+        entity_id: light.kitchen_path
+
+group:
+  path_lights:
+    name: Path Lights
+    entities:
+      - light.bathroom_sink_path
+      - light.bathroom_toilet_path
+      - light.hallway_path
+      - light.kitchen_path
+
+  bathroom_path_lights:
+    name: Bathroom Path Lights
+    entities:
+      - light.bathroom_sink_path
+      - light.bathroom_toilet_path

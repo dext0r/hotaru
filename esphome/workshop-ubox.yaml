@@ -1,0 +1,37 @@
+packages:
+  base: !include common/base.yaml
+  time: !include common/time.yaml
+  uptime: !include common/uptime.yaml
+  tion_4s: !include common/tion_4s.yaml
+  mithermometer_ble: !include common/mithermometer_ble.yaml
+
+substitutions:
+  device_name: Workshop UBox
+  tion_mac_address: C2:EE:5F:88:7C:75
+  tion_device_name: Workshop Intake Fan
+  senseair_s8_sensor_name: Workshop CO2
+  senseair_s8_tx_pin: '17'
+  senseair_s8_rx_pin: '16'
+
+esphome:
+  name: workshop-ubox
+  model: Universal Box (ESP32)
+  name_add_mac_suffix: false
+
+esp32:
+  board: esp32dev
+
+logger:
+  level: INFO
+
+sensor:
+  - platform: pvvx_mithermometer
+    mac_address: A4:C1:38:7D:60:67
+    temperature:
+      name: Workshop Temperature
+      accuracy_decimals: 1
+    humidity:
+      name: Workshop Humidity
+      accuracy_decimals: 0
+    battery_level:
+      name: Workshop Meteo Battery

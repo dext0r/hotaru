@@ -1,0 +1,19 @@
+[Unit]
+Description=Podman mdns-repeater.service
+Documentation=man:podman-generate-systemd(1)
+Wants=network.target
+After=network-online.target
+
+[Service]
+Environment=PODMAN_SYSTEMD_UNIT=%n
+Restart=on-failure
+TimeoutStopSec=70
+ExecStartPre=/bin/rm -f %t/mdns-repeater.pid %t/mdns-repeater.ctr-id
+ExecStart=/usr/bin/podman run --conmon-pidfile %t/mdns-repeater.pid --cidfile %t/mdns-repeater.ctr-id --cgroups=no-conmon --replace -d --name=mdns-repeater --restart=unless-stopped --net=home,iot localhost/mdns-repeater
+ExecStop=/usr/bin/podman stop --ignore --cidfile %t/mdns-repeater.ctr-id -t 10
+ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/mdns-repeater.ctr-id
+PIDFile=%t/mdns-repeater.pid
+Type=forking
+
+[Install]
+WantedBy=multi-user.target default.target

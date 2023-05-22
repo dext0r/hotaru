@@ -1,0 +1,26 @@
+template:
+  - trigger:
+      - platform: time_pattern
+        seconds: /5
+    sensor:
+      - name: Kitchen Stove Power
+        unique_id: sensor.kitchen_stove_power
+        state: >
+          {% set power = states('sensor.stove_power_supply_power')|int(0) %}
+          {% if is_state('input_select.dishwasher_status', 'Running') %}
+            {% set power = 0 %}
+          {% endif %}
+
+          {{ power }}
+        state_class: measurement
+        unit_of_measurement: W
+        device_class: power
+
+sensor:
+  - platform: integration
+    unique_id: sensor.kitchen_stove_energy
+    name: Kitchen Stove Energy
+    source: sensor.kitchen_stove_power
+    unit_prefix: k
+    round: 2
+    method: left

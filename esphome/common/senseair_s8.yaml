@@ -1,0 +1,27 @@
+esphome:
+  on_boot:
+    - delay: 10s
+    - senseair.abc_disable: senseair_s8
+
+uart:
+  - id: senseair_s8_uart
+    rx_pin: $senseair_s8_rx_pin
+    tx_pin: $senseair_s8_tx_pin
+    baud_rate: 9600
+
+sensor:
+  - platform: senseair
+    id: senseair_s8
+    uart_id: senseair_s8_uart
+    co2:
+      name: $senseair_s8_sensor_name
+    update_interval: 20s
+
+button:
+  - platform: template
+    name: $senseair_s8_sensor_name Calibrate
+    disabled_by_default: true
+    on_press:
+      - senseair.background_calibration: senseair_s8
+      - delay: 1min
+      - senseair.background_calibration_result: senseair_s8

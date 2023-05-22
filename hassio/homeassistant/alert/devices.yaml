@@ -1,0 +1,95 @@
+automation:
+  - id: device_unavailable_alert
+    alias: Device unavailable alert
+    mode: single
+    max_exceeded: silent
+    trigger:
+      - platform: event
+        event_type: state_changed
+
+      - platform: homeassistant
+        event: shutdown
+        id: shutdown
+    condition:
+      - or:
+          - condition: trigger
+            id: shutdown
+
+          - and:
+              - condition: template
+                value_template: >
+                  {{ trigger.event.data.new_state and trigger.event.data.new_state.state == 'unavailable' }}
+
+              - condition: template
+                value_template: >
+                  {{ (now() - state_attr('automation.device_unavailable_alert',
+                                          'last_triggered')|default(now() - timedelta(days=1), true)).seconds > 1800 }}
+    action:
+      - if:
+          - condition: trigger
+            id: shutdown
+        then:
+          - stop: Home Assistant is stopping
+
+      - delay:
+          minutes: 10
+
+      - condition: template
+        value_template: >
+          {% set ns = namespace(break = false) %}
+          {%- for entity in states if entity.state == 'unavailable' and entity.entity_id and ns.break == false -%}
+            {%- if (now() - entity.last_changed).seconds > 180 and not is_state_attr(entity.entity_id, 'volatile', true) -%}
+              {%- set ns.break = true -%}
+              true
+            {%- endif -%}
+          {%- endfor %}
+
+      - service: notify.dextor
+        data:
+          message: >
+            ⚠️ <b>Некоторые устройства недоступны:</b>{{ '\n' }}
+            {%- for entity in states if entity.state == 'unavailable' and not is_state_attr(entity.entity_id, 'volatile', true) %}
+            * {{ entity.name }}: {{ entity.last_changed|relative_time }}{{ '\n' }}
+            {%- endfor -%}
+
+  - id: device_low_battery_alert
+    alias: Device low battery alert
+    trigger:
+      - platform: time
+        at: '18:00'
+    condition:
+      - condition: template
+        value_template: >
+          {%- set ns = namespace(break = false) -%}
+          {%- for entity in states if entity.entity_id.endswith('_battery') and ns.break == false -%}
+          {%- if entity.state not in ['None', 'unavailable', 'unknown'] and entity.state|int <= 25 -%}
+            {%- set ns.break = true -%}
+            true
+          {%- endif -%}
+          {%- endfor -%}
+    action:
+      - service: notify.dextor
+        data:
+          message: >
+            ⚠️ <b>Батарея подходит к концу:</b>{{ '\n' }}
+            {%- for entity in states if entity.entity_id.endswith('_battery') %}
+            {%- if entity.state not in ['None', 'unavailable', 'unknown'] and entity.state|int <= 25 -%}
+            * {{ entity.name }}: {{ entity.state }} %{{ '\n' }}
+            {%- endif -%}
+            {%- endfor -%}
+
+  - id: device_unavailable_log
+    alias: Device unavailable log
+    mode: parallel
+    max_exceeded: silent
+    trigger:
+      - platform: event
+        event_type: state_changed
+    condition:
+      - condition: template
+        value_template: >
+          {{ trigger.event.data.new_state and trigger.event.data.new_state.state == 'unavailable' }}
+    action:
+      - service: notify.debug
+        data:
+          message: 'Device unavailable: {{ trigger.event.data.new_state.entity_id }}'

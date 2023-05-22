@@ -1,0 +1,85 @@
+input_number:
+  home_target_humidity:
+    name: 'Home: Target Humidity'
+    icon: mdi:water-percent
+    unit_of_measurement: '%'
+    mode: slider
+    min: 20
+    max: 50
+    step: 1
+
+input_boolean:
+  climate_control:
+    name: 'Allow automatic climate control'
+    initial: true
+    icon: mdi:thermometer-auto
+
+automation:
+  - id: home_airing_turn_off
+    alias: 'Home Airing: Turn off'
+    trigger:
+      - platform: state
+        entity_id: switch.home_airing
+        from: 'off'
+        to: 'on'
+        for:
+          minutes: 20
+    action:
+      - service: switch.turn_off
+        entity_id: switch.home_airing
+
+  - id: climate_anomaly_alert
+    alias: 'Climate: Anomaly alert'
+    trigger:
+      - platform: numeric_state
+        entity_id:
+          - sensor.living_room_temperature
+          - sensor.bedroom_temperature
+          - sensor.workshop_temperature
+          - sensor.kitchen_temperature
+          - sensor.wardrobe_temperature
+        below: 17
+
+      - platform: numeric_state
+        entity_id:
+          - sensor.living_room_temperature
+          - sensor.bedroom_temperature
+          - sensor.workshop_temperature
+          - sensor.kitchen_temperature
+          - sensor.wardrobe_temperature
+        above: 29
+    action:
+      - service: notify.dextor
+        data:
+          message: 🤨 Подозрительная температура в доме
+
+switch:
+  - platform: template
+    switches:
+      home_airing:
+        unique_id: switch.home_airing
+        friendly_name: Home Airing
+        icon_template: mdi:hair-dryer-outline
+        value_template: >
+          {{
+            is_state('input_boolean.bedroom_airing_cold', 'on') and
+            is_state('input_boolean.living_room_airing_cold', 'on') and
+            is_state('input_boolean.workshop_airing_cold', 'on')
+          }}
+        turn_on:
+          - service: input_boolean.turn_on
+            target:
+              entity_id:
+                - input_boolean.bedroom_airing_cold
+                - input_boolean.living_room_airing_cold
+                - input_boolean.workshop_airing_cold
+        turn_off:
+          - service: input_boolean.turn_off
+            target:
+              entity_id:
+                - input_boolean.bedroom_airing_cold
+                - input_boolean.bedroom_airing_warm
+                - input_boolean.living_room_airing_cold
+                - input_boolean.living_room_airing_warm
+                - input_boolean.workshop_airing_cold
+                - input_boolean.workshop_airing_warm

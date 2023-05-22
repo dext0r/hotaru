@@ -1,0 +1,172 @@
+automation:
+  - id: bedroom_ac_display_turn_off
+    alias: 'Bedroom AC Display: Turn off'
+    trigger:
+      - platform: state
+        entity_id: input_select.home_mode
+        to: Night
+
+      - platform: state
+        entity_id: climate.bedroom_ac
+        from: 'off'
+    condition:
+      - condition: state
+        entity_id: input_select.home_mode
+        state: Night
+
+      - condition: state
+        entity_id: climate.bedroom_ac
+        state:
+          - heat_cool
+          - cool
+          - heat
+          - dry
+    action:
+      - delay:
+          seconds: 2
+
+      - condition: state
+        entity_id: switch.bedroom_ac_display
+        state: 'on'
+
+      - service: switch.turn_off
+        entity_id: switch.bedroom_ac_display
+
+  - id: bedroom_ac_turn_off
+    alias: 'Bedroom AC: Turn off'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.anyone_home
+        from: 'on'
+        to: 'off'
+        for:
+          minutes: 20
+
+      - platform: state
+        entity_id: climate.bedroom_ac
+        to:
+          - heat_cool
+          - cool
+          - heat
+          - dry
+        for:
+          hours: 12
+    condition:
+      - condition: state
+        entity_id: climate.bedroom_ac
+        state:
+          - heat_cool
+          - cool
+          - heat
+          - dry
+    action:
+      - service: climate.turn_off
+        entity_id: climate.bedroom_ac
+
+  - id: bedroom_ac_display_update
+    alias: 'Bedroom AC Display: Update'
+    trigger:
+      - id: 'on'
+        platform: state
+        entity_id: climate.bedroom_ac
+        from: 'off'
+        to:
+          - heat_cool
+          - cool
+          - heat
+          - dry
+
+      - id: 'off'
+        platform: state
+        entity_id: climate.bedroom_ac
+        from:
+          - heat_cool
+          - cool
+          - heat
+          - dry
+        to: 'off'
+    action:
+      - if:
+          - condition: trigger
+            id: 'on'
+        then:
+          - service: input_boolean.turn_on
+            entity_id: input_boolean.bedroom_ac_display
+        else:
+          - service: input_boolean.turn_off
+            entity_id: input_boolean.bedroom_ac_display
+
+template:
+  - trigger:
+      - platform: time_pattern
+        seconds: /5
+    sensor:
+      - name: Bedroom AC Power
+        unique_id: sensor.bedroom_ac_power
+        state: >
+          {% set power = states('sensor.cb_power_supply_power')|int(0) %}
+          {% set power = power - states('sensor.washing_machine_power')|int(0) %}
+          {% set power = power - states('sensor.water_heater_power')|int(0) %}
+          {% set power = power - states('sensor.bedroom_intake_fan_heater_power')|int(0) %}
+          {% set power = power - states('sensor.workshop_intake_fan_heater_power')|int(0) %}
+
+          {% if states('climate.workshop_ac') not in ['off', 'unavailable', 'unknown'] %}
+            {% set power = power / 2 %}
+          {% endif %}
+
+          {% if states('climate.bedroom_ac') in ['off', 'unavailable', 'unknown'] %}
+            {% set power = 0 %}
+          {% endif %}
+
+          {{ [0, power]|max }}
+        availability: >
+          {{ states('climate.bedroom_ac') not in ['unknown', 'unavailable'] }}
+        state_class: measurement
+        unit_of_measurement: W
+        device_class: power
+
+sensor:
+  - platform: integration
+    unique_id: sensor.bedroom_ac_energy
+    name: Bedroom AC Energy
+    source: sensor.bedroom_ac_power
+    unit_prefix: k
+    round: 2
+    method: left
+
+switch:
+  - platform: template
+    switches:
+      bedroom_ac_display:
+        unique_id: switch.bedroom_ac_display
+        friendly_name: 'Bedroom AC: Display'
+        value_template: >
+          {{ is_state('input_boolean.bedroom_ac_display', 'on') }}
+        icon_template: mdi:camera-control
+        turn_on:
+          - if:
+              - condition: state
+                entity_id: climate.bedroom_ac
+                state:
+                  - heat_cool
+                  - cool
+                  - heat
+                  - dry
+            then:
+              - service: input_boolean.turn_on
+                entity_id: input_boolean.bedroom_ac_display
+
+              - service: button.press
+                entity_id: button.bedroom_ac_display_toggle
+        turn_off:
+          parallel:
+            - service: input_boolean.turn_off
+              entity_id: input_boolean.bedroom_ac_display
+
+            - service: button.press
+              entity_id: button.bedroom_ac_display_toggle
+
+input_boolean:
+  bedroom_ac_display:
+    name: 'Bedroom AC: Display'
+    icon: mdi:camera-control

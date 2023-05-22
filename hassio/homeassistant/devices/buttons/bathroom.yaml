@@ -1,0 +1,128 @@
+automation:
+  - id: bathroom_mirror_button_single_press
+    alias: 'Bathroom Mirror Button: Single press'
+    trigger:
+      - platform: device
+        domain: mqtt
+        device_id: 88c16946d5bfcee7dfce360e772ab881
+        type: action
+        subtype: single
+        discovery_id: 0x00158d0003cb48af action_single
+    action:
+      if:
+        - condition: state
+          entity_id: input_select.home_mode
+          state: Night
+
+        - condition: state
+          entity_id: input_boolean.scene_waking_up
+          state: 'off'
+      then:
+        - service: input_boolean.turn_on
+          entity_id: input_boolean.scene_waking_up
+      else:
+        - service: light.toggle
+          entity_id: light.bathroom_mirror
+
+  - id: bathroom_mirror_button_double
+    alias: 'Bathroom Mirror Button: Double'
+    trigger:
+      - platform: device
+        domain: mqtt
+        device_id: 88c16946d5bfcee7dfce360e772ab881
+        type: action
+        subtype: double
+        discovery_id: 0x00158d0003cb48af action_double
+    action:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: light.bathroom_main
+                state: 'on'
+
+              - condition: numeric_state
+                entity_id: light.bathroom_main
+                attribute: brightness
+                below: 250
+            sequence:
+              - service: light.turn_on
+                entity_id: light.bathroom_main
+                data:
+                  brightness_pct: 100
+
+          - conditions:
+              - condition: state
+                entity_id: light.bathroom_main
+                state: 'on'
+
+              - condition: numeric_state
+                entity_id: light.bathroom_main
+                attribute: brightness
+                above: 250
+            sequence:
+              - service: light.turn_on
+                entity_id: light.bathroom_main
+                data:
+                  brightness_pct: 25
+
+  - id: bathroom_mirror_button_hold
+    alias: 'Bathroom Mirror Button: Hold'
+    trigger:
+      - platform: device
+        domain: mqtt
+        device_id: 88c16946d5bfcee7dfce360e772ab881
+        type: action
+        subtype: hold
+        discovery_id: 0x00158d0003cb48af action_hold
+    action:
+      - service: light.turn_off
+        entity_id: group.bathroom_path_lights
+
+  - id: bathroom_bathtub_button_single_press
+    alias: 'Bathroom Bathtub Button: Single press'
+    trigger:
+      - platform: device
+        domain: mqtt
+        device_id: f0a662efaa0eddc62b7028e4e5214d8d
+        type: action
+        subtype: single
+        discovery_id: 0x00158d0003972602 action_single
+    action:
+      - service: light.toggle
+        entity_id: light.bathroom_bathtub
+
+  - id: bathroom_bathtub_button_call
+    alias: 'Bathroom Bathtube Button: Call'
+    trigger:
+      - platform: device
+        domain: mqtt
+        device_id: f0a662efaa0eddc62b7028e4e5214d8d
+        type: action
+        subtype: double
+        discovery_id: 0x00158d0003972602 action_double
+
+      - platform: device
+        domain: mqtt
+        device_id: f0a662efaa0eddc62b7028e4e5214d8d
+        type: triple
+        subtype: single
+        discovery_id: 0x00158d0003972602 action_triple
+
+      - platform: device
+        domain: mqtt
+        device_id: f0a662efaa0eddc62b7028e4e5214d8d
+        type: action
+        subtype: many
+        discovery_id: 0x00158d0003972602 action_many
+    action:
+      - service: script.yandex_station_tts
+        data:
+          target: all
+          type: alert
+          text: >
+            {{ [
+                'вызывают из ванной, сходи проверь',
+                'нужна помощь в ванной',
+                'тебя очень хотять видеть в ванной',
+                ]|random
+            }}

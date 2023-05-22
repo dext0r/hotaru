@@ -1,0 +1,38 @@
+automation:
+  - id: workshop_desk_button_turn_on
+    alias: 'Workshop Desk Button: Turn on'
+    trigger:
+      - platform: device
+        domain: mqtt
+        device_id: b9daf61de1fcfea52aa888e18dcd46ee
+        type: action
+        subtype: 'on'
+        discovery_id: 0x84fd27fffe9c0fbd action_on
+    action:
+      - service: input_boolean.toggle
+        entity_id: input_boolean.workshop_airing_warm
+
+      - service: script.yandex_station_tts
+        data:
+          target: media_player.workshop_station
+          text: >
+            <speaker audio="dialogs-upload/31d7ae1e-6af0-40a0-8721-759585b9c331/4e413dc0-8b7c-4604-b7c4-01019abc3814.opus">
+
+  - id: workshop_desk_button_turn_off
+    alias: 'Workshop Desk Button: Turn off'
+    trigger:
+      - platform: device
+        domain: mqtt
+        device_id: b9daf61de1fcfea52aa888e18dcd46ee
+        type: action
+        subtype: 'off'
+        discovery_id: 0x84fd27fffe9c0fbd action_off
+    action:
+      - service: input_boolean.toggle
+        entity_id: input_boolean.workshop_airing_cold
+
+      - service: script.yandex_station_tts
+        data:
+          target: media_player.workshop_station
+          text: >
+            <speaker audio="dialogs-upload/31d7ae1e-6af0-40a0-8721-759585b9c331/4e413dc0-8b7c-4604-b7c4-01019abc3814.opus">

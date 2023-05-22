@@ -1,0 +1,178 @@
+# https://aliexpress.ru/item/1005001413871316.html
+packages:
+  base: !include common/base.yaml
+
+substitutions:
+  device_name: Bedroom Moon Light
+
+esphome:
+  name: bedroom-moon-light
+  model: Hiper IOT HI-IR1 / Relay
+  name_add_mac_suffix: false
+  includes:
+    - lib/rgb.h
+
+esp8266:
+  board: esp01_1m
+  restore_from_flash: false
+
+logger:
+  baud_rate: 0
+
+remote_receiver:
+  pin:
+    number: 5
+    inverted: true
+  dump: all
+
+remote_transmitter:
+  id: ir
+  pin: 14
+  carrier_duty_percent: 50%
+
+light:
+  - id: light_rgb
+    platform: rgb
+    name: $device_name
+    icon: mdi:lightbulb-night-outline
+    red: dummy_pmw
+    green: dummy_pmw
+    blue: dummy_pmw
+    default_transition_length: 0s
+    on_state:
+      - lambda: |-
+          static int current_ir_brightness = 0;
+          static long current_ir_color = 0;
+
+          LightColorValues v = id(light_rgb).remote_values;
+          remote_base::NECAction<> *ir_action;
+          ir_action = new remote_base::NECAction<>();
+          ir_action->set_parent(id(ir));
+          ir_action->set_address(0xEF00);
+
+          if (id(light_rgb).remote_values.is_on()) {
+            // turn on
+            ir_action->set_command(0xFC03);
+            ir_action->play();
+          } else {
+            // turn off
+            ir_action->set_command(0xFD02);
+            ir_action->play();
+          }
+
+          if (id(light_rgb).remote_values.is_on()) {
+            int target_color = rgbToInt(int(v.get_red() * 255), int(v.get_green() * 255), int(v.get_blue() * 255));
+            if (target_color != current_ir_color) {
+              current_ir_color = target_color;
+              ir_action->set_command(0x0000);
+
+              switch (target_color) {
+                case 16777215: // white
+                  ir_action->set_command(0xF807);
+                  break;
+                case 16714250: // red
+                  ir_action->set_command(0xFB04); // R
+                  break;
+                case 16727040: // orange
+                  ir_action->set_command(0xF708); // R-1
+                  break;
+                case 16729907: // coral
+                  ir_action->set_command(0xF30C); // R-2
+                  break;
+                case 13303562: // lime
+                  ir_action->set_command(0xEF10); // R-3
+                  break;
+                case 16740362: // yellow
+                  ir_action->set_command(0xEB14); // R-4
+                  break;
+                case 720711: // green
+                  ir_action->set_command(0xFA05); // G
+                  break;
+                case 720813: // emerald
+                  ir_action->set_command(0xF609); // G-1
+                  break;
+                case 720883: // turquoise
+                  ir_action->set_command(0xF20D); // G-2
+                  break;
+                case 15067647: // moonlight
+                  ir_action->set_command(0xEE11); // G-3
+                  break;
+                case 710399: // cyan
+                  ir_action->set_command(0xEA15); // G-4
+                  break;
+                case 673791: // blue
+                  ir_action->set_command(0xF906); // B
+                  break;
+                case 11340543: // violet
+                  ir_action->set_command(0xF50A); // B-1
+                  break;
+                case 8719103: // lavender
+                  ir_action->set_command(0xF10E); // B-2
+                  break;
+                case 16714393: // orchid
+                  ir_action->set_command(0xED12); // B-3
+                  break;
+                case 16714471: // purple
+                  ir_action->set_command(0xE916); // B-4
+                  break;
+                case 16722742: // mauve
+                  ir_action->set_command(0xE916);
+                  break;
+                case 16711765: // raspberry
+                  ir_action->set_command(0xE916);
+                  break;
+              }
+
+              ir_action->play();
+            }
+
+            int target_brightness = v.get_brightness() * 10;
+            if (target_brightness > current_ir_brightness) {
+              while (target_brightness != current_ir_brightness) {
+                current_ir_brightness++;
+                ir_action->set_command(0xFF00);
+                ir_action->play();
+                delay(10);
+              }
+            }
+            else if (target_brightness < current_ir_brightness) {
+              while (target_brightness != current_ir_brightness) {
+                current_ir_brightness--;
+                ir_action->set_command(0xFE01);
+                ir_action->play();
+                delay(10);
+              }
+            }
+
+          }
+
+switch:
+  - id: led
+    platform: gpio
+    name: $device_name Status LED
+    internal: true
+    pin:
+      number: 4
+
+  - id: charger_relay
+    platform: gpio
+    name: $device_name Charger
+    icon: mdi:battery-charging-wireless-outline
+    pin:
+      number: 2
+      inverted: true
+    on_turn_on:
+      - light.turn_off: light_rgb
+
+output:
+  - id: dummy_pmw
+    platform: template
+    type: float
+    write_action: []
+
+button:
+  - platform: template
+    name: Bedroom AC Display Toggle
+    on_press:
+      - remote_transmitter.transmit_coolix:
+          data: 0xB9F509

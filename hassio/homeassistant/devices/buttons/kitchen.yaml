@@ -1,0 +1,32 @@
+automation:
+  - id: kitchen_worktop_button_turn_on
+    alias: 'Kitchen Worktop Button: Turn on'
+    trigger:
+      - platform: device
+        domain: mqtt
+        device_id: 624d122c903dda63a2c71e9d636f4a0c
+        type: action
+        subtype: 'on'
+        discovery_id: 0x84fd27fffe3b745a action_on
+    action:
+      - service: light.turn_on
+        entity_id: light.kitchen_worktop
+        data:
+          brightness_pct: 100
+
+  - id: kitchen_worktop_button_turn_off
+    alias: 'Kitchen Worktop Button: Turn off'
+    trigger:
+      - platform: device
+        domain: mqtt
+        device_id: 624d122c903dda63a2c71e9d636f4a0c
+        type: action
+        subtype: 'off'
+        discovery_id: 0x84fd27fffe3b745a action_off
+    condition:
+      - condition: state
+        entity_id: light.kitchen_worktop
+        state: 'on'
+    action:
+      - service: light.turn_off
+        entity_id: light.kitchen_worktop

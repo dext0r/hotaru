@@ -1,0 +1,21 @@
+{
+  "cniVersion": "0.4.0",
+  "name": "home",
+  "plugins": [
+    {
+      "type": "macvlan",
+      "master": "ens9",
+      "ipam": {
+        "type": "host-local",
+        "subnet": "192.168.0.0/24",
+        "rangeStart": "192.168.0.45",
+        "rangeEnd": "192.168.0.50",
+        "routes": [
+          {
+            "dst": "0.0.0.0/0"
+          }
+        ]
+      }
+    }
+  ]
+}

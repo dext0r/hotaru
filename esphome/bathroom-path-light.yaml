@@ -1,0 +1,32 @@
+packages:
+  base: !include common/base.yaml
+
+substitutions:
+  device_name: Bathroom Path Light
+
+esphome:
+  name: bathroom-path-light
+  model: Wemos
+  name_add_mac_suffix: false
+
+esp8266:
+  board: esp01_1m
+
+light:
+  - name: Bathroom Toilet Path Light
+    platform: neopixelbus
+    pin: 14
+    type: GRBW
+    variant: SK6812
+    num_leds: 27
+    gamma_correct: 1
+    restore_mode: ALWAYS_OFF
+
+  - name: Bathroom Sink Path Light
+    platform: neopixelbus
+    pin: 12
+    type: GRBW
+    variant: SK6812
+    num_leds: 31
+    gamma_correct: 1
+    restore_mode: ALWAYS_OFF

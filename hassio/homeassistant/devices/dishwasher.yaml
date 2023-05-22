@@ -1,0 +1,167 @@
+input_select:
+  dishwasher_status:
+    name: Dishwasher Status
+    icon: mdi:dishwasher
+    options:
+      - Dirty
+      - Idle
+      - Running
+      - Done
+    initial: Idle
+
+automation:
+  - id: dishwasher_cycle
+    alias: 'Dishwasher: Cycle'
+    max_exceeded: silent
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.dishwasher_power
+      above: 10
+      for:
+        seconds: 30
+    condition:
+      - condition: state
+        entity_id: input_select.dishwasher_status
+        state:
+          - Idle
+          - Dirty
+          - Done
+    action:
+      - service: input_select.select_option
+        entity_id: input_select.dishwasher_status
+        data:
+          option: Running
+
+      - wait_for_trigger:
+          - platform: numeric_state
+            entity_id: sensor.dishwasher_power
+            below: 5
+            for:
+              minutes: 10
+        timeout:
+          hours: 2
+        continue_on_timeout: true
+
+      - if:
+          - condition: state
+            entity_id: binary_sensor.dishwasher_door
+            state: 'off'
+        then:
+          - service: input_select.select_option
+            entity_id: input_select.dishwasher_status
+            data:
+              option: Done
+        else:
+          - service: input_select.select_option
+            entity_id: input_select.dishwasher_status
+            data:
+              option: Idle
+
+  - id: dishwasher_free
+    alias: 'Dishwasher: Free'
+    trigger:
+      platform: state
+      entity_id: binary_sensor.dishwasher_door
+      to: 'on'
+      for:
+        seconds: 10
+    condition:
+      - condition: state
+        entity_id: input_select.dishwasher_status
+        state: Done
+    action:
+      - wait_for_trigger:
+          - platform: state
+            entity_id: binary_sensor.dishwasher_door
+            to: 'off'
+        timeout:
+          minutes: 10
+        continue_on_timeout: true
+
+      - service: input_select.select_option
+        entity_id: input_select.dishwasher_status
+        data:
+          option: Idle
+
+  - id: dishwasher_dirty
+    alias: 'Dishwasher: Dirty'
+    trigger:
+      platform: state
+      entity_id: binary_sensor.dishwasher_door
+      to: 'on'
+      for:
+        seconds: 30
+    condition:
+      - condition: state
+        entity_id: input_select.dishwasher_status
+        state: Idle
+    action:
+      - service: input_select.select_option
+        entity_id: input_select.dishwasher_status
+        data:
+          option: Dirty
+
+  - id: dishwasher_status
+    alias: 'Dishwasher: Status'
+    trigger:
+      platform: event
+      event_type: yandex_intent
+      event_data:
+        text: Что с посудомойкой
+    action:
+      - service: script.yandex_station_tts
+        data:
+          target: >
+            {{ trigger.event.data.get('entity_id', 'last') }}
+          text: >
+            Посудомойка
+            {% if is_state('input_select.dishwasher_status', 'Dirty') %}
+              с грязной посудой, в ожидании запуска.
+            {% elif is_state('input_select.dishwasher_status', 'Running') %}
+              делает бурлык-бурлык. Посуда скоро будет чистой.
+            {% elif is_state('input_select.dishwasher_status', 'Done') %}
+              закончила
+            {% elif is_state('input_select.dishwasher_status', 'Idle') %}
+              простаивает без дела, может загрузить в неё посуду?
+            {% else %}
+              в каком-то непонятном состоянии, что я даже хз
+            {% endif %}
+
+  - id: dishwasher_status_light_update
+    alias: 'Dishwasher: Status light update'
+    mode: queued
+    trigger:
+      - platform: state
+        entity_id:
+          - input_select.dishwasher_status
+          - input_select.home_mode
+    action:
+      - if:
+          - condition: state
+            entity_id: input_select.dishwasher_status
+            state: Done
+
+          - condition: state
+            entity_id: input_select.home_mode
+            state:
+              - Day
+              - Vacation
+        then:
+          - service: light.turn_on
+            entity_id: light.dishwasher_status
+            data:
+              brightness_pct: 30
+              rgbw_color: [0, 255, 0, 0]
+        else:
+          - service: light.turn_off
+            entity_id: light.dishwasher_status
+
+template:
+  binary_sensor:
+    - name: Dishwasher Door
+      unique_id: binary_sensor_dishwasher_door
+      state: >
+        {{ is_state('binary_sensor.dishwasher_door_contact', 'off') }}
+      availability: >
+        {{ states('binary_sensor.dishwasher_door_contact') in ['on', 'off'] }}
+      device_class: door

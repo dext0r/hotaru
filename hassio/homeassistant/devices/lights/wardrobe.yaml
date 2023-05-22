@@ -1,0 +1,98 @@
+automation:
+  - id: wardrobe_light_turn_on
+    alias: 'Wardrobe Light: Turn on'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.wardrobe_door
+        to: 'on'
+
+      - platform: state
+        entity_id: binary_sensor.wardrobe_motion
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+
+      - condition: state
+        entity_id: light.wardrobe
+        state: 'off'
+    action:
+      - service: light.turn_on
+        entity_id: light.wardrobe
+        data:
+          brightness_pct: >
+            {%- if is_state('binary_sensor.dim_light', 'on') -%}
+              20
+            {%- elif is_state('input_select.home_mode', 'Night') -%}
+              5
+            {%- else -%}
+              100
+            {%- endif -%}
+
+  - id: wardrobe_light_turn_off
+    alias: 'Wardorbe Light: Turn off'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.wardrobe_door
+        to: 'off'
+        for:
+          seconds: 2
+
+      - id: no_motion
+        platform: state
+        entity_id: binary_sensor.wardrobe_motion
+        from: 'on'
+        to: 'off'
+        for:
+          minutes: 5
+    condition:
+      - condition: state
+        entity_id:
+          - input_boolean.light_control
+          - input_boolean.wardrobe_light_control
+          - light.wardrobe
+        state: 'on'
+    action:
+      - if:
+          - condition: trigger
+            id: no_motion
+        then:
+          - service: light.turn_off
+            entity_id: light.wardrobe
+            data:
+              transition: 10
+        else:
+          - service: light.turn_off
+            entity_id: light.wardrobe
+
+  - id: wardrobe_light_control_turn_on
+    alias: 'Wardrobe Light Control: Turn on'
+    trigger:
+      - platform: state
+        entity_id: light.wardrobe
+        to: 'off'
+    condition:
+      - condition: state
+        entity_id: input_boolean.wardrobe_light_control
+        state: 'off'
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.wardrobe_light_control
+
+  - id: wardrobe_light_control_turn_off
+    alias: 'Wardrobe Light Control: Turn off'
+    trigger:
+      - platform: event
+        event_type: yandex_intent
+        event_data:
+          text: Не выключай свет в гардеробе
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.wardrobe_light_control
+
+input_boolean:
+  wardrobe_light_control:
+    name: 'Allow automatic light control (wardrobe)'
+    initial: true
+    icon: mdi:home-lightbulb-outline

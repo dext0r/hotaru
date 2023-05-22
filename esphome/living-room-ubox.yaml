@@ -1,0 +1,88 @@
+packages:
+  base: !include common/base.yaml
+  time: !include common/time.yaml
+  uptime: !include common/uptime.yaml
+  tion_4s: !include common/tion_4s.yaml
+  senseair_s8: !include common/senseair_s8.yaml
+  mithermometer_ble: !include common/mithermometer_ble.yaml
+
+substitutions:
+  device_name: Living Room UBox
+  tion_mac_address: F2:71:3F:8E:FC:38
+  tion_device_name: Living Room Intake Fan
+  senseair_s8_sensor_name: Living Room CO2
+  senseair_s8_tx_pin: '1'
+  senseair_s8_rx_pin: '3'
+
+esphome:
+  name: living-room-ubox
+  model: Universal Box (ESP32)
+  name_add_mac_suffix: false
+
+esp32:
+  board: esp32dev
+
+logger:
+  baud_rate: 0
+
+uart:
+  - id: ld2410_uart
+    rx_pin: 17
+    tx_pin: 16
+    baud_rate: 256000
+    parity: NONE
+    stop_bits: 1
+
+binary_sensor:
+  - platform: ld2410
+    has_target:
+      name: Living Room Occupancy
+      device_class: occupancy
+
+ld2410:
+  uart_id: ld2410_uart
+  timeout: 60s
+  max_move_distance: 4.5m
+  max_still_distance: 4.5m
+  g0_move_threshold: 100
+  g0_still_threshold: 100
+  g1_move_threshold: 100
+  g1_still_threshold: 100
+  g2_move_threshold: 30
+  g2_still_threshold: 30
+  g3_move_threshold: 25
+  g3_still_threshold: 25
+  g4_move_threshold: 25
+  g4_still_threshold: 25
+  g5_move_threshold: 25
+  g5_still_threshold: 25
+  g6_move_threshold: 25
+  g6_still_threshold: 25
+  g7_move_threshold: 25
+  g7_still_threshold: 25
+  g8_move_threshold: 25
+  g8_still_threshold: 25
+
+sensor:
+  - platform: ld2410
+    # moving_distance:
+    #   name: LR Moving Distance Debug
+    # still_distance:
+    #   name: LR Still Distance Debug
+    # moving_energy:
+    #   name: LR Move Energy Debug
+    # still_energy:
+    #   name: LR Still Energy Debug
+    # detection_distance:
+    #   name: LR Detection Distance Debug
+
+  - platform: pvvx_mithermometer
+    mac_address: A4:C1:38:42:B7:5D
+    temperature:
+      name: Living Room Temperature
+      accuracy_decimals: 1
+    humidity:
+      name: Living Room Humidity
+      accuracy_decimals: 0
+    battery_level:
+      name: Living Room Meteo Battery

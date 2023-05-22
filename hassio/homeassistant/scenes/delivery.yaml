@@ -1,0 +1,152 @@
+input_boolean:
+  scene_delivery:
+    name: 'Scene: Delivery'
+    icon: mdi:truck-delivery
+    initial: false
+
+input_datetime:
+  scene_delivery_started:
+    name: 'Scene Delivery: Started'
+    has_time: true
+    has_date: true
+    icon: mdi:exit-run
+
+  scene_delivery_scheduled_from:
+    name: 'Scene Delivery: Scheduled from'
+    has_time: true
+    has_date: true
+    icon: mdi:calendar-arrow-right
+
+  scene_delivery_scheduled_to:
+    name: 'Scene Delivery: Scheduled to'
+    has_time: true
+    has_date: true
+    icon: mdi:calendar-arrow-left
+
+automation:
+  - id: scene_delivery_turn_on
+    alias: 'Scene Delivery: Turn on'
+    trigger:
+      - platform: event
+        event_type: yandex_intent
+        event_data:
+          text: Заказана еда
+    action:
+      - if:
+          - condition: state
+            entity_id: input_boolean.scene_delivery
+            state: 'on'
+        then:
+          - service: script.yandex_station_tts
+            data:
+              target: >
+                {{ trigger.event.data.get('entity_id', 'last') }}
+              text: >
+                {% set elapsed_seconds = as_timestamp(now()) - state_attr('input_datetime.scene_delivery_started', 'timestamp') %}
+                {{ ['Ага', 'Я знаю', 'Наверняка']|random }}, уже как {{ (elapsed_seconds / 60)|int }}мин назад
+                {% if elapsed_seconds > 40 * 60 * 60 %}
+                  и я немного волнуюсь
+                {% endif %}
+
+      - condition: state
+        entity_id: input_boolean.scene_delivery
+        state: 'off'
+
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.scene_delivery
+
+      - service: input_datetime.set_datetime
+        entity_id: input_datetime.scene_delivery_started
+        data:
+          datetime: >
+            {{ now().strftime('%Y-%m-%d %H:%M:%S') }}
+
+      - service: script.yandex_station_tts
+        data:
+          target: >
+            {{ trigger.event.data.get('entity_id', 'last') }}
+          text: >
+            {{ [
+                'Хорошо, ждём. Очень хочется кушать',
+                'Хорошо, скорей бы привезли кушать',
+                'Отлично, ждём с нетерпением',
+                'Ждем курьера, но почему бы не приготовить самому?',
+                'Ждем курьера, но почему бы не приготовить самому?',
+                'Хорошая новость. Не забудь всё подготовить.',
+                'Ням-ням. А комната расчищена?'
+               ]|random
+            }}
+
+  - id: scene_delivery_30min_passed
+    alias: 'Scene Delivery: 30min passed'
+    trigger:
+      - platform: state
+        entity_id: input_boolean.scene_delivery
+        to: 'on'
+        for:
+          minutes: 30
+    action:
+      - service: script.yandex_station_tts
+        data:
+          target: all
+          type: attention
+          text: >
+            {{ [
+                'Уже прошло полчаса, курьер может уже выехал?',
+                'Тридцать минут прошло, голод только стал сильнее',
+                'Полчаса минуло, надеюсь курьер в пути'
+               ]|random
+            }}
+
+  - id: scene_delivery_60min_passed
+    alias: 'Scene Delivery: 60min passed'
+    trigger:
+      - platform: state
+        entity_id: input_boolean.scene_delivery
+        to: 'on'
+        for:
+          minutes: 60
+    action:
+      - service: script.yandex_station_tts
+        data:
+          target: all
+          type: attention
+          text: Тем временем еды уже нет целый час. Это вообще никуда не годится! Я буду жаловаться!
+
+  - id: scene_delivery_turn_off
+    alias: 'Scene Delivery: Turn off'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.front_door
+        from: 'on'
+        to: 'off'
+    condition:
+      - condition: state
+        entity_id: input_boolean.scene_delivery
+        state: 'on'
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.scene_delivery
+
+      - delay:
+          seconds: 8
+
+      - service: script.yandex_station_tts
+        data:
+          target: all
+          type: attention
+          text: >
+            {% set elapsed_seconds = as_timestamp(now()) - state_attr('input_datetime.scene_delivery_started', 'timestamp')  %}
+            А вот и еда! {{ ['Еду привезли за', 'Еда доставлена за', 'Мы смогли продержаться эти']|random }} {{ (elapsed_seconds / 60)|int }}мин
+
+  - id: scene_delivery_turn_off_fallback
+    alias: 'Scene Delivery: Turn off (fallback)'
+    trigger:
+      - platform: state
+        entity_id: input_boolean.scene_delivery
+        to: 'on'
+        for:
+          hours: 2
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.scene_delivery

@@ -1,0 +1,182 @@
+packages:
+  common: !include ../lib/common.yaml
+
+esphome:
+  name: h801-led-dimmer
+  model: H801 LED Dimmer
+  # on_boot:
+  #   - switch.turn_on: led_green
+
+esp8266:
+  board: esp01_1m
+  restore_from_flash: true
+
+logger:
+  baud_rate: 0
+
+binary_sensor:
+  - id: light_switch
+    platform: gpio
+    internal: true
+    pin:
+      number: 2 # TX
+      inverted: true
+      mode:
+        input: true
+        pullup: true
+    filters:
+      - delayed_on: 20ms
+    on_click:
+      - min_length: 700ms
+        max_length: 10s
+        then:
+          - light.turn_off: light_w1
+          - light.turn_off: light_w2
+
+      - min_length: 50ms
+        max_length: 350ms
+        then:
+          - logger.log:
+              level: INFO
+              format: '%0.2f'
+              args:
+                - id(light_w1).current_values.get_brightness()
+
+          - if:
+              condition:
+                lambda: |-
+                  return id(light_w1).current_values.is_on() and id(light_w1).current_values.get_brightness() == 1;
+              then:
+                - light.turn_on:
+                    id: light_w1
+                    brightness: 75%
+                - light.turn_on:
+                    id: light_w2
+                    brightness: 75%
+
+          - if:
+              condition:
+                lambda: |-
+                  return !id(light_w1).current_values.is_on();
+              then:
+                - light.turn_on:
+                    id: light_w1
+                    brightness: 100%
+                    transition_length: 2s
+                - light.turn_on:
+                    id: light_w2
+                    brightness: 100%
+                    transition_length: 2s
+
+          - if:
+              condition:
+                lambda: |-
+                  return id(light_w1).current_values.is_on() and id(light_w1).current_values.get_brightness() < 0.12;
+              then:
+                - light.turn_off: light_w1
+                - light.turn_off: light_w2
+
+          - if:
+              condition:
+                lambda: |-
+                  return id(light_w1).current_values.is_on() and id(light_w1).current_values.get_brightness() == 0.25;
+              then:
+                - light.turn_on:
+                    id: light_w1
+                    brightness: 10%
+                - light.turn_on:
+                    id: light_w2
+                    brightness: 10%
+
+          - if:
+              condition:
+                lambda: |-
+                  return id(light_w1).current_values.is_on() and id(light_w1).current_values.get_brightness() == 0.5;
+              then:
+                - light.turn_on:
+                    id: light_w1
+                    brightness: 25%
+                - light.turn_on:
+                    id: light_w2
+                    brightness: 25%
+
+          - if:
+              condition:
+                lambda: |-
+                  return id(light_w1).current_values.is_on() and id(light_w1).current_values.get_brightness() == 0.75;
+              then:
+                - light.turn_on:
+                    id: light_w1
+                    brightness: 50%
+                - light.turn_on:
+                    id: light_w2
+                    brightness: 50%
+
+  # - id: light_switch_w2
+  #   platform: gpio
+  #   internal: true
+  #   pin:
+  #     number: 3  # RX
+  #     inverted: true
+  #     mode:
+  #       input: true
+  #       pullup: true
+  #   filters:
+  #     - delayed_on: 20ms
+  #   on_press:
+  #     - light.turn_on:
+  #         id: light_w1
+  #         brightness: 50%
+  #     - light.turn_on:
+  #         id: light_w2
+  #         brightness: 50%
+
+light:
+  - id: light_w1
+    platform: monochromatic
+    name: Light W1
+    output: pwm_w1
+    default_transition_length: 500ms
+
+  - id: light_w2
+    platform: monochromatic
+    name: Light W2
+    output: pwm_w2
+    default_transition_length: 500ms
+
+output:
+  - id: pwm_b
+    platform: esp8266_pwm
+    pin: 12
+  - id: pwm_g
+    platform: esp8266_pwm
+    pin: 13
+  - id: pwm_r
+    platform: esp8266_pwm
+    pin: 15
+  - id: pwm_w1
+    platform: esp8266_pwm
+    pin: 14
+  - id: pwm_w2
+    platform: esp8266_pwm
+    pin: 04
+
+switch:
+  # - id: led_red
+  #   platform: gpio
+  #   internal: true
+  #   pin:
+  #     number: 5
+  #     inverted: true
+
+  - id: led_green
+    platform: gpio
+    internal: true
+    pin:
+      number: 1
+      inverted: true
+
+status_led:
+  pin:
+    number: 5
+    inverted: true

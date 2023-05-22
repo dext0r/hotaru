@@ -1,0 +1,6 @@
+time:
+  - platform: homeassistant
+    timezone: Europe/Moscow
+    on_time_sync:
+      then:
+        - logger.log: Synchronized system clock

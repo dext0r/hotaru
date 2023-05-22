@@ -1,0 +1,35 @@
+automation:
+  - id: leave_kombucha_alone
+    alias: 'Leave Kombucha Alone'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.closet_door
+        from: 'off'
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: input_select.home_mode
+        state: Day
+
+      - condition: template
+        value_template: >
+          {{ (now() - state_attr('automation.leave_kombucha_alone',
+                                 'last_triggered')|default(now() - timedelta(days=1), true)).seconds > 600 }}
+    action:
+      - service: script.yandex_station_tts
+        data:
+          target: media_player.kitchen_station
+          type: attention
+          text: >
+            {{ states.sensor.alert_greeting.state }}
+            {{ [
+                'хватит смотреть на гриб, с ним всё хорошо',
+                'гриб в полном порядке, цветёт и пахнет',
+                'будешь часто смотреть, гриб не всплывёт',
+                'с грибом всё стабильно, сахар ням-ням',
+                'грибы любят покой и темноту, хватит зыркать',
+                'нееет, опять яркий свет, дай грибу спокойно расти',
+                'нетерпится увидеть гриб? всему своё время',
+                'гриб спешки не любит, не нужно его постоянно дёргать',
+                ]|random
+            }}

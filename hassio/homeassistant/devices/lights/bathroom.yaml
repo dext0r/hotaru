@@ -1,0 +1,178 @@
+automation:
+  - id: bathroom_light_turn_on
+    alias: 'Bathroom Light: Turn on'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.bathroom_motion
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+
+      - condition: state
+        entity_id: group.bathroom_lights
+        state: 'off'
+    action:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.dim_light
+                state: 'on'
+            sequence:
+              - service: light.turn_on
+                entity_id: light.bathroom_main
+                data:
+                  brightness_pct: 17
+
+          - conditions:
+              - condition: state
+                entity_id: input_select.home_mode
+                state:
+                  - Day
+                  - Vacation
+            sequence:
+              - service: light.turn_on
+                entity_id: light.bathroom_main
+                data:
+                  brightness_pct: 100
+
+  - id: bathroom_light_turn_on_night_fallback
+    alias: 'Bathroom Light: Turn on (night fallback)'
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.bathroom_motion
+          - binary_sensor.hallway_motion
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+
+      - condition: state
+        entity_id: input_select.home_mode
+        state: Night
+
+      - condition: state
+        entity_id: input_boolean.scene_waking_up
+        state: 'off'
+
+      - condition: state
+        entity_id: group.bathroom_path_lights
+        state: unavailable
+    action:
+      - service: light.turn_on
+        entity_id: light.bathroom_main
+        data:
+          brightness_pct: 7
+
+  - id: bathroom_light_turn_off
+    alias: 'Bathroom Light: Turn off'
+    trigger:
+      - id: no_occupancy
+        platform: state
+        entity_id: binary_sensor.bathroom_any_occupancy
+        to: 'off'
+        for:
+          minutes: 1
+
+      - id: no_motion
+        platform: state
+        entity_id: binary_sensor.bathroom_motion
+        to: 'off'
+        for:
+          minutes: 40
+    condition:
+      # при отвале датчика присутствия - отключение только по отсутствию движения
+      - condition: or
+        conditions:
+          - condition: trigger
+            id: no_motion
+
+          - condition: state
+            entity_id: binary_sensor.bathroom_occupancy
+            state:
+              - 'on'
+              - 'off'
+
+      - condition: state
+        entity_id:
+          - input_boolean.light_control
+          - input_boolean.bathroom_light_control
+          - group.bathroom_lights
+        state: 'on'
+    action:
+      - service: light.turn_off
+        entity_id: group.bathroom_lights
+        data:
+          transition: 6
+
+  - id: bathroom_light_control_turn_on
+    alias: 'Bathroom Light Control: Turn on'
+    trigger:
+      - platform: state
+        entity_id: group.bathroom_lights
+        to: 'off'
+    condition:
+      - condition: state
+        entity_id: input_boolean.bathroom_light_control
+        state: 'off'
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.bathroom_light_control
+
+  - id: bathroom_light_control_turn_off
+    alias: 'Bathroom Light Control: Turn off'
+    trigger:
+      - platform: event
+        event_type: yandex_intent
+        event_data:
+          text: Не выключай свет в ванной
+    condition:
+      - condition: state
+        entity_id: input_boolean.bathroom_light_control
+        state: 'on'
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.bathroom_light_control
+
+  - id: bathroom_bathtub_light_turn_on
+    alias: 'Bathroom Bathtub Light: Turn on'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.bathroom_bathtub_occupancy
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+
+      - condition: state
+        entity_id: input_select.home_mode
+        state:
+          - Day
+          - Vacation
+
+      - condition: state
+        entity_id:
+          - binary_sensor.dim_light
+          - light.bathroom_bathtub
+        state: 'off'
+    action:
+      - service: light.turn_on
+        entity_id: light.bathroom_bathtub
+
+input_boolean:
+  bathroom_light_control:
+    name: 'Allow automatic light control (bathroom)'
+    initial: true
+    icon: mdi:home-lightbulb-outline
+
+group:
+  bathroom_lights:
+    name: Bathroom Lights
+    entities:
+      - light.bathroom_main
+      - light.bathroom_mirror
+      - light.bathroom_bathtub

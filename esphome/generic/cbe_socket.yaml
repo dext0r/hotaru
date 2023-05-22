@@ -1,0 +1,96 @@
+packages:
+  base: !include ../common/base.yaml
+
+esphome:
+  name: cbe-socket
+  model: CBE Socket
+
+esp8266:
+  board: esp8285
+  restore_from_flash: yes
+
+preferences:
+  flash_write_interval: 10min
+
+time:
+  - platform: homeassistant
+    timezone: Europe/Moscow
+    on_time_sync:
+      then:
+        - logger.log: Synchronized system clock
+
+binary_sensor:
+  - id: button
+    platform: gpio
+    internal: true
+    pin:
+      number: 3
+      inverted: true
+      mode:
+        input: true
+        pullup: true
+    on_press:
+      then:
+        switch.toggle: relay
+
+sensor:
+  - platform: hlw8012
+    sel_pin:
+      number: 12
+      inverted: True
+    cf_pin: 4
+    cf1_pin: 5
+    initial_mode: CURRENT
+    change_mode_every: 4294967295
+    update_interval: 5s
+
+    voltage:
+      name: $device_name Voltage
+      unit_of_measurement: V
+      disabled_by_default: true
+      filters:
+        - calibrate_linear:
+            - 0 -> 0
+            - 710.6 -> 240
+        - lambda: |-
+            return round(x);
+
+    power:
+      id: power
+      name: $device_name Power
+      device_class: power
+      unit_of_measurement: W
+      accuracy_decimals: 0
+      filters:
+        - calibrate_linear:
+            - 0 -> 1.5
+            - 72.4 -> 12.2
+            - 496.5 -> 76.65
+            - 1614 -> 247
+            - 3114 -> 478
+            - 4160 -> 638
+            - 6640 -> 1015
+            - 13148 -> 2015
+        - lambda: |-
+            if (x < 1.5) return 0;
+            return x - 1.5;
+
+  - platform: total_daily_energy
+    name: $device_name Energy
+    device_class: energy
+    unit_of_measurement: kWh
+    accuracy_decimals: 2
+    power_id: power
+    filters:
+      - multiply: 0.001
+
+status_led:
+  pin:
+    number: 13
+
+switch:
+  - id: relay
+    platform: gpio
+    name: $device_name
+    device_class: outlet
+    pin: 14

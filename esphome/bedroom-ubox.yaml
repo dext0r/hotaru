@@ -1,0 +1,60 @@
+packages:
+  base: !include common/base.yaml
+  time: !include common/time.yaml
+  uptime: !include common/uptime.yaml
+  tion_4s: !include common/tion_4s.yaml
+  senseair_s8: !include common/senseair_s8.yaml
+  mithermometer_ble: !include common/mithermometer_ble.yaml
+
+substitutions:
+  device_name: Bedroom UBox
+  tion_mac_address: E1:73:74:77:82:1C
+  tion_device_name: Bedroom Intake Fan
+  senseair_s8_sensor_name: Bedroom CO2
+  senseair_s8_tx_pin: '27'
+  senseair_s8_rx_pin: '26'
+
+esphome:
+  name: bedroom-ubox
+  model: Universal Box (ESP32)
+  name_add_mac_suffix: false
+
+esp32:
+  board: esp32dev
+
+logger:
+  level: INFO
+
+sensor:
+  - platform: pvvx_mithermometer
+    mac_address: A4:C1:38:FC:04:50
+    temperature:
+      name: Bedroom Temperature
+      accuracy_decimals: 1
+    humidity:
+      name: Bedroom Humidity
+      accuracy_decimals: 0
+    battery_level:
+      name: Bedroom Meteo Battery
+
+  - platform: pvvx_mithermometer
+    mac_address: A4:C1:38:A1:F8:D7
+    temperature:
+      name: Wardrobe Temperature
+      accuracy_decimals: 1
+    humidity:
+      name: Wardrobe Humidity
+      accuracy_decimals: 0
+    battery_level:
+      name: Wardrobe Meteo Battery
+
+  - platform: pvvx_mithermometer
+    mac_address: A4:C1:38:8A:62:0B
+    temperature:
+      name: Bathroom Temperature
+      accuracy_decimals: 1
+    humidity:
+      name: Bathroom Humidity
+      accuracy_decimals: 0
+    battery_level:
+      name: Bathroom Meteo Battery

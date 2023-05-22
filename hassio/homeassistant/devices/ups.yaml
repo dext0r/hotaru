@@ -1,0 +1,25 @@
+automation:
+  - id: ups_status_alert
+    alias: 'UPS Status: Alert'
+    trigger:
+      - platform: state
+        entity_id: sensor.ups_status
+        not_from: unavailable
+        not_to: unavailable
+
+      - platform: state
+        entity_id: sensor.ups_status
+        not_from: unavailable
+        not_to: unavailable
+        for:
+          minutes: 5  # за это время должен подняться резервный канал, если упал наземный
+    condition:
+      - not:
+          - condition: template
+            value_template: >
+              {{ 'Online' in trigger.from_state.state and 'Online' in trigger.to_state.state }}
+    action:
+      - service: notify.dextor
+        data:
+          message: >
+            ⚡️ Изменён режим работы ИБП: {{ trigger.to_state.state }}

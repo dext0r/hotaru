@@ -1,0 +1,65 @@
+input_boolean:
+  scene_waking_up:
+    name: 'Scene: Waking up'
+    icon: mdi:sun-clock-outline
+
+automation:
+  - id: scene_waking_up_turned_on
+    alias: 'Scene Waking up: Turned on'
+    trigger:
+      - platform: state
+        entity_id: input_boolean.scene_waking_up  # ставится по кнопке в ванной
+        to: 'on'
+    action:
+      - service: light.turn_on
+        entity_id: light.bathroom_main
+        data:
+          brightness_pct: 22
+
+      - service: light.turn_off
+        entity_id: group.bathroom_path_lights
+
+  - id: scene_waking_up_turn_off
+    alias: 'Scene Waking up: Turn off'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.front_door
+        to: 'on'
+
+      - platform: state
+        entity_id: input_select.home_mode
+        from: Night
+
+      - platform: state
+        entity_id: input_boolean.scene_waking_up
+        to: 'on'
+        for:
+          hours: 2
+    condition:
+      - condition: state
+        entity_id: input_boolean.scene_waking_up
+        state: 'on'
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.scene_waking_up
+
+  - id: scene_waking_up_turn_off_porch_door
+    alias: 'Scene Waking up: Turn off (porch door)'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.front_door
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: input_boolean.scene_waking_up
+        state: 'on'
+    action:
+      - wait_for_trigger:
+          - platform: state
+            entity_id: binary_sensor.porch_door
+            to: 'off'
+        timeout:
+          minutes: 3
+
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.scene_waking_up

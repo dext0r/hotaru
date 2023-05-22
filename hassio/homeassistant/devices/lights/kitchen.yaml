@@ -1,0 +1,198 @@
+automation:
+  - id: kitchen_light_turn_on_full_low_light
+    alias: 'Kitchen Light: Turn on (full / low light)'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.kitchen_motion
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+
+      - condition: state
+        entity_id:
+          - light.kitchen_main
+          - binary_sensor.dim_light
+          - input_boolean.scene_sleepy_mood
+        state: 'off'
+
+      - condition: numeric_state
+        entity_id: sensor.illuminance_north_side
+        below: 1250
+
+      - condition: state
+        entity_id: input_select.home_mode
+        state:
+          - Day
+          - Vacation
+
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: light.kitchen_mood
+            state: 'off'
+
+          - condition: template
+            value_template: >
+              {{ state_attr('light.kitchen_worktop', 'brightness')|int(0) in (0, 50) }}
+    action:
+      - service: light.turn_on
+        entity_id: light.kitchen_worktop
+        data:
+          brightness: 255
+
+      - service: light.turn_on
+        entity_id: light.kitchen_mood
+
+  - id: kitchen_light_turn_on_dimmed_low_light
+    alias: 'Kitchen Light: Turn on (dimmed / low light)'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.kitchen_motion
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id:
+          - input_boolean.light_control
+          - binary_sensor.dim_light
+        state: 'on'
+
+      - condition: state
+        entity_id: light.kitchen_main
+        state: 'off'
+
+      - condition: numeric_state
+        entity_id: sensor.illuminance_north_side
+        below: 730
+
+      - condition: state
+        entity_id: input_select.home_mode
+        state:
+          - Day
+          - Vacation
+
+      - condition: state
+        entity_id: input_boolean.scene_sleepy_mood
+        state: 'off'
+
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: light.kitchen_mood
+            state: 'off'
+
+          - condition: template
+            value_template: >
+              {{ state_attr('light.kitchen_worktop', 'brightness')|int(0) in (0, 100) }}
+    action:
+      - service: light.turn_on
+        entity_id: light.kitchen_worktop
+        data:
+          brightness: 100
+
+      - service: light.turn_on
+        entity_id: light.kitchen_mood
+
+  - id: kitchen_light_dim_worktop
+    alias: 'Kitchen Light: Dim worktop'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.kitchen_motion
+        from: 'on'
+        to: 'off'
+        for:
+          minutes: 10
+    condition:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: light.kitchen_main
+            state: 'on'
+
+          - condition: template
+            value_template: >
+              {{ state_attr('light.kitchen_worktop', 'brightness')|int(0) > 250 }}
+    action:
+      - service: light.turn_on
+        entity_id: light.kitchen_worktop
+        data:
+          brightness: 50
+
+      - service: light.turn_off
+        entity_id: light.kitchen_main
+
+  - id: kitchen_light_turn_off
+    alias: 'Kitchen Light: Turn off'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.kitchen_motion
+        from: 'on'
+        to: 'off'
+        for:
+          minutes: 15
+    condition:
+      - condition: state
+        entity_id:
+          - input_boolean.light_control
+          - group.kitchen_lights
+        state: 'on'
+
+      - condition: state
+        entity_id: input_boolean.scene_sleepy_mood
+        state: 'off'
+    action:
+      - service: light.turn_off
+        entity_id: group.kitchen_lights
+
+light:
+  - platform: template
+    lights:
+      kitchen_main:
+        unique_id: kitchen_main_light
+        friendly_name: Kitchen Main Light
+        value_template: >
+          {{ is_state('switch.kitchen_light_switch_right', 'on') }}
+        availability_template: >
+          {{ states('switch.kitchen_light_switch_right') in ['on', 'off'] }}
+        icon_template: bha:ceiling-lamp
+        turn_on:
+          - service: switch.turn_on
+            entity_id: switch.kitchen_light_switch_right
+        turn_off:
+          - service: switch.turn_off
+            entity_id: switch.kitchen_light_switch_right
+
+      kitchen_mood:
+        unique_id: kitchen_mood_light
+        friendly_name: Kitchen Mood Light
+        value_template: >
+          {{ is_state('switch.kitchen_light_switch_left', 'on') }}
+        availability_template: >
+          {{ states('switch.kitchen_light_switch_left') in ['on', 'off'] }}
+        icon_template: bha:dome-light
+        turn_on:
+          - service: switch.turn_on
+            entity_id: switch.kitchen_light_switch_left
+        turn_off:
+          - service: switch.turn_off
+            entity_id: switch.kitchen_light_switch_left
+
+  - platform: group
+    unique_id: light.kitchen_worktop
+    name: Kitchen Worktop Light
+    entities:
+      - light.kitchen_worktop_left
+      - light.kitchen_worktop_right
+
+group:
+  kitchen_lights:
+    name: Kitchen Lights
+    entities:
+      - light.kitchen_main
+      - light.kitchen_mood
+      - light.kitchen_worktop

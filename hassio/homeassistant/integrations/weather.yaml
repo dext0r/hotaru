@@ -1,0 +1,7 @@
+narodmon:
+  devices:
+    - name: Weather
+      latitude: !secret geo_home_latitude
+      longitude: !secret geo_home_longitude
+      sensors:
+        - temperature

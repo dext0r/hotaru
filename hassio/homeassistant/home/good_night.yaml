@@ -1,0 +1,54 @@
+automation:
+  - id: good_night
+    alias: Good Night
+    trigger:
+      - platform: event
+        event_type: yandex_intent
+        event_data:
+          text: Спокойной ночи
+    action:
+      - service: script.turn_on
+        entity_id: script.yandex_station_tts
+        data:
+          variables:
+            target: >
+              {{ trigger.event.data.get('entity_id', 'last') }}
+            text: >
+              {{ ['Спокойной ночи!', 'Сладких снов!', 'Приятных снов!', 'Доброй ночи!']|random }}
+
+      - service: cover.close_cover
+        entity_id:
+          - cover.living_room
+          - cover.kitchen
+          - cover.bedroom
+
+      - service: light.turn_off
+        entity_id:
+          - group.bathroom_lights
+          - group.kitchen_lights
+          - group.living_room_lights
+          - group.path_lights
+          - light.entrance
+          - light.hallway
+          - light.wardrobe
+          - light.workshop_main
+          - light.bedroom_main
+
+      - service: input_select.select_option
+        entity_id: input_select.home_mode
+        data:
+          option: Night
+
+      - service: light.turn_off
+        entity_id: light.bedroom_bed
+        data:
+          transition: 7
+
+      - service: light.turn_off
+        entity_id: light.bedroom_moon
+
+      - service: media_player.turn_off
+        entity_id: media_player.tv
+
+      - service: switch.turn_off
+        entity_id: switch.bedroom_airing

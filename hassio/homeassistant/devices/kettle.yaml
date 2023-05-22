@@ -1,0 +1,165 @@
+# На патченном компоненте - https://github.com/dext0r/hass-template-climate
+climate:
+  - platform: climate_template
+    name: Kettle
+    icon_template: mdi:kettle
+    modes:
+      - auto
+      - heat
+      - 'off'
+    min_temp: 30
+    max_temp: 100
+    temp_step: 5
+    precision: 1
+    availability_template: >
+      {{ is_state('binary_sensor.kettle_online', 'on') }}
+    current_temperature_template: >
+      {{ states('sensor.kettle_water_temperature') }}
+    target_temperature_template: >
+      {{ states('number.kettle_target_temperature') }}
+    hvac_mode_template: >
+      {% if is_state('switch.kettle_power', 'on') and states('number.kettle_target_temperature')|int(0) >= 90 %}
+        auto
+      {% elif is_state('switch.kettle_power', 'on')  %}
+        heat
+      {% else %}
+        off
+      {% endif %}
+    set_hvac_mode:
+      - service: notify.debug
+        data:
+          message: 'Set HVAC mode: {{ hvac_mode }}'
+
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: >
+                  {{ hvac_mode == 'auto' }}
+
+              - condition: numeric_state
+                entity_id: sensor.kettle_water_level
+                above: 9
+            sequence:
+              - service: climate.set_temperature
+                entity_id: climate.kettle
+                data:
+                  temperature: 100
+
+              - delay:
+                  milliseconds: 1300
+
+              - service: switch.turn_on
+                entity_id: switch.kettle_power
+
+          - conditions:
+              - condition: template
+                value_template: >
+                  {{ hvac_mode == 'heat' }}
+
+              - condition: numeric_state
+                entity_id: sensor.kettle_water_level
+                above: 9
+            sequence:
+              - delay:
+                  milliseconds: 1300
+
+              - service: switch.turn_on
+                entity_id: switch.kettle_power
+
+        default:
+          - service: switch.turn_off
+            entity_id: switch.kettle_power
+    set_temperature:
+      - service: notify.debug
+        data:
+          message: 'Set temperature: {{ temperature }}'
+
+      - service: number.set_value
+        entity_id: number.kettle_target_temperature
+        data:
+          value: '{{ temperature }}'
+
+automation:
+  - id: kettle_auto_turn_off
+    alias: 'Kettle: Auto turn off'
+    trigger:
+      - platform: state
+        entity_id: climate.kettle
+        to: heat
+        for:
+          minutes: 7
+    action:
+      - service: climate.turn_off
+        entity_id: climate.kettle
+
+  - id: kettle_boil_done_alert
+    alias: 'Kettle: Boil done alert'
+    trigger:
+      - platform: state
+        entity_id: climate.kettle
+        from: auto
+        to: 'off'
+    condition:
+      - condition: state
+        entity_id: input_select.home_mode
+        state: Day
+
+      - condition: numeric_state
+        entity_id: climate.kettle
+        attribute: current_temperature
+        above: 93
+    action:
+      - service: script.yandex_station_tts
+        data:
+          target:
+            - media_player.living_room_station
+            - media_player.workshop_station
+            - media_player.bedroom_station
+          type: alert
+          text: >
+            {{ states.sensor.alert_greeting.state }}
+            {{ [
+                'Чайник вскипел, приятного чаяпития',
+                'Время пить чай!',
+                'Пойдём пить чай',
+                'Давай заварим чай!',
+                'Горячая вода готова, заваривай лапшу',
+              ]|random }}
+
+  - id: kettle_heat_done_alert
+    alias: 'Kettle: Heat done alert'
+    trigger:
+      - platform: state
+        entity_id: climate.kettle
+        from: 'off'
+        to: heat
+    condition:
+      - condition: state
+        entity_id: input_select.home_mode
+        state: Day
+    action:
+      - wait_template: >
+          {{ state_attr('climate.kettle', 'current_temperature')|int|default(0) > (state_attr('climate.kettle', 'temperature')|int|default(0) - 4) }}
+        timeout:
+          minutes: 7
+        continue_on_timeout: false
+
+      - condition: state
+        entity_id: climate.kettle
+        state: heat
+
+      - service: script.yandex_station_tts
+        data:
+          target:
+            - media_player.living_room_station
+            - media_player.workshop_station
+            - media_player.bedroom_station
+          type: alert
+          text: >
+            {{ states.sensor.alert_greeting.state }}
+            {{ [
+                'Водичка нагрелась, приятного чаяпития',
+                'Время пить чай!',
+                'Пойдём пить чай',
+                'Давай заварим чай!'
+              ]|random }}

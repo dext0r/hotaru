@@ -1,0 +1,212 @@
+energy:
+config:
+camera:
+frontend:
+  extra_module_url:
+    - /hacsfiles/ha-yandex-icons/yandex-icons.js
+    - /hacsfiles/lovelace-card-mod/card-mod.js
+  themes: !include_dir_merge_named themes
+history:
+homeassistant:
+  packages:
+    ac_bedroom: !include devices/ac/bedroom.yaml
+    ac_workshop: !include devices/ac/workshop.yaml
+    alert_devices: !include alert/devices.yaml
+    alert_security: !include alert/security.yaml
+    alert_zigbee: !include alert/zigbee.yaml
+    alice_tests: !include devices/alice_tests.yaml
+    bedroom: !include home/bedroom.yaml
+    buttons_bathroom: !include devices/buttons/bathroom.yaml
+    buttons_bedroom: !include devices/buttons/bedroom.yaml
+    buttons_kitchen: !include devices/buttons/kitchen.yaml
+    buttons_living_room: !include devices/buttons/living_room.yaml
+    buttons_workshop: !include devices/buttons/workshop.yaml
+    climate: !include devices/climate.yaml
+    covers_bedroom: !include devices/covers/bedroom.yaml
+    covers_kitchen: !include devices/covers/kitchen.yaml
+    covers_living_room: !include devices/covers/living_room.yaml
+    covers_workshop: !include devices/covers/workshop.yaml
+    devices_ups: !include devices/ups.yaml
+    dishwasher: !include devices/dishwasher.yaml
+    fridge: !include devices/fridge.yaml
+    geo: !include integrations/geo.yaml
+    home_bathroom: !include home/bathroom.yaml
+    home_common: !include home/common.yaml
+    home_good_morning: !include home/good_morning.yaml
+    home_good_night: !include home/good_night.yaml
+    home_smoke: !include home/smoke.yaml
+    home_water: !include home/water.yaml
+    home_workshop: !include home/workshop.yaml
+    hotaru: !include devices/hotaru.yaml
+    humidifiers: !include devices/humidifiers.yaml
+    intake_fan_bedroom: !include devices/intake_fans/bedroom.yaml
+    intake_fan_living_room: !include devices/intake_fans/living_room.yaml
+    intake_fan_workshop: !include devices/intake_fans/workshop.yaml
+    intercom: !include devices/intercom.yaml
+    ios: !include integrations/ios.yaml
+    kettle: !include devices/kettle.yaml
+    kombucha: !include home/kombucha.yaml
+    lights_bathroom: !include devices/lights/bathroom.yaml
+    lights_bedroom: !include devices/lights/bedroom.yaml
+    lights_closet: !include devices/lights/closet.yaml
+    lights_hallway: !include devices/lights/hallway.yaml
+    lights_kitchen: !include devices/lights/kitchen.yaml
+    lights_living_room_tv: !include devices/lights/living_room_tv.yaml
+    lights_living_room: !include devices/lights/living_room.yaml
+    lights_path: !include devices/lights/path.yaml
+    lights_porch: !include devices/lights/porch.yaml
+    lights_wardrobe: !include devices/lights/wardrobe.yaml
+    lights_workshop: !include devices/lights/workshop.yaml
+    lights: !include devices/lights.yaml
+    locks: !include devices/locks.yaml
+    media_tv: !include devices/media/tv.yaml
+    media_yandex_station: !include devices/media/yandex_station.yaml
+    portable_heater: !include devices/portable_heater.yaml
+    scene_delivery: !include scenes/delivery.yaml
+    scene_departure: !include scenes/departure.yaml
+    scene_meal: !include scenes/meal.yaml
+    scene_movie: !include scenes/movie.yaml
+    scene_sleepy_mood: !include scenes/sleepy_mood.yaml
+    scene_wait_guests: !include scenes/wait_guests.yaml
+    scene_waking_up: !include scenes/waking_up.yaml
+    scene_welcome_home: !include scenes/welcome_home.yaml
+    scooter: !include devices/scooter.yaml
+    stove: !include devices/stove.yaml
+    tuya: !include integrations/tuya.yaml
+    washing_machine: !include devices/washing_machine.yaml
+    water_heater: !include devices/water_heater.yaml
+    weather: !include integrations/weather.yaml
+    workday: !include integrations/workday.yaml
+  customize: !include customize.yaml
+http:
+  server_port: 8123
+  use_x_forwarded_for: true
+  trusted_proxies: 172.30.33.0/24
+  ip_ban_enabled: true
+  login_attempts_threshold: 5
+notify:
+  - platform: telegram
+    name: dextor
+    chat_id: !secret telegram_chat_id
+
+  - platform: file
+    name: debug
+    filename: /config/debug.log
+    timestamp: true
+none:
+logbook:
+  exclude:
+    entity_globs:
+      - sensor.*_uptime
+logger:
+  default: warning
+  logs:
+    custom_components.dualmode_generic: debug
+    custom_components.yandex_dialogs: debug
+    custom_components.yandex_smart_home: debug
+    custom_components.yandex_station_intents: debug
+    custom_components.yandex_station: debug
+    homeassistant.components.telegram_bot: debug
+map:
+mobile_app:
+morph_numbers:
+my:
+recorder:
+  db_url: !secret recorder_db_url
+  purge_keep_days: 365
+  include:
+    domains:
+      - alert
+      - automation
+      - binary_sensor
+      - climate
+      - cover
+      - humidifier
+      - light
+      - lock
+      - media_player
+      - person
+      - sensor
+      - sun
+      - switch
+      - weather
+    entities:
+      - input_boolean.light_control
+      - input_boolean.climate_control
+      - input_select.home_mode
+      - select.intercom_mode
+      - switch.bedroom_moon_light_charger
+    entity_globs:
+      - input_boolean.*_airing_*
+      - input_boolean.scene_*
+      - input_select.*_status  # состояние стиралки/посудомойки
+  exclude:
+    entities:
+      - automation.yandex_station_busy
+      - binary_sensor.motion_anywhere
+      - binary_sensor.workshop_motion  # группа
+      - media_player.atv
+      - number.kettle_target_temperature
+      - sensor.alert_greeting
+      - sensor.chores
+      - sensor.kettle_water_temperature
+      - sensor.tv_has_signal
+      - sensor.tv_power
+      - sensor.tv_state
+      - sensor.tv_volume_level
+      - switch.kettle_power
+    entity_globs:
+      - '*.*_debug'
+      - '*.0x*'
+      - automation.*_airing_swap_modes
+      - automation.*_log
+      - automation.*_region_*
+      - automation.*_update
+      - automation.tv_*
+      - cover.*_motor  # сырые моторы для шаблонных штор с ограничением открытия
+      - binary_sensor.*_contact  # сырые герконы для шаблонов
+      - binary_sensor.*_any_occuppancy
+      - binary_sensor.*_full_occuppancy
+      - binary_sensor.*workday*
+      - binary_sensor.workday*
+      - light.workshop_main_*
+      - sensor.*_intake_fan_target_fan_speed
+      - sensor.*_intake_fan_target_temperature
+      - sensor.*_raw
+      - sensor.person_pronoun_*
+      - switch.*_light*
+panel_custom:
+  - name: config/automation
+    sidebar_title: Automations
+    sidebar_icon: mdi:home-automation
+    module_url: internal
+
+  - name: config/integrations
+    sidebar_title: Integrations
+    sidebar_icon: mdi:puzzle
+    module_url: internal
+
+  - name: developer-tools/yaml
+    sidebar_title: Server Controls
+    sidebar_icon: mdi:server
+    module_url: internal
+
+  - name: config/logs
+    sidebar_title: Logs
+    sidebar_icon: mdi:math-log
+    module_url: internal
+person:
+telegram_bot:
+  - platform: broadcast
+    parse_mode: html
+    api_key: !secret telegram_api_key
+    allowed_chat_ids:
+      - !secret telegram_chat_id
+stream:
+sun:
+system_health:
+system_log:
+  fire_event: true
+wake_on_lan:
+yandex_smart_home: !include yandex_smart_home.yaml
+yandex_station_intents: !include yandex_station_intents.yaml

@@ -1,0 +1,4 @@
+button:
+  - name: $device_name Restart
+    platform: restart
+    disabled_by_default: true

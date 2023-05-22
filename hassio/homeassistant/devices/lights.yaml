@@ -1,0 +1,146 @@
+input_boolean:
+  light_control:
+    name: 'Allow automatic light control'
+    initial: true
+    icon: mdi:home-lightbulb-outline
+
+template:
+  binary_sensor:
+    - name: Dim Light  #  необходимость "приглушённого света", приоритетнее чем просто ночной режим
+      unique_id: binary_sensor.dim_light
+      state: >
+        {{
+          is_state('input_boolean.scene_movie', 'on') or
+          is_state('input_boolean.scene_waking_up', 'on') or
+          is_state('input_boolean.scene_sleepy_mood', 'on')
+        }}
+
+automation:
+  - id: light_control_turn_on
+    alias: 'Light Control: Turn on'
+    trigger:
+      - platform: event
+        event_type: yandex_intent
+        event_data:
+          text: Включи управление светом
+
+      - platform: state
+        entity_id: input_select.home_mode
+        to: Day
+    condition:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'off'
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.light_control
+
+  - id: light_control_turn_off
+    alias: 'Light Control: Turn off'
+    trigger:
+      - platform: event
+        event_type: yandex_intent
+        event_data:
+          text: Не выключай свет
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.light_control
+
+group:
+  home_lights:
+    name: Home Lights  # весь свет внутри квартиры (кроме крыльца)
+    entities:
+      - group.bathroom_lights
+      - group.bedroom_lights
+      - group.kitchen_lights
+      - group.living_room_lights
+      - group.path_lights
+      - group.workshop_lights
+      - light.closet
+      - light.entrance
+      - light.hallway
+      - light.wardrobe
+
+  aux_lights:  # дополнительный свет, который в большинстве случаев всегда отключается
+    name: Aux Lights
+    entities:
+      - group.workshop_lights
+      - light.closet
+      - light.entrance
+      - light.hallway
+      - light.wardrobe
+
+script:
+  flash_light:
+    alias: Flash light
+    description: Мигает светильником через управление яркостью
+    mode: parallel
+    variables:
+      down_brightness: 40
+      up_brightness: 255
+      delay: 500
+      rgb_color: []
+    fields:
+      entity_id:
+        name: Entity
+        selector:
+          entity:
+      rgb_color:
+        name: RGB Color
+        selector:
+          color_rgb:
+      delay:
+        name: Delay (ms)
+        selector:
+          number:
+            min: 0
+            max: 1000
+            step: 1
+    sequence:
+      - repeat:
+          count: 4
+          sequence:
+            - if:
+                - condition: template
+                  value_template: >
+                    {{ is_state(entity_id, 'off') or (
+                        is_state(entity_id, 'on') and is_state_attr(entity_id, 'brightness', up_brightness)
+                        )
+                    }}
+              then:
+                - if:
+                    - condition: template
+                      value_template: '{{ rgb_color|length > 0 }}'
+                  then:
+                    - service: light.turn_on
+                      data:
+                        entity_id: '{{ entity_id }}'
+                        rgb_color: '{{ rgb_color }}'
+                        brightness: '{{ down_brightness }}'
+                        transition: '{{ delay|float / 1000 }}'
+                  else:
+                    - service: light.turn_on
+                      data:
+                        entity_id: '{{ entity_id }}'
+                        brightness: '{{ down_brightness }}'
+                        transition: '{{ delay|float / 1000 }}'
+              else:
+                - if:
+                    - condition: template
+                      value_template: '{{ rgb_color|length > 0 }}'
+                  then:
+                    - service: light.turn_on
+                      data:
+                        entity_id: '{{ entity_id }}'
+                        rgb_color: '{{ rgb_color }}'
+                        brightness: '{{ up_brightness }}'
+                        transition: '{{ delay|float / 1000 }}'
+                  else:
+                    - service: light.turn_on
+                      data:
+                        entity_id: '{{ entity_id }}'
+                        brightness: '{{ up_brightness }}'
+                        transition: '{{ delay|float / 1000 }}'
+
+            - delay:
+                milliseconds: '{{ delay }}'

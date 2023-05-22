@@ -1,0 +1,75 @@
+input_boolean:
+  scene_wait_guests:
+    name: 'Scene: Wait guests'
+    icon: mdi:account-star-outline
+    initial: false
+
+automation:
+  - id: scene_wait_guests_turn_on
+    alias: 'Scene Wait Guests: Turn on'
+    trigger:
+      - platform: event
+        event_type: yandex_intent
+        event_data:
+          text: Ждём гостей
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.scene_wait_guests
+
+      - service: script.yandex_station_tts
+        data:
+          target: >
+            {{ trigger.event.data.get('entity_id', 'last') }}
+          text: >
+            {{ [
+                'Хорошо, открою им двери когда придут',
+                'Поняла, с нетерпением ждем',
+                'Отлично, хоть какие-то новые лица'
+               ]|random
+            }}
+
+  - id: scene_wait_guests_turn_on_light
+    alias: 'Scene Wait Guests: Turn on lights'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.front_door
+        from: 'off'
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: input_boolean.scene_wait_guests
+        state: 'on'
+
+      - condition: state
+        entity_id: input_select.home_mode
+        state:
+          - Day
+          - Vacation
+
+      - condition: state
+        entity_id: light.entrance
+        state: 'off'
+    action:
+      - service: light.turn_on
+        entity_id: light.entrance
+
+  - id: scene_wait_guests_turn_off
+    alias: 'Scene Wait Guests: Turn off'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.front_door
+        from: 'off'
+        to: 'on'
+
+      - platform: state
+        entity_id: input_boolean.scene_wait_guests
+        to: 'on'
+        for:
+          hours: 1
+    condition:
+      - condition: state
+        entity_id: input_boolean.scene_wait_guests
+        state: 'on'
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.scene_wait_guests

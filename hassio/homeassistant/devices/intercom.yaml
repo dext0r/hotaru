@@ -1,0 +1,239 @@
+automation:
+  - id: intercom_night_ring
+    alias: 'Intercom: Night ring'
+    trigger:
+      - platform: state
+        entity_id: sensor.intercom_status
+        to: Incoming call
+    condition:
+      - condition: state
+        entity_id: input_select.home_mode
+        state: Night
+    action:
+      - service: notify.dextor
+        data:
+          message: 🐷 Кто-то ломится в дверь когда все спят. Может курьер?
+
+  - id: intercom_mode_update
+    alias: 'Intercom: Mode update'
+    mode: single
+    max_exceeded: silent
+    trigger:
+      - platform: time_pattern
+        minutes: /5
+
+      - platform: state
+        entity_id:
+          - input_select.home_mode
+          - input_boolean.scene_delivery
+          - input_boolean.scene_wait_guests
+          - person.dextor
+    action:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.scene_delivery
+                state: 'on'
+            sequence:
+              - service: select.select_option
+                entity_id: select.intercom_mode
+                data:
+                  option: Delivery
+
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.scene_wait_guests
+                state: 'on'
+            sequence:
+              - service: select.select_option
+                entity_id: select.intercom_mode
+                data:
+                  option: Guests
+
+          - conditions:
+              - condition: or
+                conditions:
+                  - condition: state
+                    entity_id: input_select.home_mode
+                    state:
+                      - Day
+                      - Vacation
+
+                  - condition: state
+                    entity_id: person.dextor
+                    state: Near Home
+            sequence:
+              - service: select.select_option
+                entity_id: select.intercom_mode
+                data:
+                  option: Always accept
+
+          - conditions:
+              - condition: state
+                entity_id: input_select.home_mode
+                state: Night
+
+              - condition: template
+                value_template: >
+                  {{ (now() - state_attr('automation.ios_intercom_mode_accept',
+                                         'last_triggered')|default(now() - timedelta(days=1), true)).seconds > 300 }}
+            sequence:
+              - service: select.select_option
+                entity_id: select.intercom_mode
+                data:
+                  option: Always reject
+
+  - id: intercom_door_opened
+    alias: 'Intercom: Door opened'
+    trigger:
+      - platform: state
+        entity_id: sensor.intercom_status
+        to: Door opened
+    condition:
+      - condition: state
+        entity_id: binary_sensor.anyone_home
+        state: 'on'
+
+      - condition: state
+        entity_id: input_select.home_mode
+        state:
+          - Day
+          - Vacation
+
+      - condition: template
+        value_template: >
+          {{ (now() - state_attr('automation.intercom_door_opened',
+                                 'last_triggered')|default(now() - timedelta(days=1), true)).seconds > 60 }}
+    action:
+      - service: media_player.media_pause
+        entity_id: group.yandex_stations
+
+      - if:
+          - condition: state
+            entity_id: media_player.atv
+            state: playing
+        then:
+          - service: media_player.media_pause
+            entity_id: media_player.atv
+
+      - service: scene.create
+        data:
+          scene_id: intercom_door_opened
+          snapshot_entities:
+            - light.bathroom_main
+            - light.kitchen_worktop
+            - light.living_room_backlight_1
+            - light.living_room_backlight_6
+            - light.living_room_tv
+            - light.workshop_main
+
+      - repeat:
+          for_each:
+            - light.bathroom_main
+            - light.kitchen_worktop
+            - light.living_room_backlight_1
+            - light.living_room_backlight_6
+            - light.living_room_tv
+            - light.workshop_main
+          sequence:
+            - service: script.turn_on
+              entity_id: script.flash_light
+              data:
+                variables:
+                  entity_id: '{{ repeat.item }}'
+                  rgb_color: >
+                    {% if repeat.item == 'light.living_room_backlight' %}
+                      [0, 86, 255]
+                    {% else %}
+                      []
+                    {% endif %}
+
+      - delay:
+          seconds: 2
+          milliseconds: 200
+
+      - service: scene.turn_on
+        entity_id: scene.intercom_door_opened
+        data:
+          transition: 0.6
+
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.scene_wait_guests
+                state: 'on'
+            sequence:
+              - service: script.yandex_station_tts
+                data:
+                  target: all
+                  type: alert
+                  text: >
+                    {{ [
+                        'Гости уже почти на пороге',
+                        'Впустила гостей в подъезд',
+                        'Гости вот-вот зайдут, беги встречать',
+                      ]|random
+                    }}
+
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.scene_delivery
+                state: 'on'
+            sequence:
+              - service: script.yandex_station_tts
+                data:
+                  target: all
+                  type: alert
+                  text: >
+                    {{ [
+                        'Курьер проник в подьезд, срочно надевай труселя и накрывай стол',
+                        'Курьер в лифте, наливай напитки!',
+                        'Курьер уже здесь, карауль дверь',
+                        'Как же вкусно пахнет! Курьер почти у двери!'
+                      ]|random
+                    }}
+
+          - conditions:
+              - condition: template
+                value_template: >
+                  {{ state_attr('input_datetime.scene_delivery_scheduled_from', 'timestamp') <= as_timestamp(now()) <= state_attr('input_datetime.scene_delivery_scheduled_to', 'timestamp') }}
+            sequence:
+              - service: script.yandex_station_tts
+                data:
+                  target: all
+                  type: alert
+                  text: >
+                    Открыла дверь курьеру для плановой доставки, готовься встречать
+                    {% if is_state('person.dextor', 'Near Home') %}
+                      , а может это и Тёмушка
+                    {% endif %}
+
+          - conditions:
+              - condition: state
+                entity_id: person.dextor
+                state: Near Home
+            sequence:
+              - service: script.yandex_station_tts
+                data:
+                  target: all
+                  type: alert
+                  text: >
+                    {{ [
+                        'Кажется Тёмушка поднимается, скорее беги встречать',
+                        'Тёмушка поднимается, он будет рад встретить тебя у двери',
+                        'Вот-вот зайдёт Тёмушка, и это очень здорово!',
+                      ]|random
+                    }}
+
+        default:
+          - service: script.yandex_station_tts
+            data:
+              target: all
+              type: alert
+              text: >
+                {{ [
+                    'Незванные гости на пороге, готовься!',
+                    'Скоро позвонят в дверь, самое время надеть труселя',
+                    'Я кого-то впустила в подъезд, скоро узнаем кого'
+                  ]|random
+                }}

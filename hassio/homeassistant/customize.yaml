@@ -1,0 +1,29 @@
+sensor.disk_temperature:
+  device_class: temperature
+
+binary_sensor.bathroom_washing_machine_water_leak:
+  alert_text: в ванне под стиралкой
+binary_sensor.bathroom_sink_water_leak:
+  alert_text: в ванне под раковиной
+binary_sensor.kitchen_water_leak:
+  alert_text: на кухне под раковиной
+binary_sensor.closet_water_leak:
+  alert_text: в кладовке
+binary_sensor.balcony_smoke:
+  alert_text: на балконе
+binary_sensor.kitchen_smoke:
+  alert_text: на кухне
+binary_sensor.hallway_smoke:
+  alert_text: в коридоре
+
+zone.home:
+  track_ios: false
+zone.dextor_work:
+  friendly_name: Work
+
+sensor.living_room_heater_power:
+  volatile: true
+switch.living_room_heater:
+  volatile: true
+sensor.living_room_heater_energy:
+  volatile: true

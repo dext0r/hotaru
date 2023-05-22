@@ -1,0 +1,232 @@
+automation:
+  - id: bedroom_main_light_turn_on
+    alias: 'Bedroom Main Light: Turn on'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.bedroom_motion
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+
+      - condition: state
+        entity_id: input_select.home_mode
+        state: Day
+
+      - condition: or
+        conditions:
+          - condition: numeric_state
+            entity_id: sensor.illuminance_north_side
+            below: 79
+
+          - condition: state
+            entity_id: cover.bedroom
+            state: 'off'
+
+      - condition: state
+        entity_id:
+          - light.bedroom_main
+          - binary_sensor.dim_light
+          - binary_sensor.bedroom_bed_any_occupancy
+        state: 'off'
+
+      # временный костыль для вороченья в кровати
+      - condition: template
+        value_template: >
+          {{ (now() - states.binary_sensor.bedroom_bed_any_occupancy.last_changed).seconds > 30 }}
+    action:
+      - service: light.turn_on
+        entity_id: light.bedroom_main
+
+  - id: bedroom_bed_light_turn_on_day
+    alias: 'Bedroom Bed Light: Turn on (Day)'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.bedroom_motion
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+
+      - condition: state
+        entity_id: input_select.home_mode
+        state: Day
+
+      - condition: or
+        conditions:
+          - condition: numeric_state
+            entity_id: sensor.illuminance_north_side
+            below: 200
+
+          - condition: state
+            entity_id: cover.bedroom
+            state: 'off'
+
+      - condition: state
+        entity_id:
+          - light.bedroom_bed
+          - input_boolean.scene_sleepy_mood
+          - binary_sensor.bedroom_bed_any_occupancy
+        state: 'off'
+
+      - condition: state
+        entity_id: binary_sensor.dim_light
+        state: 'on'
+    action:
+      - service: light.turn_on
+        entity_id:
+          - light.bedroom_bed
+          - light.bedroom_moon
+        data:
+          rgb_color: [10, 214, 255]
+          brightness_pct: 100
+
+  - id: bedroom_bed_light_turn_on_night
+    alias: 'Bedroom Bed Light: Turn on (night)'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.bedroom_motion
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+
+      - condition: state
+        entity_id: input_select.home_mode
+        state: Night
+
+      - condition: state
+        entity_id: light.bedroom_bed
+        state: 'off'
+    action:
+      - service: light.turn_on
+        entity_id: light.bedroom_bed
+        data:
+          color_name: red
+          brightness_pct: 30
+
+  - id: bedroom_bed_light_turn_off
+    alias: 'Bedroom Bed Light: Turn off'
+    trigger:
+      - platform: state
+        entity_id: light.bedroom_bed
+        to: 'on'
+        for:
+          hours: 1
+
+      - platform: state
+        entity_id: input_select.home_mode
+        from: Night
+
+      - id: motion
+        platform: state
+        entity_id: binary_sensor.bedroom_motion
+        from: 'on'
+        to: 'off'
+        for:
+          minutes: 3
+
+      - platform: state
+        entity_id: binary_sensor.bedroom_bed_full_occupancy
+        from: 'off'
+        to: 'on'
+        for:
+          minutes: 1
+    condition:
+      - condition: state
+        entity_id:
+          - input_boolean.light_control
+          - light.bedroom_bed
+        state: 'on'
+
+      - condition: state
+        entity_id: input_boolean.scene_sleepy_mood
+        state: 'off'
+    action:
+      - if:
+          - condition: trigger
+            id: motion
+
+          - condition: state
+            entity_id: input_select.home_mode
+            state:
+              - Day
+              - Vacation
+        then:
+          stop:
+
+      - service: light.turn_off
+        entity_id: light.bedroom_bed
+
+  - id: bedroom_light_turn_off
+    alias: 'Bedroom Light: Turn off'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.bedroom_any_occupancy
+        to: 'off'
+        for:
+          minutes: 1
+    condition:
+      - condition: state
+        entity_id:
+          - input_boolean.light_control
+          - group.bedroom_lights
+        state: 'on'
+
+      - condition: state
+        entity_id: input_boolean.scene_sleepy_mood
+        state: 'off'
+    action:
+      - service: light.turn_off
+        entity_id: group.bedroom_lights
+
+  - id: bedroom_moon_light_charger_turn_on
+    alias: 'Bedroom Moon Light Charger: Turn on'
+    trigger:
+      - platform: time
+        at: '18:00'
+    action:
+      - service: switch.turn_on
+        entity_id: switch.bedroom_moon_light_charger
+
+  - id: bedroom_moon_light_charger_turn_off
+    alias: 'Bedroom Moon Light Charger: Turn off'
+    trigger:
+      - platform: state
+        entity_id: switch.bedroom_moon_light_charger
+        to: 'on'
+        for:
+          hours: 1
+          minutes: 30
+    action:
+      - service: switch.turn_off
+        entity_id: switch.bedroom_moon_light_charger
+
+light:
+  - platform: template
+    lights:
+      bedroom_main:
+        unique_id: bedroom_main_light
+        friendly_name: Bedroom Main Light
+        value_template: >
+          {{ is_state('switch.bedroom_light_switch_left', 'on') }}
+        availability_template: >
+          {{ states('switch.bedroom_light_switch_left') in ['on', 'off'] }}
+        icon_template: bha:ceiling-lamp
+        turn_on:
+          - service: switch.turn_on
+            entity_id: switch.bedroom_light_switch_left
+        turn_off:
+          - service: switch.turn_off
+            entity_id: switch.bedroom_light_switch_left
+
+group:
+  bedroom_lights:
+    name: Bedroom Lights
+    entities:
+      - light.bedroom_main
+      - light.bedroom_bed
+      - light.bedroom_moon

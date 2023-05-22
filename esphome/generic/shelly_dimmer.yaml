@@ -1,0 +1,99 @@
+packages:
+  base: !include ../common/base.yaml
+
+esphome:
+  name: shelly-dimmer
+  model: Shelly Dimmer 2
+
+esp8266:
+  board: esp01_1m
+  restore_from_flash: true
+
+logger:
+  baud_rate: 0
+  logs:
+    shelly_dimmer: INFO
+
+uart:
+  tx_pin: 1
+  rx_pin: 3
+  baud_rate: 115200
+
+binary_sensor:
+  - id: sw1
+    platform: gpio
+    internal: true
+    pin:
+      number: 14
+      mode:
+        input: true
+    filters:
+      - delayed_on_off: 50ms
+    on_press:
+      - if:
+          condition:
+            light.is_on: light_w
+          then:
+            light.turn_off: light_w
+          else:
+            light.turn_on:
+              id: light_w
+              brightness: 100%
+
+  - id: sw2
+    platform: gpio
+    internal: true
+    pin:
+      number: 12
+      mode:
+        input: true
+    filters:
+      - delayed_on_off: 50ms
+
+sensor:
+  - platform: ntc
+    name: $device_name Temperature
+    internal: true
+    device_class: temperature
+    sensor: temperature_resistance_reading
+    accuracy_decimals: 1
+    calibration:
+      b_constant: 3350
+      reference_resistance: 10kOhm
+      reference_temperature: 298.15K
+  #   on_value_range:
+  #     - above: ${max_temp}
+  #       then:
+  #         - logger.log: "Switch turned off because temperature exceeded ${max_temp}°C"
+  #         - homeassistant.service:
+  #             service: persistent_notification.create
+  #             data:
+  #               title: Message from ${device_name}
+  #             data_template:
+  #               message: Switch turned off because temperature exceeded ${max_temp}°C
+
+  - id: temperature_resistance_reading
+    platform: resistance
+    internal: true
+    sensor: temperature_analog_reading
+    configuration: DOWNSTREAM
+    resistor: 32kOhm
+
+  - id: temperature_analog_reading
+    platform: adc
+    internal: true
+    pin: A0
+    update_interval: 30s
+
+light:
+  - id: light_w
+    platform: shelly_dimmer
+    name: $device_name
+    firmware:
+      version: '51.5'
+      update: true
+    leading_edge: false
+    min_brightness: 200
+    max_brightness: 650
+    gamma_correct: 0.7
+    default_transition_length: 500ms

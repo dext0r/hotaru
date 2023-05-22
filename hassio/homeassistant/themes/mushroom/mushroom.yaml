@@ -1,0 +1,9 @@
+Mushroom:
+    mush-control-height: 36px
+    mush-icon-size: 40px
+    mush-card-primary-line-height: 20px
+    mush-card-primary-font-weight: 500
+    mush-card-secondary-font-weight: 500
+    modes:
+        light: {}
+        dark: {}

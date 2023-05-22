@@ -1,0 +1,299 @@
+automation:
+  - id: automations_turn_off
+    alias: 'Automations: Turn off'
+    trigger:
+      platform: event
+      event_type: yandex_intent
+      event_data:
+        text: Выключи всю автоматику
+    action:
+      - service: automation.turn_off
+        entity_id: all
+        data:
+          stop_actions: false
+
+      - service: automation.turn_on
+        entity_id: automation.automations_turn_on
+
+      - service: script.yandex_station_tts
+        data:
+          target: >
+            {{ trigger.event.data.get('entity_id', 'last') }}
+          text: 'Готово! Теперь дом снова глупый. Что бы включить все назад, скажи: Алиса, включи всю автоматику'
+
+  - id: automations_turn_on
+    alias: 'Automations: Turn on'
+    trigger:
+      platform: event
+      event_type: yandex_intent
+      event_data:
+        text: Включи всю автоматику
+    action:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: automation.automations_turn_on
+                state: 'on'
+            sequence:
+              - service: script.yandex_station_tts
+                data:
+                  target: >
+                    {{ trigger.event.data.get('entity_id', 'last') }}
+                  text: Нет необходимости, всё уже работает
+        default:
+          - service: automation.turn_on
+            entity_id: all
+
+          - service: script.yandex_station_tts
+            data:
+              target: >
+                {{ trigger.event.data.get('entity_id', 'last') }}
+              text: Включила, не делай больше так, мне страшно и обидно
+
+  - id: everybody_left_home
+    alias: Everybody Left Home
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.anyone_home
+        from: 'on'
+        to: 'off'
+    action:
+      - service: input_datetime.set_datetime
+        entity_id: input_datetime.anyone_home_last_seen
+        data:
+          datetime: '{{ now().strftime("%Y-%m-%d %H:%M:%S") }}'
+
+  - id: anyone_home_last_seen_update
+    alias: 'Anyone Home Last Seen: Update'
+    trigger:
+      - platform: time_pattern
+        minutes: /4
+    condition:
+      - condition: state
+        entity_id: binary_sensor.anyone_home
+        state: 'on'
+    action:
+      - service: input_datetime.set_datetime
+        entity_id: input_datetime.anyone_home_last_seen
+        data:
+          datetime: '{{ now().strftime("%Y-%m-%d %H:%M:%S") }}'
+
+  - id: home_mode_day_auto_turn_on
+    alias: 'Home Mode Day: Auto turn on'
+    trigger:
+      - platform: time
+        at: '13:00'
+    condition:
+      - condition: state
+        entity_id: binary_sensor.anyone_home
+        state: 'on'
+
+      - condition: not
+        conditions:
+          - condition: state
+            entity_id: input_select.home_mode
+            state: Day
+    action:
+      - service: input_select.select_option
+        entity_id: input_select.home_mode
+        data:
+          option: Day
+
+  - id: home_mode_night_auto_turn_on
+    alias: 'Home Mode Night: Auto turn on'
+    trigger:
+      - platform: time
+        at: '01:55'
+    condition:
+      - condition: state
+        entity_id: binary_sensor.anyone_home
+        state: 'on'
+
+      - condition: state
+        entity_id: binary_sensor.motion_anywhere
+        state: 'off'
+        for:
+          hours: 1
+
+      - condition: not
+        conditions:
+          - condition: state
+            entity_id: input_select.home_mode
+            state: Night
+    action:
+      - service: input_select.select_option
+        entity_id: input_select.home_mode
+        data:
+          option: Night
+
+  - id: home_mode_manual_day
+    alias: 'Home Mode: Manual day'
+    trigger:
+      - platform: event
+        event_type: yandex_intent
+        event_data:
+          text: Сейчас день
+    action:
+      - if:
+          - condition: state
+            entity_id: input_select.home_mode
+            state: Day
+        then:
+          - service: script.yandex_station_tts
+            data:
+              target: >
+                {{ trigger.event.data.get('entity_id', 'last') }}
+              text: Действительно, сейчас день
+        else:
+          - service: input_select.select_option
+            entity_id: input_select.home_mode
+            data:
+              option: Day
+
+          - service: script.yandex_station_tts
+            data:
+              target: >
+                {{ trigger.event.data.get('entity_id', 'last') }}
+              text: Переключила дом в дневной режим
+
+  - id: home_mode_to_vacation_alert
+    alias: 'Home Mode: To vacation alert'
+    trigger:
+      platform: state
+      entity_id: input_select.home_mode
+      to: Vacation
+    action:
+      - service: notify.dextor
+        data:
+          message: 🌴 Дом перевёден в режим отпуска
+
+  - id: home_mode_from_vacation_alert
+    alias: 'Home Mode: From vacation alert'
+    trigger:
+      platform: state
+      entity_id: input_select.home_mode
+      from: Vacation
+    action:
+      - service: notify.dextor
+        data:
+          message: 😟 Дом возвращён из режима отпуска
+
+input_select:
+  home_mode:
+    name: Home Mode
+    options:
+      - Day
+      - Night
+      - Vacation
+
+input_datetime:
+  anyone_home_last_seen:
+    name: 'Anyone Home: Last Seen'
+    has_time: true
+    has_date: true
+    icon: mdi:exit-to-app
+
+template:
+  - binary_sensor:
+      - name: Anyone Home
+        state: >
+          {{ states('zone.home')|int(0) > 0 }}
+        device_class: presence
+
+  - sensor:
+      - name: Alert Greeting
+        icon: mdi:account-voice
+        state: >
+          {%- if is_state('person.layma', 'home') and not is_state('person.dextor', 'home') -%}
+            Мариночка,
+          {%- endif -%}
+
+      - name: Person Pronoun Gen
+        icon: mdi:account-voice
+        state: >
+          {%- if states.person | selectattr('state', 'eq', 'home') | list | count < 2 -%}
+            тебя
+          {%- else -%}
+            вас
+          {%- endif -%}
+
+      - name: Person Pronoun Nom
+        icon: mdi:account-voice
+        state: >
+          {%- if states.person | selectattr('state', 'eq', 'home') | list | count < 2 -%}
+            ты
+          {%- else -%}
+            вы
+          {%- endif -%}
+
+      - name: Chores
+        icon: mdi:broom
+        state: >
+          {% set data = namespace(chores=[]) %}
+          {% if is_state('input_select.dishwasher_status', 'Dirty') %}
+            {% set data.chores = data.chores + ['включить посудомойку'] %}
+          {% endif %}
+
+          {% if is_state('input_boolean.living_room_humidifier_on_duty', 'on') and
+                states('sensor.living_room_humidifier_water_level')|int(100) <= 50 %}
+            {% set data.chores = data.chores + ['долить воды в гостиной'] %}
+          {% endif %}
+
+          {% if is_state('input_boolean.bedroom_humidifier_on_duty', 'on') and
+                states('sensor.bedroom_humidifier_water_level')|int(100) <= 50 %}
+            {% set data.chores = data.chores + ['долить воды в спальне'] %}
+          {% endif %}
+
+          {% if states('sensor.kettle_water_level')|int(100) <= 20 %}
+            {% set data.chores = data.chores + ['долить воды в чайник'] %}
+          {% endif %}
+
+          {% if is_state('binary_sensor.front_door', 'on') %}
+            {% set data.chores = data.chores + ['закрыть входную дверь, а то я не смогла'] %}
+          {% endif %}
+
+          {% if is_state('binary_sensor.bedroom_window', 'on') %}
+            {% set data.chores = data.chores + ['закрыть окно в спальне'] %}
+          {% endif %}
+
+          {% if is_state('binary_sensor.workshop_window', 'on') %}
+            {% set data.chores = data.chores + ['закрыть окно в мастерской'] %}
+          {% endif %}
+
+          {% if is_state('binary_sensor.living_room_balcony_door', 'on') %}
+            {% set data.chores = data.chores + ['закрыть балкон в гостиной'] %}
+          {% endif %}
+
+          {{- data.chores|join(', ') -}}
+
+      - name: Input Voltage
+        device_class: voltage
+        unit_of_measurement: V
+        state: >
+          {{ states('sensor.ups_input_voltage')|float(0) }}
+        availability: >
+          {{ states('sensor.ups_input_voltage') not in ['unavailable', 'unknown'] }}
+
+      - name: Energy Tariff
+        unit_of_measurement: RUB/kWh
+        state: '3.37'
+
+  - trigger:
+      - platform: time_pattern
+        seconds: /5
+    binary_sensor:
+      - name: Motion Anywhere
+        state: >
+          {% set ns = namespace(break = false) %}
+          {%- for state in states.binary_sensor if ns.break == false and
+                                                  state.state == 'on' and
+                                                  state.attributes.get('device_class') == 'motion' and
+                                                  state.entity_id not in (
+                                                    'binary_sensor.motion_anywhere',
+                                                    'binary_sensor.wardrobe_motion',
+                                                    'binary_sensor.porch_motion'
+                                                  ) -%}
+            {%- set ns.break = true -%}
+            true
+          {%- endfor -%}
+        device_class: motion

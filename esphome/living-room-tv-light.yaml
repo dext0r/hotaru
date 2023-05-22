@@ -1,0 +1,28 @@
+packages:
+  base: !include common/base.yaml
+
+substitutions:
+  device_name: Living Room TV Light
+
+esphome:
+  name: living-room-tv-light
+  model: MagicHome LED Dimmer
+  name_add_mac_suffix: false
+
+esp8266:
+  board: esp01_1m
+  restore_from_flash: true
+
+light:
+  - id: light_w
+    platform: monochromatic
+    name: $device_name
+    icon: mdi:television-ambient-light
+    output: pwm
+    default_transition_length: 2s
+    gamma_correct: 1.7
+
+output:
+  - id: pwm
+    platform: esp8266_pwm
+    pin: 12

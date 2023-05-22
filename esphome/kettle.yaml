@@ -1,0 +1,108 @@
+packages:
+  base: !include common/base.yaml
+  time: !include common/time.yaml
+  uptime: !include common/uptime.yaml
+
+external_components:
+  - source: lib/r4s
+
+substitutions:
+  device_name: Kettle
+
+esphome:
+  name: kettle
+  model: REDMOND SkyKettle G240S / ESP32 / HX711
+  name_add_mac_suffix: false
+
+esp32:
+  board: esp32dev
+
+wifi:
+  ssid: !secret ssid_kitchen
+
+# logger:
+  # logs:
+    # SkyKettle: ERROR
+
+ready4sky:
+  scan_parameters:
+    interval: 200ms
+    window: 15ms
+    duration: 500s
+    monitor: false
+    active: false
+
+skykettle:
+  - mac_address: CA:6A:57:15:12:50
+    model: RK-G240S
+    cup_volume: 250
+    cup_correction: 1.0
+    informing:
+      temperature:
+        name: $device_name Water Temperature
+      energy:
+        name: $device_name Energy
+      work_cycles:
+        name: $device_name Work Cycles
+      status_indicator:
+        id: status
+        name: $device_name Status
+        disabled_by_default: true
+    controlling:
+      power:
+        name: $device_name Power
+      target_temperature:
+        name: $device_name Target Temperature
+      state_led:
+        name: $device_name Status LED
+        disabled_by_default: true
+      background_light:
+        name: $device_name Light
+      beeper:
+        name: $device_name Beeper
+        disabled_by_default: true
+
+binary_sensor:
+  - platform: template
+    name: $device_name Online
+    device_class: connectivity
+    lambda: |-
+      return id(status).state != "Off Line";
+
+sensor:
+  - id: water_level_ml
+    platform: hx711
+    name: $device_name Water Level mL
+    unit_of_measurement: 'mL'
+    icon: mdi:water
+    update_interval: 7s
+    dout_pin: 23
+    clk_pin: 22
+    gain: 64
+    on_value:
+      lambda: id(water_level_percent).publish_state(x);
+    filters:
+      - calibrate_linear:
+          - -52896 -> 0
+          - -39184 -> 250
+          - -23855 -> 500
+          - 13212 -> 1000
+          - 50043 -> 1500
+          - 72543 -> 1700
+      - lambda: return max(int(x / 100) * 100, 0);
+      - max:
+          window_size: 3
+          send_every: 3
+          send_first_at: 2
+
+  - id: water_level_percent
+    platform: template
+    name: $device_name Water Level
+    unit_of_measurement: '%'
+    accuracy_decimals: 0
+    icon: mdi:water-percent
+    filters:
+      - calibrate_linear:
+          - 0 -> 0
+          - 1700 -> 100
+      - lambda: return min(int(x / 10) * 10, 100);

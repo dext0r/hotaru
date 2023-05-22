@@ -1,0 +1,244 @@
+input_number:
+  yandex_station_alert_volume:
+    name: 'Yandex Station: Alert volume'
+    min: 0
+    max: 1
+    step: 0.1
+    icon: mdi:volume-high
+
+  yandex_station_attention_volume:
+    name: 'Yandex Station: Attention volume'
+    min: 0
+    max: 1
+    step: 0.1
+    icon: mdi:volume-high
+
+input_text:
+  yandex_station_last:
+    name: Last active Yandex Station
+    initial: media_player.living_room_station
+
+automation:
+  - id: yandex_station_busy
+    alias: 'Yandex Station: Busy'
+    mode: single
+    max_exceeded: silent
+    trigger:
+      platform: state
+      entity_id:
+        - media_player.living_room_station
+        - media_player.workshop_station
+        - media_player.bedroom_station
+        - media_player.kitchen_station
+      attribute: alice_state
+      from: LISTENING
+      to: BUSY
+    action:
+      - service: input_text.set_value
+        entity_id: input_text.yandex_station_last
+        data:
+          value: '{{ trigger.entity_id }}'
+
+  - id: yandex_station_volume_update
+    alias: 'Yandex Station: Volume update'
+    trigger:
+      - platform: state
+        entity_id: input_select.home_mode
+        to:
+          - Day
+          - Night
+    action:
+      - if:
+          - condition: template
+            value_template: >
+              {{ trigger.to_state.state == 'Day' }}
+        then:
+          - service: input_number.set_value
+            entity_id: input_number.yandex_station_alert_volume
+            data:
+              value: 0.7
+
+          - service: input_number.set_value
+            entity_id: input_number.yandex_station_attention_volume
+            data:
+              value: 0.5
+
+      - if:
+          - condition: template
+            value_template: >
+              {{ trigger.to_state.state == 'Night' }}
+        then:
+          - service: input_number.set_value
+            entity_id: input_number.yandex_station_alert_volume
+            data:
+              value: 0.5
+
+          - service: input_number.set_value
+            entity_id: input_number.yandex_station_attention_volume
+            data:
+              value: 0.4
+
+script:
+  yandex_station_tts:
+    alias: 'Yandex Station: TTS'
+    variables:
+      _target: >
+        {%- if target == 'all' -%}
+          [
+            'media_player.living_room_station',
+            'media_player.workshop_station',
+            'media_player.bedroom_station',
+            'media_player.kitchen_station'
+          ]
+        {%- elif target == 'last' -%}
+          {{ states('input_text.yandex_station_last') }}
+        {%- else -%}
+          {{ target|default('media_player.living_room_station') }}
+        {%- endif -%}
+
+      _text: >
+        {%- if type == 'attention' -%}
+          <speaker audio="alice-sounds-game-ping-1.opus">
+        {%- elif type == 'alert' -%}
+          <speaker audio="alice-sounds-game-powerup-2.opus">
+        {%- endif -%}
+
+        {{ text }}
+
+      _volume_level: >
+        {%- if volume_level is defined -%}
+          {{ volume_level }}
+        {%- else -%}
+          {%- if type == 'attention' -%}
+            {{ states("input_number.yandex_station_attention_volume")|float }}
+          {%- elif type == 'alert' -%}
+            {{ states("input_number.yandex_station_alert_volume")|float }}
+          {%- elif type == 'announce' -%}
+            0.9
+          {%- endif -%}
+        {%- endif -%}
+    fields:
+      target:
+        name: Target
+        selector:
+          entity:
+            multiple: true
+      text:
+        name: Text
+        selector:
+          text:
+      # attention - ненавязчивые дзыньки
+      # alert - привлечь внимание
+      # announce - всегда очень громко
+      type:
+        name: Type
+        example: attention
+        selector:
+          select:
+            options:
+              - attention
+              - alert
+              - announce
+      volume_level:
+        name: Volume level
+        selector:
+          number:
+            min: 0
+            max: 1
+            step: 0.1
+    sequence:
+      - if:
+          - condition: template
+            value_template: >
+              {{ _target is not string }}
+        then:
+          - repeat:
+              for_each: '{{ _target }}'
+              sequence:
+                - if:
+                    - condition: template
+                      value_template: >
+                        {{ states[repeat.item] and not is_state(repeat.item, 'unavailable') }}
+                  then:
+                    - service: script.turn_on
+                      entity_id: script.yandex_station_play_dialog
+                      data:
+                        variables:
+                          entity_id: '{{ repeat.item }}'
+                          text: '{{ _text }}'
+                          volume_level: '{{ _volume_level }}'
+        else:
+          service: script.yandex_station_play_dialog
+          data:
+            entity_id: '{{ _target }}'
+            text: '{{ _text }}'
+            volume_level: '{{ _volume_level }}'
+
+  yandex_station_play_dialog:
+    alias: 'Yandex Station: Play dialog'
+    mode: parallel
+    sequence:
+      - service: media_player.play_media
+        data:
+          entity_id: '{{ entity_id }}'
+          media_content_id: '{{ text }}'
+          media_content_type: dialog
+          extra:
+            volume_level: '{{ volume_level or None }}'
+
+      - wait_template: >
+          {{ state_attr(entity_id, 'alice_state') == 'LISTENING' }}
+        timeout:
+          seconds: 45
+
+      - condition: template
+        value_template: >
+          {{ is_state(entity_id, 'paused') or is_state(entity_id, 'idle') }}
+
+      - service: script.turn_on
+        entity_id: script.yandex_station_command
+        data:
+          variables:
+            target: '{{ entity_id }}'
+            command: стоп
+
+      - wait_template: >
+          {{ state_attr(entity_id, 'alice_state') == 'IDLE' }}
+        timeout:
+          seconds: 5
+
+  yandex_station_command:
+    alias: 'Yandex Station: Command'
+    mode: parallel
+    variables:
+      _target: >
+        {%- if target == 'last' -%}
+          {{ states('input_text.yandex_station_last') }}
+        {%- else -%}
+          {{ target|default('media_player.living_room_station') }}
+        {%- endif -%}
+    fields:
+      target:
+        name: Target
+        selector:
+          entity:
+      command:
+        name: Command
+        example: Погода в Кирове
+        selector:
+          text:
+    sequence:
+      - service: media_player.play_media
+        data:
+          entity_id: '{{ target }}'
+          media_content_id: '{{ command }}'
+          media_content_type: command
+
+group:
+  yandex_stations:
+    name: Yandex Stations
+    entities:
+      - media_player.bedroom_station
+      - media_player.kitchen_station
+      - media_player.living_room_station
+      - media_player.workshop_station

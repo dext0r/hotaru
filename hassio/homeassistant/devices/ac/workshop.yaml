@@ -1,0 +1,78 @@
+automation:
+  - id: workshop_ac_turn_off
+    alias: 'Workshop AC: Turn off'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.anyone_home
+        from: 'on'
+        to: 'off'
+        for:
+          minutes: 20
+
+      - platform: state
+        entity_id: input_boolean.scene_sleepy_mood
+        from: 'off'
+        to: 'on'
+
+      - platform: state
+        entity_id: input_select.home_mode
+        from: Day
+
+      - platform: state
+        entity_id: climate.workshop_ac
+        to:
+          - heat_cool
+          - cool
+          - heat
+          - dry
+        for:
+          hours: 6
+    condition:
+      - condition: state
+        entity_id: climate.workshop_ac
+        state:
+          - heat_cool
+          - cool
+          - heat
+          - dry
+    action:
+      - service: climate.turn_off
+        entity_id: climate.workshop_ac
+
+template:
+  - trigger:
+      - platform: time_pattern
+        seconds: /5
+    sensor:
+      - name: Workshop AC Power
+        unique_id: sensor.workshop_ac_power
+        state: >
+          {% set power = states('sensor.cb_power_supply_power')|int(0) %}
+          {% set power = power - states('sensor.washing_machine_power')|int(0) %}
+          {% set power = power - states('sensor.water_heater_power')|int(0) %}
+          {% set power = power - states('sensor.bedroom_intake_fan_heater_power')|int(0) %}
+          {% set power = power - states('sensor.workshop_intake_fan_heater_power')|int(0) %}
+
+          {% if states('climate.bedroom_ac') not in ['off', 'unavailable', 'unknown'] %}
+            {% set power = power / 2 %}
+          {% endif %}
+
+          {% if states('climate.workshop_ac') in ['off', 'unavailable', 'unknown'] %}
+            {% set power = 0 %}
+          {% endif %}
+
+          {{ [0, power]|max }}
+        availability: >
+          {{ states('climate.workshop_ac') not in ['unknown', 'unavailable'] }}
+        state_class: measurement
+        unit_of_measurement: W
+        device_class: power
+
+sensor:
+  - platform: integration
+    unique_id: sensor.workshop_ac_energy
+    name: Workshop AC Energy
+    source: sensor.workshop_ac_power
+    unit_prefix: k
+    round: 2
+    method: left

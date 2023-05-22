@@ -1,0 +1,84 @@
+input_boolean:
+  scene_meal:
+    name: 'Scene: Meal'
+    icon: mdi:food-variant
+    initial: false
+
+automation:
+  - id: scene_meal_turn_on
+    alias: 'Scene Meal: Turn on'
+    trigger:
+      - platform: event
+        event_type: yandex_intent
+        event_data:
+          text: Время ужинать
+    action:
+      - service: light.turn_on
+        entity_id: light.living_room_tv
+        data:
+          brightness_pct: 100
+
+      - service: light.turn_on
+        entity_id: light.living_room_backlight
+        data:
+          brightness_pct: 100
+          kelvin: 4500
+
+      - service: light.turn_off
+        entity_id:
+          - group.aux_lights
+          - group.bedroom_lights
+          - light.living_room_main
+
+      - service: script.yandex_station_tts
+        data:
+          target: all
+          text: >
+            {{ [
+                'Приятного аппетита',
+                'Кушайте много, кушайте вкусно',
+                'Вкуснятина! Давай скорее кушать',
+              ]|random
+            }}
+
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.scene_meal
+
+      - if:
+          - condition: state
+            entity_id: media_player.tv
+            state: 'off'
+        then:
+          - service: media_player.turn_on
+            entity_id:
+              - media_player.tv
+              - media_player.atv
+
+      # эксперимент провалился :(
+      # - if:
+      #     - condition: numeric_state
+      #       entity_id: sensor.illuminance_south_side
+      #       above: 6000
+      #   then:
+      #     - service: cover.close_cover
+      #       entity_id: cover.living_room
+
+  - id: scene_meal_turn_off
+    alias: 'Scene Meal: Turn off'
+    trigger:
+      - platform: state
+        entity_id: media_player.tv
+        to: 'off'
+
+      - platform: state
+        entity_id: input_boolean.scene_meal
+        to: 'on'
+        for:
+          minutes: 45
+    condition:
+      - condition: state
+        entity_id: input_boolean.scene_meal
+        state: 'on'
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.scene_meal

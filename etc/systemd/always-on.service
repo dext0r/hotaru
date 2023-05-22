@@ -1,0 +1,10 @@
+# http://www.macfreek.nl/memory/Reboot_Mac_running_Linux_after_power_failure
+[Unit]
+Description=Reboot after power failure
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/setpci -s 00:1f.0 0xa4.b=0
+
+[Install]
+WantedBy=sysinit.target

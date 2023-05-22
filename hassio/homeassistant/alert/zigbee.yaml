@@ -1,0 +1,12 @@
+automation:
+  - id: zigbee_device_leave
+    alias: 'Zigbee: Device leave'
+    trigger:
+      platform: mqtt
+      topic: zigbee2mqtt/bridge/event
+      payload: device_leave
+      value_template: '{{ value_json.type }}'
+    action:
+      - service: notify.dextor
+        data:
+          message: ✂️ Какое-то устройство вывалилось из сети

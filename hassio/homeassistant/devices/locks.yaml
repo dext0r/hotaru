@@ -1,0 +1,226 @@
+automation:
+  - id: front_door_locked
+    alias: 'Front Door: Locked'
+    mode: restart
+    trigger:
+      - platform: state
+        entity_id: lock.front_door
+        from: unlocked
+        to: locked
+    action:
+      - service: script.turn_on
+        entity_id: script.porch_lock_light_flash
+
+      - wait_for_trigger:
+          - platform: state
+            entity_id: binary_sensor.anyone_home
+            to: 'off'
+        timeout:
+          minutes: 7
+        continue_on_timeout: false
+
+      - service: light.turn_off
+        entity_id: group.home_lights
+        continue_on_error: true
+
+      - service: climate.turn_off
+        entity_id:
+          - climate.bedroom_ac
+          - climate.workshop_ac
+        continue_on_error: true
+
+      - service: media_player.turn_off
+        entity_id:
+          - media_player.tv
+          - media_player.bedroom_station
+          - media_player.living_room_station
+          - media_player.workshop_station
+          - media_player.kitchen_station
+        continue_on_error: true
+
+  - id: front_door_unlocked
+    alias: 'Front Door: Unlocked'
+    trigger:
+      - platform: state
+        entity_id: lock.front_door
+        from: locked
+        to: unlocked
+    action:
+      - service: timer.start
+        entity_id: timer.front_door_unlocked
+
+  - id: front_door_unlock
+    alias: 'Front Door: Unlock'
+    max_exceeded: silent
+    trigger:
+      - platform: state
+        entity_id: sensor.intercom_status
+        to: Door opened
+    condition:
+      - condition: state
+        entity_id: lock.front_door
+        state: locked
+
+      - condition: state
+        entity_id: input_boolean.scene_wait_guests
+        state: 'on'
+    action:
+      - service: lock.unlock
+        entity_id: lock.front_door
+
+  - id: porch_door_unlock
+    alias: 'Porch Door: Unlock'
+    mode: restart
+    trigger:
+
+      - platform: state
+        entity_id: sensor.intercom_status
+        to: Door opened
+    condition:
+      - condition: state
+        entity_id: lock.porch_door
+        state: locked
+
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id:
+              - person.dextor
+              - person.layma
+            state: Near Home
+            match: any
+
+          - condition: state
+            entity_id: input_boolean.scene_wait_guests
+            state: 'on'
+    action:
+      - service: lock.unlock
+        entity_id: lock.porch_door
+
+      - delay:
+          minutes: 7
+
+      - if:
+          - condition: state
+            entity_id: lock.porch_door
+            state: unlocked
+
+          - condition: state
+            entity_id: binary_sensor.porch_door
+            state: 'off'
+        then:
+          - service: lock.lock
+            entity_id: lock.porch_door
+
+lock:
+  - platform: template
+    unique_id: lock.front_door_vacation
+    name: Front Door Vacation
+    value_template: >
+      {{ is_state('binary_sensor.front_door_vacation_lock_contact', 'off') }}
+    availability_template: >
+      {{ states('binary_sensor.front_door_vacation_lock_contact') in ['on', 'off'] }}
+    lock:
+      service: none.none
+    unlock:
+      service: none.none
+
+  - platform: template
+    unique_id: lock.front_door
+    name: Front Door
+    value_template: >
+      {{ is_state('binary_sensor.front_door_lock_contact', 'off') }}
+    availability_template: >
+      {{ states('binary_sensor.front_door_lock_contact') in ['on', 'off'] }}
+    lock:
+      service: script.front_door_lock
+    unlock:
+      service: script.front_door_unlock
+
+script:
+  porch_lock_light_flash:
+    alias: 'Porch Lock Light: Flash'
+    max_exceeded: silent
+    sequence:
+      - service: light.turn_on
+        entity_id: light.porch_lock_light
+        data:
+          brightness_pct: 100
+          rgbw_color: [128, 0, 255, 0]
+          transition: 1
+
+      - delay:
+          seconds: 1
+
+      - service: light.turn_on
+        entity_id: light.porch_lock_light
+        data:
+          effect: pulse
+
+      - delay:
+          minutes: 1  # из scene_departure_sequence
+
+      - service: light.turn_off
+        entity_id: light.porch_lock_light
+
+  # замок не всегда управляется с первого раза :(
+  # универсальный скрипт писать лень
+  front_door_unlock:
+    alias: 'Front Door: Unlock'
+    max_exceeded: silent
+    sequence:
+      - repeat:
+          count: 3
+          sequence:
+            - if:
+                - condition: state
+                  entity_id: lock.front_door
+                  state: locked
+              then:
+                - service: lock.unlock
+                  entity_id: lock.front_door_control
+
+                - delay:
+                    seconds: 15
+
+      - if:
+          - condition: state
+            entity_id: lock.front_door
+            state: locked
+        then:
+          - service: notify.dextor
+            data:
+              message: 🪚 Замок не смог открыться :(
+
+  front_door_lock:
+    alias: 'Front Door: Lock'
+    max_exceeded: silent
+    sequence:
+      - repeat:
+          count: 3
+          sequence:
+            - if:
+                - condition: state
+                  entity_id: lock.front_door
+                  state: unlocked
+              then:
+                - service: lock.lock
+                  entity_id: lock.front_door_control
+
+                - delay:
+                    seconds: 15
+
+      - if:
+          - condition: state
+            entity_id: lock.front_door
+            state: unlocked
+        then:
+          - service: notify.dextor
+            data:
+              message: 🪚 Замок не смог закрыться :(
+
+timer:
+  front_door_unlocked:
+    name: 'Front Door: Unlocked'
+    duration:
+      minutes: 5

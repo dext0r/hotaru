@@ -1,0 +1,483 @@
+'0x00124b002471b91a':
+  friendly_name: Kitchen Light Switch
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00124b00226b1703':
+  friendly_name: Hallway Light Switch
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x54ef441000275552':
+  friendly_name: Living Room Light Switch
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x54ef441000245d07':
+  friendly_name: Bedroom Light Switch
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0xa4c138104391cbaa':
+  friendly_name: Dishwasher Socket
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+  current_precision: 1
+  power_precision: 1
+'0x00124b0023a8b622':
+  friendly_name: Closet Light Switch
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00124b0023add1f3':
+  friendly_name: Porch Light Switch
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00158d0003d05c96':
+  friendly_name: Washing Machine Door
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x54ef441000585ebc':
+  friendly_name: Bathroom Presence
+  disabled: false
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+  description: |
+    Ванна:
+    {
+      "region_upsert": {
+        "region_id": 1,
+        "zones": [{"x": 2, "y": 4}, {"x": 3, "y": 4}]
+      }
+    }
+
+    Унитаз:
+    {
+      "region_upsert": {
+        "region_id": 2,
+        "zones": [{"x": 2, "y": 2}]
+      }
+    }
+'0x00158d0000b4836d':
+  friendly_name: Freezer Door
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00158d0000c2f7e8':
+  friendly_name: Fridge Door
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00158d0001d735a5':
+  friendly_name: Fridge Meteo
+  disabled: false
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00158d000589044e':
+  friendly_name: Freezer Meteo
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00158d0003cb4382':
+  friendly_name: Bathroom Motion
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00158d000392f2f4':
+  friendly_name: Dishwasher Door
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00158d00045683bc':
+  friendly_name: Kitchen Water Leak
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00158d0000b483bd':
+  friendly_name: Closet Door
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00158d00054da4c0':
+  friendly_name: Kitchen Curtains Motor
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0xa4c1388ef2d5a611':
+  friendly_name: Bathroom Cold Water Valve
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0xa4c138fbe16d53b0':
+  friendly_name: Bathroom Hot Water Valve
+  disabled: false
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00124b002342ba2b':
+  friendly_name: Front Door Vacation Lock
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0xcc86ecfffeb622f0':
+  friendly_name: Bedroom Shades Motor
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00158d000460badf':
+  friendly_name: Hallway Motion
+  occupancy_timeout: 7
+  disabled: false
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  temperature_precision: 1
+  illuminance_calibration: ''
+  retain: true
+'0x04cf8cdf3c7cc6cd':
+  friendly_name: Illuminance South Side
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0xa4c138a1f1b581e6':
+  friendly_name: Kitchen Hot Water Valve
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0xa4c138ea693a2814':
+  friendly_name: Kitchen Cold Water Valve
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00158d0003e701ed':
+  friendly_name: Kitchen Motion
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00158d0003cb436e':
+  friendly_name: Bedroom Motion
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00158d0003cf7beb':
+  friendly_name: Entrance Motion
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00158d00039b6f7c':
+  friendly_name: Wardrobe Door
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00158d00039820ed':
+  friendly_name: Workshop Door
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00158d0003fa81fe':
+  friendly_name: Front Door
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00158d0006e9f7c0':
+  friendly_name: Bathroom Washing Machine Water Leak
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00158d0007110231':
+  friendly_name: Bathroom Sink Water Leak
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00158d00039723b6':
+  friendly_name: Bedroom Bed Button
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00158d0003cb48af':
+  friendly_name: Bathroom Mirror Button
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00158d0003cfe908':
+  friendly_name: Living Room Dinner Table Button
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x54ef4410000ec68a':
+  friendly_name: Illuminance North Side
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00158d0001e53cc5':
+  friendly_name: Porch Motion
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00158d00045e53c5':
+  friendly_name: Kitchen Meteo
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x84fd27fffe3b745a':
+  friendly_name: Kitchen Worktop Button
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00158d0003972602':
+  friendly_name: Bathroom Bathtub Button
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x000d6f001329b0b4':
+  friendly_name: Hallway Smoke
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x000d6f001206122e':
+  friendly_name: Kitchen Smoke
+'0x00158d000910738f':
+  friendly_name: Closet Water Leak
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x588e81fffe43ce4f':
+  friendly_name: Porch Door Lock
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00124b002342cf9a':
+  friendly_name: Front Door Lock
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x84fd27fffe9c0fbd':
+  friendly_name: Workshop Desk Button
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00158d000198df03':
+  friendly_name: Porch Door
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00158d00044b1211':
+  friendly_name: Living Room Motion
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00158d000792773c':
+  friendly_name: Wardrobe Motion
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+  occupancy_timeout: 8
+'0x00158d00019942ec':
+  friendly_name: Bedroom Window
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0xa4c13845111a6874':
+  friendly_name: Scooter Charger Socket
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x847127fffe1aa61b':
+  friendly_name: Workshop Shades Motor
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00158d0002b18458':
+  friendly_name: Living Room Balcony Door
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  temperature_precision: 1
+  retain: true
+'0x00158d0002b18350':
+  friendly_name: Workshop Window
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00158d00075fa58e':
+  friendly_name: Workshop Entrance Motion
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00158d000775a0d4':
+  friendly_name: Workshop Desk Motion
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1

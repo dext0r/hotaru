@@ -1,0 +1,71 @@
+automation:
+  - id: living_room_heater_turn_off
+    alias: 'Living Room Heater: Turn off'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.anyone_home
+        from: 'on'
+        to: 'off'
+
+      - platform: state
+        entity_id: input_boolean.scene_sleepy_mood
+        from: 'off'
+        to: 'on'
+
+      - platform: state
+        entity_id: input_select.home_mode
+        from: Day
+
+      - platform: numeric_state
+        entity_id: sensor.living_room_temperature
+        above: 25.5
+
+      - platform: state
+        entity_id: switch.living_room_heater
+        to: 'on'
+        for:
+          hours: 6
+
+      - platform: state
+        entity_id:
+          - input_boolean.living_room_airing_warm
+          - input_boolean.living_room_airing_cold
+        from: 'off'
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: switch.living_room_heater
+        state: 'on'
+    action:
+      - service: switch.turn_off
+        entity_id: switch.living_room_heater
+
+template:
+  - trigger:
+      - platform: time_pattern
+        seconds: /5
+    sensor:
+      - name: Living Room Heater Power
+        unique_id: sensor.living_room_heater_power
+        state: >
+          {% set power = 0 %}
+          {% if is_state('switch.living_room_heater', 'on') %}
+            {% if states('sensor.sockets_power_supply_power')|int(0) -
+                  states('sensor.living_room_intake_fan_heater_power')|int(0) > 1000 %}
+              {% set power = 1500 + range(1, 9)|random %}
+            {% endif %}
+          {% endif %}
+
+          {{ power }}
+        state_class: measurement
+        unit_of_measurement: W
+        device_class: power
+
+sensor:
+  - platform: integration
+    unique_id: sensor.living_room_heater_energy
+    name: Living Room Heater Energy
+    source: sensor.living_room_heater_power
+    unit_prefix: k
+    round: 2
+    method: left

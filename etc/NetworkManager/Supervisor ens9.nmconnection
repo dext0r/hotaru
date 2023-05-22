@@ -1,0 +1,25 @@
+[connection]
+id=Supervisor ens9
+uuid=55018b2c-4e1f-3acc-8aae-b0bd9c5b238c
+type=ethernet
+autoconnect-priority=-999
+interface-name=ens9
+llmnr=2
+mdns=2
+permissions=
+timestamp=1653511573
+
+[ethernet]
+cloned-mac-address=preserve
+mac-address-blacklist=
+
+[ipv4]
+dns-search=
+method=auto
+
+[ipv6]
+addr-gen-mode=stable-privacy
+dns-search=
+method=auto
+
+[proxy]

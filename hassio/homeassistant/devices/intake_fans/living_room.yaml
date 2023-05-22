@@ -1,0 +1,297 @@
+input_boolean:
+  living_room_airing_warm:
+    name: Living Room Airing Warm
+    initial: false
+
+  living_room_airing_cold:
+    name: Living Room Airing Cold
+    initial: false
+
+  living_room_airing_bad_air:
+    name: Living Room Airing Bad Air
+    initial: false
+
+template:
+  sensor:
+    - unique_id: sensor.living_room_intake_fan_target_temperature
+      name: 'Living Room Intake Fan: Target temperature'
+      device_class: temperature
+      unit_of_measurement: °C
+      state_class: measurement
+      state: >
+        {% set v = 20 %}
+        {% set indoor_temperature = states('sensor.living_room_temperature')|float(0) %}
+        {% set outdoor_temperature = states('sensor.living_room_intake_fan_outdoor_temperature')|float(0) %}
+
+        {% if outdoor_temperature < -15 %}
+          {% set v = 24 %}
+        {% elif outdoor_temperature > 15 %}
+          {% set v = 0 %}
+        {% elif indoor_temperature > 0 %}
+          {% if indoor_temperature >= 24.9 %}
+            {% set v = 15 %}
+          {% elif indoor_temperature >= 24 %}
+            {% set v = 18 %}
+          {% elif indoor_temperature >= 23.6 %}
+            {% set v = 21 %}
+          {% elif indoor_temperature >= 23 %}
+            {% set v = 23 %}
+          {% else %}
+            {% set v = 24 %}
+          {% endif %}
+
+          {% if v >= 21 and is_state('binary_sensor.living_room_occupancy', 'off') %}
+            {% set v = v - 4 %}
+          {% endif %}
+        {% endif %}
+
+        {% if is_state('input_select.home_mode', 'Night') %}
+          {% if outdoor_temperature < -10 %}
+            {% set v = 17 %}
+          {% elif outdoor_temperature <= 12 %}
+            {% set v = 12 %}
+          {% else %}
+            {% set v = 0 %}
+          {% endif %}
+        {% endif %}
+
+        {% if is_state('input_select.home_mode', 'Vacation') %}
+          {% set v = 7 %}
+        {% endif %}
+
+        {% if is_state('input_boolean.living_room_airing_warm', 'on') %}
+          {% set v = 20 %}
+        {% elif is_state('input_boolean.living_room_airing_cold', 'on') %}
+          {% set v = 0 %}
+        {% endif %}
+
+        {{ v }}
+
+    - unique_id: sensor.living_room_intake_fan_target_fan_speed
+      name: 'Living Room Intake Fan: Target fan speed'
+      icon: mdi:fan-auto
+      state: >
+        {% set v = 1 %}
+        {% set co2_level = states('sensor.living_room_co2')|int(0) %}
+
+        {% if is_state('input_select.home_mode', 'Night') %}
+          {% if co2_level > 600 %}
+            {% set v = 3 %}
+          {% elif co2_level > 580 %}
+            {% set v = 2 %}
+          {% endif %}
+        {% elif is_state('input_select.home_mode', 'Day') %}
+          {% if co2_level > 750 %}
+            {% set v = 6 %}
+          {% elif co2_level > 700 %}
+            {% set v = 5 %}
+          {% elif co2_level > 640 %}
+            {% set v = 4 %}
+          {% elif co2_level > 590 %}
+            {% set v = 3 %}
+          {% elif co2_level > 540 %}
+            {% set v = 2 %}
+          {% endif %}
+        {% endif %}
+
+        {% if is_state('input_select.home_mode', 'Vacation') %}
+          {% set v = 1 %}
+        {% endif %}
+
+        {% if is_state('input_boolean.living_room_airing_warm', 'on') or is_state('input_boolean.living_room_airing_cold', 'on') %}
+          {% set v = 6 %}
+        {% endif %}
+
+        {% if is_state('switch.living_room_intake_fan_recirculation', 'on') %}
+          {% set v = 1 %}
+        {% endif %}
+
+        {{ v }}
+
+automation:
+  - id: living_room_intake_fan_restore_circulation
+    alias: 'Living Room Intake Fan: Restore circulation'
+    trigger:
+      - platform: state
+        entity_id: switch.living_room_intake_fan_recirculation
+        to: 'on'
+        for:
+          minutes: 30
+    action:
+      - service: switch.turn_off
+        entity_id: switch.living_room_intake_fan_recirculation
+
+  - id: living_room_intake_fan_bad_air
+    alias: 'Living Room Intake Fan: Bad air'
+    mode: restart
+    trigger:
+      - platform: event
+        event_type: yandex_intent
+        event_data:
+          text: Воняет
+
+      - platform: state
+        entity_id: input_boolean.living_room_airing_bad_air
+        to: 'on'
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.living_room_airing_bad_air
+
+      - service: switch.turn_on
+        entity_id: switch.living_room_intake_fan_recirculation
+
+      - service: script.turn_on
+        entity_id: script.yandex_station_tts
+        data:
+          variables:
+            target: >
+              {{ trigger.event.data.get('entity_id', 'last') if 'event' in trigger else 'media_player.living_room_station' }}
+            text: >
+              {{ ['Бееее, закрываю приток', 'Опять курево, отвратительно', 'Закрываю приток', 'Выключаю приток']|random }}
+
+      - delay:
+          minutes: 5
+
+      - service: switch.turn_off
+        entity_id: switch.living_room_intake_fan_recirculation
+
+  - id: living_room_intake_fan_update
+    alias: 'Living Room Intake Fan: Update'
+    mode: single
+    max_exceeded: silent
+    trigger:
+      - platform: time_pattern
+        minutes: '/5'
+
+      - platform: state
+        entity_id: input_select.home_mode
+
+      - id: room_airing
+        platform: state
+        entity_id:
+          - input_boolean.living_room_airing_warm
+          - input_boolean.living_room_airing_cold
+        to:
+          - 'on'
+          - 'off'
+
+      - id: recirculation
+        platform: state
+        entity_id: switch.living_room_intake_fan_recirculation
+        to:
+          - 'on'
+          - 'off'
+
+      - platform: state
+        entity_id: sensor.ups_status
+        from: 'On Battery'
+        to: 'Online'
+        for:
+          seconds: 60
+
+      - platform: state
+        entity_id: timer.living_room_intake_fan_bad_air
+    condition:
+      - condition: state
+        entity_id: climate.living_room_intake_fan
+        state:
+          - 'heat'
+          - 'fan_only'
+          - 'off'
+    action:
+      - if:
+          - condition: trigger
+            id: recirculation
+        then:
+          - delay:
+              seconds: 20
+        else:
+          - delay:
+              seconds: 1
+
+      - if:
+          - condition: state
+            entity_id: input_boolean.climate_control
+            state: 'off'
+        then:
+          - service: climate.turn_off
+            entity_id: climate.living_room_intake_fan
+        else:
+          - service: climate.set_temperature
+            entity_id: climate.living_room_intake_fan
+            data:
+              temperature: >
+                {{ states('sensor.living_room_intake_fan_target_temperature')|float(20) }}
+              hvac_mode: heat
+
+          - service: climate.set_fan_mode
+            entity_id: climate.living_room_intake_fan
+            data:
+              fan_mode: >
+                {{ states('sensor.living_room_intake_fan_target_fan_speed') }}
+
+  - id: living_room_airing_swap_modes
+    alias: 'Living Room Airing: Swap modes'
+    trigger:
+      - platform: state
+        entity_id:
+          - input_boolean.living_room_airing_warm
+          - input_boolean.living_room_airing_cold
+        to: 'on'
+    action:
+      - service: input_boolean.turn_off
+        data_template:
+          entity_id: >
+            {%- if trigger.from_state.entity_id == 'input_boolean.living_room_airing_warm' -%}
+              input_boolean.living_room_airing_cold
+            {%- else -%}
+              input_boolean.living_room_airing_warm
+            {%- endif -%}
+
+  - id: living_room_airing_auto_turn_off
+    alias: 'Living Room Airing: Auto turn off'
+    trigger:
+      - platform: state
+        entity_id:
+          - input_boolean.living_room_airing_warm
+          - input_boolean.living_room_airing_cold
+        to: 'on'
+        for:
+          minutes: 25
+    action:
+      - service: input_boolean.turn_off
+        data_template:
+          entity_id: >
+            {{ trigger.from_state.entity_id }}
+
+switch:
+  - platform: template
+    switches:
+      living_room_airing:
+        unique_id: switch.living_room_airing
+        friendly_name: Living Room Airing
+        icon_template: mdi:hair-dryer-outline
+        value_template: >
+          {{
+            is_state('input_boolean.living_room_airing_cold', 'on') or
+            is_state('input_boolean.living_room_airing_warm', 'on')
+          }}
+        turn_on:
+          - if:
+              - condition: numeric_state
+                entity_id: sensor.living_room_temperature
+                above: 24.7
+            then:
+              - service: input_boolean.turn_on
+                target:
+                  entity_id: input_boolean.living_room_airing_cold
+            else:
+              - service: input_boolean.turn_on
+                target:
+                  entity_id: input_boolean.living_room_airing_warm
+        turn_off:
+          - service: input_boolean.turn_off
+            target:
+              entity_id:
+                - input_boolean.living_room_airing_cold
+                - input_boolean.living_room_airing_warm

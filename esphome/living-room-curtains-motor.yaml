@@ -1,0 +1,11 @@
+packages:
+  base: !include generic/tuya_cover.yaml
+  uptime: !include common/uptime.yaml
+  wifi_signal: !include common/wifi_signal.yaml
+
+substitutions:
+  device_name: Living Room Curtains Motor
+
+esphome:
+  name: living-room-curtains-motor
+  name_add_mac_suffix: false

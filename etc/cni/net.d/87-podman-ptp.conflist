@@ -1,0 +1,31 @@
+{
+  "cniVersion": "0.4.0",
+  "name": "podman",
+  "plugins": [
+    {
+        "type": "ptp",
+            "Documentation": "/usr/share/doc/containernetworking-plugins/main_ptp.md",
+        "ipMasq": true,
+        "ipam": {
+            "type": "host-local",
+                "Documentation": "/usr/share/doc/containernetworking-plugins/ipam_host-local.md",
+            "subnet": "172.16.16.0/24",
+            "routes": [
+                { "dst": "0.0.0.0/0" }
+            ]
+        }
+    },
+
+    {
+        "type": "portmap",
+            "Documentation": "/usr/share/doc/containernetworking-plugins/meta_portmap.md",
+        "capabilities": { "portMappings": true }
+    },
+
+    {
+        "type": "firewall",
+            "Documentation": "/usr/share/doc/containernetworking-plugins/meta_firewall.md",
+        "backend": "iptables"
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+https://github.com/esphome/esphome/pull/2823
+
+diff -U 3 -r .venv.orig/lib/python3.9/site-packages/esphome/components/api/api_connection.cpp .venv/lib/python3.9/site-packages/esphome/components/api/api_connection.cpp
+--- .venv.orig/lib/python3.9/site-packages/esphome/components/api/api_connection.cpp	2023-01-10 18:58:01
++++ .venv/lib/python3.9/site-packages/esphome/components/api/api_connection.cpp	2023-01-10 18:59:11
+@@ -938,7 +938,7 @@
+ #elif defined(USE_RP2040)
+   resp.manufacturer = "Raspberry Pi";
+ #endif
+-  resp.model = ESPHOME_BOARD;
++  resp.model = ESPHOME_DEVICE_MODEL;
+ #ifdef USE_DEEP_SLEEP
+   resp.has_deep_sleep = deep_sleep::global_has_deep_sleep;
+ #endif
+diff -U 3 -r .venv.orig/lib/python3.9/site-packages/esphome/components/mqtt/mqtt_component.cpp .venv/lib/python3.9/site-packages/esphome/components/mqtt/mqtt_component.cpp
+--- .venv.orig/lib/python3.9/site-packages/esphome/components/mqtt/mqtt_component.cpp	2023-01-10 18:58:01
++++ .venv/lib/python3.9/site-packages/esphome/components/mqtt/mqtt_component.cpp	2023-01-10 18:59:41
+@@ -136,7 +136,7 @@
+         device_info[MQTT_DEVICE_IDENTIFIERS] = get_mac_address();
+         device_info[MQTT_DEVICE_NAME] = node_name;
+         device_info[MQTT_DEVICE_SW_VERSION] = "esphome v" ESPHOME_VERSION " " + App.get_compilation_time();
+-        device_info[MQTT_DEVICE_MODEL] = ESPHOME_BOARD;
++        device_info[MQTT_DEVICE_MODEL] = ESPHOME_DEVICE_MODEL;
+         device_info[MQTT_DEVICE_MANUFACTURER] = "espressif";
+       },
+       0, discovery_info.retain);
+diff -U 3 -r .venv.orig/lib/python3.9/site-packages/esphome/core/config.py .venv/lib/python3.9/site-packages/esphome/core/config.py
+--- .venv.orig/lib/python3.9/site-packages/esphome/core/config.py	2023-01-10 18:58:01
++++ .venv/lib/python3.9/site-packages/esphome/core/config.py	2023-01-10 19:03:15
+@@ -17,6 +17,7 @@
+     CONF_FRAMEWORK,
+     CONF_INCLUDES,
+     CONF_LIBRARIES,
++    CONF_MODEL,
+     CONF_MIN_VERSION,
+     CONF_NAME,
+     CONF_ON_BOOT,
+@@ -159,6 +160,7 @@
+                     cv.Required(CONF_VERSION): cv.string_strict,
+                 }
+             ),
++            cv.Optional(CONF_MODEL): cv.string,
+             cv.Optional(CONF_MIN_VERSION, default=ESPHOME_VERSION): cv.All(
+                 cv.version_number, validate_version
+             ),
+@@ -224,6 +226,9 @@
+             [newstyle_found[0]],
+         )
+     if newstyle_found:
++        if CONF_MODEL not in conf:
++            conf[CONF_MODEL] = [key for key in TARGET_PLATFORMS if key in config][0]
++
+         # Convert to newstyle
+         for key in oldstyle_opts:
+             if key in conf:
+@@ -384,6 +389,9 @@
+     if CONF_PROJECT in config:
+         cg.add_define("ESPHOME_PROJECT_NAME", config[CONF_PROJECT][CONF_NAME])
+         cg.add_define("ESPHOME_PROJECT_VERSION", config[CONF_PROJECT][CONF_VERSION])
++
++    if CONF_MODEL in config:
++        cg.add_define("ESPHOME_DEVICE_MODEL", config[CONF_MODEL])
+
+     if config[CONF_PLATFORMIO_OPTIONS]:
+         CORE.add_job(_add_platformio_options, config[CONF_PLATFORMIO_OPTIONS])
+diff -U 3 -r .venv.orig/lib/python3.9/site-packages/esphome/core/defines.h .venv/lib/python3.9/site-packages/esphome/core/defines.h
+--- .venv.orig/lib/python3.9/site-packages/esphome/core/defines.h	2023-01-10 18:58:01
++++ .venv/lib/python3.9/site-packages/esphome/core/defines.h	2023-01-10 19:03:32
+@@ -9,6 +9,7 @@
+
+ // Informative flags
+ #define ESPHOME_BOARD "dummy_board"
++#define ESPHOME_DEVICE_MODEL "dummy model"
+ #define ESPHOME_PROJECT_NAME "dummy project"
+ #define ESPHOME_PROJECT_VERSION "v2"
+ #define ESPHOME_VARIANT "ESP32"
+Only in .venv/lib/python3.9/site-packages/pip/__pycache__: __main__.cpython-39.pyc
+Only in .venv/lib/python3.9/site-packages/pip/_internal/commands/__pycache__: list.cpython-39.pyc

@@ -1,0 +1,199 @@
+automation:
+  - id: water_leak_detected
+    alias: 'Water leak: Detected'
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.kitchen_water_leak
+          - binary_sensor.closet_water_leak
+          - binary_sensor.bathroom_washing_machine_water_leak
+          - binary_sensor.bathroom_sink_water_leak
+        from: 'off'
+        to: 'on'
+
+      - platform: state
+        entity_id:
+          - binary_sensor.kitchen_water_leak
+          - binary_sensor.closet_water_leak
+          - binary_sensor.bathroom_washing_machine_water_leak
+          - binary_sensor.bathroom_sink_water_leak
+        from: 'off'
+        to: 'on'
+        for:
+          minutes: 5
+    action:
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: >
+                  {{ area_name(trigger.entity_id) == 'Kitchen' }}
+            sequence:
+              - service: switch.turn_off
+                entity_id:
+                  - switch.kitchen_hot_water_valve
+                  - switch.kitchen_cold_water_valve
+                  - switch.dishwasher_socket
+                continue_on_error: true
+
+          - conditions:
+              - condition: template
+                value_template: >
+                  {{ area_name(trigger.entity_id) in ('Bathroom', 'Closet') }}
+            sequence:
+              - service: switch.turn_off
+                entity_id:
+                  - switch.bathroom_hot_water_valve
+                  - switch.bathroom_cold_water_valve
+                  - switch.washing_machine_socket
+                  - switch.water_heater_socket
+                continue_on_error: true
+        default:
+          - service: switch.turn_off
+            entity_id:
+              - switch.kitchen_hot_water_valve
+              - switch.kitchen_cold_water_valve
+              - switch.bathroom_hot_water_valve
+              - switch.bathroom_cold_water_valve
+              - switch.dishwasher_socket
+              - switch.washing_machine_socket
+              - switch.water_heater_socket
+            continue_on_error: true
+
+      - service: notify.mobile_app_misaka_app
+        data:
+          message: >
+            🚨 Обнаружена протечка {{ state_attr(trigger.from_state.entity_id, 'alert_text')|default('', True) }}
+          data:
+            push:
+              sound:
+                name: sms-received2.caf
+                critical: 1
+                volume: 1
+        continue_on_error: true
+
+      - service: notify.dextor
+        data:
+          message: >
+            🚨 Обнаружена протечка {{ state_attr(trigger.from_state.entity_id, 'alert_text')|default('', True) }}
+        continue_on_error: true
+
+      - service: script.yandex_station_tts
+        data:
+          target: all
+          type: alert
+          text: >
+            Обнаружена протечка {{ state_attr(trigger.from_state.entity_id, 'alert_text')|default('', True) }}.
+            Повторяю. Обнаружена протечка!
+
+      - delay:
+          seconds: 25
+      - service: script.yandex_station_tts
+        data:
+          target: all
+          type: attention
+          text: >
+            Если протечки нет, скажи Алиса, включи воду или нажми кнопки на вентилях вручную.
+
+  - id: water_leak_resolved
+    alias: 'Water leak: Resolved'
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.kitchen_water_leak
+          - binary_sensor.closet_water_leak
+          - binary_sensor.bathroom_washing_machine_water_leak
+          - binary_sensor.bathroom_sink_water_leak
+        from: 'on'
+        to: 'off'
+    action:
+      - service: notify.dextor
+        data:
+          message: >
+            🎉 Устранена протечка {{ state_attr(trigger.from_state.entity_id, 'alert_text')|default('', True) }}
+
+binary_sensor:
+  - platform: group
+    unique_id: binary_sensor.water_leak
+    name: Water Leak
+    device_class: moisture
+    entities:
+      - binary_sensor.kitchen_water_leak
+      - binary_sensor.closet_water_leak
+      - binary_sensor.bathroom_washing_machine_water_leak
+      - binary_sensor.bathroom_sink_water_leak
+
+input_boolean:
+  hot_water_supply:
+    name: Hot Water Supply
+    icon: mdi:water-boiler
+
+switch:
+  - platform: template
+    switches:
+      water_supply:
+        unique_id: switch.water_supply
+        friendly_name: Water Supply
+        value_template: >
+          {{
+            is_state('switch.kitchen_hot_water_valve', 'on') or
+            is_state('switch.kitchen_cold_water_valve', 'on') or
+            is_state('switch.bathroom_hot_water_valve', 'on') or
+            is_state('switch.bathroom_cold_water_valve', 'on')
+          }}
+        availability_template: >
+          {{
+            states('switch.kitchen_hot_water_valve') in ['on', 'off'] and
+            states('switch.kitchen_cold_water_valve') in ['on', 'off'] and
+            states('switch.bathroom_hot_water_valve') in ['on', 'off'] and
+            states('switch.bathroom_cold_water_valve') in ['on', 'off']
+          }}
+        turn_on:
+          - service: switch.turn_on
+            target:
+              entity_id:
+                - switch.kitchen_hot_water_valve
+                - switch.kitchen_cold_water_valve
+                - switch.bathroom_cold_water_valve
+            continue_on_error: True
+
+          - service: switch.turn_on
+            entity_id:
+              - switch.dishwasher_socket
+              - switch.washing_machine_socket
+            continue_on_error: true
+
+          - if:
+              - condition: state
+                entity_id: input_boolean.hot_water_supply
+                state: 'on'
+            then:
+              - service: switch.turn_on
+                target:
+                  entity_id: switch.bathroom_hot_water_valve
+        turn_off:
+          - service: switch.not_supported
+
+utility_meter:
+  kitchen_filter_drink_water_daily:
+    unique_id: sensor.kitchen_filter_drink_water_daily
+    name: Kitchen Filter Drink Water Daily
+    source: sensor.kitchen_filter_drink_water
+    cycle: daily
+
+  kitchen_filter_drink_water_monthly:
+    unique_id: sensor.kitchen_filter_drink_water_monthly
+    name: Kitchen Filter Drink Water Monthly
+    source: sensor.kitchen_filter_drink_water
+    cycle: monthly
+
+  kitchen_filter_feed_water_daily:
+    unique_id: sensor.kitchen_filter_feed_water_daily
+    name: Kitchen Filter Feed Water Daily
+    source: sensor.kitchen_filter_feed_water
+    cycle: daily
+
+  kitchen_filter_feed_water_monthly:
+    unique_id: sensor.kitchen_filter_feed_water_monthly
+    name: Kitchen Filter Feed Water Monthly
+    source: sensor.kitchen_filter_feed_water
+    cycle: monthly

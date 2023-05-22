@@ -1,0 +1,239 @@
+# Русские имена устройств и комнат заданые через интерфейс HA (в алиасах)
+settings:
+  beta: true
+entity_config:
+  lock.front_door:
+    error_code_template: |
+      {% if capability.type == 'devices.capabilities.on_off' and capability.state.instance == 'on' and capability.state.value %}
+        REMOTE_CONTROL_DISABLED
+      {% endif %}
+  lock.porch_door:
+    error_code_template: |
+      {% if capability.type == 'devices.capabilities.on_off' and capability.state.instance == 'on' and capability.state.value %}
+        REMOTE_CONTROL_DISABLED
+      {% endif %}
+  climate.bedroom_ac:
+    type: devices.types.thermostat.ac
+    error_code_template: |
+      {% set outside = states('sensor.weather_temperature')|int(-1) %}
+
+      {% if capability.type == 'devices.capabilities.on_off' and capability.state.instance == 'on' and capability.state.value %}
+        {% if outside < -12 %}
+          REMOTE_CONTROL_DISABLED
+        {% endif %}
+      {% endif %}
+
+      {% if capability.type == 'devices.capabilities.mode' and capability.state.instance == 'thermostat' and capability.state.value == 'heat' %}
+        {% if outside < -12 %}
+          REMOTE_CONTROL_DISABLED
+        {% endif %}
+      {% endif %}
+
+      {% if capability.type == 'devices.capabilities.mode' and capability.state.instance == 'thermostat' and capability.state.value == 'cool' %}
+        {% if outside < 5 %}
+          REMOTE_CONTROL_DISABLED
+        {% endif %}
+      {% endif %}
+    custom_toggles:
+      backlight:
+        state_entity_id: switch.bedroom_ac_display
+        turn_on:
+          service: switch.turn_on
+          entity_id: switch.bedroom_ac_display
+        turn_off:
+          service: switch.turn_off
+          entity_id: switch.bedroom_ac_display
+  climate.workshop_ac:
+    type: devices.types.thermostat.ac
+    error_code_template: |
+      {% set outside = states('sensor.weather_temperature')|int(-1) %}
+
+      {% if capability.type == 'devices.capabilities.on_off' and capability.state.instance == 'on' and capability.state.value %}
+        {% if outside < -12 %}
+          REMOTE_CONTROL_DISABLED
+        {% endif %}
+      {% endif %}
+
+      {% if capability.type == 'devices.capabilities.mode' and capability.state.instance == 'thermostat' and capability.state.value == 'heat' %}
+        {% if outside < -12 %}
+          REMOTE_CONTROL_DISABLED
+        {% endif %}
+      {% endif %}
+
+      {% if capability.type == 'devices.capabilities.mode' and capability.state.instance == 'thermostat' and capability.state.value == 'cool' %}
+        {% if outside < 5 %}
+          REMOTE_CONTROL_DISABLED
+        {% endif %}
+      {% endif %}
+  sensor.bedroom_temperature:
+    name: Климат
+    room: Спальня
+    properties:
+      - type: temperature
+        entity: sensor.bedroom_temperature
+      - type: humidity
+        entity: sensor.bedroom_humidity
+      - type: co2_level
+        entity: sensor.bedroom_co2
+  sensor.workshop_temperature:
+    name: Климат
+    room: Мастерская
+    properties:
+      - type: temperature
+        entity: sensor.workshop_temperature
+      - type: humidity
+        entity: sensor.workshop_humidity
+  sensor.living_room_temperature:
+    name: Климат
+    room: Гостиная
+    properties:
+      - type: temperature
+        entity: sensor.living_room_temperature
+      - type: humidity
+        entity: sensor.living_room_humidity
+      - type: co2_level
+        entity: sensor.living_room_co2
+  sensor.bathroom_temperature:
+    name: Климат
+    room: Ванная
+    properties:
+      - type: temperature
+        entity: sensor.bathroom_temperature
+      - type: humidity
+        entity: sensor.bathroom_humidity
+  sensor.wardrobe_temperature:
+    name: Климат
+    room: Гардеробная
+    properties:
+      - type: temperature
+        entity: sensor.wardrobe_temperature
+      - type: humidity
+        entity: sensor.wardrobe_humidity
+  sensor.kitchen_temperature:
+    name: Климат
+    room: Кухня
+    properties:
+      - type: temperature
+        entity: sensor.kitchen_temperature
+      - type: humidity
+        entity: sensor.kitchen_humidity
+  humidifier.living_room_humidifier:
+    properties:
+      - type: water_level
+        entity: sensor.living_room_humidifier_water_level
+  humidifier.bedroom_humidifier:
+    properties:
+      - type: water_level
+        entity: sensor.bedroom_humidifier_water_level
+  sensor.fridge_temperature:
+    name: Холодильник
+    room: Кухня
+    type: devices.types.sensor.climate
+    properties:
+      - type: temperature
+        entity: sensor.fridge_temperature
+      - type: humidity
+        entity: sensor.fridge_humidity
+  sensor.freezer_temperature:
+    name: Морозильник
+    room: Кухня
+    type: devices.types.sensor.climate
+    properties:
+      - type: temperature
+        entity: sensor.freezer_temperature
+      - type: humidity
+        entity: sensor.freezer_humidity
+  input_boolean.climate_control:
+    name: Управление климатом
+    room: Служебные
+  input_boolean.light_control:
+    name: Управление освещением
+    room: Служебные
+  switch.home_airing:
+    name: Общее проветривание
+    room: Служебные
+    type: devices.types.fan
+  input_boolean.living_room_airing_warm:
+    name: Теплое проветривание
+    room: Гостиная
+    type: devices.types.fan
+  input_boolean.living_room_airing_cold:
+    name: Холодное проветривание
+    room: Гостиная
+    type: devices.types.fan
+  switch.living_room_airing:
+    name: Проветривание
+    room: Гостиная
+    type: devices.types.fan
+  input_boolean.bedroom_airing_warm:
+    name: Теплое проветривание
+    room: Спальня
+    type: devices.types.fan
+  input_boolean.bedroom_airing_cold:
+    name: Холодное проветривание
+    room: Спальня
+    type: devices.types.fan
+  switch.bedroom_airing:
+    name: Проветривание
+    room: Спальня
+    type: devices.types.fan
+  input_boolean.workshop_airing_warm:
+    name: Теплое проветривание
+    room: Мастерская
+    type: devices.types.fan
+  input_boolean.workshop_airing_cold:
+    name: Холодное проветривание
+    room: Мастерская
+    type: devices.types.fan
+  switch.workshop_airing:
+    name: Проветривание
+    room: Мастерская
+    type: devices.types.fan
+  script.living_room_cozy_light:
+    name: Уютный свет
+    room: Гостиная
+  climate.kettle:
+    name: Чайник
+    room: Кухня
+    type: devices.types.cooking.kettle
+    properties:
+      - type: water_level
+        entity: sensor.kettle_water_level
+    custom_ranges:
+      temperature:
+        state_attribute: temperature
+        set_value:
+          service: climate.set_temperature
+          entity_id: climate.kettle
+          data:
+            temperature: '{{ value }}'
+            hvac_mode: >
+              {%- if value >= 95 -%}
+                auto
+              {%- else -%}
+                heat
+              {%- endif -%}
+        range:
+          min: 30
+          max: 100
+    error_code_template: |
+      {% if capability.type == 'devices.capabilities.on_off' and capability.state.instance == 'on' and capability.state.value %}
+        {% if states('sensor.kettle_water_level')|int(0) <= 10 %}
+          NOT_ENOUGH_WATER
+        {% endif %}
+      {% endif %}
+  cover.bedroom:
+    error_code_template: |
+      {% if not is_state('binary_sensor.bedroom_window', 'off') %}
+        DOOR_OPEN
+      {% endif %}
+  cover.workshop:
+    error_code_template: |
+      {% if not is_state('binary_sensor.workshop_window', 'off') %}
+        DOOR_OPEN
+      {% endif %}
+  cover.living_room:
+    error_code_template: |
+      {% if not is_state('binary_sensor.living_room_balcony_door', 'off') %}
+        DOOR_OPEN
+      {% endif %}

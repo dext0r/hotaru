@@ -1,0 +1,123 @@
+automation:
+  - id: living_room_light_turn_on
+    alias: 'Living Room Light: Turn on'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.living_room_motion
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+
+      - condition: state
+        entity_id: input_select.home_mode
+        state:
+          - Day
+          - Vacation
+
+      - condition: state
+        entity_id: input_boolean.scene_sleepy_mood
+        state: 'off'
+
+      - condition: or
+        conditions:
+          - condition: numeric_state
+            entity_id: sensor.illuminance_south_side
+            below: 150
+
+          - condition: state
+            entity_id: cover.living_room
+            state: 'off'
+
+      - condition: state
+        entity_id:
+          - group.living_room_lights
+          - binary_sensor.dim_light
+        state: 'off'
+    action:
+      - service: light.turn_on
+        entity_id: light.living_room_tv
+        data:
+          brightness_pct: 100
+
+      - service: light.turn_on
+        entity_id: light.living_room_backlight
+        data:
+          brightness_pct: 43
+          kelvin: 3400
+
+  - id: living_room_light_turn_off
+    alias: 'Living Room Light: Turn off'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.living_room_occupancy
+        from: 'on'
+        to: 'off'
+        for:
+          minutes: 20
+    condition:
+      - condition: state
+        entity_id:
+          - input_boolean.light_control
+          - group.living_room_lights
+        state: 'on'
+    action:
+      - service: light.turn_off
+        entity_id: group.living_room_lights
+
+light:
+  - platform: group
+    unique_id: living_room_backlght
+    name: Living Room Backlight
+    entities:
+      - light.living_room_backlight_1
+      - light.living_room_backlight_2
+      - light.living_room_backlight_3
+      - light.living_room_backlight_4
+      - light.living_room_backlight_5
+      - light.living_room_backlight_6
+
+  - platform: template
+    lights:
+      living_room_main:
+        unique_id: living_room_main_light
+        friendly_name: Living Room Main Light
+        value_template: >
+          {{ is_state('switch.living_room_light_switch_left', 'on') }}
+        availability_template: >
+          {{ states('switch.living_room_light_switch_left') in ['on', 'off'] }}
+        icon_template: bha:ceiling-lamp-round
+        turn_on:
+          - service: switch.turn_on
+            entity_id: switch.living_room_light_switch_left
+        turn_off:
+          - service: switch.turn_off
+            entity_id: switch.living_room_light_switch_left
+
+script:
+  living_room_cozy_light:
+    alias: 'Living Room: Cozy Light'
+    description: Включает "уютный свет" в гостинной
+    sequence:
+      - service: light.turn_on
+        entity_id: light.living_room_tv
+        data:
+          brightness_pct: 100
+
+      - service: light.turn_on
+        entity_id: light.living_room_backlight
+        data:
+          brightness_pct: 43
+          kelvin: 3400
+
+      - service: light.turn_off
+        entity_id: light.living_room_main
+
+group:
+  living_room_lights:
+    name: Living Room Lights
+    entities:
+      - light.living_room_main
+      - light.living_room_backlight
+      - light.living_room_tv

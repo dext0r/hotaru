@@ -1,0 +1,72 @@
+automation:
+  - id: living_room_tv_light_turn_on
+    alias: 'Living Room TV Light: Turn on'
+    trigger:
+      - platform: state
+        entity_id: media_player.tv
+        to: 'on'
+
+      - platform: state
+        entity_id: timer.tv_warm_up
+        from: 'idle'
+        to: 'active'
+    condition:
+      - condition: state
+        entity_id: input_select.home_mode
+        state:
+          - Day
+          - Vacation
+
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+
+      - condition: time # сам включается ночью 😭
+        after: 02:05:00
+        before: 01:55:00
+
+      - condition: state
+        entity_id: light.living_room_tv
+        state: 'off'
+    action:
+      # TODO: зачем это было? оО
+      # - if:
+      #     - condition: state
+      #       entity_id: input_boolean.scene_movie
+      #       state: 'on'
+      #   then:
+      #     - service: light.turn_on
+      #       entity_id: light.living_room_tv
+      #       data:
+      #         brightness_pct: 1
+
+      #     - service: light.turn_on
+      #       entity_id: light.room_tv
+      #       data:
+      #         transition: 5
+      #         brightness_pct: 100
+      #   then:
+      - service: light.turn_on
+        entity_id: light.living_room_tv
+        data:
+          brightness_pct: 100
+
+  - id: living_room_tv_light_turn_off
+    alias: 'Living Room TV Light: Turn off'
+    trigger:
+      - platform: state
+        entity_id: media_player.tv
+        to: 'off'
+    condition:
+      - condition: numeric_state
+        entity_id: sensor.illuminance_south_side
+        above: 100
+
+      - condition: state
+        entity_id:
+          - input_boolean.light_control
+          - light.living_room_tv
+        state: 'on'
+    action:
+      - service: light.turn_off
+        entity_id: light.living_room_tv

@@ -1,0 +1,39 @@
+zone:
+  - name: Dextor Work
+    latitude: !secret geo_dextor_work_latitude
+    longitude: !secret geo_dextor_work_longitude
+    radius: 82
+    icon: mdi:briefcase
+
+  - name: rom-mak
+    latitude: !secret geo_rommak_latitude
+    longitude: !secret geo_rommak_longitude
+    radius: 50
+    icon: mdi:glass-cocktail
+
+  - name: Karman
+    latitude: !secret geo_karman_latitude
+    longitude: !secret geo_karman_longitude
+    radius: 70
+    icon: mdi:camera
+
+  - name: Near Home
+    latitude: !secret geo_home_latitude
+    longitude: !secret geo_home_longitude
+    radius: 100
+    icon: mdi:home-import-outline
+
+  - name: Home
+    latitude: !secret geo_home_latitude
+    longitude: !secret geo_home_longitude
+    radius: 27
+    icon: mdi:home
+    passive: true
+
+proximity:
+  home_dextor:
+    zone: home
+    devices:
+      - device_tracker.misaka_app
+    tolerance: 200
+    unit_of_measurement: m

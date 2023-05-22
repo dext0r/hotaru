@@ -1,0 +1,10 @@
+packages:
+  base: !include generic/midea_ac.yaml
+
+substitutions:
+  device_name: Bedroom AC
+
+esphome:
+  name: bedroom-ac
+  model: MSAG1-09N8C2 / ESP8266
+  name_add_mac_suffix: false

@@ -1,0 +1,46 @@
+ios:
+  actions:
+    - name: 'Анонс: Не могу подойти'
+      background_color: '#32ade6'
+      label:
+        text: 'Анонс: Не могу подойти'
+        color: '#ffffff'
+      icon:
+        icon: diving
+        color: "#ffffff"
+
+    - name: Открыть домофон
+      background_color: '#a2845e'
+      label:
+        text: Открыть домофон
+        color: '#ffffff'
+      icon:
+        icon: phone-plus
+        color: "#ffffff"
+
+automation:
+  - alias: 'iOS: Notification / DND announce'
+    trigger:
+      - platform: event
+        event_type: ios.action_fired
+        event_data:
+          actionName: 'Анонс: Не могу подойти'
+    action:
+      - service: script.yandex_station_tts
+        data:
+          target: all
+          type: attention
+          text: Слышу тебя, но подойти не могу. Мур-мур.
+
+  - id: ios_intercom_mode_accept
+    alias: 'iOS: Intercom mode - Accept'
+    trigger:
+      - platform: event
+        event_type: ios.action_fired
+        event_data:
+          actionName: Открыть домофон
+    action:
+      - service: select.select_option
+        entity_id: select.intercom_mode
+        data:
+          option: Always accept

@@ -1,0 +1,89 @@
+packages:
+  common: !include ../lib/common.yaml
+
+esphome:
+  name: qs-wifi-d01-triac
+  model: QS-WiFi-D01-TRIAC Dimmer
+
+esp8266:
+  board: esp01_1m
+  restore_from_flash: true
+
+logger:
+  baud_rate: 0
+  logs:
+    duty_cycle: ERROR
+    sensor: ERROR
+
+uart:
+  tx_pin: GPIO1
+  rx_pin: GPIO3
+  stop_bits: 1
+  baud_rate: 9600
+  debug:
+
+sensor:
+  - id: light_w_brightness
+    platform: template
+    internal: true
+    update_interval: 20ms
+    lambda: |-
+      if (id(light_w).remote_values.is_on()) {
+        return (int(id(light_w).remote_values.get_brightness() * 255));
+      }
+      else {
+        return 0;
+      }
+    on_value:
+      then:
+        - uart.write: !lambda |-
+            return {0xFF, 0x55, (char) id(light_w_brightness).state, 0x05, 0xDC, 0x0A};
+        - logger.log:
+            level: INFO
+            format: Sensor Value Change sent to UART %3.1f
+            args:
+              - id(light_w_brightness).state
+    filters:
+      - delta: 0.8
+
+  # - id: light_switch_duty_cycle
+  #   platform: duty_cycle
+  #   internal: true
+  #   pin: 13
+  #   update_interval: 300ms
+
+# binary_sensor:
+#   - id: light_switch
+#     platform: template
+#     internal: true
+#     lambda: |-
+#       if (id(light_switch_duty_cycle).state < 65.0) {
+#         return true;
+#       } else {
+#         return false;
+#       }
+#     filters:
+#       - delayed_on: 50ms
+#     on_press:
+#       - if:
+#           condition:
+#             light.is_on: light_w
+#           then:
+#             light.turn_off: light_w
+#           else:
+#             light.turn_on:
+#               id: light_w
+#               brightness: 50%
+
+output:
+  - id: dummy_pwm
+    platform: esp8266_pwm
+    pin: 13
+
+light:
+  - id: light_w
+    platform: monochromatic
+    name: Light
+    output: dummy_pwm
+    default_transition_length: 0s
+    # gamma_correct: 1.7

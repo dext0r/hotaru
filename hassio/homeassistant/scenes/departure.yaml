@@ -1,0 +1,37 @@
+automation:
+  - id: scene_departure_sequence
+    alias: 'Scene Departure: Sequence'
+    mode: restart
+    trigger:
+      - platform: state
+        entity_id: lock.front_door
+        from: unlocked
+        to: locked
+    action:
+      - wait_for_trigger:
+          - platform: state
+            entity_id: binary_sensor.porch_door
+            from: 'on'
+            to: 'off'
+            for:
+              seconds: 2
+        timeout:
+          minutes: 1
+        continue_on_timeout: false
+
+      - if:
+          - condition: state
+            entity_id: binary_sensor.porch_door
+            state: 'off'
+
+          - condition: state
+            entity_id: lock.porch_door
+            state: unlocked
+        then:
+          - service: lock.lock
+            entity_id: lock.porch_door
+
+      - service: light.turn_off
+        entity_id:
+          - light.porch_path_light
+          - light.porch_lock_light

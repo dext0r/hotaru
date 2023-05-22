@@ -1,0 +1,308 @@
+# TODO: не работает WOL при пропадании питания, решается через IR (Яндекс Хаб + "Включить пульт телевизора")
+media_player:
+  platform: universal
+  name: TV
+  unique_id: media_player.tv
+  device_class: tv
+  commands:
+    turn_on:
+      service: script.tv_turn_on
+
+    turn_off:
+      service: script.tv_turn_off
+
+    volume_up:
+      service: mqtt.publish
+      data:
+        topic: /remoteapp/tv/remote_service/home_assistant/actions/sendkey
+        payload: KEY_VOLUMEUP
+
+    volume_down:
+      service: mqtt.publish
+      data:
+        topic: /remoteapp/tv/remote_service/home_assistant/actions/sendkey
+        payload: KEY_VOLUMEDOWN
+
+    volume_mute:
+      service: mqtt.publish
+      data:
+        topic: /remoteapp/tv/remote_service/home_assistant/actions/sendkey
+        payload: KEY_MUTE
+
+    volume_set:
+      service: script.tv_volume_set
+      data:
+        level: '{{ volume_level }}'
+
+    select_source:
+      service: mqtt.publish
+      data:
+        topic: /remoteapp/tv/ui_service/home_assistant/actions/changesource
+        payload_template: >
+          {% set sourceid = 4 %}
+
+          {% if source == 'Switch' %}
+            {% set sourceid = 4 %} {# HDMI1 #}
+          {% elif source == 'ATV' %}
+            {% set sourceid = 5 %} {# HDMI2 #}
+          {% elif source == 'Playstation 4' %}
+            {% set sourceid = 6 %} {# HDMI3 #}
+          {% endif %}
+
+          {"sourceid": {{ sourceid }}}
+
+  attributes:
+    state: sensor.tv_state
+    source: sensor.tv_source
+    source_list: input_select.tv_source_list|options
+    volume_level: sensor.tv_volume_level
+
+input_select:
+  tv_source_list:
+    name: 'TV: Source list'
+    options:
+      - 'Off'
+      - ATV
+      - Playstation 4
+      - Switch
+
+script:
+  tv_turn_on:
+    alias: 'TV: Turn on'
+    sequence:
+      - service: wake_on_lan.send_magic_packet
+        data:
+          broadcast_address: 192.168.0.1
+          broadcast_port: 9
+          mac: 64:AE:F1:1F:D2:F2
+
+      - if:
+          - condition: state
+            entity_id: media_player.tv
+            state: 'off'
+
+          - condition: state
+            entity_id: timer.tv_warm_up
+            state: idle
+        then:
+          - service: timer.start
+            entity_id: timer.tv_warm_up
+            data:
+              duration: 00:00:25
+
+  tv_turn_off:
+    alias: 'TV: Turn off'
+    sequence:
+      - service: mqtt.publish
+        data:
+          topic: /remoteapp/tv/remote_service/home_assistant/actions/sendkey
+          payload: KEY_POWER
+
+      - service: mqtt.publish
+        data:
+          topic: $SYS/broker/connection/hisense_tv/state
+          payload: 0
+
+  tv_volume_set:
+    alias: 'TV: Volume set'
+    fields:
+      level:
+        example: 5
+    sequence:
+      - repeat:
+          sequence:
+            - delay:
+                milliseconds: 500
+
+            - service: media_player.volume_down
+              entity_id: media_player.tv
+          until:
+            - condition: template
+              value_template: >
+                {{ state_attr('media_player.tv', 'volume_level') != None or repeat.index > 5 }}
+      - if:
+          - condition: template
+            value_template: >
+              {{ state_attr('media_player.tv', 'volume_level') != None }}
+        then:
+          - repeat:
+              sequence:
+                - delay:
+                    milliseconds: 250
+                - choose:
+                    - conditions:
+                        - condition: template
+                          value_template: >
+                            {{ state_attr('media_player.tv', 'volume_level') < level }}
+                      sequence:
+                        - service: media_player.volume_up
+                          entity_id: media_player.tv
+
+                    - conditions:
+                        - condition: template
+                          value_template: >
+                            {{ state_attr('media_player.tv', 'volume_level') > level }}
+                      sequence:
+                        - service: media_player.volume_down
+                          entity_id: media_player.tv
+              until:
+                - condition: or
+                  conditions:
+                    - '(level - 1) <= {{ state_attr("media_player.tv", "volume_level") <= (level + 1) }}'
+                    - '{{ state_attr("media_player.tv", "volume_level") == level }}'
+                    - '{{ repeat.index > 50 }}'
+
+  tv_press_button:
+    alias: 'TV: Press button'
+    fields:
+      button:
+        name: Button
+        selector:
+          text:
+    sequence:
+      - service: mqtt.publish
+        data:
+          topic: /remoteapp/tv/remote_service/home_assistant/actions/sendkey
+          payload: >
+            {%- if button == 'play' -%}
+              {%- set payload = 'KEY_PLAY' -%}
+            {%- elif button == 'pause' -%}
+              {%- set payload = 'KEY_PAUSE' -%}
+            {%- elif button == 'ok' -%}
+              {%- set payload = 'KEY_OK' -%}
+            {%- elif button == 'left' -%}
+              {%- set payload = 'KEY_LEFT' -%}
+            {%- endif -%}
+            {{ payload }}
+
+automation:
+  - id: tv_get_state
+    alias: 'TV: Get state'
+    mode: single
+    max_exceeded: silent
+    trigger:
+      - platform: state
+        entity_id: media_player.tv
+        to: 'on'
+
+      - platform: homeassistant
+        event: start
+    condition:
+      - condition: state
+        entity_id: media_player.tv
+        state: 'on'
+    action:
+      - service: timer.start
+        entity_id: timer.tv_no_signal
+        data:
+          duration: 00:00:35  # некоторые устройства долго загружаются
+
+      - service: mqtt.publish
+        data:
+          topic: /remoteapp/tv/ui_service/home_assistant/actions/gettvstate
+
+  - id: tv_turn_off
+    alias: 'TV: Turn off'
+    trigger:
+      - platform: state
+        entity_id: media_player.tv
+        to: 'off'
+    action:
+      - service: mqtt.publish
+        data:
+          topic: /remoteapp/mobile/broadcast/ui_service/state
+          payload: '{"is_signal": 0}'
+
+      - service: timer.cancel
+        entity_id:
+          - timer.tv_no_signal
+          - timer.tv_warm_up
+
+  - id: tv_source_insert
+    alias: 'TV: Source insert'
+    max_exceeded: silent
+    trigger:
+      - platform: mqtt
+        topic: /remoteapp/mobile/broadcast/platform_service/actions/sourceinsert
+        payload: '0'
+        value_template: '{{ value_json[0].is_signal }}'
+    action:
+      - service: timer.start
+        entity_id: timer.tv_no_signal
+        data:
+          duration: 00:00:20
+
+  - id: tv_no_signal
+    alias: 'TV: No signal'
+    trigger:
+      - platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.tv_no_signal
+    action:
+      - service: mqtt.publish
+        data:
+          topic: /remoteapp/tv/ui_service/home_assistant/actions/gettvstate
+
+      - delay:
+          seconds: 3
+
+      - if:
+          - condition: state
+            entity_id: sensor.tv_has_signal
+            state: 'off'
+        then:
+          - service: media_player.turn_off
+            entity_id: media_player.tv
+template:
+  sensor:
+    - name: 'TV: State'
+      unique_id: sensor.tv_state
+      state: >
+        {%- if is_state('sensor.tv_power', 'on') and
+               is_state('timer.tv_warm_up', 'idle') -%}
+          on
+        {%- else -%}
+          off
+        {%- endif -%}
+
+mqtt:
+  sensor:
+    - name: 'TV: Power'
+      unique_id: sensor.tv_power
+      state_topic: $SYS/broker/connection/hisense_tv/state
+      value_template: >
+        {{ 'on' if value|int else 'off' }}
+
+    - name: 'TV: Source'
+      unique_id: sensor.tv_source
+      state_topic: /remoteapp/mobile/broadcast/ui_service/state
+      value_template: >
+        {%- if is_state('sensor.tv_power', 'off') -%}
+          Off
+        {%- elif value_json.sourcename == 'HDMI1' -%}
+          Switch
+        {%- elif value_json.sourcename == 'HDMI2' -%}
+          ATV
+        {%- elif value_json.sourcename == 'HDMI3' -%}
+          Playstation 4
+        {%- else -%}
+          Off
+        {% endif %}
+
+    - name: 'TV: Has signal'
+      unique_id: sensor.tv_has_signal
+      state_topic: /remoteapp/mobile/broadcast/ui_service/state
+      value_template: >
+        {{ 'on' if value_json.is_signal == 1 else 'off' }}
+
+    - name: 'TV: Volume level'
+      unique_id: sensor.tv_volume_level
+      state_topic: /remoteapp/mobile/broadcast/platform_service/actions/volumechange
+      value_template: '{{ value_json.volume_value|float / 100 }}'
+
+timer:
+  tv_no_signal:
+    name: 'TV: No signal'
+  tv_warm_up:
+    name: 'TV: Warm up'

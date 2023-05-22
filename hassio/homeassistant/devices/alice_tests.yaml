@@ -1,0 +1,46 @@
+automation:
+  - id: alice_ping
+    alias: 'Alice: Ping'
+    trigger:
+      platform: event
+      event_type: yandex_intent
+      event_data:
+        text: Дом на связи
+    action:
+      - service: script.yandex_station_tts
+        data:
+          target: >
+            {{ trigger.event.data.get('entity_id', 'last') }}
+          text: Тук-тук! Дом на связи
+
+  - id: alice_tell_fairy_tale
+    alias: 'Alice: Tell fairy tale'
+    trigger:
+      platform: event
+      event_type: yandex_intent
+      event_data:
+        text: Расскажи сказку про белого бычка
+    action:
+      - service: script.yandex_station_tts
+        data:
+          target: >
+            {{ trigger.event.data.get('entity_id', 'last') }}
+          text: Присаживайся поудобнее мой дорогой дружок
+
+      - service: script.yandex_station_tts
+        data:
+          target: >
+            {{ trigger.event.data.get('entity_id', 'last') }}
+          text: Сейчас я расскажу тебе сказку про белого бычка
+
+      - service: script.yandex_station_tts
+        data:
+          target: >
+            {{ trigger.event.data.get('entity_id', 'last') }}
+          text: Нет!
+
+      - service: script.yandex_station_tts
+        data:
+          target: >
+            {{ trigger.event.data.get('entity_id', 'last') }}
+          text: Я тут подумала, а читай-ка ты её сам, ленивый ты крендель!

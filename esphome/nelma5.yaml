@@ -1,0 +1,428 @@
+packages:
+  base: !include common/base.yaml
+  time: !include common/time.yaml
+  restart: !include common/restart.yaml
+
+substitutions:
+  device_name: Nelma5
+
+  intercom_mode_passthrough: Passthrough  # (0) переключено на трубку
+  intercom_mode_always_reject: Always reject # (1)
+  intercom_mode_always_accept: Always accept # (2)
+  intercom_mode_delivery: Delivery # (3)
+  intercom_mode_guests: Guests # (4)
+
+  intercom_status_incoming_call: Incoming call
+  intercom_status_door_opened: Door opened
+  intercom_status_call_rejected: Call rejected
+  intercom_status_standby: Standby
+
+  delay_call_end_detect: 3000ms
+  delay_before_voice: 1000ms
+  delay_before_open_door: 1000ms
+  delay_open_on_time: 600ms
+  delay_after_close_door: 1000ms
+
+esphome:
+  name: nelma5
+  model: Nelma5 / SmartIntercom / ESP32
+  libraries:
+    - SPI
+    - FS
+    - WiFi
+    - WiFiClientSecure
+    - ESP8266Audio
+  includes:
+    - lib/intercom/ESPAudio.h
+    - lib/intercom/delivery.mp3.h
+    - lib/intercom/reject.mp3.h
+    - lib/intercom/guests.mp3.h
+  platformio_options:
+    build_flags: -DFS_NO_GLOBALS
+  on_boot:
+    priority: -100
+    then:
+      - select.set:
+          id: intercom_mode_select
+          option: intercom_mode_passthrough
+
+esp32:
+  board: esp32dev
+
+uart:
+  rx_pin: 9
+  tx_pin: 10
+  baud_rate: 9600
+
+custom_component:
+  - id: audio_player
+    lambda: 'return {new ESPAudio()};'
+
+modbus:
+
+globals:
+  - id: intercom_mode
+    type: int
+    initial_value: '0'
+
+  - id: intercom_oncall
+    type: bool
+    initial_value: 'false'
+
+light:
+  - id: red_led
+    platform: status_led
+    internal: true
+    pin:
+      number: 16
+      inverted: false
+
+  - id: green_led
+    platform: monochromatic
+    output: green_led_output
+    internal: true
+    restore_mode: ALWAYS_OFF
+    default_transition_length: 0s
+    effects:
+      - pulse:
+          name: pulse
+          update_interval: 2s
+
+      - strobe:
+          name: blink
+          colors:
+            - state: true
+              duration: 100ms
+            - state: false
+              duration: 1900ms
+
+      - strobe:
+          name: calling
+          colors:
+            - state: true
+              duration: 50ms
+            - state: false
+              duration: 50ms
+
+  - name: Porch Lock Light
+    platform: partition
+    segments:
+      - id: led
+        from: 0
+        to: 0
+    gamma_correct: 1
+    restore_mode: ALWAYS_OFF
+    effects:
+      - pulse:
+          name: pulse
+          update_interval: 1s
+          transition_length: 1s
+
+  - name: Porch Path Light
+    platform: partition
+    segments:
+      - id: led
+        from: 1
+        to: 22
+    gamma_correct: 1
+    restore_mode: ALWAYS_OFF
+
+  - id: led
+    platform: neopixelbus
+    pin: 27
+    type: GRBW
+    variant: SK6812
+    num_leds: 23
+
+select:
+  - id: intercom_mode_select
+    platform: template
+    name: Intercom Mode
+    icon: 'mdi:deskphone'
+    optimistic: true
+    options:
+      - ${intercom_mode_passthrough}
+      - ${intercom_mode_always_accept}
+      - ${intercom_mode_always_reject}
+      - ${intercom_mode_delivery}
+      - ${intercom_mode_guests}
+    initial_option: ${intercom_mode_passthrough}
+    on_value:
+      lambda: |-
+        id(intercom_mode) = i;
+        if (i == 0) {
+            id(intercom_mode_passthrough).execute();
+        } else {
+            id(intercom_mode_intercept).execute();
+        }
+
+script:
+  - id: intercom_mode_passthrough
+    then:
+      - logger.log:
+          format: 'Intercom: Passthrough mode'
+          level: INFO
+      - output.turn_off: intercept_line
+      - output.turn_on: phone_hanging
+      - output.turn_off: open_door
+
+  - id: intercom_mode_intercept
+    then:
+      - logger.log:
+          format: 'Intercom: Intercept mode'
+          level: INFO
+      - output.turn_on: intercept_line
+      - output.turn_on: phone_hanging
+      - output.turn_off: open_door
+
+  - id: intercom_open_door
+    then:
+      - logger.log:
+          format: 'Intercom: Open door'
+          level: INFO
+
+      - lambda: 'id(intercom_status).publish_state("${intercom_status_door_opened}");'
+      - output.turn_off: phone_hanging
+      - if:
+          condition:
+            lambda: 'return id(intercom_mode) == 3 || id(intercom_mode) == 4;'
+          then:
+            - delay: $delay_before_voice
+            - lambda: |-
+                switch (id(intercom_mode)) {
+                  case 3:
+                    playData(audio_player, delivery_mp3);
+                    break;
+                  case 4:
+                    playData(audio_player, guests_mp3);
+                    break;
+                }
+            - wait_until:
+                lambda: 'return !isPlaying(audio_player);'
+          else:
+            - delay: $delay_before_open_door
+      - output.turn_on: open_door
+      - delay: $delay_open_on_time
+      - output.turn_off: open_door
+      - delay: $delay_after_close_door
+      - output.turn_on: phone_hanging
+
+  - id: intercom_reject_call
+    then:
+      - logger.log:
+          format: 'Intercom: Reject call'
+          level: INFO
+
+      - lambda: 'id(intercom_status).publish_state("${intercom_status_call_rejected}");'
+      - output.turn_off: phone_hanging
+      - delay: $delay_before_voice
+      - lambda: 'playData(audio_player, reject_mp3);'
+      - wait_until:
+          lambda: 'return !isPlaying(audio_player);'
+      - output.turn_on: phone_hanging
+
+sensor:
+  - id: input1_connection
+    platform: template
+    internal: true
+    lambda: |-
+      if (id(input1_voltage).state > 0.2) {
+        return true;
+      } else {
+        return false;
+      }
+
+  - id: input1_voltage
+    platform: adc
+    pin: 33
+    attenuation: 11db
+    internal: true
+    update_interval: 5s
+
+  # - id: input2_voltage
+  #   platform: adc
+  #   pin: 32
+  #   attenuation: 11db
+  #   internal: true
+  #   update_interval: 5s
+
+  # 50A
+  - id: input1_current
+    platform: ct_clamp
+    name: Stove Power Supply Current
+    sensor: input1_voltage
+    internal: true
+    update_interval: 5s
+    filters:
+      - calibrate_linear:
+        - 0.0 -> 0.0
+        - 0.184 -> 9.25
+      - lambda: |-
+          if (x <= 1) return 0;
+          return x;
+
+  - id: input1_power
+    platform: template
+    name: Stove Power Supply Power
+    device_class: power
+    unit_of_measurement: W
+    accuracy_decimals: 0
+    update_interval: 1s
+    lambda: |-
+      // if (!id(input1_connection).state) {
+      //   return 0;
+      // }
+
+      return id(home_power_supply_voltage).state * id(input1_current).state;
+    filters:
+      - lambda: |-
+          if (std::isnan(x)) {
+            return 0;
+          }
+
+          return x;
+      - median:
+          window_size: 5
+          send_every: 5
+          send_first_at: 3
+
+  - platform: total_daily_energy
+    name: Stove Power Supply Energy
+    unit_of_measurement: kWh
+    accuracy_decimals: 2
+    power_id: input1_power
+    filters:
+      - multiply: 0.001
+
+  # Розетки кухня
+  - platform: pzemac
+    address: 5
+    current:
+      name: Kitchen Power Supply Current
+      internal: true
+    voltage:
+      id: home_power_supply_voltage
+      name: Kitchen Power Supply Voltage
+      internal: true
+    energy:
+      name: Kitchen Power Supply Energy
+    power:
+      name: Kitchen Power Supply Power
+      accuracy_decimals: 0
+    power_factor:
+      name: Kitchen Power Supply Power Factor
+      internal: true
+    frequency:
+      name: Kitchen Power Supply Frequency
+      internal: true
+    update_interval: 5s
+
+  # Розетки ванная / Климат Спальня-Мастерская
+  - platform: pzemac
+    address: 6
+    current:
+      name: CB Power Supply Current
+      internal: true
+    voltage:
+      name: CB Power Supply Voltage
+      internal: true
+    energy:
+      name: CB Power Supply Energy
+    power:
+      name: CB Power Supply Power
+      accuracy_decimals: 0
+    power_factor:
+      name: CB Power Supply Power Factor
+      internal: true
+    frequency:
+      name: CB Power Supply Frequency
+      internal: true
+    update_interval: 5s
+
+  # Розетки комнаты
+  - platform: pzemac
+    address: 7
+    current:
+      name: Sockets Power Supply Current
+      internal: true
+    voltage:
+      name: Sockets Power Supply Voltage
+      internal: true
+    energy:
+      name: Sockets Power Supply Energy
+    power:
+      name: Sockets Power Supply Power
+      accuracy_decimals: 0
+    power_factor:
+      name: Sockets Power Supply Power Factor
+      internal: true
+    frequency:
+      name: Sockets Power Supply Frequency
+      internal: true
+    update_interval: 5s
+
+binary_sensor:
+  - id: intercom_ring
+    platform: gpio
+    internal: true
+    pin:
+      number: 12
+      inverted: true
+      mode:
+        input: true
+        pullup: true
+    filters:
+      - delayed_off: ${delay_call_end_detect}
+    on_press:
+      - if:
+          condition:
+            lambda: 'return !id(intercom_oncall);'
+          then:
+            - lambda: 'id(intercom_oncall) = true;'
+            - logger.log:
+                format: 'Intercom: Incoming call'
+                level: INFO
+            - lambda: 'id(intercom_status).publish_state("${intercom_status_incoming_call}");'
+            - lambda: |
+                switch (id(intercom_mode)) {
+                  case 1:
+                  case 3:
+                  case 4:
+                    id(intercom_open_door).execute();
+                    break;
+                  case 2:
+                    id(intercom_reject_call).execute();
+                    break;
+                }
+    on_release:
+      - lambda: 'id(intercom_oncall) = false;'
+      - logger.log:
+          format: 'Intercom: Incoming call completed'
+          level: INFO
+      - lambda: 'id(intercom_status).publish_state("${intercom_status_standby}");'
+
+text_sensor:
+  - id: intercom_status
+    platform: template
+    name: Intercom Status
+    icon: 'mdi:bell'
+    lambda: 'return {"${intercom_status_standby}"};'
+
+output:
+  - id: green_led_output
+    platform: ledc
+    pin: 13
+
+  # переключатель плата/трубка (off - на трубку, on - на плату)
+  - id: intercept_line
+    platform: gpio
+    pin: 14
+
+  - id: open_door
+    platform: gpio
+    pin: 17
+
+  # поднятие трубки (on - положена, off - поднята)
+  - id: phone_hanging
+    platform: gpio
+    pin: 4

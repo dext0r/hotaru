@@ -1,0 +1,167 @@
+alert:
+  fridge_is_hot:
+    name: 'Fridge is hot'
+    message: >
+      🔥 Холодильник кажется перегрелся: {{ states('sensor.fridge_temperature') }} °C
+    done_message: >
+      ☃️ Холодильник остыл: {{ states('sensor.fridge_temperature') }} °C
+    entity_id: binary_sensor.fridge_overheated
+    state: 'on'
+    repeat: 60
+    notifiers:
+      - dextor
+
+  freezer_is_hot:
+    name: 'Freezer is hot'
+    message: >
+      🔥 Морозильник кажется перегрелся: {{ states('sensor.freezer_temperature') }} °C
+    done_message: >
+      ☃️ Морозильник остыл: {{ states('sensor.freezer_temperature') }} °C
+    entity_id: binary_sensor.freezer_overheated
+    state: 'on'
+    repeat: 60
+    notifiers:
+      - dextor
+
+automation:
+  - id: fridge_door_alert
+    alias: 'Fridge: Door alert'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.fridge_door
+        id: 2m
+        to: 'on'
+        for:
+          minutes: 2
+
+      - platform: state
+        entity_id: binary_sensor.fridge_door
+        to: 'on'
+        for:
+          minutes: 4
+
+      - platform: state
+        entity_id: binary_sensor.fridge_door
+        to: 'on'
+        for:
+          minutes: 10
+
+      - platform: state
+        entity_id: binary_sensor.fridge_door
+        to: 'on'
+        for:
+          minutes: 15
+    action:
+      - if:
+          - condition: trigger
+            id: 2m
+        then:
+          - service: notify.dextor
+            data:
+              message: 🧊 Закрой холодильник!
+        else:
+          - service: script.yandex_station_tts
+            data:
+              target: all
+              type: alert
+              text: Проверь холодильник, кажется он открыт
+
+  - id: fridge_temperature_alert
+    alias: 'Fridge: Temperature alert'
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.fridge_temperature
+        above: 16
+        for:
+          minutes: 4
+
+      - platform: numeric_state
+        entity_id: sensor.fridge_temperature
+        above: 16
+        for:
+          minutes: 25
+    action:
+      - service: script.yandex_station_tts
+        data:
+          target: all
+          type: alert
+          text: В холодильнике очень жарко, проверь что там как
+
+  - id: freezer_door_alert
+    alias: 'Freezer: Door alert'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.freezer_door
+        id: 2m
+        to: 'on'
+        for:
+          minutes: 2
+
+      - platform: state
+        entity_id: binary_sensor.freezer_door
+        to: 'on'
+        for:
+          minutes: 4
+
+      - platform: state
+        entity_id: binary_sensor.freezer_door
+        to: 'on'
+        for:
+          minutes: 10
+
+      - platform: state
+        entity_id: binary_sensor.freezer_door
+        to: 'on'
+        for:
+          minutes: 15
+    action:
+      - if:
+          - condition: trigger
+            id: 2m
+        then:
+          - service: notify.dextor
+            data:
+              message: 🧊 Закрой морозильник!
+        else:
+          - service: script.yandex_station_tts
+            data:
+              target: all
+              type: alert
+              text: Проверь морозильник, кажется он открыт
+
+  - id: freezer_temperature_alert
+    alias: 'Freezer: Temperature alert'
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.freezer_temperature
+        above: 16
+        for:
+          minutes: 4
+
+      - platform: numeric_state
+        entity_id: sensor.freezer_temperature
+        above: 16
+        for:
+          minutes: 25
+    action:
+      - service: script.yandex_station_tts
+        data:
+          target: all
+          type: alert
+          text: В морозильнике очень жарко, проверь что там как
+
+template:
+  binary_sensor:
+    - name: Fridge Overheated
+      state: >
+        {{ states('sensor.fridge_temperature')|float >= 11 }}
+      availability: >
+        {{ states('sensor.fridge_temperature') not in ['unavailable', 'unknown'] }}
+      device_class: heat
+
+    - name: Freezer Overheated
+      state: >
+        {{ states('sensor.freezer_temperature')|float >= -4 }}
+      availability: >
+        {{ states('sensor.freezer_temperature') not in ['unavailable', 'unknown'] }}
+      device_class: heat

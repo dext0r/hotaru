@@ -1,0 +1,293 @@
+input_datetime:
+  humidifiers_last_cleanup:
+    name: 'Humidifiers: Last cleanup'
+    has_date: true
+    icon: mdi:spray-bottle
+
+input_boolean:
+  bedroom_humidifier_on_duty:
+    name: 'Bedroom Humidifier: On duty'
+    icon: mdi:watering-can
+
+  living_room_humidifier_on_duty:
+    name: 'Living Room Humidifier: On duty'
+    icon: mdi:watering-can
+
+automation:
+  - id: humidifiers_need_refill
+    alias: 'Humidifiers: Need refill'
+    trigger:
+      - platform: time_pattern
+        minutes: '/45'
+    condition:
+      - condition: state
+        entity_id: binary_sensor.anyone_home
+        state: 'on'
+
+      - condition: state
+        entity_id:
+          - input_boolean.living_room_humidifier_on_duty
+          - input_boolean.bedroom_humidifier_on_duty
+        match: any
+        state: 'on'
+
+      - condition: state
+        entity_id: input_boolean.scene_movie
+        state: 'off'
+
+      - condition: state
+        entity_id: input_select.home_mode
+        state: Day
+
+      - condition: or
+        conditions:
+          - condition: numeric_state
+            entity_id: sensor.living_room_humidifier_water_level
+            below: 40
+
+          - condition: numeric_state
+            entity_id: sensor.bedroom_humidifier_water_level
+            below: 40
+
+      - condition: template
+        value_template: >
+          {{ (now() - states.input_select.home_mode.last_changed).seconds > 3600 }}
+
+      - condition: template
+        value_template: >
+          {{ (now() - state_attr('automation.humidifiers_need_cleanup_alert',
+                                 'last_triggered')|default(now() - timedelta(days=1), true)).seconds > 4 * 60 * 60 }}
+    action:
+      - service: script.yandex_station_tts
+        data:
+          target: all
+          type: attention
+          text: >
+            {{ states.sensor.alert_greeting.state }}
+            {{ [
+                'Добавь водички в увлажнители',
+                'Увлажнители хотят пить',
+                'У увлажнителей пересохло в горле, напои их пожалуйста',
+                'Как-то суховато, может воды?',
+                'Пора размяться и налить в увлажнители воды',
+                'Не любишь сухие губы? Налей воды в увлажнители!'
+                ]|random
+            }}
+
+  - id: humidifiers_cleanup
+    alias: 'Humidifiers: Cleanup'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.living_room_humidifier_water_tank
+        from: 'off'
+        to: 'on'
+    action:
+      - service: input_datetime.set_datetime
+        entity_id: input_datetime.humidifiers_last_cleanup
+        data:
+          date: '{{ now().strftime("%Y-%m-%d") }}'
+
+  - id: humidifiers_need_cleanup_alert
+    alias: 'Humidifiers: Need cleanup alert'
+    trigger:
+      - platform: time_pattern
+        minutes: 59
+    condition:
+      - condition: state
+        entity_id:
+          - input_boolean.living_room_humidifier_on_duty
+          - input_boolean.bedroom_humidifier_on_duty
+        match: any
+        state: 'on'
+
+      - condition: state
+        entity_id: input_select.home_mode
+        state:
+          - Day
+          - Vacation
+
+      - condition: state
+        entity_id: person.dextor
+        state: home
+
+      - condition: state
+        entity_id:
+          - input_boolean.scene_meal
+          - input_boolean.scene_sleepy_mood
+        state: 'off'
+
+      - condition: template
+        value_template: >
+          {{ (now() - states.input_boolean.scene_meal.last_changed).seconds > (80 * 60) }}
+
+      - condition: template
+        value_template: >
+          {{ (now()|as_timestamp - state_attr('input_datetime.humidifiers_last_cleanup', 'timestamp')) > (60 * 60 * 24 * 2) }}
+
+      - condition: template
+        value_template: >
+          {{ now().hour > 15 or now().hour < 3 }}
+    action:
+      - service: script.yandex_station_tts
+        data:
+          target: all
+          type: attention
+          text: >
+            {{ states.sensor.alert_greeting.state }}
+            {{ [
+                'Я чувствую новую жизнь! Давай помоем увлажнители',
+                'Пахнет болотом, понимаешь к чем я клоню?',
+                'Не хотела тебе говорить, но увлажнители надо помыть',
+                'Сегодня доливом воды не отделаешься, время мыть увлажнители',
+                'Даже кот не идёт вейпить увлажнитель, там очень пахнет'
+                ]|random
+            }}
+
+  - id: bedroom_humidifer_auto_off
+    alias: 'Bedroom Humidifier: Auto off'
+    trigger:
+      - platform: time_pattern
+        minutes: '/14'
+    condition:
+      - condition: state
+        entity_id: humidifier.bedroom_humidifier
+        state: 'on'
+
+      - condition: numeric_state
+        entity_id: sensor.bedroom_humidity
+        above: input_number.home_target_humidity
+
+      - condition: state
+        entity_id: input_select.home_mode
+        state:
+          - Day
+          - Night
+    action:
+      - service: humidifier.turn_off
+        entity_id: humidifier.bedroom_humidifier
+
+  - id: bedroom_humidifer_auto_on
+    alias: 'Bedroom Humidifier: Auto on'
+    trigger:
+      - platform: time_pattern
+        minutes: '/13'
+
+      - platform: state
+        entity_id: sensor.ups_status
+        from: 'On Battery'
+        to: 'Online'
+        for:
+          seconds: 60
+    condition:
+      - condition: state
+        entity_id: humidifier.bedroom_humidifier
+        state: 'off'
+
+      - condition: state
+        entity_id: input_boolean.bedroom_humidifier_on_duty
+        state: 'on'
+
+      - condition: numeric_state
+        entity_id: sensor.bedroom_humidity
+        value_template: >
+          {{ state.state|int(0) + 7 }}
+        below: input_number.home_target_humidity
+
+      - condition: numeric_state
+        entity_id: sensor.bedroom_humidifier_water_level
+        above: 15
+
+      - condition: state
+        entity_id: input_select.home_mode
+        state:
+          - Day
+          - Night
+    action:
+      - service: humidifier.turn_on
+        entity_id: humidifier.bedroom_humidifier
+
+      - wait_template: >
+          {{ is_state('humidifier.bedroom_humidifier', 'on') }}
+        timeout:
+          seconds: 30
+        continue_on_timeout: false
+
+      - service: humidifier.set_mode
+        entity_id: humidifier.bedroom_humidifier
+        data:
+          mode: Strong
+
+  - id: living_room_humidifer_auto_off
+    alias: 'Living Room Humidifier: Auto off'
+    trigger:
+      - platform: time_pattern
+        minutes: '/14'
+    condition:
+      - condition: state
+        entity_id: humidifier.living_room_humidifier
+        state: 'on'
+
+      - condition: numeric_state
+        entity_id: sensor.living_room_humidity
+        above: input_number.home_target_humidity
+
+      - condition: state
+        entity_id: input_select.home_mode
+        state:
+          - Day
+          - Night
+    action:
+      - service: humidifier.turn_off
+        entity_id: humidifier.living_room_humidifier
+
+  - id: living_room_humidifer_auto_on
+    alias: 'Living Room Humidifier: Auto on'
+    trigger:
+      - platform: time_pattern
+        minutes: '/13'
+    condition:
+      - condition: state
+        entity_id: humidifier.living_room_humidifier
+        state: 'off'
+
+      - condition: state
+        entity_id: input_boolean.living_room_humidifier_on_duty
+        state: 'on'
+
+      - condition: numeric_state
+        entity_id: sensor.living_room_humidity
+        value_template: >
+          {{ state.state|int(0) + 7 }}
+        below: input_number.home_target_humidity
+
+      - condition: numeric_state
+        entity_id: sensor.living_room_humidifier_water_level
+        above: 15
+
+      - condition: state
+        entity_id: input_select.home_mode
+        state:
+          - Day
+          - Night
+    action:
+      - service: humidifier.turn_on
+        entity_id: humidifier.living_room_humidifier
+
+      - wait_template: >
+          {{ is_state('humidifier.living_room_humidifier', 'on') }}
+        timeout:
+          seconds: 30
+        continue_on_timeout: false
+
+      - service: humidifier.set_mode
+        entity_id: humidifier.living_room_humidifier
+        data:
+          mode: High
+
+      - delay:
+          seconds: 7
+
+      - service: select.select_option
+        entity_id: select.living_room_humidifier_led_brightness
+        data:
+          option: 'dim'

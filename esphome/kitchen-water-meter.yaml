@@ -1,0 +1,95 @@
+packages:
+  base: !include common/base.yaml
+
+substitutions:
+  device_name: Kitchen Water Meter
+
+esphome:
+  name: kitchen-water-meter
+  model: NodeMCU
+  name_add_mac_suffix: false
+
+esp8266:
+  board: esp01_1m
+  restore_from_flash: true
+
+wifi:
+  ssid: !secret ssid_kitchen
+
+preferences:
+  flash_write_interval: 10min
+
+sensor:
+  # YF-S402B: (38xQ) л/мин ±3% (2280 импульсов = 1 литр)
+  - id: kitchen_filter_feed_water_lm
+    platform: pulse_counter
+    pin: 12
+    internal: true
+    unit_of_measurement: L/m
+    update_interval: 60s
+    filters:
+      - lambda: |-
+          return x / 2280;
+
+  - name: Kitchen Filter Feed Water
+    platform: integration
+    sensor: kitchen_filter_feed_water_lm
+    time_unit: min
+    restore: true
+    icon: mdi:water
+    state_class: total_increasing
+    device_class: water
+    unit_of_measurement: L
+    accuracy_decimals: 2
+
+  - id: kitchen_filter_drink_water_lm
+    platform: pulse_counter
+    pin: 14
+    internal: true
+    unit_of_measurement: L/m
+    update_interval: 60s
+    filters:
+      - lambda: |-
+          return x / 2280;
+
+  - name: Kitchen Filter Drink Water
+    platform: integration
+    sensor: kitchen_filter_drink_water_lm
+    time_unit: min
+    restore: true
+    icon: mdi:water
+    state_class: total_increasing
+    device_class: water
+    unit_of_measurement: L
+    accuracy_decimals: 2
+
+light:
+  - name: Dishwasher Status Light
+    platform: partition
+    segments:
+      - id: led
+        from: 0
+        to: 0
+    gamma_correct: 1
+    restore_mode: ALWAYS_OFF
+    effects:
+      - pulse:
+          name: pulse
+          update_interval: 2s
+          transition_length: 2s
+
+  - name: Kitchen Path Light
+    platform: partition
+    segments:
+      - id: led
+        from: 1
+        to: 54
+    gamma_correct: 1
+    restore_mode: ALWAYS_OFF
+
+  - id: led
+    platform: neopixelbus
+    pin: 13
+    type: GRBW
+    variant: SK6812
+    num_leds: 55

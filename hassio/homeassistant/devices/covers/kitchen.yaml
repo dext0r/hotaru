@@ -1,0 +1,29 @@
+cover:
+  - platform: template
+    covers:
+      # дальше 65 ездить нет смысла, там холодильник мешает полному открытию
+      kitchen:
+        unique_id: kitchen_cover
+        friendly_name: Kitchen Curtains
+        device_class: curtain
+        optimistic: false
+        position_template: >
+          {% set current_position = states.cover.kitchen_curtains_motor.attributes.current_position %}
+          {% set position_range = [0, 100] %}
+          {% set motor_range = [0, 65] %}
+          {% set calculated_position = ((position_range[1] - position_range[0]) / (motor_range[1] - motor_range[0]) * (current_position - motor_range[0]) + position_range[0]) %}
+          {{ [calculated_position|int, position_range|max]| min }}
+        availability_template: >
+          {{ states('cover.kitchen_curtains_motor') not in ['unknown', 'unavailable'] and 'current_position' in states.cover.kitchen_curtains_motor.attributes }}
+        set_cover_position:
+          service: cover.set_cover_position
+          entity_id: cover.kitchen_curtains_motor
+          data:
+            position: >
+              {% set position_range = [0, 65] %}
+              {% set motor_range = [0, 100] %}
+              {% set target_position = ((position_range[1] - position_range[0]) / (motor_range[1] - motor_range[0]) * (position - motor_range[0]) + position_range[0]) %}
+              {{ [target_position|int, position_range|max]| min }}
+        stop_cover:
+          service: cover.stop_cover
+          entity_id: cover.kitchen_curtains_motor

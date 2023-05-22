@@ -1,0 +1,2398 @@
+title: Home
+views:
+  - theme: Mushroom
+    path: default_view
+    title: Home
+    icon: mdi:home
+    type: custom:vertical-layout
+    layout:
+      column: 3
+      '--control-height': 12px
+    badges: []
+    cards:
+      - type: horizontal-stack
+        cards:
+          - type: custom:mushroom-person-card
+            entity: person.dextor
+            icon_type: entity-picture
+            fill_container: false
+            layout: vertical
+            primary_info: state
+            secondary_info: last-changed
+          - type: custom:mushroom-person-card
+            entity: person.layma
+            icon_type: entity-picture
+            primary_info: state
+            layout: vertical
+            secondary_info: last-changed
+      - type: horizontal-stack
+        cards:
+          - type: custom:mushroom-template-card
+            primary: '{{ states(''input_select.home_mode'') }}'
+            secondary: ''
+            icon: |-
+              {% set state = states('input_select.home_mode') %}
+
+              {% if state == 'Day' %}
+              mdi:weather-sunny
+              {% elif state == 'Night' %}
+              mdi:sleep
+              {% elif state == 'Vacation' %}
+              mdi:airplane
+              {% endif %}
+            icon_color: |-
+              {% set state = states('input_select.home_mode') %}
+
+              {% if state == 'Day' %}
+              green
+              {% elif state == 'Night' %}
+              indigo
+              {% elif state == 'Vacation' %}
+              blue-grey
+              {% endif %}
+            entity: input_select.home_mode
+            layout: horizontal
+            tap_action:
+              action: more-info
+          - type: custom:mushroom-template-card
+            primary: Door
+            secondary: ''
+            icon: |
+              {% if is_state('lock.front_door', 'locked') %}
+              mdi:lock
+              {% elif is_state('lock.front_door', 'unlocked') %}
+              mdi:lock-open
+              {% else %}
+              mdi:help
+              {% endif %}
+            icon_color: |-
+              {% if is_state('lock.front_door', 'locked') %}
+                var(--rgb-state-lock-locked)
+              {% elif is_state('lock.front_door', 'unlocked') %}
+                var(--rgb-state-lock-unlocked)
+              {% endif %}
+            entity: lock.front_door
+            tap_action:
+              action: more-info
+            badge_icon: |
+              {% if is_state('binary_sensor.front_door', 'on') %}
+              mdi:door-open
+              {% elif is_state('binary_sensor.front_door', 'off') %}
+              mdi:door-closed
+              {% else %}
+              mdi:help
+              {% endif %}
+            badge_color: |
+              {% if is_state('binary_sensor.front_door', 'on') %}
+              var(--rgb-state-cover-open)
+              {% elif is_state('binary_sensor.front_door', 'off') %}
+              var(--rgb-state-cover-closed)
+              {% endif %}
+            layout: horizontal
+          - type: custom:mushroom-template-card
+            primary: Porch
+            secondary: ''
+            icon: |
+              {% if is_state('lock.porch_door', 'locked') %}
+              mdi:lock
+              {% elif is_state('lock.porch_door', 'unlocked') %}
+              mdi:lock-open
+              {% else %}
+              mdi:help
+              {% endif %}
+            icon_color: |-
+              {% if is_state('lock.porch_door', 'locked') %}
+                var(--rgb-state-lock-locked)
+              {% elif is_state('lock.porch_door', 'unlocked') %}
+                var(--rgb-state-lock-unlocked)
+              {% endif %}
+            entity: lock.porch_door
+            tap_action:
+              action: more-info
+            badge_icon: |
+              {% if is_state('binary_sensor.porch_door', 'on') %}
+              mdi:door-open
+              {% elif is_state('binary_sensor.porch_door', 'off') %}
+              mdi:door-closed
+              {% else %}
+              mdi:help
+              {% endif %}
+            badge_color: |
+              {% if is_state('binary_sensor.porch_door', 'on') %}
+              var(--rgb-state-cover-open)
+              {% elif is_state('binary_sensor.porch_door', 'off') %}
+              var(--rgb-state-cover-closed)
+              {% endif %}
+            layout: horizontal
+      - type: vertical-stack
+        cards:
+          - type: custom:gap-card
+            height: 10
+          - square: true
+            columns: 4
+            type: grid
+            cards:
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.entrance_motion
+                layout: vertical
+                name: Entrance
+                secondary_info: none
+                primary_info: name
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.hallway_motion
+                layout: vertical
+                name: Hallway
+                secondary_info: none
+                primary_info: name
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.kitchen_motion
+                layout: vertical
+                name: Kitchen
+                secondary_info: none
+                primary_info: name
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.bedroom_motion
+                layout: vertical
+                name: Bedroom
+                secondary_info: none
+                primary_info: name
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.living_room_motion
+                layout: vertical
+                name: Living Room
+                secondary_info: none
+                primary_info: name
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.wardrobe_motion
+                layout: vertical
+                name: Wardrobe
+                secondary_info: none
+                primary_info: name
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.living_room_occupancy
+                layout: vertical
+                name: Living Room
+                secondary_info: none
+                primary_info: name
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.bathroom_any_occupancy
+                layout: vertical
+                name: Bathroom
+                secondary_info: none
+                primary_info: name
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.workshop_occupancy
+                layout: vertical
+                name: Workshop
+                secondary_info: none
+                primary_info: name
+        view_layout:
+          show:
+            mediaquery: '(min-width: 800px)'
+      - type: vertical-stack
+        cards:
+          - square: false
+            columns: 3
+            type: grid
+            cards:
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.closet_door
+                name: Closet
+                secondary_info: none
+                layout: vertical
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.wardrobe_door
+                name: Wardrobe
+                secondary_info: none
+                layout: vertical
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.workshop_door
+                name: Workshop
+                secondary_info: none
+                layout: vertical
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.fridge_door
+                name: Fridge
+                secondary_info: none
+                layout: vertical
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.freezer_door
+                name: Freezer
+                secondary_info: none
+                layout: vertical
+        view_layout:
+          show:
+            mediaquery: '(min-width: 800px)'
+      - type: horizontal-stack
+        cards:
+          - type: tile
+            entity: binary_sensor.water_leak
+            vertical: true
+            name: Water
+          - type: tile
+            entity: binary_sensor.smoke
+            vertical: true
+            name: Smoke
+            icon: mdi:smoke-detector-variant
+          - type: tile
+            entity: binary_sensor.freezer_overheated
+            vertical: true
+            name: Freezer
+            icon: mdi:thermometer-alert
+          - type: tile
+            entity: binary_sensor.fridge_overheated
+            vertical: true
+            name: Fridge
+        view_layout:
+          show:
+            mediaquery: '(min-width: 800px)'
+      - type: custom:layout-break
+      - type: custom:mushroom-chips-card
+        chips:
+          - type: conditional
+            conditions:
+              - entity: lock.front_door_vacation
+                state: locked
+            chip:
+              type: template
+              icon: mdi:shield-lock
+              icon_color: blue
+              entity: lock.front_door_vacation
+              tap_action:
+                action: more-info
+          - type: template
+            content: |
+              {{
+                states('sensor.cb_power_supply_power')|int(0) +
+                states('sensor.kitchen_power_supply_power')|int(0) +
+                states('sensor.sockets_power_supply_power')|int(0) +
+                states('sensor.stove_power_supply_power')|int(0)
+              }} W
+            icon: mdi:lightning-bolt
+          - type: template
+            icon: mdi:kettle-outline
+            content: '{{ states(''sensor.kettle_water_level_ml'') }} mL'
+            entity: climate.kettle
+            tap_action:
+              action: more-info
+          - type: conditional
+            conditions:
+              - entity: input_boolean.bedroom_airing_cold
+                state: 'on'
+            chip:
+              type: entity
+              entity: input_boolean.bedroom_airing_cold
+              name: BR
+              content_info: name
+              icon: mdi:wind-power
+              icon_color: blue
+              tap_action:
+                action: toggle
+          - type: conditional
+            conditions:
+              - entity: input_boolean.bedroom_airing_warm
+                state: 'on'
+            chip:
+              type: entity
+              entity: input_boolean.bedroom_airing_warm
+              name: BR
+              content_info: name
+              icon: mdi:wind-power
+              icon_color: orange
+              tap_action:
+                action: toggle
+          - type: conditional
+            conditions:
+              - entity: input_boolean.workshop_airing_cold
+                state: 'on'
+            chip:
+              type: entity
+              entity: input_boolean.workshop_airing_cold
+              name: WS
+              content_info: name
+              icon: mdi:wind-power
+              icon_color: blue
+              tap_action:
+                action: toggle
+          - type: conditional
+            conditions:
+              - entity: input_boolean.workshop_airing_warm
+                state: 'on'
+            chip:
+              type: entity
+              entity: input_boolean.workshop_airing_warm
+              name: WS
+              content_info: name
+              icon: mdi:wind-power
+              icon_color: orange
+              tap_action:
+                action: toggle
+          - type: conditional
+            conditions:
+              - entity: input_boolean.living_room_airing_cold
+                state: 'on'
+            chip:
+              type: entity
+              entity: input_boolean.living_room_airing_cold
+              name: LR
+              content_info: name
+              icon: mdi:wind-power
+              icon_color: blue
+              tap_action:
+                action: toggle
+          - type: conditional
+            conditions:
+              - entity: input_boolean.living_room_airing_warm
+                state: 'on'
+            chip:
+              type: entity
+              entity: input_boolean.living_room_airing_warm
+              name: LR
+              content_info: name
+              icon: mdi:wind-power
+              icon_color: orange
+              tap_action:
+                action: toggle
+        alignment: center
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-chips-card
+            chips:
+              - type: weather
+                entity: weather.home
+                show_conditions: true
+                show_temperature: true
+              - type: entity
+                entity: sensor.weather_temperature
+                name: Outside
+                icon: mdi:home-thermometer-outline
+                use_entity_picture: false
+              - type: template
+                icon: mdi:weather-windy
+                content: >-
+                  {{ state_attr('climate.bedroom_intake_fan',
+                  'current_temperature') }} / {{
+                  state_attr('climate.workshop_intake_fan',
+                  'current_temperature') or '-' }} / {{
+                  state_attr('climate.living_room_intake_fan',
+                  'current_temperature') }} °C
+            alignment: center
+          - type: horizontal-stack
+            cards:
+              - type: custom:mini-graph-card
+                hours_to_show: 6
+                points_per_hour: 8
+                line_color: '#3498db'
+                font_size: 65
+                font_size_header: 10
+                align_icon: state
+                entities:
+                  - entity: sensor.bedroom_temperature
+                    name: Bedroom
+                style: |
+                  ha-card {
+                    --mdc-icon-size: 20px;
+                    --mdc-icon-size: 20px;
+                  }
+              - type: custom:mini-graph-card
+                hours_to_show: 6
+                points_per_hour: 8
+                line_color: '#af52b0'
+                font_size: 65
+                font_size_header: 10
+                align_icon: state
+                entities:
+                  - entity: sensor.workshop_temperature
+                    name: Workshop
+                style: |
+                  ha-card {
+                    --mdc-icon-size: 20px;
+                    --mdc-icon-size: 20px;
+                  }
+              - type: custom:mini-graph-card
+                hours_to_show: 6
+                points_per_hour: 8
+                line_color: '#f1c40f'
+                font_size: 65
+                font_size_header: 10
+                align_icon: state
+                entities:
+                  - entity: sensor.living_room_temperature
+                    name: Living Room
+                style: |
+                  ha-card {
+                    --mdc-icon-size: 20px;
+                    --mdc-icon-size: 20px;
+                  }
+          - type: horizontal-stack
+            cards:
+              - type: custom:mini-graph-card
+                hours_to_show: 6
+                points_per_hour: 8
+                line_color: '#1498db'
+                font_size: 65
+                font_size_header: 10
+                align_icon: state
+                entities:
+                  - entity: sensor.bedroom_humidity
+                    name: Bedroom
+                style: |
+                  ha-card {
+                    --mdc-icon-size: 20px;
+                    --mdc-icon-size: 20px;
+                  }
+              - type: custom:mini-graph-card
+                hours_to_show: 6
+                points_per_hour: 8
+                line_color: '#6f52b0'
+                font_size: 65
+                font_size_header: 10
+                align_icon: state
+                entities:
+                  - entity: sensor.workshop_humidity
+                    name: Workshop
+                style: |
+                  ha-card {
+                    --mdc-icon-size: 20px;
+                    --mdc-icon-size: 20px;
+                  }
+              - type: custom:mini-graph-card
+                hours_to_show: 6
+                points_per_hour: 8
+                line_color: '#e1c40f'
+                font_size: 65
+                font_size_header: 10
+                align_icon: state
+                entities:
+                  - entity: sensor.living_room_humidity
+                    name: Living Room
+                style: |
+                  ha-card {
+                    --mdc-icon-size: 20px;
+                    --mdc-icon-size: 20px;
+                  }
+          - type: horizontal-stack
+            cards:
+              - type: custom:mini-graph-card
+                name: Bedroom
+                font_size: 70
+                hours_to_show: 6
+                points_per_hour: 8
+                icon: mdi:molecule-co2
+                align_icon: right
+                entities:
+                  - entity: sensor.bedroom_co2
+                    color: '#2980b9'
+                  - entity: climate.bedroom_intake_fan
+                    attribute: fan_mode
+                    unit: fan
+                    show_state: true
+                    show_graph: false
+                    show_legend: false
+              - type: custom:mini-graph-card
+                font_size: 70
+                hours_to_show: 6
+                points_per_hour: 8
+                icon: mdi:molecule-co2
+                align_icon: right
+                entities:
+                  - entity: sensor.living_room_co2
+                    name: Living Room
+                    color: '#1abc9c'
+                  - entity: climate.living_room_intake_fan
+                    attribute: fan_mode
+                    unit: fan
+                    show_state: true
+                    show_graph: false
+                    show_legend: false
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-title-card
+            title: ''
+            subtitle: Living Room Lights
+            alignment: center
+          - square: false
+            columns: 2
+            type: grid
+            cards:
+              - type: tile
+                entity: light.living_room_main
+                name: Main
+              - type: tile
+                entity: light.living_room_tv
+                name: TV
+              - type: tile
+                entity: light.living_room_backlight
+                name: Backlight
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-title-card
+            title: ''
+            subtitle: Workshop Light
+            alignment: center
+          - square: false
+            columns: 2
+            type: grid
+            cards:
+              - type: tile
+                entity: light.workshop_main
+                name: Main
+      - type: custom:layout-break
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-title-card
+            title: ''
+            subtitle: Lights
+            alignment: center
+          - square: false
+            columns: 2
+            type: grid
+            cards:
+              - type: tile
+                entity: light.hallway
+                name: Hallway
+              - type: tile
+                entity: light.hallway_path
+                name: Hallway Path
+              - type: custom:mushroom-template-card
+                primary: Porch
+                secondary: ''
+                icon: |
+                  {% if states('light.porch') in ['on', 'off'] %}
+                  mdi:lightbulb
+                  {% else %}
+                  mdi:help
+                  {% endif %}
+                icon_color: |-
+                  {% if is_state('light.porch', 'on') %}
+                    var(--default-amber)
+                  {% else %}
+                    var(--rgb-disabled)
+                  {% endif %}
+                entity: light.porch
+                badge_icon: |
+                  {% if is_state('binary_sensor.porch_motion', 'on') %}
+                  mdi:motion-sensor
+                  {% elif is_state('binary_sensor.porch_motion', 'off') %}
+                  mdi:motion-sensor-off
+                  {% else %}
+                  mdi:help
+                  {% endif %}
+                badge_color: |
+                  {% if is_state('binary_sensor.porch_motion', 'on') %}
+                  var(--rgb-state-cover-open)
+                  {% elif is_state('binary_sensor.porch_motion', 'off') %}
+                  var(--rgb-state-cover-closed)
+                  {% endif %}
+                layout: horizontal
+              - type: tile
+                entity: light.entrance
+                name: Entrance
+              - type: tile
+                entity: light.closet
+                name: Closet
+              - type: tile
+                entity: light.wardrobe
+                name: Wardrobe
+                show_brightness_control: true
+                collapsible_controls: true
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-title-card
+            title: ''
+            subtitle: Kitchen Lights
+            alignment: center
+          - square: false
+            columns: 2
+            type: grid
+            cards:
+              - type: tile
+                entity: light.kitchen_main
+                name: Main
+              - type: tile
+                entity: light.kitchen_mood
+                name: Mood
+              - type: tile
+                entity: light.kitchen_worktop
+                name: Worktop
+              - type: tile
+                entity: light.kitchen_path
+                name: Path
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-title-card
+            title: ''
+            subtitle: Bathroom Lights
+            alignment: center
+          - square: false
+            columns: 2
+            type: grid
+            cards:
+              - type: tile
+                entity: light.bathroom_main
+                name: Main
+              - type: tile
+                entity: light.bathroom_mirror
+                name: Mirror
+          - type: grid
+            square: false
+            columns: 3
+            cards:
+              - type: tile
+                entity: light.bathroom_bathtub
+                name: Tube
+              - type: tile
+                entity: light.bathroom_sink_path
+                name: Sink
+              - type: tile
+                entity: light.bathroom_toilet_path
+                name: Toilet
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-title-card
+            title: ''
+            subtitle: Bedroom Lights
+            alignment: center
+          - square: false
+            columns: 2
+            type: grid
+            cards:
+              - type: tile
+                entity: light.bedroom_main
+                name: Main
+              - type: tile
+                entity: light.bedroom_bed
+                name: Bed
+              - type: tile
+                entity: light.bedroom_moon
+                name: Moon
+              - type: custom:mushroom-entity-card
+                entity: switch.bedroom_moon_light_charger
+                name: Moon Charger
+          - type: conditional
+            conditions:
+              - entity: light.bedroom_moon
+                state: 'on'
+            card:
+              type: entities
+              entities:
+                - type: custom:rgb-light-card
+                  entity: light.bedroom_moon
+                  size: 16
+                  colors:
+                    - rgb_color:
+                        - 255
+                        - 255
+                        - 255
+                    - rgb_color:
+                        - 255
+                        - 10
+                        - 10
+                    - rgb_color:
+                        - 255
+                        - 60
+                        - 0
+                    - rgb_color:
+                        - 255
+                        - 71
+                        - 51
+                    - rgb_color:
+                        - 202
+                        - 255
+                        - 10
+                    - rgb_color:
+                        - 255
+                        - 112
+                        - 10
+                    - rgb_color:
+                        - 10
+                        - 255
+                        - 71
+                    - rgb_color:
+                        - 10
+                        - 255
+                        - 173
+                    - rgb_color:
+                        - 10
+                        - 255
+                        - 243
+                    - rgb_color:
+                        - 10
+                        - 71
+                        - 255
+                    - rgb_color:
+                        - 10
+                        - 214
+                        - 255
+                    - rgb_color:
+                        - 229
+                        - 233
+                        - 255
+                    - rgb_color:
+                        - 133
+                        - 10
+                        - 255
+                    - rgb_color:
+                        - 173
+                        - 10
+                        - 255
+                    - rgb_color:
+                        - 255
+                        - 10
+                        - 231
+                    - rgb_color:
+                        - 255
+                        - 10
+                        - 153
+                    - rgb_color:
+                        - 255
+                        - 43
+                        - 54
+                    - rgb_color:
+                        - 255
+                        - 0
+                        - 85
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-title-card
+            title: ''
+            subtitle: Motion/Doors
+            alignment: center
+          - square: true
+            columns: 4
+            type: grid
+            cards:
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.entrance_motion
+                layout: vertical
+                name: Entrance
+                secondary_info: none
+                primary_info: name
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.hallway_motion
+                layout: vertical
+                name: Hallway
+                secondary_info: none
+                primary_info: name
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.kitchen_motion
+                layout: vertical
+                name: Kitchen
+                secondary_info: none
+                primary_info: name
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.bedroom_motion
+                layout: vertical
+                name: Bedroom
+                secondary_info: none
+                primary_info: name
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.living_room_motion
+                layout: vertical
+                name: Living Room
+                secondary_info: none
+                primary_info: name
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.wardrobe_motion
+                layout: vertical
+                name: Wardrobe
+                secondary_info: none
+                primary_info: name
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.living_room_occupancy
+                layout: vertical
+                name: Living Room
+                secondary_info: none
+                primary_info: name
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.bathroom_any_occupancy
+                layout: vertical
+                name: Bathroom
+                secondary_info: none
+                primary_info: name
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.workshop_occupancy
+                layout: vertical
+                name: Workshop
+                secondary_info: none
+                primary_info: name
+        view_layout:
+          show:
+            mediaquery: '(max-width: 400px)'
+      - type: vertical-stack
+        cards:
+          - square: false
+            columns: 3
+            type: grid
+            cards:
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.closet_door
+                name: Closet
+                secondary_info: none
+                layout: vertical
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.wardrobe_door
+                name: Wardrobe
+                secondary_info: none
+                layout: vertical
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.workshop_door
+                secondary_info: none
+                layout: vertical
+                name: Workshop
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.fridge_door
+                name: Fridge
+                secondary_info: none
+                layout: vertical
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.freezer_door
+                name: Freezer
+                secondary_info: none
+                layout: vertical
+        view_layout:
+          show:
+            mediaquery: '(max-width: 400px)'
+      - type: horizontal-stack
+        view_layout:
+          show:
+            mediaquery: '(max-width: 400px)'
+        cards:
+          - type: tile
+            entity: binary_sensor.water_leak
+            vertical: true
+            name: Water
+          - type: tile
+            entity: binary_sensor.smoke
+            vertical: true
+            name: Smoke
+            icon: mdi:smoke-detector-variant
+          - type: tile
+            entity: binary_sensor.freezer_overheated
+            vertical: true
+            name: Freezer
+            icon: mdi:thermometer-alert
+          - type: tile
+            entity: binary_sensor.fridge_overheated
+            vertical: true
+            name: Fridge
+  - theme: Mushroom
+    icon: mdi:home-thermometer
+    layout:
+      max_cols: 2
+    type: custom:vertical-layout
+    badges: []
+    cards:
+      - square: false
+        columns: 3
+        type: grid
+        cards:
+          - type: custom:mini-graph-card
+            name: Bedroom
+            align_icon: state
+            font_size: 65
+            font_size_header: 10
+            hours_to_show: 6
+            points_per_hour: 8
+            entities:
+              - entity: sensor.bedroom_temperature
+                color: '#3498db'
+            style: |
+              ha-card {
+                --mdc-icon-size: 20px;
+                --mdc-icon-size: 20px;
+              }
+          - type: custom:mini-graph-card
+            name: Bedroom
+            align_icon: state
+            font_size: 65
+            font_size_header: 10
+            hours_to_show: 6
+            points_per_hour: 8
+            entities:
+              - entity: sensor.bedroom_humidity
+                color: '#1498db'
+            style: |
+              ha-card {
+                --mdc-icon-size: 20px;
+                --mdc-icon-size: 20px;
+              }
+          - type: custom:mini-graph-card
+            name: Bedroom
+            align_icon: state
+            font_size: 65
+            font_size_header: 10
+            hours_to_show: 6
+            points_per_hour: 8
+            entities:
+              - entity: sensor.bedroom_co2
+                color: '#2980b9'
+          - type: custom:mini-graph-card
+            name: Workshop
+            align_icon: state
+            font_size: 65
+            font_size_header: 10
+            hours_to_show: 6
+            points_per_hour: 8
+            entities:
+              - entity: sensor.workshop_temperature
+                color: '#af52b0'
+            style: |
+              ha-card {
+                --mdc-icon-size: 20px;
+                --mdc-icon-size: 20px;
+              }
+          - type: custom:mini-graph-card
+            name: Workshop
+            align_icon: state
+            font_size: 65
+            font_size_header: 10
+            hours_to_show: 6
+            points_per_hour: 8
+            entities:
+              - entity: sensor.workshop_humidity
+                color: '#6f52b0'
+            style: |
+              ha-card {
+                --mdc-icon-size: 20px;
+                --mdc-icon-size: 20px;
+              }
+          - type: custom:mini-graph-card
+            name: Outside
+            align_icon: state
+            font_size: 65
+            font_size_header: 10
+            hours_to_show: 6
+            points_per_hour: 8
+            entities:
+              - entity: sensor.weather_temperature
+                color: '#34495e'
+            style: |
+              ha-card {
+                --mdc-icon-size: 20px;
+                --mdc-icon-size: 20px;
+              }
+          - type: custom:mini-graph-card
+            name: Living Room
+            align_icon: state
+            font_size: 65
+            font_size_header: 10
+            hours_to_show: 6
+            points_per_hour: 8
+            entities:
+              - entity: sensor.living_room_temperature
+                color: '#f1c40f'
+            style: |
+              ha-card {
+                --mdc-icon-size: 20px;
+                --mdc-icon-size: 20px;
+              }
+          - type: custom:mini-graph-card
+            name: Living Room
+            align_icon: state
+            font_size: 65
+            font_size_header: 10
+            hours_to_show: 6
+            points_per_hour: 8
+            entities:
+              - entity: sensor.living_room_humidity
+                color: '#e1c40f'
+            style: |
+              ha-card {
+                --mdc-icon-size: 20px;
+                --mdc-icon-size: 20px;
+              }
+          - type: custom:mini-graph-card
+            name: Living Room
+            align_icon: state
+            font_size: 65
+            font_size_header: 10
+            hours_to_show: 6
+            points_per_hour: 8
+            entities:
+              - entity: sensor.living_room_co2
+                color: '#1abc9c'
+      - type: custom:stack-in-card
+        cards:
+          - type: horizontal-stack
+            cards:
+              - type: custom:mushroom-template-card
+                primary: Bedroom A/C
+                secondary: >
+                  {% if states('climate.bedroom_ac') not in ['off', 'unknown',
+                  'unavailable'] %}
+                    {{ state_attr('climate.bedroom_ac', 'fan_mode')|capitalize }} • {{ states('sensor.bedroom_ac_power') }} W
+                  {% endif %}
+                entity: climate.bedroom_ac
+                tap_action:
+                  action: more-info
+                icon: >-
+                  {% set action = state_attr('climate.bedroom_ac',
+                  'hvac_action') or states('climate.bedroom_ac') %}
+
+                  {% if action == 'off' %}
+                    mdi:power
+                  {% elif action in ['cooling', 'cool'] %}
+                    mdi:snowflake
+                  {% elif action == 'heat_cool' %}
+                    mdi:cached
+                  {% elif action in ['heating', 'heat'] %}
+                    mdi:fire
+                  {% elif action == 'fan' %}
+                    mdi:fan
+                  {% elif action == 'idle' %}
+                    mdi:sleep
+                  {% else %}
+                    mdi:help
+                  {% endif %}
+                icon_color: >-
+                  {% set action = state_attr('climate.bedroom_ac',
+                  'hvac_action') or states('climate.bedroom_ac') %}
+
+                  {% if action == 'off' %}
+                    var(--rgb-disabled)
+                  {% elif action in ['cooling', 'cool'] %}
+                    var(--rgb-blue)
+                  {% elif action == 'orange' %}
+                    var(--rgb-orange)
+                  {% elif action in ['heating', 'heat'] %}
+                    var(--rgb-deep-orange)
+                  {% elif action == 'fan' %}
+                    var(--rgb-blue-grey)
+                  {% elif action == 'idle' %}
+                    var(--rgb-grey)
+                  {% endif %}
+                style: |
+                  ha-card {
+                    --ha-card-border-width: 0;
+                    padding-bottom: 0 !important;
+                  }
+              - type: custom:simple-thermostat
+                entity: climate.bedroom_ac
+                step_size: 0.5
+                header:
+                  name: false
+                  icon: false
+                hide:
+                  temperature: true
+                  state: true
+                layout:
+                  step: row
+                control: false
+                style: |
+                  ha-card {
+                    --st-spacing: 0px;
+                    --ha-card-border-width: 0;
+                  }
+                  ha-card .thermostat-trigger {
+                    color: #bdbdbd;
+                  }
+                  ha-card .current--value {
+                    font-size: var(--paper-font-display1_-_font-size);
+                  }
+                  ha-icon {
+                    margin-top: -8px;
+                    }
+                  header {
+                    margin-bottom: 10px !important;
+                    padding-bottom: 0px !important;
+                  }
+          - type: custom:simple-thermostat
+            entity: climate.bedroom_ac
+            header: false
+            setpoints: false
+            hide:
+              temperature: true
+              state: true
+            layout:
+              mode:
+                headings: false
+                icons: true
+                names: false
+            control:
+              - hvac
+            style: |
+              ha-card {
+                --ha-card-border-width: 0;
+                padding-top: 0 !important;
+                padding-bottom: 10px !important;
+                margin-left: 12px;
+                margin-right: 12px;
+              }
+              ha-card .mode-item {
+                --st-spacing: 8px;
+              }
+              ha-card .modes {
+                grid-gap: 12px
+              }
+              ha-card section.body {
+                display: none;
+              }
+          - type: entities
+            entities:
+              - entity: switch.bedroom_ac_display
+            show_header_toggle: false
+            state_color: true
+            style: |
+              ha-card {
+                --ha-card-border-width: 0;
+              }
+              ha-card .card-content {
+                padding-top: 0;
+                padding-bottom: 10px;
+              }
+      - type: custom:stack-in-card
+        cards:
+          - type: horizontal-stack
+            cards:
+              - type: custom:mushroom-template-card
+                primary: Workshop A/C
+                secondary: >
+                  {% if states('climate.workshop_ac') not in ['off', 'unknown',
+                  'unavailable'] %}
+                    {{ state_attr('climate.workshop_ac', 'fan_mode')|capitalize }} • {{ states('sensor.workshop_ac_power') }} W
+                  {% endif %}
+                entity: climate.workshop_ac
+                tap_action:
+                  action: more-info
+                icon: >-
+                  {% set action = state_attr('climate.workshop_ac',
+                  'hvac_action') or states('climate.workshop_ac') %}
+
+                  {% if action == 'off' %}
+                    mdi:power
+                  {% elif action in ['cooling', 'cool'] %}
+                    mdi:snowflake
+                  {% elif action == 'heat_cool' %}
+                    mdi:cached
+                  {% elif action in ['heating', 'heat'] %}
+                    mdi:fire
+                  {% elif action == 'fan' %}
+                    mdi:fan
+                  {% elif action == 'idle' %}
+                    mdi:sleep
+                  {% else %}
+                    mdi:help
+                  {% endif %}
+                icon_color: >-
+                  {% set action = state_attr('climate.workshop_ac',
+                  'hvac_action') or states('climate.workshop_ac') %}
+
+                  {% if action == 'off' %}
+                    var(--rgb-disabled)
+                  {% elif action in ['cooling', 'cool'] %}
+                    var(--rgb-blue)
+                  {% elif action == 'orange' %}
+                    var(--rgb-orange)
+                  {% elif action in ['heating', 'heat'] %}
+                    var(--rgb-deep-orange)
+                  {% elif action == 'fan' %}
+                    var(--rgb-blue-grey)
+                  {% elif action == 'idle' %}
+                    var(--rgb-grey)
+                  {% endif %}
+                style: |
+                  ha-card {
+                    --ha-card-border-width: 0;
+                    padding-bottom: 0 !important;
+                  }
+              - type: custom:simple-thermostat
+                entity: climate.workshop_ac
+                step_size: 0.5
+                header:
+                  name: false
+                  icon: false
+                hide:
+                  temperature: true
+                  state: true
+                layout:
+                  step: row
+                control: false
+                style: |
+                  ha-card {
+                    --st-spacing: 0px;
+                    --ha-card-border-width: 0;
+                  }
+                  ha-card .thermostat-trigger {
+                    color: #bdbdbd;
+                  }
+                  ha-card .current--value {
+                    font-size: var(--paper-font-display1_-_font-size);
+                  }
+                  ha-icon {
+                    margin-top: -8px;
+                    }
+                  header {
+                    margin-bottom: 10px !important;
+                    padding-bottom: 0px !important;
+                  }
+          - type: custom:simple-thermostat
+            entity: climate.workshop_ac
+            header: false
+            setpoints: false
+            hide:
+              temperature: true
+              state: true
+            layout:
+              mode:
+                headings: false
+                icons: true
+                names: false
+            control:
+              - hvac
+            style: |
+              ha-card {
+                --ha-card-border-width: 0;
+                padding-top: 0 !important;
+                padding-bottom: 10px !important;
+                margin-left: 12px;
+                margin-right: 12px;
+              }
+              ha-card .mode-item {
+                --st-spacing: 8px;
+              }
+              ha-card .modes {
+                grid-gap: 12px
+              }
+              ha-card section.body {
+                display: none;
+              }
+      - type: grid
+        square: false
+        columns: 3
+        cards:
+          - type: custom:mini-graph-card
+            name: Wardrobe
+            align_icon: state
+            font_size: 65
+            font_size_header: 10
+            hours_to_show: 6
+            points_per_hour: 6
+            entities:
+              - entity: sensor.wardrobe_temperature
+                color: '#3498db'
+            style: |
+              ha-card {
+                --mdc-icon-size: 20px;
+                --mdc-icon-size: 20px;
+              }
+          - type: custom:mini-graph-card
+            name: Kitchen
+            align_icon: state
+            font_size: 65
+            font_size_header: 10
+            hours_to_show: 6
+            points_per_hour: 6
+            entities:
+              - entity: sensor.kitchen_temperature
+                color: '#6f52b0'
+            style: |
+              ha-card {
+                --mdc-icon-size: 20px;
+                --mdc-icon-size: 20px;
+              }
+          - type: custom:mini-graph-card
+            name: Kitchen
+            align_icon: state
+            font_size: 65
+            font_size_header: 10
+            hours_to_show: 6
+            points_per_hour: 6
+            entities:
+              - entity: sensor.kitchen_humidity
+                color: '#af52b0'
+            style: |
+              ha-card {
+                --mdc-icon-size: 20px;
+                --mdc-icon-size: 20px;
+              }
+          - type: custom:mini-graph-card
+            name: Bathroom
+            align_icon: state
+            font_size: 65
+            font_size_header: 10
+            hours_to_show: 6
+            points_per_hour: 8
+            entities:
+              - entity: sensor.bathroom_temperature
+                color: '#f1c40f'
+            style: |
+              ha-card {
+                --mdc-icon-size: 20px;
+                --mdc-icon-size: 20px;
+              }
+          - type: custom:mini-graph-card
+            name: Bathroom
+            align_icon: state
+            font_size: 65
+            font_size_header: 10
+            hours_to_show: 6
+            points_per_hour: 8
+            entities:
+              - entity: sensor.bathroom_humidity
+                color: '#e1c40f'
+            style: |
+              ha-card {
+                --mdc-icon-size: 20px;
+                --mdc-icon-size: 20px;
+              }
+      - type: custom:layout-break
+      - square: false
+        columns: 2
+        type: grid
+        cards:
+          - type: tile
+            entity: switch.living_room_heater
+          - type: tile
+            entity: switch.home_airing
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-title-card
+            title: ''
+            subtitle: Intake Fans
+            alignment: center
+          - type: custom:stack-in-card
+            cards:
+              - type: custom:mini-climate
+                entity: climate.bedroom_intake_fan
+                indicators:
+                  humidity:
+                    icon: mdi:home-thermometer-outline
+                    unit: °C
+                    tap_action:
+                      action: more-info
+                    source:
+                      entity: sensor.bedroom_intake_fan_outdoor_temperature
+                  power:
+                    icon: mdi:flash
+                    unit: W
+                    tap_action:
+                      action: more-info
+                    source:
+                      entity: sensor.bedroom_intake_fan_heater_power
+                  filter:
+                    icon: mdi:filter-menu-outline
+                    unit: d
+                    source:
+                      entity: sensor.bedroom_intake_fan_filter_time_left
+                buttons:
+                  power:
+                    icon: mdi:autorenew
+                    state:
+                      entity: switch.bedroom_intake_fan_recirculation
+                  cold_airing:
+                    icon: mdi:snowflake
+                    location: main
+                    state:
+                      entity: input_boolean.bedroom_airing_cold
+                    toggle_action: >
+                      (state, entity) => this.call_service('input_boolean',
+                      'toggle', { entity_id: entity.entity_id })
+                  warm_airing:
+                    icon: mdi:heat-wave
+                    location: main
+                    state:
+                      entity: input_boolean.bedroom_airing_warm
+                    toggle_action: >
+                      (state, entity) => this.call_service('input_boolean',
+                      'toggle', { entity_id: entity.entity_id })
+            style: |
+              :host {
+               --mini-climate-background-opacity: 0;
+              }
+          - type: custom:stack-in-card
+            cards:
+              - type: custom:mini-climate
+                entity: climate.living_room_intake_fan
+                indicators:
+                  humidity:
+                    icon: mdi:home-thermometer-outline
+                    unit: °C
+                    tap_action:
+                      action: more-info
+                    source:
+                      entity: sensor.living_room_intake_fan_outdoor_temperature
+                  power:
+                    icon: mdi:flash
+                    unit: W
+                    tap_action:
+                      action: more-info
+                    source:
+                      entity: sensor.living_room_intake_fan_heater_power
+                  filter:
+                    icon: mdi:filter-menu-outline
+                    unit: d
+                    source:
+                      entity: sensor.living_room_intake_fan_filter_time_left
+                buttons:
+                  power:
+                    icon: mdi:autorenew
+                    state:
+                      entity: switch.living_room_intake_fan_recirculation
+                  cold_airing:
+                    icon: mdi:snowflake
+                    location: main
+                    state:
+                      entity: input_boolean.living_room_airing_cold
+                    toggle_action: >
+                      (state, entity) => this.call_service('input_boolean',
+                      'toggle', { entity_id: entity.entity_id })
+                  warm_airing:
+                    icon: mdi:heat-wave
+                    location: main
+                    state:
+                      entity: input_boolean.living_room_airing_warm
+                    toggle_action: >
+                      (state, entity) => this.call_service('input_boolean',
+                      'toggle', { entity_id: entity.entity_id })
+            style: |
+              :host {
+               --mini-climate-background-opacity: 0;
+              }
+          - type: custom:stack-in-card
+            cards:
+              - type: custom:mini-climate
+                entity: climate.workshop_intake_fan
+                indicators:
+                  humidity:
+                    icon: mdi:home-thermometer-outline
+                    unit: °C
+                    tap_action:
+                      action: more-info
+                    source:
+                      entity: sensor.workshop_intake_fan_outdoor_temperature
+                  power:
+                    icon: mdi:flash
+                    unit: W
+                    tap_action:
+                      action: more-info
+                    source:
+                      entity: sensor.workshop_intake_fan_heater_power
+                  filter:
+                    icon: mdi:filter-menu-outline
+                    unit: d
+                    source:
+                      entity: sensor.workshop_intake_fan_filter_time_left
+                buttons:
+                  power:
+                    icon: mdi:autorenew
+                    state:
+                      entity: switch.workshop_intake_fan_recirculation
+                  cold_airing:
+                    icon: mdi:snowflake
+                    location: main
+                    state:
+                      entity: input_boolean.workshop_airing_cold
+                    toggle_action: >
+                      (state, entity) => this.call_service('input_boolean',
+                      'toggle', { entity_id: entity.entity_id })
+                  warm_airing:
+                    icon: mdi:heat-wave
+                    location: main
+                    state:
+                      entity: input_boolean.workshop_airing_warm
+                    toggle_action: >
+                      (state, entity) => this.call_service('input_boolean',
+                      'toggle', { entity_id: entity.entity_id })
+            style: |
+              :host {
+               --mini-climate-background-opacity: 0;
+              }
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-title-card
+            title: ''
+            subtitle: Humidifiers
+            alignment: center
+          - type: custom:stack-in-card
+            cards:
+              - type: custom:mini-humidifier
+                entity: humidifier.living_room_humidifier
+                model: zhimi.humidifier.ca1
+                style: |
+                  ha-card .mh-humidifier {
+                    padding-bottom: 0 !important;
+                  }
+              - type: custom:mushroom-chips-card
+                chips:
+                  - type: template
+                    entity: input_boolean.living_room_humidifier_on_duty
+                    content: >
+                      {% if
+                      is_state('input_boolean.living_room_humidifier_on_duty',
+                      'on') %}
+                        On duty
+                      {% else %}
+                        Idle
+                      {% endif %}
+                    icon: >
+                      {% if
+                      is_state('input_boolean.living_room_humidifier_on_duty',
+                      'on') %}
+                        mdi:watering-can
+                      {% else %}
+                        mdi:watering-can-outline
+                      {% endif %}
+                    tap_action:
+                      action: more-info
+                  - type: template
+                    entity: input_datetime.humidifiers_last_cleanup
+                    content: >-
+                      Last cleanup: {{
+                      states('input_datetime.humidifiers_last_cleanup') }}
+                    icon: mdi:spray-bottle
+                    tap_action:
+                      action: more-info
+                alignment: end
+                style: |
+                  ha-card {
+                    --chip-border-width: 0;
+                    --chip-box-shadow: none;
+                  }
+          - type: custom:stack-in-card
+            cards:
+              - type: custom:mini-humidifier
+                entity: humidifier.bedroom_humidifier
+                model: zhimi.humidifier.ca1
+                style: |
+                  ha-card .mh-humidifier {
+                    padding-bottom: 0 !important;
+                  }
+              - type: custom:mushroom-chips-card
+                chips:
+                  - type: template
+                    entity: input_boolean.bedroom_humidifier_on_duty
+                    content: >
+                      {% if is_state('input_boolean.bedroom_humidifier_on_duty',
+                      'on') %}
+                        On duty
+                      {% else %}
+                        Idle
+                      {% endif %}
+                    icon: >
+                      {% if is_state('input_boolean.bedroom_humidifier_on_duty',
+                      'on') %}
+                        mdi:watering-can
+                      {% else %}
+                        mdi:watering-can-outline
+                      {% endif %}
+                    tap_action:
+                      action: more-info
+                  - type: template
+                    entity: input_datetime.humidifiers_last_cleanup
+                    content: >-
+                      Last cleanup: {{
+                      states('input_datetime.humidifiers_last_cleanup') }}
+                    icon: mdi:spray-bottle
+                    tap_action:
+                      action: more-info
+                alignment: end
+                style: |
+                  ha-card {
+                    --chip-border-width: 0;
+                    --chip-box-shadow: none;
+                  }
+  - theme: Mushroom
+    icon: mdi:washing-machine
+    type: custom:vertical-layout
+    badges: []
+    cards:
+      - type: custom:stack-in-card
+        mode: horizontal
+        cards:
+          - type: custom:mushroom-entity-card
+            entity: input_select.washing_machine_status
+            name: Washing Machine
+            icon_color: indigo
+            style: |
+              ha-card {
+                border: 0;
+              }
+          - type: custom:mushroom-entity-card
+            entity: binary_sensor.washing_machine_door
+            primary_info: none
+            secondary_info: none
+            style: |
+              ha-card {
+                border: 0;
+              }
+
+              :host {
+                max-width: 50px;
+                border: 0;
+              }
+          - type: custom:mushroom-entity-card
+            entity: switch.washing_machine_socket
+            primary_info: none
+            secondary_info: none
+            style: |
+              ha-card {
+                border: 0;
+              }
+
+              :host {
+                max-width: 70px;
+              }
+      - type: custom:stack-in-card
+        mode: horizontal
+        cards:
+          - type: custom:mushroom-entity-card
+            entity: input_select.dishwasher_status
+            name: Dishwasher
+            icon_color: light-green
+            style: |
+              ha-card {
+                border: 0;
+              }
+          - type: custom:mushroom-light-card
+            entity: light.dishwasher_status
+            icon: mdi:dome-light
+            primary_info: none
+            secondary_info: none
+            use_light_color: true
+            tap_action:
+              action: more-info
+            style: |
+              ha-card {
+                border: 0;
+              }
+
+              :host {
+                max-width: 50px;
+              }
+          - type: custom:mushroom-entity-card
+            entity: binary_sensor.dishwasher_door
+            primary_info: none
+            secondary_info: none
+            style: |
+              ha-card {
+                border: 0;
+              }
+
+              :host {
+                max-width: 50px;
+              }
+          - type: custom:mushroom-entity-card
+            entity: switch.dishwasher_socket
+            primary_info: none
+            secondary_info: none
+            style: |
+              ha-card {
+                border: 0;
+              }
+
+              :host {
+                max-width: 70px;
+              }
+      - type: horizontal-stack
+        cards:
+          - type: custom:stack-in-card
+            cards:
+              - type: custom:mini-climate
+                entity: climate.kettle
+                secondary_info: hvac-mode
+                fan_mode:
+                  disabled: true
+                toggle:
+                  hide: true
+                buttons:
+                  power:
+                    icon: mdi:kettle-steam
+                    location: main
+                    state:
+                      entity: switch.kettle_boiling
+                indicators:
+                  water_level:
+                    icon: mdi:water-percent
+                    unit: '%'
+                    round: 0
+                    source:
+                      entity: sensor.kettle_water_level
+                  water_level_ml:
+                    icon: mdi:water
+                    unit: mL
+                    round: 0
+                    source:
+                      entity: sensor.kettle_water_level_ml
+            style: |
+              :host {
+               --mini-climate-background-opacity: 0;
+              }
+      - type: vertical-stack
+        cards:
+          - type: horizontal-stack
+            cards:
+              - type: custom:mini-graph-card
+                hours_to_show: 6
+                points_per_hour: 6
+                entities:
+                  - entity: sensor.fridge_temperature
+                    name: Fridge
+                line_color: orange
+                font_size: 75
+              - type: custom:mini-graph-card
+                hours_to_show: 6
+                points_per_hour: 7
+                entities:
+                  - entity: sensor.freezer_temperature
+                    name: Freezer
+                line_color: purple
+                font_size: 75
+      - type: custom:layout-break
+      - square: false
+        columns: 3
+        type: grid
+        cards:
+          - type: custom:mushroom-entity-card
+            entity: binary_sensor.bedroom_window
+            name: Bedroom
+            secondary_info: none
+            layout: vertical
+          - type: custom:mushroom-entity-card
+            entity: binary_sensor.workshop_window
+            name: Workshop
+            secondary_info: none
+            layout: vertical
+          - type: custom:mushroom-entity-card
+            entity: binary_sensor.living_room_balcony_door
+            name: Room Balcony
+            secondary_info: none
+            layout: vertical
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-cover-card
+            entity: cover.living_room
+            name: Living Room
+            show_position_control: true
+            show_buttons_control: true
+          - type: custom:mushroom-cover-card
+            entity: cover.kitchen
+            name: Kitchen
+            show_position_control: true
+            show_buttons_control: true
+          - type: custom:mushroom-cover-card
+            entity: cover.bedroom
+            name: Bedroom
+            show_position_control: true
+            show_buttons_control: true
+          - type: custom:mushroom-cover-card
+            entity: cover.workshop
+            name: Workshop
+            show_position_control: true
+            show_buttons_control: true
+  - theme: Mushroom
+    icon: mdi:water
+    type: custom:vertical-layout
+    layout:
+      max_cols: 2
+    badges: []
+    cards:
+      - type: entities
+        entities:
+          - entity: sensor.kitchen_filter_drink_water_daily
+            type: custom:multiple-entity-row
+            icon: mdi:cup-water
+            name: Drink water
+            state_header: Today
+            entities:
+              - entity: sensor.kitchen_filter_drink_water
+                name: Total
+              - entity: sensor.kitchen_filter_drink_water_monthly
+                name: Month
+          - entity: sensor.kitchen_filter_feed_water_daily
+            type: custom:multiple-entity-row
+            icon: mdi:water-pump
+            name: Feed water
+            state_header: Today
+            entities:
+              - entity: sensor.kitchen_filter_feed_water
+                name: Total
+              - entity: sensor.kitchen_filter_feed_water_monthly
+                name: Month
+      - square: false
+        columns: 2
+        type: grid
+        cards:
+          - type: tile
+            entity: binary_sensor.kitchen_water_leak
+            name: Kitchen
+            vertical: true
+          - type: tile
+            entity: binary_sensor.closet_water_leak
+            name: Closet
+            vertical: true
+          - type: tile
+            entity: binary_sensor.bathroom_washing_machine_water_leak
+            name: Bathroom Washing Machine
+            vertical: true
+          - type: tile
+            entity: binary_sensor.bathroom_sink_water_leak
+            name: Bathroom Sink
+            vertical: true
+      - type: custom:layout-break
+      - type: horizontal-stack
+        cards:
+          - type: tile
+            entity: input_boolean.hot_water_supply
+            color: purple
+          - type: custom:mushroom-template-card
+            primary: Water Heater
+            secondary: |-
+              {{ states('switch.water_heater_socket')|capitalize }}
+              {% if not is_state('sensor.water_heater_power', 'unavailable') %}
+                | {{ states('sensor.water_heater_power') }} W
+              {% endif %}
+            icon: mdi:water-boiler
+            entity: switch.water_heater_socket
+            icon_color: |-
+              {% if is_state('switch.water_heater_socket', 'unavailable') %}
+                var(--rgb-disabled)
+              {% elif is_state('switch.water_heater_socket', 'on') %}
+                var(--rgb-state-entity)
+              {% else %}
+                var(--rgb-grey)
+              {% endif %}
+            tap_action:
+              action: more-info
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-title-card
+            title: ''
+            subtitle: Bathroom Valves
+            alignment: center
+          - square: false
+            columns: 2
+            type: grid
+            cards:
+              - type: tile
+                entity: switch.bathroom_cold_water_valve
+                name: Cold Water
+                color: light-blue
+              - type: tile
+                entity: switch.bathroom_hot_water_valve
+                name: Hot Water
+                color: pink
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-title-card
+            title: ''
+            subtitle: Kitchen Valves
+            alignment: center
+          - square: false
+            columns: 2
+            type: grid
+            cards:
+              - type: tile
+                entity: switch.kitchen_cold_water_valve
+                name: Cold Water
+                color: light-blue
+              - type: tile
+                entity: switch.kitchen_hot_water_valve
+                name: Hot Water
+                color: pink
+  - theme: Mushroom
+    icon: mdi:lightning-bolt-outline
+    type: custom:vertical-layout
+    badges: []
+    cards:
+      - type: custom:mushroom-chips-card
+        chips:
+          - type: template
+            content: |
+              {{
+                states('sensor.cb_power_supply_power')|int(0) +
+                states('sensor.kitchen_power_supply_power')|int(0) +
+                states('sensor.sockets_power_supply_power')|int(0) +
+                states('sensor.stove_power_supply_power')|int(0)
+              }} W
+        alignment: center
+      - square: false
+        columns: 2
+        type: grid
+        cards:
+          - type: custom:mini-graph-card
+            name: Bathroom / Climate 1-2
+            align_icon: state
+            font_size: 65
+            font_size_header: 10
+            hours_to_show: 6
+            points_per_hour: 8
+            entities:
+              - entity: sensor.cb_power_supply_power
+                color: '#f1c40f'
+          - type: custom:mini-graph-card
+            name: Kitchen Sockets
+            align_icon: state
+            font_size: 65
+            font_size_header: 10
+            hours_to_show: 6
+            points_per_hour: 8
+            entities:
+              - entity: sensor.kitchen_power_supply_power
+                color: '#2ecc71'
+          - type: custom:mini-graph-card
+            name: Rooms Sockets
+            align_icon: state
+            font_size: 65
+            font_size_header: 10
+            hours_to_show: 6
+            points_per_hour: 8
+            entities:
+              - entity: sensor.sockets_power_supply_power
+                color: '#e67e22'
+          - type: custom:mini-graph-card
+            name: Stove Power Supply
+            align_icon: state
+            font_size: 65
+            font_size_header: 10
+            hours_to_show: 6
+            points_per_hour: 8
+            entities:
+              - entity: sensor.stove_power_supply_power
+                color: '#2980b9'
+      - square: false
+        columns: 2
+        type: grid
+        cards:
+          - type: tile
+            entity: sensor.front_door_lock_battery
+            name: Front Door Lock
+          - type: tile
+            entity: sensor.porch_door_lock_battery
+            name: Porch Door Lock
+      - type: custom:layout-break
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-entity-card
+            entity: sensor.ups_status
+            icon: mdi:home-battery
+            icon_color: teal
+            layout: horizontal
+            primary_info: name
+          - type: custom:mushroom-chips-card
+            chips:
+              - type: entity
+                entity: sensor.ups_battery_charge
+              - type: entity
+                entity: sensor.ups_battery_voltage
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-title-card
+            title: ''
+            subtitle: Sockets
+            alignment: center
+          - square: false
+            columns: 2
+            type: grid
+            cards:
+              - type: custom:mushroom-template-card
+                primary: Dishwasher
+                secondary: >-
+                  {{ states('switch.dishwasher_socket')|capitalize }}
+
+                  {% if not is_state('sensor.dishwasher_power', 'unavailable')
+                  %}
+                    | {{ states('sensor.dishwasher_power') }} W
+                  {% endif %}
+                icon: mdi:dishwasher
+                entity: switch.dishwasher_socket
+                icon_color: |-
+                  {% if is_state('switch.dishwasher_socket', 'unavailable') %}
+                    var(--rgb-disabled)
+                  {% elif is_state('switch.dishwasher_socket', 'on') %}
+                    var(--rgb-state-entity)
+                  {% else %}
+                    var(--rgb-grey)
+                  {% endif %}
+                tap_action:
+                  action: more-info
+              - type: custom:mushroom-template-card
+                primary: Washing Machine
+                secondary: >-
+                  {{ states('switch.washing_machine_socket')|capitalize }}
+
+                  {% if not is_state('sensor.washing_machine_power',
+                  'unavailable') %}
+                    | {{ states('sensor.washing_machine_power') }} W
+                  {% endif %}
+                icon: mdi:washing-machine
+                entity: switch.washing_machine_socket
+                icon_color: >-
+                  {% if is_state('switch.washing_machine_socket', 'unavailable')
+                  %}
+                    var(--rgb-disabled)
+                  {% elif is_state('switch.washing_machine_socket', 'on') %}
+                    var(--rgb-state-entity)
+                  {% else %}
+                    var(--rgb-grey)
+                  {% endif %}
+                tap_action:
+                  action: more-info
+              - type: custom:mushroom-template-card
+                primary: Water Heater
+                secondary: >-
+                  {{ states('switch.water_heater_socket')|capitalize }}
+
+                  {% if not is_state('sensor.water_heater_power', 'unavailable')
+                  %}
+                    | {{ states('sensor.water_heater_power') }} W
+                  {% endif %}
+                icon: mdi:water-boiler
+                entity: switch.water_heater_socket
+                icon_color: |-
+                  {% if is_state('switch.water_heater_socket', 'unavailable') %}
+                    var(--rgb-disabled)
+                  {% elif is_state('switch.water_heater_socket', 'on') %}
+                    var(--rgb-state-entity)
+                  {% else %}
+                    var(--rgb-grey)
+                  {% endif %}
+                tap_action:
+                  action: more-info
+              - type: custom:mushroom-template-card
+                primary: Scooter Charger
+                secondary: >-
+                  {{ states('switch.scooter_charger_socket')|capitalize }}
+
+                  {% if not is_state('sensor.scooter_charger_socket_power',
+                  'unavailable') %}
+                    | {{ states('sensor.scooter_charger_socket_power') }} W
+                  {% endif %}
+                icon: mdi:scooter
+                entity: switch.scooter_charger_socket
+                icon_color: >-
+                  {% if is_state('switch.scooter_charger_socket', 'unavailable')
+                  %}
+                    var(--rgb-disabled)
+                  {% elif is_state('switch.scooter_charger_socket', 'on') %}
+                    var(--rgb-state-entity)
+                  {% else %}
+                    var(--rgb-grey)
+                  {% endif %}
+                tap_action:
+                  action: more-info
+  - theme: Mushroom
+    icon: mdi:wrench
+    type: custom:vertical-layout
+    layout:
+      columns: 2
+    badges: []
+    cards:
+      - square: false
+        columns: 3
+        type: grid
+        cards:
+          - type: custom:mushroom-entity-card
+            entity: input_boolean.scene_delivery
+            tap_action:
+              action: more-info
+            layout: vertical
+            name: Delivery
+            secondary_info: none
+          - type: custom:mushroom-entity-card
+            entity: input_boolean.scene_movie
+            tap_action:
+              action: more-info
+            layout: vertical
+            name: Movie
+            secondary_info: none
+          - type: custom:mushroom-entity-card
+            entity: input_boolean.scene_meal
+            tap_action:
+              action: more-info
+            layout: vertical
+            name: Dinner
+            secondary_info: none
+          - type: custom:mushroom-entity-card
+            entity: input_boolean.scene_sleepy_mood
+            tap_action:
+              action: more-info
+            layout: vertical
+            name: Sleepy mood
+            secondary_info: none
+          - type: custom:mushroom-entity-card
+            entity: input_boolean.scene_waking_up
+            tap_action:
+              action: more-info
+            layout: vertical
+            name: Waking up
+            secondary_info: none
+          - type: custom:mushroom-entity-card
+            entity: input_boolean.scene_wait_guests
+            tap_action:
+              action: more-info
+            layout: vertical
+            name: Wait guests
+            secondary_info: none
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-title-card
+            title: Delivery
+            subtitle: ''
+          - type: entities
+            entities:
+              - entity: input_datetime.scene_delivery_started
+                secondary_info: last-changed
+                name: Started
+              - entity: input_datetime.scene_delivery_scheduled_from
+                name: Schedule from
+              - entity: input_datetime.scene_delivery_scheduled_to
+                name: Schedule to
+      - type: custom:layout-break
+      - square: false
+        columns: 2
+        type: grid
+        cards:
+          - type: tile
+            entity: input_boolean.light_control
+            name: Light control
+          - type: tile
+            entity: input_boolean.climate_control
+            name: Climate control
+      - square: false
+        columns: 2
+        type: grid
+        cards:
+          - type: custom:mini-graph-card
+            name: CPU Temperature
+            hours_to_show: 2
+            points_per_hour: 8
+            line_color: green
+            font_size: 75
+            entities:
+              - entity: sensor.processor_temperature
+          - type: custom:mini-graph-card
+            name: Disk Temperature
+            font_size: 75
+            hours_to_show: 2
+            points_per_hour: 8
+            entities:
+              - entity: sensor.disk_temperature
+            line_color: '#e74c3c'
+          - type: custom:mini-graph-card
+            name: CPU Fan
+            hours_to_show: 2
+            points_per_hour: 8
+            line_color: indigo
+            font_size: 75
+            entities:
+              - entity: sensor.processor_fan_speed
+      - type: history-graph
+        entities:
+          - entity: binary_sensor.bed_presence_dextor
+            name: D
+          - entity: binary_sensor.bed_presence_layma
+            name: L
+        hours_to_show: 8
+  - theme: Mushroom
+    title: Media
+    path: media
+    icon: mdi:music-circle-outline
+    badges: []
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: media-control
+            entity: media_player.tv
+          - type: media-control
+            entity: media_player.living_room_station
+          - type: media-control
+            entity: media_player.atv
+      - type: vertical-stack
+        cards:
+          - type: media-control
+            entity: media_player.bedroom_station
+          - type: media-control
+            entity: media_player.workshop_station
+          - type: media-control
+            entity: media_player.kitchen_station
+  - theme: Backend-selected
+    title: CO2
+    icon: mdi:molecule-co2
+    type: panel
+    badges: []
+    cards:
+      - type: custom:apexcharts-card
+        graph_span: 1h
+        header:
+          show: false
+        series:
+          - entity: sensor.bedroom_co2
+            name: Bedroom
+            stroke_width: 2
+          - entity: sensor.living_room_co2
+            name: Living Room
+            stroke_width: 2
+  - theme: Backend-selected
+    title: Illuminance
+    icon: mdi:sun-wireless-outline
+    type: panel
+    badges: []
+    cards:
+      - type: custom:apexcharts-card
+        graph_span: 1h
+        header:
+          show: false
+        series:
+          - entity: sensor.illuminance_south_side
+            name: South
+            stroke_width: 2
+          - entity: sensor.illuminance_north_side
+            name: North
+            stroke_width: 2
+  - theme: Backend-selected
+    icon: mdi:thermometer-lines
+    title: Climate (graphs)
+    path: climate-graphs
+    type: panel
+    badges: []
+    cards:
+      - type: custom:apexcharts-card
+        graph_span: 6h
+        header:
+          show: true
+          title: Temperature
+        series:
+          - entity: sensor.bedroom_temperature
+            name: Bedroom
+            stroke_width: 2
+          - entity: sensor.living_room_temperature
+            name: Living Room
+            stroke_width: 2
+          - entity: sensor.workshop_temperature
+            name: Workshop
+            stroke_width: 2
+          - entity: sensor.bathroom_temperature
+            name: Bathroom
+            stroke_width: 2
+          - entity: sensor.kitchen_temperature
+            name: Kitchen
+            stroke_width: 2
+          - entity: sensor.wardrobe_temperature
+            name: Wardrobe
+            stroke_width: 2
+  - theme: Backend-selected
+    icon: mdi:cloud-percent-outline
+    title: Humidity (graphs)
+    path: humidity-graphs
+    type: panel
+    badges: []
+    cards:
+      - type: custom:apexcharts-card
+        graph_span: 24h
+        header:
+          show: true
+          title: Humidity
+        series:
+          - entity: sensor.bedroom_humidity
+            name: Bedroom
+            stroke_width: 2
+          - entity: sensor.living_room_humidity
+            name: Living Room
+            stroke_width: 2
+          - entity: sensor.workshop_humidity
+            name: Workshop
+            stroke_width: 2
+          - entity: sensor.bathroom_humidity
+            name: Bathroom
+            stroke_width: 2
+          - entity: sensor.kitchen_humidity
+            name: Kitchen
+            stroke_width: 2
+          - entity: sensor.wardrobe_humidity
+            name: Wardrobe
+            stroke_width: 2
+  - theme: Mushroom
+    icon: mdi:radar
+    title: Occupancy
+    path: occupancy
+    badges: []
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-title-card
+            title: ''
+            subtitle: Bedroom
+            alignment: center
+          - square: false
+            columns: 3
+            type: grid
+            cards:
+              - type: tile
+                entity: binary_sensor.bedroom_motion
+                vertical: true
+                name: Motion
+              - type: tile
+                entity: binary_sensor.bedroom_occupancy
+                vertical: true
+                name: Occupancy
+              - type: tile
+                entity: binary_sensor.bedroom_desk_occupancy
+                vertical: true
+                name: Desk Occupancy
+              - type: tile
+                entity: binary_sensor.bed_presence_dextor
+                vertical: true
+                name: Bed (Dextor)
+              - type: tile
+                entity: binary_sensor.bed_presence_layma
+                vertical: true
+                name: Bed (Layma)
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-title-card
+            title: ''
+            subtitle: Bathroom
+            alignment: center
+          - square: false
+            columns: 3
+            type: grid
+            cards:
+              - type: tile
+                entity: binary_sensor.bathroom_motion
+                vertical: true
+                name: Motion
+              - type: tile
+                entity: binary_sensor.bathroom_occupancy
+                vertical: true
+                name: Occupancy
+              - type: tile
+                entity: binary_sensor.bathroom_bathtub_occupancy
+                vertical: true
+                name: Bathtub Occupancy
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-title-card
+            title: ''
+            subtitle: Living Room
+            alignment: center
+          - square: false
+            columns: 2
+            type: grid
+            cards:
+              - type: tile
+                entity: binary_sensor.living_room_motion
+                vertical: true
+                name: Motion
+              - type: tile
+                entity: binary_sensor.living_room_occupancy
+                vertical: true
+                name: Occupancy
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-title-card
+            title: ''
+            subtitle: Workshop
+            alignment: center
+          - square: false
+            columns: 2
+            type: grid
+            cards:
+              - type: tile
+                entity: binary_sensor.workshop_entrance_motion
+                vertical: true
+                name: Entrance Motion
+              - type: tile
+                entity: binary_sensor.workshop_desk_motion
+                vertical: true
+                name: Desk Motion

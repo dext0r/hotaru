@@ -1,0 +1,3 @@
+FROM docker.io/debian:11
+COPY mdns-repeater /
+ENTRYPOINT [ "/mdns-repeater", "-f", "eth0", "eth1" ]

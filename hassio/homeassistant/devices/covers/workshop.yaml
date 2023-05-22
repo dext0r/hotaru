@@ -1,0 +1,59 @@
+automation:
+  - id: workshop_shades_close
+    alias: 'Workshop Shades: Close'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.workshop_motion
+        from: 'off'
+        to: 'on'
+
+      - platform: time_pattern
+        minutes: '/20'
+    condition:
+      - condition: state
+        entity_id: binary_sensor.workshop_window
+        state: 'off'
+
+      - condition: state
+        entity_id: cover.workshop
+        attribute: current_position
+        state: 100
+
+      - condition: numeric_state
+        entity_id: sensor.illuminance_north_side
+        below: 15
+
+      - condition: state
+        entity_id:
+          - binary_sensor.anyone_home
+          - binary_sensor.workshop_occupancy
+        state: 'on'
+    action:
+      - service: cover.close_cover
+        entity_id: cover.workshop
+
+cover:
+  - platform: template
+    covers:
+      workshop:
+        unique_id: workshop_shades
+        friendly_name: Workshop Shades
+        device_class: shade
+        optimistic: false
+        position_template: >
+          {{ state_attr('cover.workshop_shades_motor', 'current_position') }}
+        availability_template: >
+          {{ states('cover.workshop_shades_motor') not in ['unknown', 'unavailable'] }}
+        set_cover_position:
+          if:
+            - condition: state
+              entity_id: binary_sensor.workshop_window
+              state: 'off'
+          then:
+            - service: cover.set_cover_position
+              entity_id: cover.workshop_shades_motor
+              data:
+                position: '{{ position }}'
+        stop_cover:
+          service: cover.stop_cover
+          entity_id: cover.workshop_shades_motor

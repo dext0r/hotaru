@@ -1,0 +1,56 @@
+external_components:
+  - source: github://dentra/esphome-tion@2022.10.1
+  - source: github://dentra/esphome-components
+    components: [crash_info, etl]
+
+ota:
+  on_begin:
+    then:
+      - lambda: id(tion_ble_client).set_enabled(false);
+
+ble_client:
+  - mac_address: $tion_mac_address
+    id: tion_ble_client
+    on_connect:
+      then:
+        - lambda: |-
+            ESP_LOGV("tion_ble_client", "Connected to BLE device");
+    on_disconnect:
+      then:
+        - lambda: |-
+            ESP_LOGV("tion_ble_client", "Disconnected from BLE device");
+
+vport:
+  - platform: tion_ble
+    id: tion_ble_vport
+    ble_client_id: tion_ble_client
+    update_interval: 20s
+    persistent_connection: true
+    state_timeout: 30s
+    disable_scan: false
+
+climate:
+  - platform: tion_4s
+    name: $tion_device_name
+    vport_id: tion_ble_vport
+
+    led:
+      name: $tion_device_name LED
+    recirculation:
+      name: $tion_device_name Recirculation
+    outdoor_temperature:
+      name: $tion_device_name Outdoor Temperature
+    heater_power:
+      id: tion_heater_power
+      name: $tion_device_name Heater Power
+    filter_time_left:
+      name: $tion_device_name Filter Time Left
+
+sensor:
+  - platform: total_daily_energy
+    name: $tion_device_name Energy
+    unit_of_measurement: kWh
+    accuracy_decimals: 2
+    power_id: tion_heater_power
+    filters:
+      - multiply: 0.001

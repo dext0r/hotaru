@@ -1,0 +1,13 @@
+[Unit]
+Description=ippon-beeper
+Requires=nut-monitor.service
+After=nut-monitor.service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5
+ExecStart=/usr/local/bin/ippon-beeper
+
+[Install]
+WantedBy=multi-user.target

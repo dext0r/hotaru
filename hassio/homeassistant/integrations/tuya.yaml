@@ -1,0 +1,25 @@
+automation:
+  - id: tuya_reload
+    alias: Tuya reload
+    trigger:
+      - platform: event
+        event_type: system_log_event
+        event_data:
+          level: ERROR
+          name: tuya_iot
+    condition:
+      - condition: template
+        value_template: >-
+          {{ 'error while get mqtt config' in trigger.event.data.message[0] }}
+    action:
+      - service: logbook.log
+        data:
+          name: Tuya
+          message: reloaded
+
+      - delay:
+          seconds: 20
+
+      - service: homeassistant.reload_config_entry
+        data:
+          entry_id: 96e5c6dadc086fb3268126198c95a21d

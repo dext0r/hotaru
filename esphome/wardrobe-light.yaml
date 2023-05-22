@@ -1,0 +1,58 @@
+packages:
+  base: !include common/base.yaml
+
+substitutions:
+  device_name: Wardbrobe Light
+
+esphome:
+  name: wardrobe-light
+  model: MagicHome LED Dimmer (+SW)
+  name_add_mac_suffix: false
+
+esp8266:
+  board: esp01_1m
+  restore_from_flash: true
+
+logger:
+  baud_rate: 0
+
+binary_sensor:
+  - id: light_switch
+    platform: gpio
+    internal: true
+    pin:
+      number: 1  # RX
+      inverted: true
+      mode:
+        input: true
+        pullup: true
+    filters:
+      - delayed_on_off: 100ms
+    on_release:
+      - lambda: |
+          ESP_LOGD("binary_sensor", "release: %d", millis());
+    on_press:
+      - lambda: |
+          ESP_LOGD("binary_sensor", "press: %d", millis());
+      - if:
+          condition:
+            light.is_on: light_w
+          then:
+            light.turn_off: light_w
+          else:
+            light.turn_on:
+              id: light_w
+              brightness: 100%
+
+light:
+  - id: light_w
+    platform: monochromatic
+    name: Light
+    output: pwm
+    default_transition_length: 700ms
+    gamma_correct: 1.7
+
+output:
+  - id: pwm
+    platform: esp8266_pwm
+    pin: 12

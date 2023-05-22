@@ -1,0 +1,92 @@
+automation:
+  - id: closet_light_turn_on
+    alias: 'Closet Light: Turn on'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.closet_door
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+
+      - condition: state
+        entity_id: input_select.home_mode
+        state:
+          - Day
+          - Vacation
+    action:
+      - service: light.turn_on
+        entity_id: light.closet
+
+  - id: closet_light_turn_off
+    alias: 'Closet Light: Turn off'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.closet_door
+        to: 'off'
+
+      - platform: state
+        entity_id: light.closet
+        to: 'on'
+        for:
+          minutes: 20
+    condition:
+      - condition: state
+        entity_id:
+          - input_boolean.light_control
+          - input_boolean.closet_light_control
+          - light.closet
+        state: 'on'
+    action:
+      - service: light.turn_off
+        entity_id: light.closet
+
+  - id: closet_light_control_turn_on
+    alias: 'Closet Light Control: Turn on'
+    trigger:
+      - platform: state
+        entity_id: light.closet
+        to: 'off'
+    condition:
+      - condition: state
+        entity_id: input_boolean.closet_light_control
+        state: 'off'
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.closet_light_control
+
+  - id: closet_light_control_turn_off
+    alias: 'Closet Light Control: Turn off'
+    trigger:
+      - platform: event
+        event_type: yandex_intent
+        event_data:
+          text: Не выключай свет в кладовке
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.closet_light_control
+
+input_boolean:
+  closet_light_control:
+    name: 'Allow automatic light control (closet)'
+    initial: true
+    icon: mdi:home-lightbulb-outline
+
+light:
+  - platform: template
+    lights:
+      closet:
+        unique_id: closet_light
+        friendly_name: Closet Light
+        value_template: >
+          {{ is_state('switch.closet_light_switch', 'on') }}
+        availability_template: >
+          {{ states('switch.closet_light_switch') in ['on', 'off'] }}
+        icon_template: bha:ceiling-lamp
+        turn_on:
+          - service: switch.turn_on
+            entity_id: switch.closet_light_switch
+        turn_off:
+          - service: switch.turn_off
+            entity_id: switch.closet_light_switch

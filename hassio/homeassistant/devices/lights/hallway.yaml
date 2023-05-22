@@ -1,0 +1,62 @@
+automation:
+  - id: hallway_light_turn_off_welcome_home
+    alias: 'Hallway Light: Turn off (welcome home)'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.entrance_motion
+        to: 'off'
+        for:
+          minutes: 2
+    condition:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+
+      - condition: state
+        entity_id:
+          - light.hallway
+          - light.entrance
+        match: any
+        state: 'on'
+
+      - condition: state
+        entity_id: timer.scene_welcome_home
+        state: active
+    action:
+      - service: light.turn_off
+        entity_id:
+          - light.hallway
+          - light.entrance
+
+light:
+  - platform: template
+    lights:
+      entrance:
+        unique_id: entrance_light
+        friendly_name: Entrance Light
+        value_template: >
+          {{ is_state('switch.hallway_light_switch_left', 'on') }}
+        availability_template: >
+          {{ states('switch.hallway_light_switch_left') in ['on', 'off'] }}
+        icon_template: bha:ceiling-lamp
+        turn_on:
+          - service: switch.turn_on
+            entity_id: switch.hallway_light_switch_left
+        turn_off:
+          - service: switch.turn_off
+            entity_id: switch.hallway_light_switch_left
+
+      hallway:
+        unique_id: hallway_light
+        friendly_name: Hallway Light
+        value_template: >
+          {{ is_state('switch.hallway_light_switch_right', 'on') }}
+        availability_template: >
+          {{ states('switch.hallway_light_switch_right') in ['on', 'off'] }}
+        icon_template: bha:ceiling-lamp
+        turn_on:
+          - service: switch.turn_on
+            entity_id: switch.hallway_light_switch_right
+        turn_off:
+          - service: switch.turn_off
+            entity_id: switch.hallway_light_switch_right

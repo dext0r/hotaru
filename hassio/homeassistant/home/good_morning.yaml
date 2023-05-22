@@ -1,0 +1,138 @@
+automation:
+  - id: good_morning
+    alias: Good Morning
+    trigger:
+      - platform: event
+        event_type: yandex_intent
+        event_data:
+          text: Доброе утро
+    action:
+      - service: input_select.select_option
+        entity_id: input_select.home_mode
+        data:
+          option: Day
+
+      - service: cover.open_cover
+        entity_id:
+          - cover.living_room
+          - cover.kitchen
+          - cover.bedroom
+          - cover.workshop
+
+      - service: script.yandex_station_tts
+        data:
+          target: '{{ trigger.event.data.get("entity_id", "last") }}'
+          text: >
+            {{ states.sensor.alert_greeting.state }}
+            {{ [
+                'доброе утро! Сегодня будет отличный день.',
+                'доброго утра! Продуктивно провести этот день.',
+                'с добрым утром! Прекрасный день ждёт впереди.',
+                'хорошего утра и удачного дня.',
+                'доброго утречка! Посмотри как прекрасно за окном!',
+                'утра доброго, хорошо спалось?',
+               ]|random
+            }}
+
+      - if:
+          - condition: state
+            entity_id: climate.kettle
+            state: 'off'
+
+          - condition: numeric_state
+            entity_id: climate.kettle
+            attribute: current_temperature
+            below: 75
+        then:
+          - if:
+              - condition: numeric_state
+                entity_id: sensor.kettle_water_level_ml
+                above: 299
+            then:
+              - service: climate.set_hvac_mode
+                entity_id: climate.kettle
+                data:
+                  hvac_mode: auto
+
+              - service: script.yandex_station_tts
+                data:
+                  target: >
+                    {{ trigger.event.data.get('entity_id', 'last') }}
+                  text: >
+                    {{ [
+                          'Чай скоро будет готов',
+                          'Я включила чайник для %s' % states('sensor.person_pronoun_gen'),
+                          '%s пить чай, кипяток на подходе' % ('Умывайся и готовься' if states('sensor.person_pronoun_nom') == 'ты' else 'Умывайтесь и готовьтесь'),
+                          'Какое утро без чая? Я позабочусь о нём',
+                      ]|random
+                    }}
+            else:
+              - service: script.yandex_station_tts
+                data:
+                  target: >
+                    {{ trigger.event.data.get('entity_id', 'last') }}
+                  text: >
+                    {{ [
+                          'Чая сегодня не будет, кто-то не долил воды с вечера, плак-плак',
+                          'Не могу включить чайник, похоже там мало воды. Грусть печаль',
+                          'Хватит валяться и иди включай чайник, без воды он сам себя не включит'
+                      ]|random
+                    }}
+      - if:
+          - condition: template
+            value_template: >
+              {% if state_attr('input_datetime.scene_delivery_scheduled_from', 'has_date') %}
+                {% if states('input_datetime.scene_delivery_scheduled_from').split(' ')|first == now().date()|string %}
+                  true
+                {% endif %}
+              {% endif %}
+        then:
+          - service: script.yandex_station_tts
+            data:
+              target: >
+                {{ trigger.event.data.get('entity_id', 'last') }}
+              text: >
+                На сегодня запланирована доставка с
+                {{ state_attr('input_datetime.scene_delivery_scheduled_from', 'hour') }}:{{ '%02d' % state_attr('input_datetime.scene_delivery_scheduled_from', 'minute') }}
+                до
+                {{ state_attr('input_datetime.scene_delivery_scheduled_to', 'hour') }}:{{ '%02d' % state_attr('input_datetime.scene_delivery_scheduled_to', 'minute') }}
+
+      - service: script.yandex_station_command
+        data:
+          target: >
+            {{ trigger.event.data.get('entity_id', 'last') }}
+          command: Погода на сегодня
+
+  - id: good_morning_fallback
+    alias: Good Morning (fallback)
+    trigger:
+      - platform: state
+        entity_id: light.bedroom_main
+        to: 'on'
+        for:
+          minutes: 2
+    condition:
+      - condition: state
+        entity_id: binary_sensor.anyone_home
+        state: 'on'
+
+      - condition: time
+        after: '07:00'
+        before: '21:00'
+
+      - condition: not
+        conditions:
+          - condition: state
+            entity_id: input_select.home_mode
+            state: Day
+    action:
+      - service: input_select.select_option
+        entity_id: input_select.home_mode
+        data:
+          option: Day
+
+      - service: cover.open_cover
+        entity_id:
+          - cover.living_room
+          - cover.kitchen
+          - cover.bedroom

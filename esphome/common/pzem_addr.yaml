@@ -1,0 +1,32 @@
+esphome:
+  on_boot:
+      priority: -100
+      then:
+        - lambda: |-
+            auto new_address = 0x07;
+
+            if(new_address < 0x01 || new_address > 0xF7) // sanity check
+            {
+              ESP_LOGE("ModbusLambda", "Address needs to be between 0x01 and 0xF7");
+              return;
+            }
+
+            esphome::modbus_controller::ModbusController *controller = id(pzem);
+            auto set_addr_cmd = esphome::modbus_controller::ModbusCommandItem::create_write_single_command(
+              controller, 0x0002, new_address);
+
+            delay(200) ;
+            controller->queue_command(set_addr_cmd);
+            ESP_LOGI("ModbusLambda", "PZEM Addr set");
+
+modbus:
+  send_wait_time: 200ms
+  id: mod_bus_pzem
+
+modbus_controller:
+  - id: pzem
+    address: 0xF8
+    modbus_id: mod_bus_pzem
+    command_throttle: 0ms
+    setup_priority: -10
+    update_interval: 30s

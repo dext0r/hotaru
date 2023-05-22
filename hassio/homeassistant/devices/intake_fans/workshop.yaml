@@ -1,0 +1,221 @@
+input_boolean:
+  workshop_airing_warm:
+    name: Workshop Airing Warm
+    initial: false
+
+  workshop_airing_cold:
+    name: Workshop Airing Cold
+    initial: false
+
+template:
+  sensor:
+    - unique_id: sensor.workshop_intake_fan_target_temperature
+      name: 'Workshop Intake Fan: Target temperature'
+      device_class: temperature
+      unit_of_measurement: °C
+      state_class: measurement
+      state: >
+        {% set v = 18 %}
+        {% set indooor_temperature = states('sensor.workshop_temperature')|float(0) %}
+        {% set outdoor_temperature = states('sensor.workshop_intake_fan_outdoor_temperature')|float(0) %}
+
+        {% if is_state('binary_sensor.workshop_occupancy', 'on') and indooor_temperature > 0 %}
+          {% if indooor_temperature > 25.5 %}
+            {% set v = 10 %}
+          {% elif indooor_temperature > 25 %}
+            {% set v = 16 %}
+          {% elif indooor_temperature > 24.7 %}
+            {% set v = 20 %}
+          {% elif indooor_temperature > 24 %}
+            {% set v = 22 %}
+          {% endif %}
+        {% endif %}
+
+        {% if outdoor_temperature > 13 %}
+          {% set v = 0 %}
+        {% endif %}
+
+        {% if is_state('input_select.home_mode', 'Night') %}
+          {% if states('sensor.workshop_intake_fan_outdoor_temperature')|float(0) < 13 %}
+            {% set v = 13 %}
+          {% else %}
+            {% set v = 0 %}
+          {% endif %}
+        {% endif %}
+
+        {% if is_state('input_select.home_mode', 'Vacation') %}
+          {% set v = 15 %}
+        {% endif %}
+
+        {% if is_state('input_boolean.workshop_airing_warm', 'on') %}
+          {% set v = 23 %}
+        {% elif is_state('input_boolean.workshop_airing_cold', 'on') %}
+          {% set v = 0 %}
+        {% endif %}
+
+        {{ v }}
+
+    - unique_id: sensor.workshop_intake_fan_target_fan_speed
+      name: 'Workshop Intake Fan: Target fan speed'
+      icon: mdi:fan-auto
+      state: >
+        {% set v = 1 %}
+
+        {% if is_state('binary_sensor.workshop_occupancy', 'on') %}
+          {% set v = 3 %}
+        {% endif %}
+
+        {% if is_state('switch.workshop_intake_fan_recirculation', 'on') %}
+          {% set v = 1 %}
+        {% endif %}
+
+        {% if is_state('input_select.home_mode', 'Vacation') %}
+          {% set v = 1 %}
+        {% endif %}
+
+        {% if is_state('input_boolean.workshop_airing_warm', 'on') or is_state('input_boolean.workshop_airing_cold', 'on') %}
+          {% set v = 6 %}
+        {% endif %}
+
+        {{ v }}
+
+automation:
+  - id: workshop_intake_fan_update
+    alias: 'Workshop Intake Fan: Update'
+    mode: single
+    max_exceeded: silent
+    trigger:
+      - platform: time_pattern
+        minutes: '/5'
+
+      - platform: state
+        entity_id:
+          - input_select.home_mode
+          - binary_sensor.workshop_occupancy
+
+      - id: room_airing
+        platform: state
+        entity_id:
+          - input_boolean.workshop_airing_warm
+          - input_boolean.workshop_airing_cold
+        to:
+          - 'on'
+          - 'off'
+
+      - id: recirculation
+        platform: state
+        entity_id: switch.workshop_intake_fan_recirculation
+        to:
+          - 'on'
+          - 'off'
+
+      - platform: state
+        entity_id: sensor.ups_status
+        from: 'On Battery'
+        to: 'Online'
+        for:
+          seconds: 60
+    condition:
+      - condition: state
+        entity_id: climate.workshop_intake_fan
+        state:
+          - 'heat'
+          - 'fan_only'
+          - 'off'
+    action:
+      - if:
+          - condition: trigger
+            id: recirculation
+        then:
+          - delay:
+              seconds: 20
+        else:
+          - delay:
+              seconds: 1
+
+      - if:
+          - condition: state
+            entity_id: input_boolean.climate_control
+            state: 'off'
+        then:
+          - service: climate.turn_off
+            entity_id: climate.workshop_intake_fan
+        else:
+          - service: climate.set_temperature
+            entity_id: climate.workshop_intake_fan
+            data:
+              temperature: >
+                {{ states('sensor.workshop_intake_fan_target_temperature')|float(20) }}
+              hvac_mode: heat
+
+          - service: climate.set_fan_mode
+            entity_id: climate.workshop_intake_fan
+            data:
+              fan_mode: >
+                {{ states('sensor.workshop_intake_fan_target_fan_speed') }}
+
+  - id: workshop_airing_swap_modes
+    alias: 'Workshop Airing: Swap modes'
+    trigger:
+      - platform: state
+        entity_id:
+          - input_boolean.workshop_airing_warm
+          - input_boolean.workshop_airing_cold
+        to: 'on'
+    action:
+      - service: input_boolean.turn_off
+        data_template:
+          entity_id: >
+            {%- if trigger.from_state.entity_id == 'input_boolean.workshop_airing_warm' -%}
+              input_boolean.workshop_airing_cold
+            {%- else -%}
+              input_boolean.workshop_airing_warm
+            {%- endif -%}
+
+  - id: workshop_airing_auto_turn_off
+    alias: 'Workshop Airing: Auto turn off'
+    trigger:
+      - platform: state
+        entity_id:
+          - input_boolean.workshop_airing_warm
+          - input_boolean.workshop_airing_cold
+        to: 'on'
+        for:
+          minutes: 35
+    action:
+      - service: input_boolean.turn_off
+        data_template:
+          entity_id: >
+            {{ trigger.from_state.entity_id }}
+
+switch:
+  - platform: template
+    switches:
+      workshop_airing:
+        unique_id: switch.workshop_airing
+        friendly_name: Workshop Airing
+        icon_template: mdi:hair-dryer-outline
+        value_template: >
+          {{
+            is_state('input_boolean.workshop_airing_cold', 'on') or
+            is_state('input_boolean.workshop_airing_warm', 'on')
+          }}
+        turn_on:
+          - if:
+              - condition: numeric_state
+                entity_id: sensor.workshop_temperature
+                above: 25.5
+            then:
+              - service: input_boolean.turn_on
+                target:
+                  entity_id: input_boolean.workshop_airing_cold
+            else:
+              - service: input_boolean.turn_on
+                target:
+                  entity_id: input_boolean.workshop_airing_warm
+        turn_off:
+          - service: input_boolean.turn_off
+            target:
+              entity_id:
+                - input_boolean.workshop_airing_cold
+                - input_boolean.workshop_airing_warm

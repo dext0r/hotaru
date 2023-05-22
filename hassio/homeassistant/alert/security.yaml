@@ -1,0 +1,81 @@
+automation:
+  - id: all_left_recently_alert
+    alias: 'All left recently alert'
+    trigger:
+      platform: state
+      entity_id: binary_sensor.anyone_home
+      from: 'on'
+      to: 'off'
+      for: '00:03:00'
+    condition:
+      - condition: state
+        entity_id: lock.front_door
+        state: unlocked
+    action:
+      - service: notify.dextor
+        data:
+          message: 🔑 Никого нет дома, а дверь не закрыта. Страшно?
+
+  - id: motion_alarm_no_one_home
+    alias: 'Motion Alarm: No one home'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.motion_anywhere
+        from: 'off'
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: binary_sensor.anyone_home
+        state: 'off'
+
+      - condition: not
+        conditions:
+          - condition: state
+            entity_id:
+              - person.dextor
+              - person.layma
+            match: any
+            state: Near Home
+
+      - condition: template
+        value_template: >
+          {{ (now() - state_attr('automation.motion_alarm_no_one_home',
+                                  'last_triggered')|default(now() - timedelta(days=1), true)).seconds > 600 }}
+    action:
+      - service: notify.dextor
+        data:
+          message: 👮 Движение дома, хотя там никого нет? Нас грабют! Ну или кормят котиков.
+
+  - id: front_door_opened_alert
+    alias: 'Front Door: Opened alert'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.front_door
+        from: 'off'
+        to: 'on'
+        for:
+          minutes: 15
+
+      - platform: state
+        entity_id: binary_sensor.front_door
+        from: 'off'
+        to: 'on'
+        for:
+          minutes: 30
+    condition:
+      - condition: state
+        entity_id: binary_sensor.anyone_home
+        state: 'on'
+    action:
+      - service: script.yandex_station_tts
+        data:
+          target: all
+          type: alert
+          text: >
+            {{ states.sensor.alert_greeting.state }}
+            {{ [
+                'Входная дверь не защелкнута, сходи проверь',
+                'Мы кого-то ждем? Входная дверь не прикрыта',
+                'Прикрой входную дверь, а то украдут!'
+                ]|random
+            }}

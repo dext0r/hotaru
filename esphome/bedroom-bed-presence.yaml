@@ -1,0 +1,79 @@
+packages:
+  base: !include common/base.yaml
+
+substitutions:
+  device_name: Bedroom Bed Presence
+
+esphome:
+  name: bedroom-bed-presence
+  model: NodeMCU
+  name_add_mac_suffix: false
+
+esp8266:
+  board: esp01_1m
+
+logger:
+  logs:
+    ads1115: INFO
+
+i2c:
+  scl: 5
+  sda: 4
+  scan: false
+
+ads1115:
+  - address: 0x48
+
+sensor:
+  - id: bed_a0
+    name: 'Bed: A0'
+    platform: ads1115
+    multiplexer: A0_GND
+    gain: 6.144
+    update_interval: 500ms
+    accuracy_decimals: 0
+    filters:
+      - multiply: 10000
+      - exponential_moving_average:
+          alpha: 0.3
+          send_every: 6
+          send_first_at: 3
+      - lambda: return int(x);
+
+  - id: bed_a1
+    name: 'Bed: A1'
+    platform: ads1115
+    multiplexer: A1_GND
+    gain: 6.144
+    update_interval: 500ms
+    accuracy_decimals: 0
+    filters:
+      - multiply: 10000
+      - exponential_moving_average:
+          alpha: 0.3
+          send_every: 6
+          send_first_at: 3
+      - lambda: return int(x);
+
+binary_sensor:
+  - name: 'Bed Presence: dextor'
+    platform: template
+    device_class: presence
+    lambda: |-
+      return id(bed_a0).state > 200;
+
+  - name: 'Bed Presence: layma'
+    platform: template
+    device_class: presence
+    lambda: |-
+      return id(bed_a1).state > 200;
+
+light:
+  - name: Hallway Path Light
+    platform: neopixelbus
+    pin: 14
+    type: GRBW
+    variant: SK6812
+    num_leds: 104
+    gamma_correct: 1
+    restore_mode: ALWAYS_OFF

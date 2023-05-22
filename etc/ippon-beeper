@@ -1,0 +1,12 @@
+#!/bin/bash
+set -euo pipefail
+
+while :; do
+    STATUS=$(upsc ippon@localhost ups.beeper.status 2>&1)
+    if echo "$STATUS" | grep -q enabled; then
+        echo Disabling beeper
+        upscmd -u upsmon -p 12345 ippon@localhost beeper.toggle
+    fi
+
+    sleep 30
+done

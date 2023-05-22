@@ -1,0 +1,84 @@
+automation:
+  - id: scene_welcome_home_on
+    alias: 'Scene Welcome Home: Turn on'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.entrance_motion
+        to: 'on'
+    condition:
+      - condition: template
+        value_template: >
+          {% set no_one_home_seconds = (as_timestamp(now()) - state_attr('input_datetime.anyone_home_last_seen', 'timestamp'))|int %}
+          {{ no_one_home_seconds > (8 * 60) }}
+
+      - condition: state
+        entity_id: input_select.home_mode
+        state:
+          - Day
+          - Vacation
+
+      - condition: state
+        entity_id: timer.front_door_unlocked
+        state: active
+
+      - condition: state
+        entity_id: timer.scene_welcome_home
+        state: idle
+    action:
+      - service: timer.start
+        entity_id: timer.scene_welcome_home
+
+      - service: timer.cancel
+        entity_id: timer.front_door_unlocked
+
+      - service: light.turn_on
+        entity_id: light.entrance
+
+      - if:
+          - condition: state
+            entity_id: input_select.home_mode
+            state: Vacation
+        then:
+          - wait_for_trigger:
+              - platform: state
+                entity_id: binary_sensor.anyone_home
+                to: 'on'
+            timeout:
+              minutes: 7
+            continue_on_timeout: false
+
+          - service: script.yandex_station_tts
+            data:
+              target: media_player.kitchen_station
+              type: announce
+              text: >
+                <speaker audio="alice-sounds-game-win-1.opus">
+                {% set v = [
+                  'Отдых - хорошо, но дома лучше. С возвращением!',
+                  'Добро пожаловать домой, я вас заждалась!',
+                ] %}
+                {{ v|random }}
+
+          - service: input_select.select_option
+            entity_id: input_select.home_mode
+            data:
+              option: Day
+        else:
+          - service: script.yandex_station_tts
+            data:
+              target: media_player.kitchen_station
+              type: announce
+              text: >
+                <speaker audio="alice-sounds-game-powerup-1.opus">
+                {% set v = [
+                  '%s с возвращением!' % (states('sensor.alert_greeting')),
+                  '%s наконец-то %s дома' % (states('sensor.alert_greeting'), states('sensor.person_pronoun_nom')),
+                  '%s как хорошо, когда %s снова дома' % (states('sensor.alert_greeting'), states('sensor.person_pronoun_nom')),
+                  '%s добро пожаловать домой' % (states('sensor.alert_greeting')),
+                ] %}
+                {{ v|random }}
+
+timer:
+  scene_welcome_home:
+    name: 'Scene: Welcome Home'
+    duration: 00:20:00

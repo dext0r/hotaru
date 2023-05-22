@@ -14,6 +14,8 @@ input_number:
     icon: mdi:volume-high
 
 input_text:
+  # Осталось со времён, когда в интентах не было информации о колонке
+  # Пригодится, если Яндекс отломает websocket и мы вернёмся на управление через фейковый плеер в УДЯ
   yandex_station_last:
     name: Last active Yandex Station
     initial: media_player.living_room_station

@@ -170,13 +170,12 @@ script:
                           text: '{{ _text }}'
                           volume_level: '{{ _volume_level }}'
         else:
-          - service: script.turn_on
-            entity_id: script.yandex_station_play_dialog
+          # если будем запускать асинхронно - последовательность не будет работать (см. сказку про белого бычка)
+          - service: script.yandex_station_play_dialog
             data:
-              variables:
-                entity_id: '{{ _target }}'
-                text: '{{ _text }}'
-                volume_level: '{{ _volume_level }}'
+              entity_id: '{{ _target }}'
+              text: '{{ _text }}'
+              volume_level: '{{ _volume_level }}'
 
   # Известная особенность: может запуститься несколько экземпляров по одной колонке одновременно
   # Можно реализовать механизм блокировок, но мне лень

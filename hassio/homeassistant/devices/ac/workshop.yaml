@@ -26,7 +26,7 @@ automation:
           - heat
           - dry
         for:
-          hours: 6
+          hours: 12
     condition:
       - condition: state
         entity_id: climate.workshop_ac

@@ -33,20 +33,22 @@ automation:
     trigger:
       - platform: numeric_state
         entity_id:
-          - sensor.living_room_temperature
+          - sensor.bathroom_temperature
           - sensor.bedroom_temperature
-          - sensor.workshop_temperature
           - sensor.kitchen_temperature
+          - sensor.living_room_temperature
           - sensor.wardrobe_temperature
+          - sensor.workshop_temperature
         below: 17
 
       - platform: numeric_state
         entity_id:
-          - sensor.living_room_temperature
+          - sensor.bathroom_temperature
           - sensor.bedroom_temperature
-          - sensor.workshop_temperature
           - sensor.kitchen_temperature
+          - sensor.living_room_temperature
           - sensor.wardrobe_temperature
+          - sensor.workshop_temperature
         above: 29
     action:
       - service: notify.dextor

@@ -50,7 +50,13 @@ automation:
           - heat
           - dry
         for:
-          hours: 12
+          hours: 24
+
+      - platform: state
+        entity_id: input_select.home_mode
+        from: Night
+        for:
+          minutes: 5
     condition:
       - condition: state
         entity_id: climate.bedroom_ac

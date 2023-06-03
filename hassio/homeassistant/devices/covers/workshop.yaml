@@ -8,7 +8,7 @@ automation:
         to: 'on'
 
       - platform: time_pattern
-        minutes: '/20'
+        minutes: '/10'
     condition:
       - condition: state
         entity_id: binary_sensor.workshop_window
@@ -21,7 +21,7 @@ automation:
 
       - condition: numeric_state
         entity_id: sensor.illuminance_north_side
-        below: 15
+        below: 30
 
       - condition: state
         entity_id:

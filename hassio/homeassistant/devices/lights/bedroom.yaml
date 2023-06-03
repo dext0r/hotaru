@@ -18,7 +18,7 @@ automation:
         conditions:
           - condition: numeric_state
             entity_id: sensor.illuminance_north_side
-            below: 79
+            below: 102
 
           - condition: state
             entity_id: cover.bedroom

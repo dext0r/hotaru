@@ -7,7 +7,7 @@ binary_sensor:
       - binary_sensor.bedroom_motion
       - binary_sensor.bedroom_occupancy
       - binary_sensor.bedroom_desk_occupancy
-      - binary_sensor.bedroom_bed_any_occuppancy
+      - binary_sensor.bedroom_bed_any_occupancy
 
   - platform: group
     unique_id: binary_sensor.bedroom_bed_any_occupancy

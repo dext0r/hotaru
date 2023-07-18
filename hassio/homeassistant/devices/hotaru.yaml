@@ -15,25 +15,26 @@ sensor:
       - type: processor_use
       - type: processor_temperature
 
-  - platform: command_line
-    unique_id: sensor.processor_fan_speed
-    name: Processor fan speed
-    command: cat /sys/devices/platform/applesmc.768/fan1_output
-    unit_of_measurement: rpm
-    value_template: '{{ value|int|round(-2) }}'
-    scan_interval: 30
+command_line:
+  - sensor:
+      unique_id: sensor.processor_fan_speed
+      name: Processor fan speed
+      command: cat /sys/devices/platform/applesmc.768/fan1_output
+      unit_of_measurement: rpm
+      value_template: '{{ value|int|round(-2) }}'
+      scan_interval: 30
 
-  # - platform: command_line
-  #   name: TN0D temperature
-  #   command: cat /sys/devices/platform/applesmc.768/temp5_input
-  #   unit_of_measurement: °C
-  #   value_template: '{{ ((value|int) / 1000)|round }}'
-  #   scan_interval: 30
+  - sensor:
+      unique_id: sensor.disk_temperature
+      name: Disk temperature
+      command: cat /sys/block/sda/device/hwmon/hwmon*/temp1_input
+      unit_of_measurement: °C
+      value_template: '{{ ((value|int) / 1000)|round }}'
+      scan_interval: 30
 
-  - platform: command_line
-    unique_id: sensor.disk_temperature
-    name: Disk temperature
-    command: cat /sys/block/sda/device/hwmon/hwmon*/temp1_input
-    unit_of_measurement: °C
-    value_template: '{{ ((value|int) / 1000)|round }}'
-    scan_interval: 30
+  # - sensor:
+  #     name: TN0D temperature
+  #     command: cat /sys/devices/platform/applesmc.768/temp5_input
+  #     unit_of_measurement: °C
+  #     value_template: '{{ ((value|int) / 1000)|round }}'
+  #     scan_interval: 30

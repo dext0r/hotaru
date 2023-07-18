@@ -149,9 +149,10 @@ automation:
       - platform: time_pattern
         minutes: '/14'
     condition:
-      - condition: state
-        entity_id: humidifier.bedroom_humidifier
-        state: 'on'
+      # он бывает полностью отключен, поэтому проверка через шаблон
+      - condition: template
+        value_template: >
+          {{ is_state('humidifier.bedroom_humidifier', 'on') }}
 
       - condition: numeric_state
         entity_id: sensor.bedroom_humidity

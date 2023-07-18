@@ -45,7 +45,6 @@ homeassistant:
     intercom: !include devices/intercom.yaml
     ios: !include integrations/ios.yaml
     kettle: !include devices/kettle.yaml
-    kombucha: !include home/kombucha.yaml
     lights_bathroom: !include devices/lights/bathroom.yaml
     lights_bedroom: !include devices/lights/bedroom.yaml
     lights_closet: !include devices/lights/closet.yaml

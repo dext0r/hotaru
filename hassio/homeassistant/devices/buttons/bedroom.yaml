@@ -8,6 +8,10 @@ automation:
         type: action
         subtype: single
         discovery_id: 0x00158d00039723b6 action_single
+    condition:
+      - condition: state
+        entity_id: input_boolean.scene_sleepy_mood
+        state: 'off'
     action:
       - choose:
           - conditions:

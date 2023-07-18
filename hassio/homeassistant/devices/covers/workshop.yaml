@@ -6,6 +6,8 @@ automation:
         entity_id: binary_sensor.workshop_motion
         from: 'off'
         to: 'on'
+        for:
+          seconds: 5
 
       - platform: time_pattern
         minutes: '/10'
@@ -21,7 +23,7 @@ automation:
 
       - condition: numeric_state
         entity_id: sensor.illuminance_north_side
-        below: 30
+        below: 40
 
       - condition: state
         entity_id:
@@ -29,8 +31,10 @@ automation:
           - binary_sensor.workshop_occupancy
         state: 'on'
     action:
-      - service: cover.close_cover
+      - service: cover.set_cover_position
         entity_id: cover.workshop
+        data:
+          position: 20
 
 cover:
   - platform: template

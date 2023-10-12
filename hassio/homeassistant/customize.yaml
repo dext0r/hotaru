@@ -29,3 +29,9 @@ sensor.living_room_heater_energy:
   volatile: true
 switch.portable_fan:
   volatile: true
+sensor.kitchen_stove_energy:
+  volatile: true
+sensor.bedroom_ac_energy:
+  volatile: true
+sensor.workshop_ac_energy:
+  volatile: true

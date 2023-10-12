@@ -21,7 +21,7 @@ automation:
         for:
           minutes: 1
     action:
-      - service: notify.mobile_app_misaka_app
+      - service: notify.mobile_app_misaka
         data:
           message: >
             🚨 Обнаружено задымление {{ state_attr(trigger.from_state.entity_id, 'alert_text')|default('', True) }}

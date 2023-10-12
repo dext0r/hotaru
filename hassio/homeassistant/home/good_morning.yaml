@@ -101,6 +101,12 @@ automation:
         data:
           target: >
             {{ trigger.event.data.get('entity_id', 'last') }}
+          command: Какой сегодня день
+
+      - service: script.yandex_station_command
+        data:
+          target: >
+            {{ trigger.event.data.get('entity_id', 'last') }}
           command: Погода на сегодня
 
   - id: good_morning_fallback

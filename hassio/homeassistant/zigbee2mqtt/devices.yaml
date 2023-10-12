@@ -97,14 +97,6 @@
   optimistic: true
   retain: true
   temperature_precision: 1
-'0x00158d0000c2f7e8':
-  friendly_name: Fridge Door
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
 '0x00158d0001d735a5':
   friendly_name: Fridge Meteo
   disabled: false
@@ -140,14 +132,6 @@
   temperature_precision: 1
 '0x00158d00045683bc':
   friendly_name: Kitchen Water Leak
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-'0x00158d0000b483bd':
-  friendly_name: Closet Door
   homeassistant: {}
   humidity_precision: 1
   legacy: false
@@ -192,7 +176,7 @@
   homeassistant: {}
   humidity_precision: 1
   legacy: false
-  optimistic: true
+  optimistic: false
   retain: true
   temperature_precision: 1
 '0x00158d000460badf':
@@ -376,14 +360,6 @@
   optimistic: true
   retain: true
   temperature_precision: 1
-'0x588e81fffe43ce4f':
-  friendly_name: Porch Door Lock
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
 '0x00124b002342cf9a':
   friendly_name: Front Door Lock
   homeassistant: {}
@@ -475,6 +451,30 @@
   temperature_precision: 1
 '0x00158d000775a0d4':
   friendly_name: Workshop Desk Motion
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00158d0002b18420':
+  friendly_name: Fridge Door
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00158d0002aef0e9':
+  friendly_name: Closet Door
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x588e81fffe43ce4f':
+  friendly_name: Porch Door Lock
   homeassistant: {}
   humidity_precision: 1
   legacy: false

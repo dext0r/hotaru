@@ -141,18 +141,21 @@ automation:
           - service: climate.turn_off
             entity_id: climate.workshop_intake_fan
         else:
+          - service: climate.set_fan_mode
+            entity_id: climate.workshop_intake_fan
+            data:
+              fan_mode: >
+                {{ states('sensor.workshop_intake_fan_target_fan_speed') }}
+
+          - delay:
+              seconds: 1
+
           - service: climate.set_temperature
             entity_id: climate.workshop_intake_fan
             data:
               temperature: >
                 {{ states('sensor.workshop_intake_fan_target_temperature')|float(20) }}
               hvac_mode: heat
-
-          - service: climate.set_fan_mode
-            entity_id: climate.workshop_intake_fan
-            data:
-              fan_mode: >
-                {{ states('sensor.workshop_intake_fan_target_fan_speed') }}
 
   - id: workshop_airing_swap_modes
     alias: 'Workshop Airing: Swap modes'

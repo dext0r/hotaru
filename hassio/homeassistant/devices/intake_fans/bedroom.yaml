@@ -158,18 +158,21 @@ automation:
           - service: climate.turn_off
             entity_id: climate.bedroom_intake_fan
         else:
+          - service: climate.set_fan_mode
+            entity_id: climate.bedroom_intake_fan
+            data:
+              fan_mode: >
+                {{ states('sensor.bedroom_intake_fan_target_fan_speed') }}
+
+          - delay:
+              seconds: 1
+
           - service: climate.set_temperature
             entity_id: climate.bedroom_intake_fan
             data:
               temperature: >
                 {{ states('sensor.bedroom_intake_fan_target_temperature')|float(20) }}
               hvac_mode: heat
-
-          - service: climate.set_fan_mode
-            entity_id: climate.bedroom_intake_fan
-            data:
-              fan_mode: >
-                {{ states('sensor.bedroom_intake_fan_target_fan_speed') }}
 
   - id: bedroom_airing_swap_modes
     alias: 'Bedroom Airing: Swap modes'

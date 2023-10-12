@@ -1,10 +1,7 @@
 external_components:
-  - source: github://dentra/esphome-tion@2023.7.0
-  - source: github://dentra/esphome-components@2023.2.0
-    components: [crash_info, etl, vport]
-
-esphome:
-  min_version: 2023.7.0
+  - source: github://dentra/esphome-tion@2022.10.0
+  - source: github://dentra/esphome-components
+    components: [crash_info, etl]
 
 ota:
   on_begin:
@@ -24,18 +21,18 @@ ble_client:
             ESP_LOGV("tion_ble_client", "Disconnected from BLE device");
 
 vport:
-  - platform: tion_4s
+  - platform: tion_ble
     id: tion_ble_vport
     ble_client_id: tion_ble_client
     persistent_connection: true
     state_timeout: 30s
+    update_interval: 20s
     disable_scan: false
 
 climate:
   - platform: tion_4s
     name: $tion_device_name
     vport_id: tion_ble_vport
-    update_interval: 20s
 
     led:
       name: $tion_device_name LED
@@ -48,8 +45,6 @@ climate:
       name: $tion_device_name Heater Power
     filter_time_left:
       name: $tion_device_name Filter Time Left
-    reset_filter:
-      name: $tion_device_name Reset filter
 
 sensor:
   - platform: total_daily_energy

@@ -297,3 +297,16 @@ template:
             true
           {%- endfor -%}
         device_class: motion
+
+  - trigger:
+      - platform: time_pattern
+        seconds: /30
+    binary_sensor:
+      # очень субьективное ощущение жены
+      - name: Evening time
+        unique_id: binary_sensor.evening_time
+        state: >
+          {{ state_attr('sun.sun', 'elevation') < 7 and
+             states('sensor.illuminance_north_side')|int(0) <= 80 and
+             states('sensor.illuminance_south_side')|int(0) <= 120 and
+             now().hour > 12 }}

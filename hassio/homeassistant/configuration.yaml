@@ -64,6 +64,7 @@ homeassistant:
     portable_heater: !include devices/portable_heater.yaml
     scene_delivery: !include scenes/delivery.yaml
     scene_departure: !include scenes/departure.yaml
+    scene_evening: !include scenes/evening.yaml
     scene_meal: !include scenes/meal.yaml
     scene_movie: !include scenes/movie.yaml
     scene_sleepy_mood: !include scenes/sleepy_mood.yaml

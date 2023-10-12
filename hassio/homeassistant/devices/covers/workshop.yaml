@@ -2,16 +2,32 @@ automation:
   - id: workshop_shades_close
     alias: 'Workshop Shades: Close'
     trigger:
+      - id: lock_unlocked
+        platform: state
+        entity_id: lock.front_door
+        from: locked
+        to: unlocked
+
       - platform: state
-        entity_id: binary_sensor.workshop_motion
+        entity_id: binary_sensor.evening_time
         from: 'off'
         to: 'on'
         for:
-          seconds: 5
-
-      - platform: time_pattern
-        minutes: '/10'
+          minutes: 5
     condition:
+      - condition: state
+        entity_id: binary_sensor.evening_time
+        state: 'on'
+
+      - condition: or
+        conditions:
+          - condition: trigger
+            id: lock_unlocked
+
+          - condition: state
+            entity_id: binary_sensor.anyone_home
+            state: 'on'
+
       - condition: state
         entity_id: binary_sensor.workshop_window
         state: 'off'
@@ -21,15 +37,11 @@ automation:
         attribute: current_position
         state: 100
 
-      - condition: numeric_state
-        entity_id: sensor.illuminance_north_side
-        below: 40
+      - condition: template
+        value_template: >
+          {{ (now() - state_attr('automation.workshop_shades_close',
+                                  'last_triggered')|default(now() - timedelta(days=1), true)).total_seconds() > 8 * 60 * 60 }}
 
-      - condition: state
-        entity_id:
-          - binary_sensor.anyone_home
-          - binary_sensor.workshop_occupancy
-        state: 'on'
     action:
       - service: cover.set_cover_position
         entity_id: cover.workshop

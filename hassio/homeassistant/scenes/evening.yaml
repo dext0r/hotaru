@@ -1,0 +1,139 @@
+
+automation:
+  - id: living_room_evening
+    alias: 'Living Room: Evening'
+    trigger:
+      - id: lock_unlocked
+        platform: state
+        entity_id: lock.front_door
+        from: locked
+        to: unlocked
+
+      - platform: state
+        entity_id: binary_sensor.evening_time
+        from: 'off'
+        to: 'on'
+        for:
+          minutes: 5
+
+      - platform: state
+        entity_id: binary_sensor.living_room_balcony_door
+        from: 'on'
+        to: 'off'
+        for:
+          seconds: 20
+    condition:
+      - condition: state
+        entity_id: binary_sensor.evening_time
+        state: 'on'
+
+      - condition: or
+        conditions:
+          - condition: trigger
+            id: lock_unlocked
+
+          - condition: state
+            entity_id: binary_sensor.anyone_home
+            state: 'on'
+
+      - condition: state
+        entity_id: binary_sensor.living_room_balcony_door
+        state: 'off'
+
+      - condition: template
+        value_template: >
+          {{ (now() - state_attr('automation.living_room_evening',
+                                  'last_triggered')|default(now() - timedelta(days=1), true)).total_seconds() > 8 * 60 * 60 }}
+    action:
+      - if:
+          - condition: state
+            entity_id: binary_sensor.living_room_occupancy
+            state: 'on'
+
+          - condition: state
+            entity_id: light.living_room_main
+            state: 'off'
+        then:
+          - if:
+              - condition: state
+                entity_id: light.living_room_tv
+                state: 'off'
+            then:
+              - service: light.turn_on
+                entity_id: light.living_room_tv
+                data:
+                  brightness_pct: 100
+                  transition: 2
+
+          - if:
+              - condition: state
+                entity_id: light.living_room_backlight
+                state: 'off'
+            then:
+              - service: light.turn_on
+                entity_id: light.living_room_backlight
+                data:
+                  brightness_pct: 43
+                  kelvin: 3400
+                  transition: 2
+
+      - delay:
+          seconds: 2
+
+      - service: cover.close_cover
+        entity_id: cover.living_room
+
+
+  - id: bedroom_evening
+    alias: 'Bedroom: Evening'
+    trigger:
+      - id: lock_unlocked
+        platform: state
+        entity_id: lock.front_door
+        from: locked
+        to: unlocked
+
+      - platform: state
+        entity_id: binary_sensor.evening_time
+        from: 'off'
+        to: 'on'
+        for:
+          minutes: 5
+    condition:
+      - condition: state
+        entity_id: binary_sensor.evening_time
+        state: 'on'
+
+      - condition: or
+        conditions:
+          - condition: trigger
+            id: lock_unlocked
+
+          - condition: state
+            entity_id: binary_sensor.anyone_home
+            state: 'on'
+
+      - condition: state
+        entity_id: binary_sensor.bedroom_window
+        state: 'off'
+
+      - condition: state
+        entity_id: cover.bedroom
+        attribute: current_position
+        state: 100
+
+      - condition: template
+        value_template: >
+          {{ (now() - state_attr('automation.bedroom_evening',
+                                 'last_triggered')|default(now() - timedelta(days=1), true)).total_seconds() > 8 * 60 * 60 }}
+    action:
+      - service: cover.close_cover
+        entity_id: cover.bedroom
+
+      - if:
+          - condition: state
+            entity_id: binary_sensor.bedroom_desk_occupancy
+            state: 'on'
+        then:
+          - service: light.turn_on
+            entity_id: light.bedroom_main

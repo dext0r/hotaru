@@ -15,7 +15,7 @@ entity_config:
   climate.bedroom_ac:
     type: devices.types.thermostat.ac
     error_code_template: |
-      {% set outside = states('sensor.weather_temperature')|int(-1) %}
+      {% set outside = states('sensor.outside_temperature')|int(-1) %}
 
       {% if capability.type == 'devices.capabilities.on_off' and capability.state.instance == 'on' and capability.state.value %}
         {% if outside < -12 %}
@@ -46,7 +46,7 @@ entity_config:
   climate.workshop_ac:
     type: devices.types.thermostat.ac
     error_code_template: |
-      {% set outside = states('sensor.weather_temperature')|int(-1) %}
+      {% set outside = states('sensor.outside_temperature')|int(-1) %}
 
       {% if capability.type == 'devices.capabilities.on_off' and capability.state.instance == 'on' and capability.state.value %}
         {% if outside < -12 %}

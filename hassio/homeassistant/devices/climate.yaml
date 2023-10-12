@@ -144,3 +144,15 @@ switch:
                 - input_boolean.living_room_airing_warm
                 - input_boolean.workshop_airing_cold
                 - input_boolean.workshop_airing_warm
+
+template:
+  - sensor:
+      - name: Outside Temperature
+        device_class: temperature
+        unit_of_measurement: °C
+        state: >
+          {% set temperature = states('sensor.weather_temperature') %}
+          {% if temperature in ['unavailable', 'unknown'] %}
+            {% set temperature = states('sensor.bedroom_intake_fan_outdoor_temperature') %}
+          {% endif %}
+          {{ temperature }}

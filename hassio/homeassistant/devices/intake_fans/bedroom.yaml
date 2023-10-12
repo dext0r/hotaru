@@ -38,7 +38,7 @@ template:
             {% set v = 0 %}
           {% endif %}
 
-          {% if indoor_temperature < 24.7 and outdoor_temperature < 14 %}
+          {% if indoor_temperature < 23.5 and outdoor_temperature < 14 %}
             {% set v = 20 %}
           {% endif %}
         {% endif %}

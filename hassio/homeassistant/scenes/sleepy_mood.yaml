@@ -132,6 +132,26 @@ automation:
 
       - if:
           - condition: state
+            entity_id: climate.bedroom_ac
+            state:
+              - 'off'
+              - heat_cool
+              - cool
+              - heat
+              - dry
+
+          - condition: numeric_state
+            entity_id: sensor.outside_temperature
+            above: 17
+        then:
+          - service: climate.set_temperature
+            entity_id: climate.bedroom_ac
+            data:
+              hvac_mode: cool
+              temperature: 24
+
+      - if:
+          - condition: state
             entity_id: lock.front_door
             state: unlocked
         then:

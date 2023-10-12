@@ -10,5 +10,8 @@ esphome:
   name: water-heater-socket-10
   name_add_mac_suffix: false
 
+wifi:
+  ssid: !secret ssid_kitchen
+
 logger:
   level: INFO

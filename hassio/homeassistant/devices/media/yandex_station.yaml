@@ -239,6 +239,16 @@ script:
           media_content_id: '{{ command }}'
           media_content_type: command
 
+      - wait_template: >
+          {{ state_attr(target, 'alice_state') == 'SPEAKING' }}
+        timeout:
+          seconds: 45
+
+      - wait_template: >
+          {{ state_attr(target, 'alice_state') == 'IDLE' }}
+        timeout:
+          seconds: 5
+
 group:
   yandex_stations:
     name: Yandex Stations

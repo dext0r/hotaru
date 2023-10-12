@@ -40,7 +40,7 @@ automation:
       - condition: template
         value_template: >
           {{ (now() - state_attr('automation.motion_alarm_no_one_home',
-                                  'last_triggered')|default(now() - timedelta(days=1), true)).seconds > 600 }}
+                                  'last_triggered')|default(now() - timedelta(days=1), true)).total_seconds() > 600 }}
     action:
       - service: notify.dextor
         data:

@@ -34,7 +34,7 @@ automation:
       # временный костыль для вороченья в кровати
       - condition: template
         value_template: >
-          {{ (now() - states.binary_sensor.bedroom_bed_any_occupancy.last_changed).seconds > 30 }}
+          {{ (now() - states.binary_sensor.bedroom_bed_any_occupancy.last_changed).total_seconds() > 30 }}
     action:
       - service: light.turn_on
         entity_id: light.bedroom_main

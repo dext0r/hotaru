@@ -76,7 +76,7 @@ automation:
               - condition: template
                 value_template: >
                   {{ (now() - state_attr('automation.ios_intercom_mode_accept',
-                                         'last_triggered')|default(now() - timedelta(days=1), true)).seconds > 300 }}
+                                         'last_triggered')|default(now() - timedelta(days=1), true)).total_seconds() > 300 }}
             sequence:
               - service: select.select_option
                 entity_id: select.intercom_mode
@@ -103,7 +103,7 @@ automation:
       - condition: template
         value_template: >
           {{ (now() - state_attr('automation.intercom_door_opened',
-                                 'last_triggered')|default(now() - timedelta(days=1), true)).seconds > 60 }}
+                                 'last_triggered')|default(now() - timedelta(days=1), true)).total_seconds() > 60 }}
     action:
       - service: media_player.media_pause
         entity_id: group.yandex_stations

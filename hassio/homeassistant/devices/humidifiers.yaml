@@ -51,12 +51,12 @@ automation:
 
       - condition: template
         value_template: >
-          {{ (now() - states.input_select.home_mode.last_changed).seconds > 3600 }}
+          {{ (now() - states.input_select.home_mode.last_changed).total_seconds() > 3600 }}
 
       - condition: template
         value_template: >
           {{ (now() - state_attr('automation.humidifiers_need_cleanup_alert',
-                                 'last_triggered')|default(now() - timedelta(days=1), true)).seconds > 4 * 60 * 60 }}
+                                 'last_triggered')|default(now() - timedelta(days=1), true)).total_seconds() > 4 * 60 * 60 }}
     action:
       - service: script.yandex_station_tts
         data:
@@ -118,7 +118,7 @@ automation:
 
       - condition: template
         value_template: >
-          {{ (now() - states.input_boolean.scene_meal.last_changed).seconds > (80 * 60) }}
+          {{ (now() - states.input_boolean.scene_meal.last_changed).total_seconds() > (80 * 60) }}
 
       - condition: template
         value_template: >

@@ -112,7 +112,7 @@ automation:
 
       - condition: template
         value_template: >
-          {{ (now() - states.input_number.washing_machine_done_alert_count.last_changed).seconds > 900 }}
+          {{ (now() - states.input_number.washing_machine_done_alert_count.last_changed).total_seconds() > 900 }}
     action:
       - service: script.yandex_station_tts
         data:

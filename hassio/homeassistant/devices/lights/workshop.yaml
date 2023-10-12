@@ -83,7 +83,7 @@ automation:
 
               - condition: template
                 value_template: >
-                  {{ (now() - states.light.workshop_main.last_changed).seconds < 15 }}
+                  {{ (now() - states.light.workshop_main.last_changed).total_seconds() < 15 }}
     action:
       - if:
           - condition: or

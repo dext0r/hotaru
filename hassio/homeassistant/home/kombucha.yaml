@@ -14,7 +14,7 @@ automation:
       - condition: template
         value_template: >
           {{ (now() - state_attr('automation.leave_kombucha_alone',
-                                 'last_triggered')|default(now() - timedelta(days=1), true)).seconds > 600 }}
+                                 'last_triggered')|default(now() - timedelta(days=1), true)).total_seconds() > 600 }}
     action:
       - service: script.yandex_station_tts
         data:

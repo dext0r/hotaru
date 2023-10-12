@@ -23,7 +23,7 @@ automation:
               - condition: template
                 value_template: >
                   {{ (now() - state_attr('automation.device_unavailable_alert',
-                                          'last_triggered')|default(now() - timedelta(days=1), true)).seconds > 1800 }}
+                                          'last_triggered')|default(now() - timedelta(days=1), true)).total_seconds() > 1800 }}
     action:
       - if:
           - condition: trigger
@@ -38,7 +38,7 @@ automation:
         value_template: >
           {% set ns = namespace(break = false) %}
           {%- for entity in states if entity.state == 'unavailable' and entity.entity_id and ns.break == false -%}
-            {%- if (now() - entity.last_changed).seconds > 180 and not is_state_attr(entity.entity_id, 'volatile', true) and not is_state_attr(entity.entity_id, 'restored', true) -%}
+            {%- if (now() - entity.last_changed).total_seconds() > 180 and not is_state_attr(entity.entity_id, 'volatile', true) and not is_state_attr(entity.entity_id, 'restored', true) -%}
               {%- set ns.break = true -%}
               true
             {%- endif -%}

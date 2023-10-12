@@ -78,6 +78,24 @@ automation:
                           'Хватит валяться и иди включай чайник, без воды он сам себя не включит'
                       ]|random
                     }}
+
+      - if:
+          - condition: state
+            entity_id: climate.kettle
+            state: unavailable
+        then:
+          - service: script.yandex_station_tts
+            data:
+              target: >
+                {{ trigger.event.data.get('entity_id', 'last') }}
+              text: >
+                {{ [
+                      'Чая сегодня не будет, он недоступен, плак-плак',
+                      'Не могу включить чайник, он отпал. Грусть печаль',
+                      'Хватит валяться и иди включай чайник, а то у меня лапки'
+                  ]|random
+                }}
+
       - if:
           - condition: template
             value_template: >

@@ -78,12 +78,21 @@ light:
           update_interval: 2s
           transition_length: 2s
 
+  - name: Fridge Status Light
+    platform: partition
+    segments:
+      - id: led
+        from: 54
+        to: 54
+    gamma_correct: 1
+    restore_mode: ALWAYS_OFF
+
   - name: Kitchen Path Light
     platform: partition
     segments:
       - id: led
         from: 1
-        to: 54
+        to: 53
     gamma_correct: 1
     restore_mode: ALWAYS_OFF
 

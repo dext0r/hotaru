@@ -1,5 +1,5 @@
 .esphome
-.venv
+.venv*
 .git*
 !.gitignore
 hassio/addons

@@ -1,0 +1,19 @@
+automation:
+  - id: portable_fan_turn_off
+    alias: 'Portable Fan: Turn off'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.anyone_home
+        from: 'on'
+        to: 'off'
+
+      - platform: state
+        entity_id: input_select.home_mode
+        from: Day
+    condition:
+      - condition: state
+        entity_id: switch.portable_fan
+        state: 'on'
+    action:
+      - service: switch.turn_off
+        entity_id: switch.portable_fan

@@ -55,6 +55,65 @@ automation:
         data:
           message: 🤨 Подозрительная температура в доме
 
+  - id: living_room_hot
+    alias: 'Living Room: Hot'
+    trigger:
+      - platform: event
+        event_type: yandex_intent
+        event_data:
+          text: Очень жарко
+          room: Гостиная
+    action:
+      - service: climate.set_temperature
+        entity_id:
+          - climate.bedroom_ac
+          - climate.workshop_ac
+        data:
+          temperature: 22
+          hvac_mode: cool
+
+      - if:
+          - condition: template
+            value_template: >
+              {{ is_state('switch.portable_fan', 'off') }}
+        then:
+          - service: switch.turn_on
+            entity_id: switch.portable_fan
+
+      - service: script.yandex_station_tts
+        data:
+          target: >
+            {{ trigger.event.data.get('entity_id', 'last') }}
+          text: Сейчас попробую тебя охладить
+
+  - id: living_room_cold
+    alias: 'Living Room: cold'
+    trigger:
+      - platform: event
+        event_type: yandex_intent
+        event_data:
+          text: Я замёрз
+          room: Гостиная
+    action:
+      - service: climate.turn_off
+        entity_id:
+          - climate.bedroom_ac
+          - climate.workshop_ac
+
+      - if:
+          - condition: template
+            value_template: >
+              {{ is_state('switch.portable_fan', 'on') }}
+        then:
+          - service: switch.turn_off
+            entity_id: switch.portable_fan
+
+      - service: script.yandex_station_tts
+        data:
+          target: >
+            {{ trigger.event.data.get('entity_id', 'last') }}
+          text: Ну и ладно
+
 switch:
   - platform: template
     switches:

@@ -33,12 +33,20 @@ automation:
   - id: bathroom_path_light_turn_off
     alias: 'Bathroom Path Light: Turn off'
     trigger:
-      - id: no_occupancy
+      - id: no_occupancy_1
         platform: state
         entity_id: binary_sensor.bathroom_any_occupancy
         to: 'off'
         for:
           minutes: 1
+
+      # за это время все точно улеглись и больше не ходят в спальне
+      - id: no_occupancy_10
+        platform: state
+        entity_id: binary_sensor.bathroom_any_occupancy
+        to: 'off'
+        for:
+          minutes: 10
 
       - id: no_motion
         platform: state

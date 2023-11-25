@@ -84,6 +84,12 @@ automation:
         to: 'on'
         for:
           minutes: 30
+    condition:
+      - condition: state
+        entity_id: input_select.home_mode
+        state:
+          - Day
+          - Vacation
     action:
       - service: script.yandex_station_tts
         data:
@@ -105,6 +111,12 @@ automation:
         to: 'on'
         for:
           minutes: 60
+    condition:
+      - condition: state
+        entity_id: input_select.home_mode
+        state:
+          - Day
+          - Vacation
     action:
       - service: script.yandex_station_tts
         data:
@@ -123,6 +135,12 @@ automation:
       - condition: state
         entity_id: input_boolean.scene_delivery
         state: 'on'
+
+      - condition: state
+        entity_id: input_select.home_mode
+        state:
+          - Day
+          - Vacation
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.scene_delivery
@@ -145,7 +163,7 @@ automation:
         entity_id: input_boolean.scene_delivery
         to: 'on'
         for:
-          hours: 2
+          hours: 6
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.scene_delivery

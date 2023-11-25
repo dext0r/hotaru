@@ -1,5 +1,6 @@
 packages:
   base: !include ../common/base.yaml
+  version: !include ../common/esphome_2023.11.yaml
 
 esphome:
   name: workshop-main-light
@@ -29,7 +30,8 @@ binary_sensor:
     on_press:
       - if:
           condition:
-            light.is_on: light_w1
+            lambda: |-
+              return id(light_w1).remote_values.is_on();
           then:
             - light.turn_off: light_w1
             - light.turn_off: light_w2

@@ -123,6 +123,12 @@ automation:
         to: 'off'
         for:
           minutes: 2
+
+      - id: door
+        platform: state
+        entity_id: binary_sensor.workshop_door
+        from: 'on'
+        to: 'off'
     condition:
       - condition: state
         entity_id: input_boolean.light_control
@@ -140,11 +146,23 @@ automation:
 
           - condition: trigger
             id: day
+
+          - condition: trigger
+            id: door
     action:
-      - service: light.turn_off
-        entity_id: light.workshop_main
-        data:
-          transition: 10
+      - if:
+          - condition: trigger
+            id: door
+        then:
+          - service: light.turn_off
+            entity_id: light.workshop_main
+            data:
+              transition: 4
+        else:
+          - service: light.turn_off
+            entity_id: light.workshop_main
+            data:
+              transition: 10
 
   - id: workshop_light_control_turn_on
     alias: 'Workshop Light Control: Turn on'

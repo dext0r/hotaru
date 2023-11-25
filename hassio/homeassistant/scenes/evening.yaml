@@ -73,7 +73,7 @@ automation:
               - service: light.turn_on
                 entity_id: light.living_room_backlight
                 data:
-                  brightness_pct: 43
+                  brightness_pct: 23
                   kelvin: 3400
                   transition: 2
 

@@ -74,7 +74,7 @@ automation:
         entity_id: input_boolean.scene_meal
         to: 'on'
         for:
-          minutes: 45
+          minutes: 52
     condition:
       - condition: state
         entity_id: input_boolean.scene_meal

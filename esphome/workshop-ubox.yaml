@@ -4,10 +4,11 @@ packages:
   uptime: !include common/uptime.yaml
   tion_4s: !include common/tion_4s.yaml
   mithermometer_ble: !include common/mithermometer_ble.yaml
+  restart: !include common/restart.yaml
 
 substitutions:
   device_name: Workshop UBox
-  tion_mac_address: C2:EE:5F:88:7C:75
+  tion_mac_address: E1:73:74:77:82:1C
   tion_device_name: Workshop Intake Fan
   senseair_s8_sensor_name: Workshop CO2
   senseair_s8_tx_pin: '17'

@@ -1,0 +1,19 @@
+[Unit]
+Description=Podman transmission.service
+Documentation=man:podman-generate-systemd(1)
+Wants=network.target
+After=network-online.target
+
+[Service]
+Environment=PODMAN_SYSTEMD_UNIT=%n
+Restart=on-failure
+TimeoutStopSec=70
+ExecStartPre=/bin/rm -f %t/transmission.pid %t/transmission.ctr-id
+ExecStart=/usr/bin/podman run --conmon-pidfile %t/transmission.pid --cidfile %t/transmission.ctr-id --cgroups=no-conmon --replace -d --name=transmission --restart=unless-stopped -e PUID=1000 -e PGID=1000 -e TZ=Europe/Moscow --net=host -v /etc/transmission:/config -v /data/nas:/files ghcr.io/linuxserver/transmission
+ExecStop=/usr/bin/podman stop --ignore --cidfile %t/transmission.ctr-id -t 10
+ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/transmission.ctr-id
+PIDFile=%t/transmission.pid
+Type=forking
+
+[Install]
+WantedBy=multi-user.target default.target

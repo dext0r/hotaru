@@ -1,5 +1,5 @@
 [upsmon]
-password = 12345
+password = Kj3gyDNYl5
 actions = SET FSD
 instcmds = ALL
 upsmon master

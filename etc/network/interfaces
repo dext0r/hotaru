@@ -1,0 +1,18 @@
+source /etc/network/interfaces.d/*
+
+auto lo
+iface lo inet loopback
+
+iface enp1s0f0 inet manual
+
+iface ens9 inet manual
+
+auto vmbr0
+iface vmbr0 inet static
+	address 192.168.0.3/24
+	gateway 192.168.0.1
+	bridge-ports ens9
+	bridge-stp off
+	bridge-fd 0
+	bridge-vlan-aware yes
+	bridge-vids 2-4094

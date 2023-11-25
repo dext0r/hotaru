@@ -28,16 +28,18 @@
 
 Основная концепция моего УД - "всё должно работать без УД". Другими словами, все важные компоненты управляются с физических выключателей или пультов (начиная от света в ванной и кончая электрическими шторами).
 
-Весь IOT (кроме станций) вынесен в изолированный VLAN без доступа к интернет и локальной сети.
+Весь IOT вынесен в два изолированных VLAN без доступа и локальной сети, в одном VLAN есть постоянный доступ в интернет. Для ретрансляции мультикаста между всеми VLAN запущен [mdns-reflector](https://github.com/vfreex/mdns-reflector).
 
 ## Платформа
 * Mac Mini (Late 2012)
-* Debian 11
+* Debian 12 c Proxmox
 * ИБП Ippon Back Basic 650S Euro
 * Основной роутер: Mikrotik hAP ac2
 * Роутер для дальних уголков: Linksys E3000 на DD-WRT
 * Zigbee: Sonoff Zigbee 3.0 USB Dongle Plus
-* Аддоны HA: supervisor, chrony, let's encrypt, mosquitto broker, nginx home assistant ssl proxy, timescale db, ttlock, zigbee2mqtt
+* HA OS в виртуальной машине
+* Аддоны HA: supervisor, chrony, let's encrypt, mosquitto broker, nginx home assistant ssl proxy, timescale db, ttlock, zigbee2mqtt, advanced ssh & web terminal
+* Интеграции HA: Glances (сбор метрик с физического хоста), Mikrotik (трекинг присутствия дома по регистрации на WiFi), Nut (состояние ИБП), Yandex Smart Home (облачное подключение) и другие
 
 ## Освещение
 ### Выключатели без нейтрали

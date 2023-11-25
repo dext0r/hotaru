@@ -105,17 +105,34 @@ automation:
     action:
       - if:
           - condition: state
-            entity_id: light.bedroom_bed
-            state: 'on'
+            entity_id: input_select.home_mode
+            state: Night
         then:
-          - service: light.turn_off
-            entity_id: light.bedroom_bed
-        else:
           - service: light.turn_on
             entity_id: light.bedroom_bed
             data:
-              rgb_color: [10, 214, 255]
+              color_name: red
               brightness_pct: 100
+
+          - service: light.turn_on
+            entity_id: light.bedroom_moon
+            data:
+              rgb_color: [255, 10, 10]
+              brightness_pct: 100
+        else:
+          - if:
+              - condition: state
+                entity_id: light.bedroom_bed
+                state: 'on'
+            then:
+              - service: light.turn_off
+                entity_id: light.bedroom_bed
+            else:
+              - service: light.turn_on
+                entity_id: light.bedroom_bed
+                data:
+                  rgb_color: [10, 214, 255]
+                  brightness_pct: 100
 
   - id: bedroom_light_switch_double_right
     alias: 'Bedroom Light Switch: Double right'

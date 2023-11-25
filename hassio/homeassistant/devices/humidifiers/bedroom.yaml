@@ -1,0 +1,139 @@
+input_boolean:
+  bedroom_humidifier_on_duty:
+    name: 'Bedroom Humidifier: On duty'
+    icon: mdi:watering-can
+
+template:
+  sensor:
+    - unique_id: sensor.bedroom_humidifier_target_mode
+      name: 'Bedroom Humidifier: Target mode'
+      icon: mdi:target-variant
+      state: >
+        {% set mode = 'Sleep' %}
+
+        {% if is_state('binary_sensor.bedroom_bed_any_occupancy', 'on') %}
+          {% set mode = 'Strong' %}
+        {% elif is_state('input_select.home_mode', 'Night') %}
+          {% set mode = 'Strong' %}
+        {% elif now().hour > 21 or now().hour < 7 %}
+          {% set mode = 'Strong' %}
+        {% elif 0 < states('sensor.bedroom_humidity')|int(0) < 23 %}
+          {% set mode = 'Strong' %}
+        {% endif %}
+
+        {% if states('sensor.bedroom_humidity')|int(0) >= states('input_number.home_target_humidity')|int %}
+          {% set mode = 'Sleep' %}
+        {% endif %}
+
+        {% if states('sensor.bedroom_humidity')|int(0) >= states('input_number.home_target_humidity')|int + 5 %}
+          {% set mode = 'off' %}
+        {% elif states('sensor.bedroom_humidifier_water_level')|int(0) == 0 %}
+          {% set mode = 'off' %}
+        {% endif %}
+
+        {{ mode }}
+
+automation:
+  - id: bedroom_humidifier_update
+    alias: 'Bedroom Humidifier: Update'
+    mode: queued
+    max: 4
+    max_exceeded: silent
+    trigger:
+      - platform: time_pattern
+        minutes: '/7'
+
+      - platform: state
+        entity_id:
+          - input_number.home_target_humidity
+          - input_select.home_mode
+          - input_boolean.scene_waking_up
+
+      - platform: state
+        entity_id: sensor.ups_status
+        from: 'On Battery'
+        to: 'Online'
+        for:
+          seconds: 30
+    condition:
+      - condition: template
+        value_template: >
+          {{ states('humidifier.bedroom_humidifier') not in ['unavailable', 'unknown'] }}
+
+      - condition: state
+        entity_id: input_boolean.climate_control
+        state: 'on'
+    action:
+      - if:
+          - condition: state
+            entity_id: sensor.bedroom_humidifier_target_mode
+            state: 'off'
+        then:
+          - if:
+              - condition: state
+                entity_id: humidifier.bedroom_humidifier
+                state: 'on'
+            then:
+              - service: humidifier.turn_off
+                entity_id: humidifier.bedroom_humidifier
+        else:
+          - if:
+              - condition: state
+                entity_id: humidifier.bedroom_humidifier
+                state: 'off'
+            then:
+              - service: humidifier.turn_on
+                entity_id: humidifier.bedroom_humidifier
+
+              - wait_template: >
+                  {{ is_state('humidifier.bedroom_humidifier', 'on') }}
+                timeout:
+                  seconds: 15
+                continue_on_timeout: false
+
+          - if:
+              - condition: template
+                value_template: >
+                  {{ state_attr('humidifier.bedroom_humidifier', 'mode') != states("sensor.bedroom_humidifier_target_mode") }}
+            then:
+              - service: humidifier.set_mode
+                entity_id: humidifier.bedroom_humidifier
+                data:
+                  mode: '{{ states("sensor.bedroom_humidifier_target_mode") }}'
+
+      - if:
+          - condition: state
+            entity_id: input_select.home_mode
+            state: Night
+
+          - condition: state
+            entity_id: switch.bedroom_humidifier_screen
+            state: 'on'
+        then:
+          - delay:
+              seconds: 3
+
+          - service: switch.turn_off
+            entity_id: switch.bedroom_humidifier_screen
+
+      - if:
+          - or:
+              - condition: state
+                entity_id: input_select.home_mode
+                state:
+                  - Day
+                  - Vacation
+
+              - condition: state
+                entity_id: input_boolean.scene_waking_up
+                state: 'on'
+
+          - condition: state
+            entity_id: switch.bedroom_humidifier_screen
+            state: 'off'
+        then:
+          - delay:
+              seconds: 3
+
+          - service: switch.turn_on
+            entity_id: switch.bedroom_humidifier_screen

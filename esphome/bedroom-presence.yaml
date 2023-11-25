@@ -1,5 +1,6 @@
 packages:
   base: !include common/base.yaml
+  version: !include common/esphome_2023.11.yaml
 
 substitutions:
   device_name: Bedroom Presence
@@ -23,78 +24,24 @@ uart:
     parity: NONE
     stop_bits: 1
 
+ld2410:
+# g0: 80 100
+# g1: 80 100
+# g2: 35 35
+# g3: 75 35
+# g4: 100 45
+# g5: 100 50
+# g6: 100 100
+# g7: 100 100
+# g8: 100 100
+
 binary_sensor:
   - platform: ld2410
     has_target:
-      name: Bedroom Occupancy
-      device_class: occupancy
-      on_state:
-        - lambda: |-
-            if (!x) {
-              id(bedroom_desk_occupancy_detected).stop();
-            }
-    has_moving_target:
-      name: BP Moving Target Debug
-      internal: true
-    has_still_target:
-      name: BP Still Target Debug
-      internal: true
+      name: Bedroom Desk Occupancy
 
-  - name: Bedroom Desk Occupancy
-    platform: template
-    device_class: occupancy
-    lambda: |-
-      return id(bedroom_desk_occupancy_detected).is_running();
-
-ld2410:
-  uart_id: ld2410_uart
-  timeout: 1min
-  max_move_distance: 4.5m
-  max_still_distance: 4.5m
-  g0_move_threshold: 40
-  g0_still_threshold: 40
-  g1_move_threshold: 40
-  g1_still_threshold: 40
-  g2_move_threshold: 25
-  g2_still_threshold: 25
-  g3_move_threshold: 60
-  g3_still_threshold: 60
-  g4_move_threshold: 80
-  g4_still_threshold: 80
-  g5_move_threshold: 100
-  g5_still_threshold: 100
-  g6_move_threshold: 100
-  g6_still_threshold: 100
-  g7_move_threshold: 100
-  g7_still_threshold: 100
-  g8_move_threshold: 100
-  g8_still_threshold: 100
-
-sensor:
+switch:
   - platform: ld2410
-    moving_distance:
-      name: BP Moving Distance Debug
-      internal: true
-    still_distance:
-      name: BP Still Distance Debug
-      internal: true
-    moving_energy:
-      name: BP Move Energy Debug
-      internal: true
-    still_energy:
-      name: BP Still Energy Debug
-      internal: true
-    detection_distance:
-      name: BP Detection Distance Debug
-      internal: true
-      on_value:
-        - lambda: |-
-            if (x > 0 && x <= 57) {
-              id(bedroom_desk_occupancy_detected).execute();
-            }
-
-script:
-  - id: bedroom_desk_occupancy_detected
-    mode: restart
-    then:
-      - delay: 60sec
+    bluetooth:
+      name: Bedroom Presence LD2410 Bluetooth
+      disabled_by_default: true

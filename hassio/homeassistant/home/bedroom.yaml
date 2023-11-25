@@ -5,7 +5,6 @@ binary_sensor:
     device_class: occupancy
     entities:
       - binary_sensor.bedroom_motion
-      - binary_sensor.bedroom_occupancy
       - binary_sensor.bedroom_desk_occupancy
       - binary_sensor.bedroom_bed_any_occupancy
 

@@ -188,7 +188,6 @@
   legacy: false
   optimistic: true
   temperature_precision: 1
-  illuminance_calibration: ''
   retain: true
 '0x04cf8cdf3c7cc6cd':
   friendly_name: Illuminance South Side
@@ -230,6 +229,8 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  occupancy_timeout: 20
+  no_occupancy_since: []
 '0x00158d0003cf7beb':
   friendly_name: Entrance Motion
   homeassistant: {}

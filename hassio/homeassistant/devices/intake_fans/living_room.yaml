@@ -187,7 +187,7 @@ automation:
         from: 'On Battery'
         to: 'Online'
         for:
-          seconds: 60
+          seconds: 45
 
       - platform: state
         entity_id: timer.living_room_intake_fan_bad_air
@@ -198,6 +198,10 @@ automation:
           - 'heat'
           - 'fan_only'
           - 'off'
+
+      - condition: state
+        entity_id: input_boolean.climate_control
+        state: 'on'
     action:
       - if:
           - condition: trigger
@@ -209,29 +213,21 @@ automation:
           - delay:
               seconds: 1
 
-      - if:
-          - condition: state
-            entity_id: input_boolean.climate_control
-            state: 'off'
-        then:
-          - service: climate.turn_off
-            entity_id: climate.living_room_intake_fan
-        else:
-          - service: climate.set_fan_mode
-            entity_id: climate.living_room_intake_fan
-            data:
-              fan_mode: >
-                {{ states('sensor.living_room_intake_fan_target_fan_speed') }}
+      - service: climate.set_fan_mode
+        entity_id: climate.living_room_intake_fan
+        data:
+          fan_mode: >
+            {{ states('sensor.living_room_intake_fan_target_fan_speed') }}
 
-          - delay:
-              seconds: 1
+      - delay:
+          seconds: 1
 
-          - service: climate.set_temperature
-            entity_id: climate.living_room_intake_fan
-            data:
-              temperature: >
-                {{ states('sensor.living_room_intake_fan_target_temperature')|float(20) }}
-              hvac_mode: heat
+      - service: climate.set_temperature
+        entity_id: climate.living_room_intake_fan
+        data:
+          temperature: >
+            {{ states('sensor.living_room_intake_fan_target_temperature')|float(20) }}
+          hvac_mode: heat
 
   - id: living_room_airing_swap_modes
     alias: 'Living Room Airing: Swap modes'

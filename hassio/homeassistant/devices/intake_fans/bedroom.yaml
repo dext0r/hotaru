@@ -23,7 +23,7 @@ template:
           {% set v = 0 %}
         {% endif %}
 
-        {% if is_state('binary_sensor.bedroom_desk_occupancy', 'on') %}
+        {% if is_state('binary_sensor.bedroom_desk_occupancy', 'on') or is_state('climate.bedroom_ac', 'heat') %}
           {% if outdoor_temperature < 22 %}
             {% set v = 25 %}
           {% endif %}
@@ -31,14 +31,14 @@ template:
 
         {% if is_state('input_select.home_mode', 'Night') %}
           {% if outdoor_temperature < -10 %}
-            {% set v = 18 %}
-          {% elif outdoor_temperature <= 12 %}
-            {% set v = 12 %}
+            {% set v = 10 %}
+          {% elif outdoor_temperature <= 10 %}
+            {% set v = 5 %}
           {% else %}
             {% set v = 0 %}
           {% endif %}
 
-          {% if indoor_temperature < 23.5 and outdoor_temperature < 14 %}
+          {% if indoor_temperature < 22 and outdoor_temperature < 14 %}
             {% set v = 20 %}
           {% endif %}
         {% endif %}
@@ -81,6 +81,11 @@ template:
             {% set v = 3 %}
           {% elif co2_level > 540 %}
             {% set v = 2 %}
+          {% endif %}
+
+          {# очень холодно зимой #}
+          {% if is_state('binary_sensor.bedroom_desk_occupancy', 'on') %}
+            {% set v = max(v - 1, 1) %}
           {% endif %}
         {% endif %}
 
@@ -131,7 +136,7 @@ automation:
         from: 'On Battery'
         to: 'Online'
         for:
-          seconds: 60
+          seconds: 30
     condition:
       - condition: state
         entity_id: climate.bedroom_intake_fan
@@ -139,6 +144,10 @@ automation:
           - 'heat'
           - 'fan_only'
           - 'off'
+
+      - condition: state
+        entity_id: input_boolean.climate_control
+        state: 'on'
     action:
       - if:
           - condition: trigger
@@ -150,29 +159,21 @@ automation:
           - delay:
               seconds: 1
 
-      - if:
-          - condition: state
-            entity_id: input_boolean.climate_control
-            state: 'off'
-        then:
-          - service: climate.turn_off
-            entity_id: climate.bedroom_intake_fan
-        else:
-          - service: climate.set_fan_mode
-            entity_id: climate.bedroom_intake_fan
-            data:
-              fan_mode: >
-                {{ states('sensor.bedroom_intake_fan_target_fan_speed') }}
+      - service: climate.set_fan_mode
+        entity_id: climate.bedroom_intake_fan
+        data:
+          fan_mode: >
+            {{ states('sensor.bedroom_intake_fan_target_fan_speed') }}
 
-          - delay:
-              seconds: 1
+      - delay:
+          seconds: 1
 
-          - service: climate.set_temperature
-            entity_id: climate.bedroom_intake_fan
-            data:
-              temperature: >
-                {{ states('sensor.bedroom_intake_fan_target_temperature')|float(20) }}
-              hvac_mode: heat
+      - service: climate.set_temperature
+        entity_id: climate.bedroom_intake_fan
+        data:
+          temperature: >
+            {{ states('sensor.bedroom_intake_fan_target_temperature')|float(20) }}
+          hvac_mode: heat
 
   - id: bedroom_airing_swap_modes
     alias: 'Bedroom Airing: Swap modes'
@@ -201,7 +202,7 @@ automation:
           - input_boolean.bedroom_airing_cold
         to: 'on'
         for:
-          minutes: 25
+          minutes: 40
     action:
       - service: input_boolean.turn_off
         data_template:

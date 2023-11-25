@@ -134,6 +134,10 @@ entity_config:
         turn_off:
           service: switch.turn_off
           entity_id: switch.bedroom_humidifier_screen
+  humidifier.workshop_humidifier:
+    properties:
+      - type: water_level
+        entity: sensor.workshop_humidifier_water_level
   sensor.fridge_temperature:
     name: Холодильник
     room: Кухня

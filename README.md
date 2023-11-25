@@ -81,9 +81,9 @@
 * 2x Инверторный **Midea MSAG1-09N8C2**: управляется по USB через esphome платой [ESP8266 ESP-12F](https://aliexpress.ru/item/32815395082.html) (там есть конвертер уровней)
 * 3x Бризер **Tion 4S**: управляется по BT через ESP32 (https://github.com/dentra/esphome-tion)
 * Тупой обогреватель на **Sonoff Basic R3** (esphome)
-* Тупой вентилятор на **Sonoff Basic** (esphome) - временно решение для нагнетания холодного воздуха в гостиную.
-* Увлажнитель **Smartmi Zhimi Air Humidifier** (интеграция Xiaomi Miio)
-* Увлажнитель **Xiaomi Humidifier Pro** (интеграция Xiaomi Miot Auto)
+* Тупой вентилятор на **Sonoff Basic** (esphome) - временно решение для нагнетания холодного воздуха в гостиную
+* 2x Увлажнитель **Smartmi Zhimi Air Humidifier CJXJSQ02ZM** (интеграция Xiaomi Miio)
+* Увлажнитель **Xiaomi Mijia Pure Smart Humidifier Pro CJSJSQ02LX** (интеграция Xiaomi Miot Auto)
 
 ## Замки
 * **Danalock 3 Zigbee + BT**: в общий тамбур, соседи ходят по физически ключам.

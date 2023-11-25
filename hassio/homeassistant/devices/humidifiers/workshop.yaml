@@ -1,0 +1,104 @@
+input_boolean:
+  workshop_humidifier_on_duty:
+    name: 'Workshop Humidifier: On duty'
+    icon: mdi:watering-can
+
+template:
+  sensor:
+    - unique_id: sensor.workshop_humidifier_target_mode
+      name: 'Workshop Humidifier: Target mode'
+      icon: mdi:target-variant
+      state: >
+        {% set mode = 'High' %}
+
+        {% if states('sensor.workshop_humidity')|int(0) >= states('input_number.home_target_humidity')|int %}
+          {% set mode = 'Medium' %}
+        {% endif %}
+
+        {% if states('sensor.workshop_humidity')|int(0) >= states('input_number.home_target_humidity')|int + 5 %}
+          {% set mode = 'off' %}
+        {% elif states('sensor.workshop_humidifier_water_level')|int(0) == 0 %}
+          {% set mode = 'off' %}
+        {% endif %}
+
+        {{ mode }}
+
+automation:
+  - id: workshop_humidifier_update
+    alias: 'Workshop Humidifier: Update'
+    mode: queued
+    max: 4
+    max_exceeded: silent
+    trigger:
+      - platform: time_pattern
+        minutes: '/7'
+
+      - platform: state
+        entity_id: input_number.home_target_humidity
+
+      - platform: state
+        entity_id: sensor.ups_status
+        from: 'On Battery'
+        to: 'Online'
+        for:
+          seconds: 60
+    condition:
+      - condition: template
+        value_template: >
+          {{ states('humidifier.workshop_humidifier') not in ['unavailable', 'unknown'] }}
+
+      - condition: state
+        entity_id: input_boolean.climate_control
+        state: 'on'
+    action:
+      - if:
+          - condition: state
+            entity_id: sensor.workshop_humidifier_target_mode
+            state: 'off'
+        then:
+          - if:
+              - condition: state
+                entity_id: humidifier.workshop_humidifier
+                state: 'on'
+            then:
+              - service: humidifier.turn_off
+                entity_id: humidifier.workshop_humidifier
+        else:
+          - if:
+              - condition: state
+                entity_id: humidifier.workshop_humidifier
+                state: 'off'
+            then:
+              - service: humidifier.turn_on
+                entity_id: humidifier.workshop_humidifier
+
+              - wait_template: >
+                  {{ is_state('humidifier.workshop_humidifier', 'on') }}
+                timeout:
+                  seconds: 15
+                continue_on_timeout: false
+
+          - if:
+              - condition: template
+                value_template: >
+                  {{ state_attr('humidifier.workshop_humidifier', 'mode') != states("sensor.workshop_humidifier_target_mode") }}
+            then:
+              - service: humidifier.set_mode
+                entity_id: humidifier.workshop_humidifier
+                data:
+                  mode: '{{ states("sensor.workshop_humidifier_target_mode") }}'
+
+          - if:
+              - condition: state
+                entity_id: select.workshop_humidifier_led_brightness
+                state:
+                  - dim
+                  - 'off'
+            then:
+              - delay:
+                  seconds: 7
+
+              - service: select.select_option
+                entity_id: select.workshop_humidifier_led_brightness
+                data:
+                  option: bright

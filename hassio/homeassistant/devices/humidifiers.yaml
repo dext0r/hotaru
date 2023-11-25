@@ -19,6 +19,7 @@ automation:
         entity_id:
           - input_boolean.bedroom_humidifier_on_duty
           - input_boolean.living_room_humidifier_on_duty
+          - input_boolean.workshop_humidifier_on_duty
         match: any
         state: 'on'
 
@@ -32,6 +33,9 @@ automation:
             entity_id: sensor.living_room_humidifier_water_level
             below: 40
 
+          - condition: numeric_state
+            entity_id: sensor.workshop_humidifier_water_level
+            below: 40
 
       - condition: state
         entity_id:
@@ -105,6 +109,11 @@ automation:
         for:
           seconds: 30
 
+      - platform: state
+        entity_id: binary_sensor.workshop_humidifier_water_tank
+        from: 'on'
+        to: 'off'
+        for:
           seconds: 30
     action:
       - service: input_datetime.set_datetime

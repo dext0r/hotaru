@@ -244,6 +244,11 @@ template:
             {% set data.chores = data.chores + ['долить воды в спальне'] %}
           {% endif %}
 
+          {% if is_state('input_boolean.workshop_humidifier_on_duty', 'on') and
+                states('sensor.workshop_humidifier_water_level')|int(100) <= 50 %}
+            {% set data.chores = data.chores + ['долить воды в мастерской'] %}
+          {% endif %}
+
           {% if states('sensor.kettle_water_level')|int(100) <= 20 %}
             {% set data.chores = data.chores + ['долить воды в чайник'] %}
           {% endif %}

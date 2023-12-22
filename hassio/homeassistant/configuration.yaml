@@ -12,6 +12,7 @@ homeassistant:
     ac_bedroom: !include devices/ac/bedroom.yaml
     ac_workshop: !include devices/ac/workshop.yaml
     alert_devices: !include alert/devices.yaml
+    alert_power: !include alert/power.yaml
     alert_security: !include alert/security.yaml
     alert_zigbee: !include alert/zigbee.yaml
     alice_tests: !include devices/alice_tests.yaml

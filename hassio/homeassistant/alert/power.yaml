@@ -1,0 +1,24 @@
+automation:
+  - id: power_budget_alert
+    alias: Power Budget Alert
+    mode: single
+    max_exceeded: silent
+    trigger:
+      - platform: state
+        entity_id:
+          - sensor.cb_power_supply_power
+          - sensor.sockets_power_supply_power
+    condition:
+      - condition: template
+        value_template: >
+          {{ trigger.to_state.state|int(0) >= 3700 }}
+
+      - condition: template
+        value_template: >
+          {{ (now() - state_attr('automation.power_budget_alert',
+                                  'last_triggered')|default(now() - timedelta(days=1), true)).total_seconds() > 600 }}
+    action:
+      - service: notify.dextor
+        data:
+          message: >
+            ⚡️ Превышена мощность по {{ trigger.to_state.entity_id }}: <b>{{ trigger.to_state.state }}</b> Вт.

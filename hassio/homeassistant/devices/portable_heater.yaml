@@ -26,6 +26,10 @@ automation:
           - input_boolean.living_room_airing_cold
         from: 'off'
         to: 'on'
+
+      - platform: numeric_state
+        entity_id: sensor.sockets_power_supply_power
+        above: 3600
     condition:
       - condition: state
         entity_id: switch.living_room_heater

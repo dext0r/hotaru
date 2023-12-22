@@ -9,10 +9,19 @@ automation:
       - platform: time_pattern
         minutes: '/1'
     condition:
+      - or:
+          - condition: state
+            entity_id:
+              - switch.water_heater_socket
+              - input_boolean.hot_water_supply
+            state: 'on'
+
+          - condition: state
+            entity_id: input_select.washing_machine_status
+            state: Running
+
       - condition: state
-        entity_id:
-          - switch.water_heater_socket
-          - input_boolean.hot_water_supply
+        entity_id: switch.water_heater_socket
         state: 'on'
     action:
       - service: switch.turn_off

@@ -57,6 +57,10 @@ automation:
         from: Night
         for:
           minutes: 5
+
+      - platform: state
+        entity_id: input_select.washing_machine_status
+        to: Running
     condition:
       - condition: state
         entity_id: climate.bedroom_ac

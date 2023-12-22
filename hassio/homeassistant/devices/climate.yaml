@@ -153,6 +153,10 @@ template:
         state: >
           {% set temperature = states('sensor.weather_temperature') %}
           {% if temperature in ['unavailable', 'unknown'] %}
-            {% set temperature = states('sensor.bedroom_intake_fan_outdoor_temperature') %}
+            {% if is_state('climate.bedroom_intake_fan', 'heat') or is_state('climate.bedroom_intake_fan', 'fan_only') %}
+              {% set temperature = states('sensor.bedroom_intake_fan_outdoor_temperature') %}
+            {% elif is_state('climate.living_room_intake_fan', 'heat') or is_state('climate.living_room_intake_fan', 'fan_only') %}
+              {% set temperature = states('sensor.living_room_intake_fan_outdoor_temperature') %}
+            {% endif %}
           {% endif %}
           {{ temperature }}

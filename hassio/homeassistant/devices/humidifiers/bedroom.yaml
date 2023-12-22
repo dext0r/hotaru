@@ -139,3 +139,49 @@ automation:
 
           - service: switch.turn_on
             entity_id: switch.bedroom_humidifier_screen
+
+      - if:
+          - condition: state
+            entity_id: switch.bedroom_humidifier_filter_drying
+            state: 'on'
+        then:
+          - delay:
+              seconds: 3
+
+          - service: switch.turn_off
+            entity_id: switch.bedroom_humidifier_filter_drying
+
+      - if:
+          - condition: state
+            entity_id: switch.bedroom_humidifier_sound
+            state: 'on'
+        then:
+          - delay:
+              seconds: 3
+
+          - service: switch.turn_off
+            entity_id: switch.bedroom_humidifier_sound
+
+      - if:
+          - condition: state
+            entity_id: switch.bedroom_humidifier_heater
+            state: 'off'
+        then:
+          - delay:
+              seconds: 3
+
+          - service: switch.turn_on
+            entity_id: switch.bedroom_humidifier_heater
+
+      - if:
+          - condition: state
+            entity_id: number.bedroom_humidifier_screen_brightness
+            state: '1'
+        then:
+          - delay:
+              seconds: 3
+
+          - service: number.set_value
+            entity_id: number.bedroom_humidifier_screen_brightness
+            data:
+              value: '0'

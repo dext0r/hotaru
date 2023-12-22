@@ -21,12 +21,6 @@ automation:
         above: 25.5
 
       - platform: state
-        entity_id: switch.living_room_heater
-        to: 'on'
-        for:
-          hours: 6
-
-      - platform: state
         entity_id:
           - input_boolean.living_room_airing_warm
           - input_boolean.living_room_airing_cold
@@ -36,6 +30,32 @@ automation:
       - condition: state
         entity_id: switch.living_room_heater
         state: 'on'
+    action:
+      - service: switch.turn_off
+        entity_id: switch.living_room_heater
+
+  - id: living_room_heater_turn_off_idle
+    alias: 'Living Room Heater: Turn off (idle)'
+    trigger:
+      - platform: state
+        entity_id: switch.living_room_heater
+        to: 'on'
+        for:
+          hours: 6
+
+      - platform: state
+        entity_id: switch.living_room_heater
+        to: 'on'
+        for:
+          hours: 7
+    condition:
+      - condition: state
+        entity_id: switch.living_room_heater
+        state: 'on'
+
+      - condition: numeric_state
+        entity_id: sensor.living_room_temperature
+        above: 23
     action:
       - service: switch.turn_off
         entity_id: switch.living_room_heater

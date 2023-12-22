@@ -39,7 +39,7 @@ automation:
           - sensor.living_room_temperature
           - sensor.wardrobe_temperature
           - sensor.workshop_temperature
-        below: 17
+        below: 15
 
       - platform: numeric_state
         entity_id:

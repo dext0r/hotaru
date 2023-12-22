@@ -7,9 +7,9 @@ input_boolean:
     name: Living Room Airing Cold
     initial: false
 
-  living_room_airing_bad_air:
-    name: Living Room Airing Bad Air
-    initial: false
+  living_room_intake_fan_control:
+    name: Living Room Intake Fan Control
+    icon: mdi:refresh-auto
 
 template:
   sensor:
@@ -19,39 +19,32 @@ template:
       unit_of_measurement: °C
       state_class: measurement
       state: >
-        {% set v = 20 %}
+        {% set v = 10 %}
+
         {% set indoor_temperature = states('sensor.living_room_temperature')|float(0) %}
-        {% set outdoor_temperature = states('sensor.living_room_intake_fan_outdoor_temperature')|float(0) %}
+        {% set outdoor_temperature = states('sensor.outside_temperature')|float(0) %}
 
-        {% if outdoor_temperature < -15 %}
-          {% set v = 24 %}
-        {% elif outdoor_temperature > 15 %}
+        {% if outdoor_temperature >= 10 %}
           {% set v = 0 %}
-        {% elif indoor_temperature > 0 %}
-          {% if indoor_temperature >= 24.9 %}
-            {% set v = 15 %}
-          {% elif indoor_temperature >= 24 %}
-            {% set v = 18 %}
-          {% elif indoor_temperature >= 23.6 %}
-            {% set v = 21 %}
-          {% elif indoor_temperature >= 23 %}
-            {% set v = 23 %}
-          {% else %}
-            {% set v = 24 %}
-          {% endif %}
+        {% endif %}
 
-          {% if v >= 21 and is_state('binary_sensor.living_room_occupancy', 'off') %}
-            {% set v = v - 4 %}
+        {% if is_state('input_select.home_mode', 'Day') %}
+          {% if is_state('binary_sensor.living_room_occupancy', 'on') and outdoor_temperature < 15 %}
+              {% if indoor_temperature < 20 %}
+                {% set v = 24 %}
+              {% elif indoor_temperature < 22 %}
+                {% set v = 22 %}
+              {% elif indoor_temperature < 23.5 %}
+                {% set v = 18 %}
+              {% endif %}
           {% endif %}
         {% endif %}
 
         {% if is_state('input_select.home_mode', 'Night') %}
-          {% if outdoor_temperature < -10 %}
-            {% set v = 17 %}
-          {% elif outdoor_temperature <= 12 %}
-            {% set v = 12 %}
-          {% else %}
+          {% if outdoor_temperature >= 5 %}
             {% set v = 0 %}
+          {% else %}
+            {% set v = 7 %}
           {% endif %}
         {% endif %}
 
@@ -72,15 +65,10 @@ template:
       icon: mdi:fan-auto
       state: >
         {% set v = 1 %}
+
         {% set co2_level = states('sensor.living_room_co2')|int(0) %}
 
-        {% if is_state('input_select.home_mode', 'Night') %}
-          {% if co2_level > 600 %}
-            {% set v = 3 %}
-          {% elif co2_level > 580 %}
-            {% set v = 2 %}
-          {% endif %}
-        {% elif is_state('input_select.home_mode', 'Day') %}
+        {% if is_state('input_select.home_mode', 'Day') %}
           {% if co2_level > 750 %}
             {% set v = 6 %}
           {% elif co2_level > 700 %}
@@ -90,6 +78,14 @@ template:
           {% elif co2_level > 590 %}
             {% set v = 3 %}
           {% elif co2_level > 540 %}
+            {% set v = 2 %}
+          {% endif %}
+        {% endif %}
+
+        {% if is_state('input_select.home_mode', 'Night') %}
+          {% if co2_level > 600 %}
+            {% set v = 3 %}
+          {% elif co2_level > 580 %}
             {% set v = 2 %}
           {% endif %}
         {% endif %}
@@ -164,7 +160,9 @@ automation:
         minutes: '/5'
 
       - platform: state
-        entity_id: input_select.home_mode
+        entity_id:
+          - input_select.home_mode
+          - input_boolean.living_room_intake_fan_control
 
       - id: room_airing
         platform: state
@@ -200,7 +198,9 @@ automation:
           - 'off'
 
       - condition: state
-        entity_id: input_boolean.climate_control
+        entity_id:
+          - input_boolean.climate_control
+          - input_boolean.living_room_intake_fan_control
         state: 'on'
     action:
       - if:

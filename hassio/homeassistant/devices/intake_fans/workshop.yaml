@@ -7,6 +7,10 @@ input_boolean:
     name: Workshop Airing Cold
     initial: false
 
+  workshop_intake_fan_control:
+    name: Workshop Intake Fan Control
+    icon: mdi:refresh-auto
+
 template:
   sensor:
     - unique_id: sensor.workshop_intake_fan_target_temperature
@@ -15,41 +19,36 @@ template:
       unit_of_measurement: °C
       state_class: measurement
       state: >
-        {% set v = 18 %}
-        {% set indooor_temperature = states('sensor.workshop_temperature')|float(0) %}
-        {% set outdoor_temperature = states('sensor.workshop_intake_fan_outdoor_temperature')|float(0) %}
+        {% set v = 7 %}
 
-        {% if is_state('binary_sensor.workshop_occupancy', 'on') and indooor_temperature > 0 %}
-          {% if indooor_temperature > 25.5 %}
-            {% set v = 10 %}
-          {% elif indooor_temperature > 25 %}
-            {% set v = 16 %}
-          {% elif indooor_temperature > 24.7 %}
-            {% set v = 20 %}
-          {% elif indooor_temperature > 24 %}
-            {% set v = 22 %}
-          {% endif %}
-        {% endif %}
+        {% set indoor_temperature = states('sensor.workshop_temperature')|float(0) %}
+        {% set outdoor_temperature = states('sensor.outside_temperature')|float(0) %}
 
-        {% if outdoor_temperature > 13 %}
+        {% if outdoor_temperature >= 7 %}
           {% set v = 0 %}
         {% endif %}
 
-        {% if is_state('input_select.home_mode', 'Night') %}
-          {% if states('sensor.workshop_intake_fan_outdoor_temperature')|float(0) < 13 %}
-            {% set v = 13 %}
-          {% else %}
-            {% set v = 0 %}
+        {% if is_state('binary_sensor.workshop_occupancy', 'on') and outdoor_temperature < 15 %}
+          {% if indoor_temperature < 20 %}
+            {% set v = 24  %}
+          {% elif indoor_temperature < 22 %}
+            {% set v = 22 %}
+          {% elif indoor_temperature < 24 %}
+            {% set v = 20 %}
           {% endif %}
-        {% endif %}
 
-        {% if is_state('input_select.home_mode', 'Vacation') %}
-          {% set v = 15 %}
+          {% if is_state('climate.workshop_ac', 'heat') %}
+            {% set v = 10 %}
+          {% endif %}
         {% endif %}
 
         {% if is_state('input_boolean.workshop_airing_warm', 'on') %}
           {% set v = 23 %}
         {% elif is_state('input_boolean.workshop_airing_cold', 'on') %}
+          {% set v = 0 %}
+        {% endif %}
+
+        {% if is_state('input_select.washing_machine_status', 'Running') %}
           {% set v = 0 %}
         {% endif %}
 
@@ -61,20 +60,37 @@ template:
       state: >
         {% set v = 1 %}
 
-        {% if is_state('binary_sensor.workshop_occupancy', 'on') %}
-          {% set v = 3 %}
-        {% endif %}
+        {% set co2_level = states('sensor.workshop_co2')|int(0) %}
+        {% set outdoor_temperature = states('sensor.outside_temperature')|float(0) %}
 
-        {% if is_state('switch.workshop_intake_fan_recirculation', 'on') %}
-          {% set v = 1 %}
-        {% endif %}
+        {% if is_state('input_select.home_mode', 'Day') %}
+          {% if co2_level > 750 %}
+           {% set v = 6 %}
+          {% elif co2_level > 700 %}
+            {% set v = 5 %}
+          {% elif co2_level > 640 %}
+            {% set v = 4 %}
+          {% elif co2_level > 590 %}
+            {% set v = 3 %}
+          {% elif co2_level > 540 %}
+            {% set v = 2 %}
+          {% endif %}
 
-        {% if is_state('input_select.home_mode', 'Vacation') %}
-          {% set v = 1 %}
+          {% if is_state('binary_sensor.workshop_occupancy', 'off') and outdoor_temperature < 0 %}
+            {% set v = 1 %}
+          {% endif %}
+
+          {% if not co2_level and is_state('binary_sensor.workshop_occupancy', 'on') %}
+            {% set v = 3 %}
+          {% endif %}
         {% endif %}
 
         {% if is_state('input_boolean.workshop_airing_warm', 'on') or is_state('input_boolean.workshop_airing_cold', 'on') %}
           {% set v = 6 %}
+        {% endif %}
+
+        {% if is_state('switch.workshop_intake_fan_recirculation', 'on') %}
+          {% set v = 1 %}
         {% endif %}
 
         {{ v }}
@@ -91,6 +107,8 @@ automation:
       - platform: state
         entity_id:
           - input_select.home_mode
+          - input_select.washing_machine_status
+          - input_boolean.workshop_intake_fan_control
           - binary_sensor.workshop_occupancy
 
       - id: room_airing
@@ -124,7 +142,9 @@ automation:
           - 'off'
 
       - condition: state
-        entity_id: input_boolean.climate_control
+        entity_id:
+          - input_boolean.climate_control
+          - input_boolean.workshop_intake_fan_control
         state: 'on'
     action:
       - if:

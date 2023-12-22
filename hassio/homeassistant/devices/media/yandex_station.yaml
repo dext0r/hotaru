@@ -242,12 +242,12 @@ script:
       - wait_template: >
           {{ state_attr(target, 'alice_state') == 'SPEAKING' }}
         timeout:
-          seconds: 45
+          seconds: 5
 
       - wait_template: >
-          {{ state_attr(target, 'alice_state') == 'IDLE' }}
+          {{ state_attr(target, 'alice_state') in ['IDLE', 'LISTENING'] }}
         timeout:
-          seconds: 5
+          seconds: 45
 
 group:
   yandex_stations:

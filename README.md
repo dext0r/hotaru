@@ -61,7 +61,7 @@
 * 1x Реле **Sonoff Mini** (esphome): простой светильник из мерлена над зеркалом в ванне.
 
 ## Датчики
-* 5x Температура/влажность **[Xiaomi LYWSD03MMC](https://www.wildberries.ru/catalog/35891286/detail.aspx)** перешитые в [PVVX/ATC_MiThermometer](https://github.com/pvvx/ATC_MiThermometer): супер датчики за 300, работают по BT, все откалиброваны и защищены PIN кодом, принимаются на ESP32 ([пример](esphome/bedroom-ubox.yaml))
+* 6x Температура/влажность **[Xiaomi LYWSD03MMC](https://www.wildberries.ru/catalog/35891286/detail.aspx)** перешитые в [PVVX/ATC_MiThermometer](https://github.com/pvvx/ATC_MiThermometer): супер датчики за 300, работают по BT, все откалиброваны и защищены PIN кодом, принимаются на ESP32 ([пример](esphome/bedroom-ubox.yaml))
 * 3x Температура/влажность **Xiaomi WXKG01LM**: использовал до переход на BT датчики, теперь валяются в холодильнике и морозильнике.
 * 2x Освещенность **Xiaomi GZCGQ01LM**: лежат на балконах в тени.
 * 5x Открытие **Xiaomi MCCGQ01LM**: двери в разные помещения, посудомойка и стиралка.

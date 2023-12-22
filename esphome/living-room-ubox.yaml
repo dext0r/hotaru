@@ -65,6 +65,17 @@ sensor:
     battery_level:
       name: Living Room Meteo Battery
 
+  - platform: pvvx_mithermometer
+    mac_address: A4:C1:38:B2:CD:CC
+    temperature:
+      name: Server Room Temperature
+      accuracy_decimals: 1
+    humidity:
+      name: Server Room Humidity
+      accuracy_decimals: 0
+    battery_level:
+      name: Server Room Meteo Battery
+
 switch:
   - platform: ld2410
     bluetooth:

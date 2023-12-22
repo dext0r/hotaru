@@ -1,6 +1,5 @@
 packages:
   base: !include generic/sonoff_basic_r3.yaml
-  version: !include common/esphome_2023.7.yaml
 
 substitutions:
   device_name: Living Room Heater

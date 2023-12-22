@@ -6,6 +6,7 @@ packages:
   senseair_s8: !include common/senseair_s8.yaml
   mithermometer_ble: !include common/mithermometer_ble.yaml
   restart: !include common/restart.yaml
+  esp_idf: !include common/idf.yaml
 
 substitutions:
   device_name: Bedroom UBox

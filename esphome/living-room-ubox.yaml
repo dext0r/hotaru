@@ -5,7 +5,6 @@ packages:
   tion_4s: !include common/tion_4s.yaml
   senseair_s8: !include common/senseair_s8.yaml
   mithermometer_ble: !include common/mithermometer_ble.yaml
-  version: !include common/esphome_2023.11.yaml
 
 substitutions:
   device_name: Living Room UBox

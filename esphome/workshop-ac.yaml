@@ -3,6 +3,7 @@ packages:
 
 substitutions:
   device_name: Workshop AC
+  temperature_sensor: sensor.workshop_temperature
 
 esphome:
   name: workshop-ac

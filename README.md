@@ -79,7 +79,7 @@
 * 2x WiFi **[Tuya CBE 16A](https://aliexpress.ru/item/1005002378544572.html)** с **перепаенным модулем** [ESP-02S](https://aliexpress.ru/item/1005003949251076.html): стиральная машина и водонагреватель ([конфиг](esphome/generic/cbe_socket.yaml))
 
 ## Климат
-* 2x Инверторный **Midea MSAG1-09N8C2**: управляется по USB через esphome платой [ESP8266 ESP-12F](https://aliexpress.ru/item/32815395082.html) (там есть конвертер уровней)
+* 2x Инверторный **Midea MSAG1-09N8C2**: управляется по USB через esphome платой [ESP8266 ESP-12F](https://aliexpress.ru/item/32815395082.html) (там есть конвертер уровней) + диодик для управления подсветкой/follow me
 * 3x Бризер **Tion 4S**: управляется по BT через ESP32 (https://github.com/dentra/esphome-tion)
 * Тупой обогреватель на **Sonoff Basic R3** (esphome)
 * Тупой вентилятор на **Sonoff Basic** (esphome) - временно решение для нагнетания холодного воздуха в гостиную

@@ -3,6 +3,7 @@ packages:
 
 substitutions:
   device_name: Bedroom AC
+  temperature_sensor: sensor.bedroom_temperature
 
 esphome:
   name: bedroom-ac

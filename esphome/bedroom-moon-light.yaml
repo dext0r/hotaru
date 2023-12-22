@@ -170,9 +170,3 @@ output:
     type: float
     write_action: []
 
-button:
-  - platform: template
-    name: Bedroom AC Display Toggle
-    on_press:
-      - remote_transmitter.transmit_coolix:
-          data: 0xB9F509

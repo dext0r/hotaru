@@ -56,6 +56,7 @@ group:
       - group.living_room_lights
       - group.path_lights
       - group.workshop_lights
+      - group.xmas_lights
       - light.closet
       - light.entrance
       - light.hallway

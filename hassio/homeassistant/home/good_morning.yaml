@@ -127,6 +127,17 @@ automation:
             {{ trigger.event.data.get('entity_id', 'last') }}
           command: Погода на сегодня
 
+      - if:
+          - condition: template
+            value_template: |
+              {{ now().month == 12 and now().day >= 15 }}
+        then:
+          - service: script.yandex_station_command
+            data:
+              target: >
+                {{ trigger.event.data.get('entity_id', 'last') }}
+              command: Сколько осталось до нового года
+
   - id: good_morning_fallback
     alias: Good Morning (fallback)
     trigger:

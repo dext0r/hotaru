@@ -98,7 +98,9 @@ automation:
         to: 'off'
     condition:
       - condition: state
-        entity_id: input_boolean.light_control
+        entity_id:
+          - input_boolean.light_control
+          - binary_sensor.anyone_home
         state: 'on'
 
       - condition: state
@@ -128,11 +130,22 @@ automation:
           - light.hallway
         state: 'off'
     action:
-      - service: light.turn_on
-        entity_id: light.hallway_path
-        data:
-          brightness_pct: 25
-          rgbw_color: [255, 65, 0, 166]
+      - if:
+          - condition: template
+            value_template: >
+              {{ states('light.xmas_hallway_wall') not in ['unavailable', 'unknown'] }}
+        then:
+          - service: light.turn_on
+            entity_id: light.hallway_path
+            data:
+              brightness_pct: 56
+              rgbw_color: [255, 105, 0, 18]
+        else:
+          - service: light.turn_on
+            entity_id: light.hallway_path
+            data:
+              brightness_pct: 25
+              rgbw_color: [255, 65, 0, 166]
 
   - id: hallway_path_light_turn_on_night
     alias: 'Hallway Path Light: Turn on (night)'

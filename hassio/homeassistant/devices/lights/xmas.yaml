@@ -1,0 +1,382 @@
+group:
+  xmas_lights:
+    name: Xmas Lights
+    entities:
+      - light.elka
+      - light.xmas_living_room_curtains
+      - light.xmas_hallway_tree
+      - light.xmas_hallway_wall
+      - light.xmas_workshop_door
+      - light.xmas_front_door
+      - light.xmas_kitchen
+      - light.xmas_bedroom
+
+light:
+  - platform: group
+    unique_id: light.xmas_living_room_curtains
+    name: Xmas Living Room Curtains
+    entities:
+      - light.xmas_living_room_curtains_1
+      - light.xmas_living_room_curtains_2
+
+automation:
+  - id: xmas_lights_turn_on
+    alias: 'Xmas Lights: Turn on'
+    trigger:
+      - platform: state
+        entity_id: input_select.home_mode
+        to: Day
+
+      - platform: state
+        entity_id: timer.scene_welcome_home
+        to: active
+    condition:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+    action:
+      - service: light.turn_on
+        entity_id:
+          - light.xmas_hallway_tree
+          - light.xmas_front_door
+          - light.xmas_kitchen
+
+  - id: xmas_lights_turn_off
+    alias: 'Xmas Lights: Turn off'
+    trigger:
+      - platform: state
+        entity_id: input_boolean.scene_sleepy_mood
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+    action:
+      - service: light.turn_off
+        entity_id:
+          - light.elka
+          - light.xmas_living_room_curtains
+          - light.xmas_hallway_tree
+          - light.xmas_hallway_wall
+          - light.xmas_workshop_door
+          - light.xmas_front_door
+          - light.xmas_kitchen
+
+  - id: xmas_elka_turn_on
+    alias: 'Xmas Elka Light: Turn on'
+    mode: single
+    max_exceeded: silent
+    trigger:
+      - platform: state
+        entity_id: input_select.home_mode
+        to: Day
+
+      - platform: state
+        entity_id:
+          - light.living_room_backlight
+          - light.living_room_main
+
+      - platform: state
+        entity_id: binary_sensor.evening_time
+        from: 'off'
+        to: 'on'
+
+      - platform: state
+        entity_id: timer.scene_welcome_home
+        to: active
+    condition:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+
+      - condition: state
+        entity_id: input_select.home_mode
+        state: Day
+
+      - condition: state
+        entity_id: input_boolean.scene_sleepy_mood
+        state: 'off'
+
+      - condition: template
+        value_template: |
+          {{ states('light.elka') not in ['unavailable', 'unknown'] }}
+    action:
+      - if:
+          - or:
+            - condition: state
+              entity_id: binary_sensor.evening_time
+              state: 'off'
+
+            - condition: state
+              entity_id: light.living_room_main
+              state: 'on'
+        then:
+          - service: light.turn_on
+            entity_id: light.elka
+            data:
+              brightness_pct: 100
+        else:
+          - service: light.turn_on
+            entity_id: light.elka
+            data:
+              brightness_pct: 23
+
+  - id: xmas_hallway_light_turn_on
+    alias: 'Xmas Hallway Light: Turn on'
+    trigger:
+      - platform: state
+        entity_id:
+          - light.entrance
+          - light.hallway
+        from: 'off'
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+
+      - condition: state
+        entity_id:
+          - light.xmas_hallway_wall
+          - light.xmas_workshop_door
+        match: any
+        state: 'off'
+    action:
+      - service: light.turn_on
+        entity_id:
+          - light.xmas_hallway_wall
+          - light.xmas_workshop_door
+
+  - id: xmas_hallway_wall_light_turn_on
+    alias: 'Xmas Hallway Wall Light: Turn on'
+    trigger:
+      - platform: state
+        entity_id: light.hallway_path
+        from: 'off'
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+
+      - condition: state
+        entity_id: input_select.home_mode
+        state: Day
+
+      - condition: state
+        entity_id: light.xmas_hallway_wall
+        state: 'off'
+    action:
+      - service: light.turn_on
+        entity_id: light.xmas_hallway_wall
+        data:
+          brightness_pct: 100
+
+  - id: xmas_hallway_wall_light_turn_off'
+    alias: 'Xmas Hallway Wall Light: Turn off'
+    trigger:
+      - platform: state
+        entity_id: light.hallway_path
+        from: 'on'
+        to: 'off'
+        for:
+          seconds: 10
+    condition:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+
+      - condition: state
+        entity_id: input_select.home_mode
+        state: Day
+
+      - condition: state
+        entity_id: light.xmas_hallway_wall
+        state: 'on'
+
+      - condition: state
+        entity_id:
+          - light.hallway
+          - light.entrance
+        state: 'off'
+    action:
+      - service: light.turn_off
+        entity_id: light.xmas_hallway_wall
+
+  - id: xmas_workshop_door_light_turn_on
+    alias: 'Xmas Workshop Door Light: Turn on'
+    trigger:
+      - platform: state
+        entity_id: light.hallway_path
+        from: 'off'
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+
+      - condition: state
+        entity_id: input_select.home_mode
+        state: Day
+
+      - condition: state
+        entity_id: light.xmas_workshop_door
+        state: 'off'
+    action:
+      - service: light.turn_on
+        entity_id: light.xmas_workshop_door
+
+  - id: xmas_workshop_door_light_turn_off
+    alias: 'Xmas Workshop Door Light: Turn off'
+    trigger:
+      - platform: state
+        entity_id: light.hallway_path
+        from: 'on'
+        to: 'off'
+        for:
+          seconds: 10
+    condition:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+
+      - condition: state
+        entity_id: light.xmas_workshop_door
+        state: 'on'
+
+      - condition: state
+        entity_id:
+          - light.hallway
+          - light.entrance
+        state: 'off'
+    action:
+      - service: light.turn_off
+        entity_id: light.xmas_workshop_door
+
+  - id: xmas_bedroom_light_turn_on
+    alias: 'Xmas Bedroom Light: Turn on'
+    trigger:
+      - platform: state
+        entity_id: group.bedroom_lights
+        from: 'off'
+        to: 'on'
+
+      - platform: state
+        entity_id: input_boolean.scene_sleepy_mood
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+
+      - condition: state
+        entity_id: input_select.home_mode
+        state: Day
+
+      - condition: state
+        entity_id: light.xmas_bedroom
+        state: 'off'
+    action:
+      - service: light.turn_on
+        entity_id: light.xmas_bedroom
+
+  - id: xmas_bedroom_light_turn_off
+    alias: 'Xmas Bedroom Light: Turn off'
+    trigger:
+      - platform: state
+        entity_id: group.bedroom_lights
+        from: 'on'
+        to: 'off'
+    condition:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+
+      - condition: state
+        entity_id: light.xmas_bedroom
+        state: 'on'
+    action:
+      - service: light.turn_off
+        entity_id: light.xmas_bedroom
+
+  - id: xmas_living_room_curtains_light_turn_on
+    alias: 'Xmas Living Room Curtains Light: Turn on'
+    mode: single
+    max_exceeded: silent
+    trigger:
+      - platform: state
+        entity_id:
+          - light.living_room_backlight
+          - light.living_room_main
+
+      - platform: state
+        entity_id: cover.living_room
+        from: open
+        to: closed
+    condition:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+
+      - condition: state
+        entity_id: input_select.home_mode
+        state: Day
+
+      - condition: state
+        entity_id: cover.living_room
+        state: closed
+
+      - condition: state
+        entity_id: group.living_room_lights
+        state: 'on'
+    action:
+      - delay:
+          seconds: 2
+
+      - if:
+          - or:
+            - condition: state
+              entity_id: light.living_room_main
+              state: 'on'
+
+            - and:
+                - condition: state
+                  entity_id: light.living_room_backlight
+                  state: 'on'
+
+                - condition: numeric_state
+                  entity_id: light.living_room_backlight
+                  attribute: brightness
+                  above: 200
+        then:
+          - service: light.turn_on
+            entity_id: light.xmas_living_room_curtains
+            data:
+              brightness_pct: 100
+        else:
+          - service: light.turn_on
+            entity_id: light.xmas_living_room_curtains
+            data:
+              brightness_pct: 30
+
+  - id: xmas_living_room_curtains_light_turn_off
+    alias: 'Xmas Living Room Curtains Light: Turn off'
+    trigger:
+      - platform: state
+        entity_id: group.living_room_lights
+        to: 'off'
+
+      - platform: state
+        entity_id: cover.living_room
+        to: open
+    condition:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+
+      - condition: state
+        entity_id: light.xmas_living_room_curtains
+        state: 'on'
+    action:
+      - service: light.turn_off
+        entity_id: light.xmas_living_room_curtains

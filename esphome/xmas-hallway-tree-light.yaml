@@ -1,0 +1,9 @@
+packages:
+  base: !include generic/sonoff_mini_light.yaml
+
+substitutions:
+  device_name: Xmas Hallway Tree Light
+
+esphome:
+  name: xmas-hallway-tree-light
+  name_add_mac_suffix: false

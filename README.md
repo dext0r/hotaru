@@ -17,6 +17,7 @@
 - [Разное](#разное)
 - [Датчики DIY](#датчики-diy)
 - [Странный DIY](#странный-diy)
+- [Новогодний DLC](#новогодний-dlc)
 - [О разном](#о-разном)
   - [Мнение о TTLock Ultra](#мнение-о-ttlock-ultra)
   - [Мнение о Danalock](#мнение-о-danalock)
@@ -123,6 +124,16 @@
 ## Странный DIY
 * Датчик присутствия в кровати: две [ленты](https://aliexpress.ru/item/1005001572817402.html) + модуль [ADS1115](https://aliexpress.ru/item/32817162654.html) + ESP. Гайд: https://dannytsang.co.uk/bed-sensor-with-home-assistant/
 * Чайник Redmond **SkyKettle G240S** с контролем уровня воды на весах HX711: esphome + патченный компонент [ESPHome-Ready4Sky](https://github.com/KomX/ESPHome-Ready4Sky). Подробнее о реализации - https://t.me/yandex_smart_home/48400 (для владельцев 3D принтеров - https://github.com/malinovsku/device-esphome/tree/master/kyxna-kettle)
+
+## Новогодний DLC
+* Несколько гирлянд с перемычками, чтобы не мигали эпилиптично
+* Несколько USBшных гирлянд (жена купила задешево)
+* 1x WiFi Tuya диммер[^1] (через Local Tuya)
+* 2x Zigbee Tuyz диммер[^1]
+* 1x Розетка **Lellki WK34-EU** (всё равно валяется без дела)
+* 3х Реле **Sonoff Mini/Basic R3**
+
+[^1] Эти диммеры только для такого применения и подходят. У них не контролируется время разгорания/потухания (transition)
 
 ## О разном
 ### Мнение о TTLock Ultra

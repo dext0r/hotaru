@@ -1,0 +1,9 @@
+packages:
+  base: !include generic/sonoff_basic_r3_light.yaml
+
+substitutions:
+  device_name: Xmas Workshop Door Light
+
+esphome:
+  name: xmas-workshop-door-light
+  name_add_mac_suffix: false

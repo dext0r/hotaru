@@ -482,3 +482,30 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+'0x84fd27fffe60916f':
+  friendly_name: Xmas Hallway Wall Light
+  disabled: false
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  temperature_precision: 1
+  retain: true
+'0x84fd27fffe60958f':
+  friendly_name: Xmas Living Room Curtains Light
+  homeassistant:
+    name: Xmas Living Room Curtains Light
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x003c84fffe90658e':
+  friendly_name: Xmas Kitchen Light
+  homeassistant:
+    name: Xmas Kitchen Light
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1

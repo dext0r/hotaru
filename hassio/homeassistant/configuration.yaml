@@ -35,6 +35,7 @@ homeassistant:
     home_common: !include home/common.yaml
     home_good_morning: !include home/good_morning.yaml
     home_good_night: !include home/good_night.yaml
+    home_kitchen: !include home/kitchen.yaml
     home_smoke: !include home/smoke.yaml
     home_water: !include home/water.yaml
     home_workshop: !include home/workshop.yaml

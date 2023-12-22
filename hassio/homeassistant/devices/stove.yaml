@@ -1,3 +1,17 @@
+automation:
+  - id: stove_status_update
+    alias: Stove Status Update
+    trigger:
+      - platform: state
+        entity_id: sensor.kitchen_stove_power
+    condition:
+      - condition: template
+        value_template: >
+          {{ trigger.to_state.state|int(0) >= 200 }}
+    action:
+      - service: timer.start
+        entity_id: timer.stove_running
+
 template:
   - trigger:
       - platform: time_pattern
@@ -16,6 +30,13 @@ template:
         unit_of_measurement: W
         device_class: power
 
+  - binary_sensor:
+      - name: Stove
+        unique_id: binary_sensor.stove
+        state: >
+          {{ is_state('timer.stove_running', 'active') }}
+        device_class: running
+
 sensor:
   - platform: integration
     unique_id: sensor.kitchen_stove_energy
@@ -24,3 +45,9 @@ sensor:
     unit_prefix: k
     round: 2
     method: left
+
+timer:
+  stove_running:
+    name: 'Stove: Running'
+    duration:
+      minutes: 2

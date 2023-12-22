@@ -1,0 +1,80 @@
+automation:
+  - id: kitchen_applicances_status_update
+    alias: Kichen Applicances Status Update
+    trigger:
+      - platform: state
+        entity_id: sensor.kitchen_power_supply_power
+    condition:
+      - condition: template
+        value_template: >
+          {{ trigger.to_state.state|int(0) >= 700 }}
+    action:
+      - service: timer.start
+        entity_id: timer.kitchen_appliances_running
+
+  - id: appliance_left_on_alert
+    alias: Appliance Left On Alert
+    trigger:
+      - id: 15min
+        platform: state
+        entity_id:
+          - binary_sensor.stove
+          - binary_sensor.kitchen_appliances
+        to: 'on'
+        for:
+          minutes: 15
+
+      - id: 60min
+        platform: state
+        entity_id:
+          - binary_sensor.stove
+          - binary_sensor.kitchen_appliances
+        to: 'on'
+        for:
+          minutes: 60
+
+      - platform: state
+        entity_id: binary_sensor.anyone_home
+        to: 'off'
+    condition:
+      - condition: state
+        entity_id:
+          - binary_sensor.stove
+          - binary_sensor.kitchen_appliances
+        match: any
+        state: 'on'
+
+      - or:
+          - condition: trigger
+            id: 60min
+
+          - and:
+              - condition: trigger
+                id: 15min
+
+              - condition: state
+                entity_id: binary_sensor.kitchen_motion
+                state: 'off'
+
+              - condition: template
+                value_template: >
+                  {{ (now() - states.binary_sensor.kitchen_motion.last_changed).total_seconds() > 15 * 60 }}
+    action:
+      - service: notify.dextor
+        data:
+          message: >
+            ⚡️ Похоже кто-то забыл выключить плиту или печку
+
+template:
+  - binary_sensor:
+      - name: Kitchen Appliances
+        unique_id: binary_sensor.kitchen_appliances
+        state: >
+          {{ is_state('timer.kitchen_appliances_running', 'active') }}
+        device_class: running
+
+timer:
+  kitchen_appliances_running:
+    name: 'Kitchen Appliances: Running'
+    duration:
+      minutes: 2

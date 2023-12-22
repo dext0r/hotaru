@@ -377,134 +377,130 @@ views:
                   state_attr('climate.living_room_intake_fan',
                   'current_temperature') }} °C
             alignment: center
-          - type: horizontal-stack
-            cards:
-              - type: custom:mini-graph-card
-                hours_to_show: 6
-                points_per_hour: 8
-                line_color: '#3498db'
-                font_size: 65
-                font_size_header: 10
-                align_icon: state
-                entities:
-                  - entity: sensor.bedroom_temperature
-                    name: Bedroom
-                style: |
-                  ha-card {
-                    --mdc-icon-size: 20px;
-                    --mdc-icon-size: 20px;
-                  }
-              - type: custom:mini-graph-card
-                hours_to_show: 6
-                points_per_hour: 8
-                line_color: '#af52b0'
-                font_size: 65
-                font_size_header: 10
-                align_icon: state
-                entities:
-                  - entity: sensor.workshop_temperature
-                    name: Workshop
-                style: |
-                  ha-card {
-                    --mdc-icon-size: 20px;
-                    --mdc-icon-size: 20px;
-                  }
-              - type: custom:mini-graph-card
-                hours_to_show: 6
-                points_per_hour: 8
-                line_color: '#f1c40f'
-                font_size: 65
-                font_size_header: 10
-                align_icon: state
-                entities:
-                  - entity: sensor.living_room_temperature
-                    name: Living Room
-                style: |
-                  ha-card {
-                    --mdc-icon-size: 20px;
-                    --mdc-icon-size: 20px;
-                  }
-          - type: horizontal-stack
-            cards:
-              - type: custom:mini-graph-card
-                hours_to_show: 6
-                points_per_hour: 8
-                line_color: '#1498db'
-                font_size: 65
-                font_size_header: 10
-                align_icon: state
-                entities:
-                  - entity: sensor.bedroom_humidity
-                    name: Bedroom
-                style: |
-                  ha-card {
-                    --mdc-icon-size: 20px;
-                    --mdc-icon-size: 20px;
-                  }
-              - type: custom:mini-graph-card
-                hours_to_show: 6
-                points_per_hour: 8
-                line_color: '#6f52b0'
-                font_size: 65
-                font_size_header: 10
-                align_icon: state
-                entities:
-                  - entity: sensor.workshop_humidity
-                    name: Workshop
-                style: |
-                  ha-card {
-                    --mdc-icon-size: 20px;
-                    --mdc-icon-size: 20px;
-                  }
-              - type: custom:mini-graph-card
-                hours_to_show: 6
-                points_per_hour: 8
-                line_color: '#e1c40f'
-                font_size: 65
-                font_size_header: 10
-                align_icon: state
-                entities:
-                  - entity: sensor.living_room_humidity
-                    name: Living Room
-                style: |
-                  ha-card {
-                    --mdc-icon-size: 20px;
-                    --mdc-icon-size: 20px;
-                  }
-          - type: horizontal-stack
+          - square: false
+            columns: 3
+            type: grid
             cards:
               - type: custom:mini-graph-card
                 name: Bedroom
-                font_size: 70
+                align_icon: state
+                font_size: 65
+                font_size_header: 10
                 hours_to_show: 6
                 points_per_hour: 8
-                icon: mdi:molecule-co2
-                align_icon: right
+                entities:
+                  - entity: sensor.bedroom_temperature
+                    color: '#3498db'
+                style: |
+                  ha-card {
+                    --mdc-icon-size: 20px;
+                    --mdc-icon-size: 20px;
+                  }
+              - type: custom:mini-graph-card
+                name: Bedroom
+                align_icon: state
+                font_size: 65
+                font_size_header: 10
+                hours_to_show: 6
+                points_per_hour: 8
+                entities:
+                  - entity: sensor.bedroom_humidity
+                    color: '#1498db'
+                style: |
+                  ha-card {
+                    --mdc-icon-size: 20px;
+                    --mdc-icon-size: 20px;
+                  }
+              - type: custom:mini-graph-card
+                name: Bedroom
+                align_icon: state
+                font_size: 65
+                font_size_header: 10
+                hours_to_show: 6
+                points_per_hour: 8
                 entities:
                   - entity: sensor.bedroom_co2
                     color: '#2980b9'
-                  - entity: climate.bedroom_intake_fan
-                    attribute: fan_mode
-                    unit: fan
-                    show_state: true
-                    show_graph: false
-                    show_legend: false
               - type: custom:mini-graph-card
-                font_size: 70
+                name: Workshop
+                align_icon: state
+                font_size: 65
+                font_size_header: 10
                 hours_to_show: 6
                 points_per_hour: 8
-                icon: mdi:molecule-co2
-                align_icon: right
+                entities:
+                  - entity: sensor.workshop_temperature
+                    color: '#af52b0'
+                style: |
+                  ha-card {
+                    --mdc-icon-size: 20px;
+                    --mdc-icon-size: 20px;
+                  }
+              - type: custom:mini-graph-card
+                name: Workshop
+                align_icon: state
+                font_size: 65
+                font_size_header: 10
+                hours_to_show: 6
+                points_per_hour: 8
+                entities:
+                  - entity: sensor.workshop_humidity
+                    color: '#6f52b0'
+                style: |
+                  ha-card {
+                    --mdc-icon-size: 20px;
+                    --mdc-icon-size: 20px;
+                  }
+              - type: custom:mini-graph-card
+                name: Workshop
+                align_icon: state
+                font_size: 65
+                font_size_header: 10
+                hours_to_show: 6
+                points_per_hour: 8
+                entities:
+                  - entity: sensor.workshop_co2
+                    color: '#4f52b0'
+              - type: custom:mini-graph-card
+                name: Living Room
+                align_icon: state
+                font_size: 65
+                font_size_header: 10
+                hours_to_show: 6
+                points_per_hour: 8
+                entities:
+                  - entity: sensor.living_room_temperature
+                    color: '#f1c40f'
+                style: |
+                  ha-card {
+                    --mdc-icon-size: 20px;
+                    --mdc-icon-size: 20px;
+                  }
+              - type: custom:mini-graph-card
+                name: Living Room
+                align_icon: state
+                font_size: 65
+                font_size_header: 10
+                hours_to_show: 6
+                points_per_hour: 8
+                entities:
+                  - entity: sensor.living_room_humidity
+                    color: '#e1c40f'
+                style: |
+                  ha-card {
+                    --mdc-icon-size: 20px;
+                    --mdc-icon-size: 20px;
+                  }
+              - type: custom:mini-graph-card
+                name: Living Room
+                align_icon: state
+                font_size: 65
+                font_size_header: 10
+                hours_to_show: 6
+                points_per_hour: 8
                 entities:
                   - entity: sensor.living_room_co2
-                    name: Living Room
                     color: '#1abc9c'
-                  - entity: climate.living_room_intake_fan
-                    attribute: fan_mode
-                    unit: fan
-                    show_state: true
-                    show_graph: false
-                    show_legend: false
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
@@ -958,20 +954,15 @@ views:
                 --mdc-icon-size: 20px;
               }
           - type: custom:mini-graph-card
-            name: Outside
+            name: Workshop
             align_icon: state
             font_size: 65
             font_size_header: 10
             hours_to_show: 6
             points_per_hour: 8
             entities:
-              - entity: sensor.weather_temperature
-                color: '#34495e'
-            style: |
-              ha-card {
-                --mdc-icon-size: 20px;
-                --mdc-icon-size: 20px;
-              }
+              - entity: sensor.workshop_co2
+                color: '#4f52b0'
           - type: custom:mini-graph-card
             name: Living Room
             align_icon: state
@@ -1088,7 +1079,7 @@ views:
                     color: #bdbdbd;
                   }
                   ha-card .current--value {
-                    font-size: var(--paper-font-display1_-_font-size);
+                    font-size: 24px;
                   }
                   ha-icon {
                     margin-top: -8px;
@@ -1217,7 +1208,7 @@ views:
                     color: #bdbdbd;
                   }
                   ha-card .current--value {
-                    font-size: var(--paper-font-display1_-_font-size);
+                    font-size: 24px;
                   }
                   ha-icon {
                     margin-top: -8px;
@@ -1257,10 +1248,25 @@ views:
               ha-card section.body {
                 display: none;
               }
-      - type: grid
-        square: false
+      - square: false
+        type: grid
         columns: 3
         cards:
+          - type: custom:mini-graph-card
+            name: Outside
+            align_icon: state
+            font_size: 65
+            font_size_header: 10
+            hours_to_show: 6
+            points_per_hour: 8
+            entities:
+              - entity: sensor.weather_temperature
+                color: '#34495e'
+            style: |
+              ha-card {
+                --mdc-icon-size: 20px;
+                --mdc-icon-size: 20px;
+              }
           - type: custom:mini-graph-card
             name: Wardrobe
             align_icon: state
@@ -1271,6 +1277,21 @@ views:
             entities:
               - entity: sensor.wardrobe_temperature
                 color: '#3498db'
+            style: |
+              ha-card {
+                --mdc-icon-size: 20px;
+                --mdc-icon-size: 20px;
+              }
+          - type: custom:mini-graph-card
+            name: Server room
+            align_icon: state
+            font_size: 65
+            font_size_header: 10
+            hours_to_show: 6
+            points_per_hour: 6
+            entities:
+              - entity: sensor.server_room_temperature
+                color: '#1928db'
             style: |
               ha-card {
                 --mdc-icon-size: 20px;
@@ -1336,6 +1357,24 @@ views:
                 --mdc-icon-size: 20px;
                 --mdc-icon-size: 20px;
               }
+          - type: custom:mini-graph-card
+            name: Workshop
+            align_icon: state
+            font_size: 65
+            font_size_header: 10
+            hours_to_show: 6
+            points_per_hour: 8
+            entities:
+              - entity: sensor.workshop_pm_2_5
+                color: '#b1c40f'
+            style: |
+              ha-card {
+                --mdc-icon-size: 20px;
+                --mdc-icon-size: 20px;
+              }
+        view_layout:
+          show:
+            mediaquery: '(min-width: 800px)'
       - type: custom:layout-break
       - square: false
         columns: 2
@@ -1345,6 +1384,11 @@ views:
             entity: switch.living_room_heater
           - type: tile
             entity: switch.home_airing
+          - type: tile
+            entity: switch.portable_fan
+          - type: tile
+            entity: input_number.home_target_humidity
+            name: Target Humidity
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
@@ -1354,6 +1398,7 @@ views:
           - type: custom:stack-in-card
             cards:
               - type: custom:mini-climate
+                name: Bedroom
                 entity: climate.bedroom_intake_fan
                 indicators:
                   humidity:
@@ -1376,6 +1421,14 @@ views:
                     source:
                       entity: sensor.bedroom_intake_fan_filter_time_left
                 buttons:
+                  control:
+                    icon: mdi:refresh-auto
+                    location: main
+                    state:
+                      entity: input_boolean.bedroom_intake_fan_control
+                    toggle_action: >
+                      (state, entity) => this.call_service('input_boolean',
+                      'toggle', { entity_id: entity.entity_id })
                   power:
                     icon: mdi:autorenew
                     state:
@@ -1396,14 +1449,21 @@ views:
                     toggle_action: >
                       (state, entity) => this.call_service('input_boolean',
                       'toggle', { entity_id: entity.entity_id })
-            style: |
-              :host {
-               --mini-climate-background-opacity: 0;
-              }
+                style: |
+                  :host .entity__controls {
+                    display: none;
+                  }
+                  :host .entity__icon {
+                    display: none;
+                  }
+                  :host .mc__bg {
+                    display: none;
+                  }
           - type: custom:stack-in-card
             cards:
               - type: custom:mini-climate
                 entity: climate.living_room_intake_fan
+                name: Living Room
                 indicators:
                   humidity:
                     icon: mdi:home-thermometer-outline
@@ -1425,6 +1485,14 @@ views:
                     source:
                       entity: sensor.living_room_intake_fan_filter_time_left
                 buttons:
+                  control:
+                    icon: mdi:refresh-auto
+                    location: main
+                    state:
+                      entity: input_boolean.living_room_intake_fan_control
+                    toggle_action: >
+                      (state, entity) => this.call_service('input_boolean',
+                      'toggle', { entity_id: entity.entity_id })
                   power:
                     icon: mdi:autorenew
                     state:
@@ -1445,13 +1513,20 @@ views:
                     toggle_action: >
                       (state, entity) => this.call_service('input_boolean',
                       'toggle', { entity_id: entity.entity_id })
-            style: |
-              :host {
-               --mini-climate-background-opacity: 0;
-              }
+                style: |
+                  :host .entity__controls {
+                    display: none;
+                  }
+                  :host .entity__icon {
+                    display: none;
+                  }
+                  :host .mc__bg {
+                    display: none;
+                  }
           - type: custom:stack-in-card
             cards:
               - type: custom:mini-climate
+                name: Workshop
                 entity: climate.workshop_intake_fan
                 indicators:
                   humidity:
@@ -1474,6 +1549,14 @@ views:
                     source:
                       entity: sensor.workshop_intake_fan_filter_time_left
                 buttons:
+                  control:
+                    icon: mdi:refresh-auto
+                    location: main
+                    state:
+                      entity: input_boolean.workshop_intake_fan_control
+                    toggle_action: >
+                      (state, entity) => this.call_service('input_boolean',
+                      'toggle', { entity_id: entity.entity_id })
                   power:
                     icon: mdi:autorenew
                     state:
@@ -1494,10 +1577,16 @@ views:
                     toggle_action: >
                       (state, entity) => this.call_service('input_boolean',
                       'toggle', { entity_id: entity.entity_id })
-            style: |
-              :host {
-               --mini-climate-background-opacity: 0;
-              }
+                style: |
+                  :host .entity__controls {
+                    display: none;
+                  }
+                  :host .entity__icon {
+                    display: none;
+                  }
+                  :host .mc__bg {
+                    display: none;
+                  }
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
@@ -1507,11 +1596,27 @@ views:
           - type: custom:stack-in-card
             cards:
               - type: custom:mini-humidifier
+                name: Living Room
                 entity: humidifier.living_room_humidifier
                 model: zhimi.humidifier.ca1
+                indicators:
+                  temperature:
+                    hide: true
+                  humidity:
+                    source:
+                      entity: humidifier.living_room_humidifier
+                      attribute: current_humidity
+                  fan_speed:
+                    icon: mdi:fan
+                    tap_action: more-info
+                    source:
+                      entity: number.living_room_humidifier_fan_speed
                 style: |
-                  ha-card .mh-humidifier {
+                  :host .mh-humidifier {
                     padding-bottom: 0 !important;
+                  }
+                  :host .mh__bg {
+                    display: none;
                   }
               - type: custom:mushroom-chips-card
                 chips:
@@ -1552,11 +1657,27 @@ views:
           - type: custom:stack-in-card
             cards:
               - type: custom:mini-humidifier
+                name: Bedroom
                 entity: humidifier.bedroom_humidifier
                 model: zhimi.humidifier.ca1
+                buttons:
+                  led:
+                    type: button
+                    state:
+                      entity: switch.bedroom_humidifier_screen
+                    on_states: 'on'
+                    off_states: 'off'
+                    toggle_action: |
+                      (current_state, entity) => {
+                        const service = current_state === 'on' ? 'turn_off' : 'turn_on';
+                        return this.call_service('switch', service, { entity_id: entity.entity_id });
+                      }
                 style: |
-                  ha-card .mh-humidifier {
+                  :host .mh-humidifier {
                     padding-bottom: 0 !important;
+                  }
+                  :host .mh__bg {
+                    display: none;
                   }
               - type: custom:mushroom-chips-card
                 chips:
@@ -1592,6 +1713,193 @@ views:
                     --chip-border-width: 0;
                     --chip-box-shadow: none;
                   }
+          - type: custom:stack-in-card
+            cards:
+              - type: custom:mini-humidifier
+                name: Workshop
+                entity: humidifier.workshop_humidifier
+                model: zhimi.humidifier.ca1
+                style: |
+                  :host .mh-humidifier {
+                    padding-bottom: 0 !important;
+                  }
+                  :host .mh__bg {
+                    display: none;
+                  }
+              - type: custom:mini-humidifier
+                name: Workshop X
+                entity: humidifier.workshop_humidifier_x
+                model: zhimi.humidifier.ca1
+                style: |
+                  :host .mh-humidifier {
+                    padding-bottom: 0 !important;
+                  }
+                  :host .mh__bg {
+                    display: none;
+                  }
+              - type: custom:mushroom-chips-card
+                chips:
+                  - type: template
+                    entity: input_boolean.workshop_humidifier_on_duty
+                    content: >
+                      {% if
+                      is_state('input_boolean.workshop_humidifier_on_duty',
+                      'on') %}
+                        On duty
+                      {% else %}
+                        Idle
+                      {% endif %}
+                    icon: >
+                      {% if
+                      is_state('input_boolean.workshop_humidifier_on_duty',
+                      'on') %}
+                        mdi:watering-can
+                      {% else %}
+                        mdi:watering-can-outline
+                      {% endif %}
+                    tap_action:
+                      action: more-info
+                  - type: template
+                    entity: input_datetime.humidifiers_last_cleanup
+                    content: >-
+                      Last cleanup: {{
+                      states('input_datetime.humidifiers_last_cleanup') }}
+                    icon: mdi:spray-bottle
+                    tap_action:
+                      action: more-info
+                alignment: end
+                style: |
+                  ha-card {
+                    --chip-border-width: 0;
+                    --chip-box-shadow: none;
+                  }
+      - square: false
+        type: grid
+        columns: 3
+        cards:
+          - type: custom:mini-graph-card
+            name: Outside
+            align_icon: state
+            font_size: 65
+            font_size_header: 10
+            hours_to_show: 6
+            points_per_hour: 8
+            entities:
+              - entity: sensor.weather_temperature
+                color: '#34495e'
+            style: |
+              ha-card {
+                --mdc-icon-size: 20px;
+                --mdc-icon-size: 20px;
+              }
+          - type: custom:mini-graph-card
+            name: Wardrobe
+            align_icon: state
+            font_size: 65
+            font_size_header: 10
+            hours_to_show: 6
+            points_per_hour: 6
+            entities:
+              - entity: sensor.wardrobe_temperature
+                color: '#3498db'
+            style: |
+              ha-card {
+                --mdc-icon-size: 20px;
+                --mdc-icon-size: 20px;
+              }
+          - type: custom:mini-graph-card
+            name: Server room
+            align_icon: state
+            font_size: 65
+            font_size_header: 10
+            hours_to_show: 6
+            points_per_hour: 6
+            entities:
+              - entity: sensor.server_room_temperature
+                color: '#1928db'
+            style: |
+              ha-card {
+                --mdc-icon-size: 20px;
+                --mdc-icon-size: 20px;
+              }
+          - type: custom:mini-graph-card
+            name: Kitchen
+            align_icon: state
+            font_size: 65
+            font_size_header: 10
+            hours_to_show: 6
+            points_per_hour: 6
+            entities:
+              - entity: sensor.kitchen_temperature
+                color: '#6f52b0'
+            style: |
+              ha-card {
+                --mdc-icon-size: 20px;
+                --mdc-icon-size: 20px;
+              }
+          - type: custom:mini-graph-card
+            name: Kitchen
+            align_icon: state
+            font_size: 65
+            font_size_header: 10
+            hours_to_show: 6
+            points_per_hour: 6
+            entities:
+              - entity: sensor.kitchen_humidity
+                color: '#af52b0'
+            style: |
+              ha-card {
+                --mdc-icon-size: 20px;
+                --mdc-icon-size: 20px;
+              }
+          - type: custom:mini-graph-card
+            name: Bathroom
+            align_icon: state
+            font_size: 65
+            font_size_header: 10
+            hours_to_show: 6
+            points_per_hour: 8
+            entities:
+              - entity: sensor.bathroom_temperature
+                color: '#f1c40f'
+            style: |
+              ha-card {
+                --mdc-icon-size: 20px;
+                --mdc-icon-size: 20px;
+              }
+          - type: custom:mini-graph-card
+            name: Bathroom
+            align_icon: state
+            font_size: 65
+            font_size_header: 10
+            hours_to_show: 6
+            points_per_hour: 8
+            entities:
+              - entity: sensor.bathroom_humidity
+                color: '#e1c40f'
+            style: |
+              ha-card {
+                --mdc-icon-size: 20px;
+                --mdc-icon-size: 20px;
+              }
+          - type: custom:mini-graph-card
+            name: Workshop
+            align_icon: state
+            font_size: 65
+            font_size_header: 10
+            hours_to_show: 6
+            points_per_hour: 8
+            entities:
+              - entity: sensor.workshop_pm_2_5
+                color: '#b1c40f'
+            style: |
+              ha-card {
+                --mdc-icon-size: 20px;
+                --mdc-icon-size: 20px;
+              }
+        view_layout:
+          show:
+            mediaquery: '(max-width: 400px)'
   - theme: Mushroom
     icon: mdi:washing-machine
     type: custom:vertical-layout
@@ -1684,6 +1992,25 @@ views:
               :host {
                 max-width: 70px;
               }
+      - square: false
+        type: grid
+        cards:
+          - type: custom:mushroom-entity-card
+            entity: binary_sensor.fridge_door
+            name: Fridge
+          - type: custom:mushroom-entity-card
+            entity: binary_sensor.freezer_door
+            name: Freezer
+          - type: custom:mushroom-entity-card
+            entity: light.fridge_status
+            name: Status
+          - type: custom:mushroom-entity-card
+            entity: binary_sensor.stove
+            name: Stove
+          - type: custom:mushroom-entity-card
+            entity: binary_sensor.kitchen_appliances
+            name: Appliances
+        columns: 3
       - type: horizontal-stack
         cards:
           - type: custom:stack-in-card
@@ -1890,6 +2217,43 @@ views:
                 entity: switch.kitchen_hot_water_valve
                 name: Hot Water
                 color: pink
+  - icon: mdi:candycane
+    badges: []
+    cards:
+      - square: false
+        type: grid
+        cards:
+          - type: custom:mushroom-light-card
+            entity: light.elka
+            show_brightness_control: true
+          - type: custom:mushroom-light-card
+            entity: light.xmas_hallway_wall
+            show_brightness_control: true
+            name: Hallway Wall
+          - type: custom:mushroom-light-card
+            entity: light.xmas_living_room_curtains
+            show_brightness_control: true
+            name: Living Room Curtains
+        columns: 2
+      - square: false
+        type: grid
+        cards:
+          - type: custom:mushroom-light-card
+            entity: light.xmas_hallway_tree
+            name: Hallway Tree
+          - type: custom:mushroom-light-card
+            entity: light.xmas_workshop_door
+            name: Workshop Door
+          - type: custom:mushroom-light-card
+            entity: light.xmas_front_door
+            name: Front Door
+          - type: custom:mushroom-light-card
+            entity: light.xmas_kitchen
+            name: Kitchen
+          - type: custom:mushroom-light-card
+            entity: light.xmas_bedroom
+            name: Bedroom
+        columns: 2
   - theme: Mushroom
     icon: mdi:lightning-bolt-outline
     type: custom:vertical-layout
@@ -1975,6 +2339,8 @@ views:
                 entity: sensor.ups_battery_charge
               - type: entity
                 entity: sensor.ups_battery_voltage
+              - type: entity
+                entity: sensor.ups_temperature
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
@@ -2124,6 +2490,13 @@ views:
             layout: vertical
             name: Wait guests
             secondary_info: none
+          - type: custom:mushroom-entity-card
+            entity: binary_sensor.evening_time
+            tap_action:
+              action: more-info
+            layout: vertical
+            name: Evening
+            secondary_info: none
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
@@ -2160,14 +2533,22 @@ views:
             line_color: green
             font_size: 75
             entities:
-              - entity: sensor.processor_temperature
+              - entity: sensor.hotaru_cpu_temperature
+          - type: custom:mini-graph-card
+            name: CPU Usage
+            hours_to_show: 2
+            points_per_hour: 8
+            line_color: green
+            font_size: 75
+            entities:
+              - entity: sensor.hotaru_cpu_used
           - type: custom:mini-graph-card
             name: Disk Temperature
             font_size: 75
             hours_to_show: 2
             points_per_hour: 8
             entities:
-              - entity: sensor.disk_temperature
+              - entity: sensor.hotaru_sda_temperature
             line_color: '#e74c3c'
           - type: custom:mini-graph-card
             name: CPU Fan
@@ -2176,7 +2557,7 @@ views:
             line_color: indigo
             font_size: 75
             entities:
-              - entity: sensor.processor_fan_speed
+              - entity: sensor.hotaru_exhaust_fan_speed
       - type: history-graph
         entities:
           - entity: binary_sensor.bed_presence_dextor
@@ -2184,6 +2565,9 @@ views:
           - entity: binary_sensor.bed_presence_layma
             name: L
         hours_to_show: 8
+      - type: entities
+        entities:
+          - select.intercom_mode
   - theme: Mushroom
     title: Media
     path: media
@@ -2198,6 +2582,8 @@ views:
             entity: media_player.living_room_station
           - type: media-control
             entity: media_player.atv
+          - type: media-control
+            entity: media_player.living_room_yandex_module
       - type: vertical-stack
         cards:
           - type: media-control
@@ -2222,6 +2608,9 @@ views:
             stroke_width: 2
           - entity: sensor.living_room_co2
             name: Living Room
+            stroke_width: 2
+          - entity: sensor.workshop_co2
+            name: Workshop
             stroke_width: 2
   - theme: Backend-selected
     title: Illuminance
@@ -2270,6 +2659,9 @@ views:
             stroke_width: 2
           - entity: sensor.wardrobe_temperature
             name: Wardrobe
+            stroke_width: 2
+          - entity: sensor.living_room_humidifier_temperature
+            name: LRH
             stroke_width: 2
   - theme: Backend-selected
     icon: mdi:cloud-percent-outline
@@ -2322,22 +2714,22 @@ views:
                 entity: binary_sensor.bedroom_motion
                 vertical: true
                 name: Motion
-              - type: tile
-                entity: binary_sensor.bedroom_occupancy
-                vertical: true
-                name: Occupancy
+                state_content: last-changed
               - type: tile
                 entity: binary_sensor.bedroom_desk_occupancy
                 vertical: true
                 name: Desk Occupancy
+                state_content: last-changed
               - type: tile
                 entity: binary_sensor.bed_presence_dextor
                 vertical: true
                 name: Bed (Dextor)
+                state_content: last-changed
               - type: tile
                 entity: binary_sensor.bed_presence_layma
                 vertical: true
                 name: Bed (Layma)
+                state_content: last-changed
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
@@ -2352,14 +2744,17 @@ views:
                 entity: binary_sensor.bathroom_motion
                 vertical: true
                 name: Motion
+                state_content: last-changed
               - type: tile
                 entity: binary_sensor.bathroom_occupancy
                 vertical: true
                 name: Occupancy
+                state_content: last-changed
               - type: tile
                 entity: binary_sensor.bathroom_bathtub_occupancy
                 vertical: true
                 name: Bathtub Occupancy
+                state_content: last-changed
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
@@ -2374,10 +2769,17 @@ views:
                 entity: binary_sensor.living_room_motion
                 vertical: true
                 name: Motion
+                state_content: last-changed
               - type: tile
                 entity: binary_sensor.living_room_occupancy
                 vertical: true
                 name: Occupancy
+                state_content: last-changed
+              - type: tile
+                entity: binary_sensor.living_room_balcony_door
+                vertical: true
+                name: Balcony door
+                state_content: last-changed
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
@@ -2392,7 +2794,9 @@ views:
                 entity: binary_sensor.workshop_entrance_motion
                 vertical: true
                 name: Entrance Motion
+                state_content: last-changed
               - type: tile
                 entity: binary_sensor.workshop_desk_motion
                 vertical: true
                 name: Desk Motion
+                state_content: last-changed

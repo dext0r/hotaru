@@ -34,8 +34,7 @@
 * Mac Mini (Late 2012)
 * Debian 12 c Proxmox
 * ИБП Ippon Back Basic 650S Euro
-* Основной роутер: Mikrotik hAP ac2
-* Роутер для дальних уголков: Linksys E3000 на DD-WRT
+* Основной роутер: Mikrotik hAP ax3
 * Zigbee: Sonoff Zigbee 3.0 USB Dongle Plus
 * HA OS в виртуальной машине
 * Аддоны HA: supervisor, chrony, let's encrypt, mosquitto broker, nginx home assistant ssl proxy, timescale db, ttlock, zigbee2mqtt, advanced ssh & web terminal

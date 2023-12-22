@@ -17,13 +17,6 @@ esphome:
 esp32:
   board: esp32dev
 
-wifi:
-  ssid: !secret ssid_kitchen
-
-# logger:
-  # logs:
-    # SkyKettle: ERROR
-
 ready4sky:
   scan_parameters:
     interval: 200ms

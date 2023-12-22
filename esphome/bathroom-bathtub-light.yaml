@@ -7,6 +7,3 @@ substitutions:
 esphome:
   name: bathroom-bathtub-light
   name_add_mac_suffix: false
-
-wifi:
-  ssid: !secret ssid_kitchen

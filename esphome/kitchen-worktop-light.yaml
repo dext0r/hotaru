@@ -15,9 +15,6 @@ esp8266:
   board: esp01_1m
   restore_from_flash: true
 
-wifi:
-  ssid: !secret ssid_kitchen
-
 light:
   - id: light_w1
     platform: monochromatic

@@ -18,13 +18,13 @@ entity_config:
       {% set outside = states('sensor.outside_temperature')|int(-1) %}
 
       {% if capability.type == 'devices.capabilities.on_off' and capability.state.instance == 'on' and capability.state.value %}
-        {% if outside < -12 %}
+        {% if outside < -14 %}
           REMOTE_CONTROL_DISABLED
         {% endif %}
       {% endif %}
 
       {% if capability.type == 'devices.capabilities.mode' and capability.state.instance == 'thermostat' and capability.state.value == 'heat' %}
-        {% if outside < -12 %}
+        {% if outside < -14 %}
           REMOTE_CONTROL_DISABLED
         {% endif %}
       {% endif %}
@@ -49,13 +49,13 @@ entity_config:
       {% set outside = states('sensor.outside_temperature')|int(-1) %}
 
       {% if capability.type == 'devices.capabilities.on_off' and capability.state.instance == 'on' and capability.state.value %}
-        {% if outside < -12 %}
+        {% if outside < -14 %}
           REMOTE_CONTROL_DISABLED
         {% endif %}
       {% endif %}
 
       {% if capability.type == 'devices.capabilities.mode' and capability.state.instance == 'thermostat' and capability.state.value == 'heat' %}
-        {% if outside < -12 %}
+        {% if outside < -14 %}
           REMOTE_CONTROL_DISABLED
         {% endif %}
       {% endif %}

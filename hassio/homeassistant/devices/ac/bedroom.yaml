@@ -102,6 +102,36 @@ automation:
           - service: input_boolean.turn_off
             entity_id: input_boolean.bedroom_ac_display
 
+  - id: bedroom_ac_turn_off_protect
+    alias: 'Bedroom AC: Turn off (protect)'
+    trigger:
+      - platform: time_pattern
+        seconds: /30
+
+      - platform: state
+        entity_id: climate.bedroom_ac
+    condition:
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: input_select.washing_machine_status
+            state: Running
+
+          - condition: numeric_state
+            entity_id: sensor.outside_temperature
+            below: -15
+
+      - condition: state
+        entity_id: climate.bedroom_ac
+        state:
+          - heat_cool
+          - cool
+          - heat
+          - dry
+    action:
+      - service: climate.turn_off
+        entity_id: climate.bedroom_ac
+
 template:
   - trigger:
       - platform: time_pattern

@@ -13,8 +13,6 @@ template:
 
         {% if is_state('binary_sensor.bedroom_bed_any_occupancy', 'on') %}
           {% set mode = 'Strong' %}
-        {% elif is_state('input_select.home_mode', 'Night') %}
-          {% set mode = 'Strong' %}
         {% elif now().hour > 21 or now().hour < 7 %}
           {% set mode = 'Strong' %}
         {% elif 0 < states('sensor.bedroom_humidity')|int(0) < 23 %}
@@ -23,11 +21,15 @@ template:
 
         {% if states('sensor.bedroom_humidity')|int(0) >= states('input_number.home_target_humidity')|int %}
           {% set mode = 'Sleep' %}
+        {% elif states('sensor.bedroom_humidity')|int(0) >= states('input_number.home_target_humidity')|int + 5 %}
+          {% set mode = 'off' %}
         {% endif %}
 
-        {% if states('sensor.bedroom_humidity')|int(0) >= states('input_number.home_target_humidity')|int + 5 %}
-          {% set mode = 'off' %}
-        {% elif states('sensor.bedroom_humidifier_water_level')|int(0) == 0 %}
+        {% if is_state('input_select.home_mode', 'Night') %}
+          {% set mode = 'Strong' %}
+        {% endif %}
+
+        {% if states('sensor.bedroom_humidifier_water_level')|int(0) <= 10 %}
           {% set mode = 'off' %}
         {% endif %}
 

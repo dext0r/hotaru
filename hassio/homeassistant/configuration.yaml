@@ -139,6 +139,7 @@ recorder:
       - input_boolean.climate_control
       - input_select.home_mode
       - select.intercom_mode
+      - number.living_room_humidifier_fan_speed
       - switch.bedroom_moon_light_charger
     entity_globs:
       - input_boolean.*_airing_*
@@ -177,6 +178,7 @@ recorder:
       - sensor.*_intake_fan_target_fan_speed
       - sensor.*_intake_fan_target_temperature
       - sensor.*_humidifier_target_mode
+      - sensor.*_humidifier_target_humidity
       - sensor.*_raw
       - sensor.person_pronoun_*
       - switch.*_light*

@@ -9,19 +9,23 @@ template:
       name: 'Living Room Humidifier: Target mode'
       icon: mdi:target-variant
       state: >
-        {% set mode = 'High' %}
+        {% set mode = 'auto' %}
 
-        {% if states('sensor.living_room_humidity')|int(0) >= states('input_number.home_target_humidity')|int %}
-          {% set mode = 'Medium' %}
+        {% if is_state('input_select.home_mode', 'Night') or is_state('binary_sensor.anyone_home', 'off') %}
+          {% set mode = 'sleep' %}
         {% endif %}
 
-        {% if states('sensor.living_room_humidity')|int(0) >= states('input_number.home_target_humidity')|int + 5 %}
-          {% set mode = 'off' %}
-        {% elif states('sensor.living_room_humidifier_water_level')|int(0) == 0 %}
+        {% if states('sensor.living_room_humidifier_water_level')|int(0) <= 10 %}
           {% set mode = 'off' %}
         {% endif %}
 
         {{ mode }}
+
+    - unique_id: sensor.living_room_humidifier_target_humidity
+      name: 'Living Room Humidifier: Target humidity'
+      icon: mdi:target-variant
+      state: >
+        {{ states('input_number.home_target_humidity')|int(30) - 2 }}
 
 automation:
   - id: living_room_humidifier_update
@@ -34,7 +38,10 @@ automation:
         minutes: '/7'
 
       - platform: state
-        entity_id: input_number.home_target_humidity
+        entity_id:
+          - input_number.home_target_humidity
+          - input_select.home_mode
+          - binary_sensor.anyone_home
 
       - platform: state
         entity_id: sensor.ups_status
@@ -90,15 +97,15 @@ automation:
 
           - if:
               - condition: state
-                entity_id: select.living_room_humidifier_led_brightness
-                state:
-                  - bright
-                  - 'off'
-            then:
-              - delay:
-                  seconds: 7
+                entity_id: humidifier.living_room_humidifier
+                attribute: mode
+                state: auto
 
-              - service: select.select_option
-                entity_id: select.living_room_humidifier_led_brightness
+              - condition: template
+                value_template: >
+                  {{ state_attr('humidifier.living_room_humidifier', 'humidity')|string != states("sensor.living_room_humidifier_target_humidity") }}
+            then:
+              - service: humidifier.set_humidity
+                entity_id: humidifier.living_room_humidifier
                 data:
-                  option: dim
+                  humidity: '{{ states("sensor.living_room_humidifier_target_humidity") }}'

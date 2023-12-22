@@ -27,15 +27,15 @@ automation:
         conditions:
           - condition: numeric_state
             entity_id: sensor.bedroom_humidifier_water_level
-            below: 40
+            below: 30
 
           - condition: numeric_state
             entity_id: sensor.living_room_humidifier_water_level
-            below: 40
+            below: 30
 
           - condition: numeric_state
             entity_id: sensor.workshop_humidifier_water_level
-            below: 40
+            below: 30
 
       - condition: state
         entity_id:
@@ -102,13 +102,6 @@ automation:
   - id: humidifiers_cleanup
     alias: 'Humidifiers: Cleanup'
     trigger:
-      - platform: state
-        entity_id: binary_sensor.living_room_humidifier_water_tank
-        from: 'on'
-        to: 'off'
-        for:
-          seconds: 30
-
       - platform: state
         entity_id: binary_sensor.workshop_humidifier_water_tank
         from: 'on'

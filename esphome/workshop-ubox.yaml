@@ -3,8 +3,10 @@ packages:
   time: !include common/time.yaml
   uptime: !include common/uptime.yaml
   tion_4s: !include common/tion_4s.yaml
+  senseair_s8: !include common/senseair_s8.yaml
   mithermometer_ble: !include common/mithermometer_ble.yaml
   restart: !include common/restart.yaml
+  esp_idf: !include common/idf.yaml
 
 substitutions:
   device_name: Workshop UBox
@@ -22,8 +24,10 @@ esphome:
 esp32:
   board: esp32dev
 
-logger:
-  level: INFO
+uart:
+  - id: pm1006_uart
+    rx_pin: 34
+    baud_rate: 9600
 
 sensor:
   - platform: pvvx_mithermometer
@@ -36,3 +40,10 @@ sensor:
       accuracy_decimals: 0
     battery_level:
       name: Workshop Meteo Battery
+
+  - platform: pm1006
+    uart_id: pm1006_uart
+    pm_2_5:
+      name: Workshop PM 2.5
+      filters:
+        - throttle: 20s

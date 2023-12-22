@@ -1,0 +1,10 @@
+esphome:
+  platformio_options:
+    build_flags:
+      - -std=gnu++17
+    build_unflags:
+      - -std=gnu++11
+
+esp32:
+  framework:
+    type: esp-idf

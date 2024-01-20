@@ -88,8 +88,24 @@ automation:
         subtype: single
         discovery_id: 0x00158d0003972602 action_single
     action:
-      - service: light.toggle
-        entity_id: light.bathroom_bathtub
+      - if:
+          - condition: state
+            entity_id: input_select.home_mode
+            state: Day
+        then:
+          - service: light.toggle
+            entity_id: light.bathroom_bathtub
+        else:
+          - service: light.turn_off
+            entity_id: light.bathroom_main
+
+          - service: light.turn_on
+            entity_id:
+              - light.bathroom_sink_path
+              - light.bathroom_toilet_path
+            data:
+              rgbw_color: [255, 0, 0, 0]
+              brightness_pct: 100
 
   - id: bathroom_bathtub_button_call
     alias: 'Bathroom Bathtube Button: Call'

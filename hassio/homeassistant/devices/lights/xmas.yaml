@@ -45,8 +45,18 @@ automation:
     alias: 'Xmas Lights: Turn off'
     trigger:
       - platform: state
-        entity_id: input_boolean.scene_sleepy_mood
+        entity_id: binary_sensor.dim_light
         to: 'on'
+        for:
+          seconds: 3
+
+      - id: bedroom_bed_button_single_press
+        platform: device
+        domain: mqtt
+        device_id: 620c20157f0cbf8a0249f3f083a531ff
+        type: action
+        subtype: single
+        discovery_id: 0x00158d00039723b6 action_single
     condition:
       - condition: state
         entity_id: input_boolean.light_control
@@ -94,7 +104,7 @@ automation:
         state: Day
 
       - condition: state
-        entity_id: input_boolean.scene_sleepy_mood
+        entity_id: binary_sensor.dim_light
         state: 'off'
 
       - condition: template
@@ -164,7 +174,9 @@ automation:
         state: Day
 
       - condition: state
-        entity_id: light.xmas_hallway_wall
+        entity_id:
+          - binary_sensor.dim_light
+          - light.xmas_hallway_wall
         state: 'off'
     action:
       - service: light.turn_on
@@ -220,7 +232,9 @@ automation:
         state: Day
 
       - condition: state
-        entity_id: light.xmas_workshop_door
+        entity_id:
+          - binary_sensor.dim_light
+          - light.xmas_workshop_door
         state: 'off'
     action:
       - service: light.turn_on
@@ -323,15 +337,19 @@ automation:
         state: Day
 
       - condition: state
+        entity_id: binary_sensor.dim_light
+        state: 'off'
+
+      - condition: state
         entity_id: cover.living_room
         state: closed
+    action:
+      - delay:
+          seconds: 2
 
       - condition: state
         entity_id: group.living_room_lights
         state: 'on'
-    action:
-      - delay:
-          seconds: 2
 
       - if:
           - or:

@@ -1,0 +1,25 @@
+packages:
+  base: !include ../common/base.yaml
+
+esphome:
+  name: moes-ms-105-dimmer
+  model: Moes MS-105
+
+bk72xx:
+  board: cb2s
+
+uart:
+  tx_pin: TX1
+  rx_pin: RX1
+  baud_rate: 9600
+
+tuya:
+
+light:
+  - id: light_w
+    platform: tuya
+    name: $device_name
+    switch_datapoint: 1
+    dimmer_datapoint: 2
+    min_value: 0
+    max_value: 1000

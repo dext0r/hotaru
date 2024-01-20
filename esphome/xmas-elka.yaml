@@ -1,0 +1,9 @@
+packages:
+  base: !include generic/ms_105_dimmer.yaml
+
+substitutions:
+  device_name: Xmas Elka
+
+esphome:
+  name: xmas-elka
+  name_add_mac_suffix: false

@@ -1,5 +1,6 @@
 packages:
   base: !include common/base.yaml
+  # debug: !include common/ld2410_debug.yaml
 
 substitutions:
   device_name: Bedroom Presence
@@ -24,9 +25,11 @@ uart:
     stop_bits: 1
 
 ld2410:
-# g0: 80 100
-# g1: 80 100
-# g2: 35 35
+# timeout: 15
+# max gate: 6
+# g0: 100 100
+# g1: 100 100
+# g2: 60 60
 # g3: 75 35
 # g4: 100 45
 # g5: 100 50

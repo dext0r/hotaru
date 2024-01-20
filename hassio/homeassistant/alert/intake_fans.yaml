@@ -1,0 +1,20 @@
+automation:
+  - id: Intake Fan Error
+    alias: Intake Fan Error
+    mode: single
+    max_exceeded: silent
+    trigger:
+      - platform: event
+        event_type: state_changed
+    condition:
+      - condition: template
+        value_template: >
+          {{ trigger.event.data.new_state and
+             trigger.event.data.new_state.entity_id.endswith('intake_fan_errors') and
+             trigger.event.data.new_state.state and
+             trigger.event.data.new_state.state not in ['unavailable', 'unknown'] }}
+    action:
+      - service: notify.dextor
+        data:
+          message: >
+            😨 Ошибки в бризере {{ trigger.event.data.new_state.entity_id }}: <b>{{ trigger.event.data.new_state.state }}</b>

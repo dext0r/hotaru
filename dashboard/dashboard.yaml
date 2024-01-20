@@ -1456,6 +1456,18 @@ views:
                     unit: d
                     source:
                       entity: sensor.bedroom_intake_fan_filter_time_left
+                  no_response:
+                    icon: mdi:signal-off
+                    source:
+                      entity: binary_sensor.bedroom_intake_fan_no_response
+                    hide: |
+                      (state) => state === 'off'
+                  error_codes:
+                    icon: mdi:alert-circle-outline
+                    source:
+                      entity: sensor.bedroom_intake_fan_error_codes
+                    hide: |
+                      (state) => state === ''
                 buttons:
                   control:
                     icon: mdi:refresh-auto
@@ -1520,6 +1532,18 @@ views:
                     unit: d
                     source:
                       entity: sensor.living_room_intake_fan_filter_time_left
+                  no_response:
+                    icon: mdi:signal-off
+                    source:
+                      entity: binary_sensor.living_room_intake_fan_no_response
+                    hide: |
+                      (state) => state === 'off'
+                  error_codes:
+                    icon: mdi:alert-circle-outline
+                    source:
+                      entity: sensor.living_room_intake_fan_error_codes
+                    hide: |
+                      (state) => state === ''
                 buttons:
                   control:
                     icon: mdi:refresh-auto
@@ -1584,6 +1608,18 @@ views:
                     unit: d
                     source:
                       entity: sensor.workshop_intake_fan_filter_time_left
+                  no_response:
+                    icon: mdi:signal-off
+                    source:
+                      entity: binary_sensor.workshop_intake_fan_no_response
+                    hide: |
+                      (state) => state === 'off'
+                  error_codes:
+                    icon: mdi:alert-circle-outline
+                    source:
+                      entity: sensor.workshop_intake_fan_error_codes
+                    hide: |
+                      (state) => state === ''
                 buttons:
                   control:
                     icon: mdi:refresh-auto

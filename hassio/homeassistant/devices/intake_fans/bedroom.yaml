@@ -123,6 +123,7 @@ automation:
 
       - platform: state
         entity_id:
+          - binary_sensor.bedroom_desk_occupancy
           - input_select.home_mode
           - input_select.washing_machine_status
           - input_boolean.bedroom_intake_fan_control

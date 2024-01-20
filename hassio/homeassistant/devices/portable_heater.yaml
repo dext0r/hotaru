@@ -73,10 +73,14 @@ template:
         unique_id: sensor.living_room_heater_power
         state: >
           {% set power = 0 %}
-          {% if is_state('switch.living_room_heater', 'on') %}
-            {% if states('sensor.sockets_power_supply_power')|int(0) -
-                  states('sensor.living_room_intake_fan_heater_power')|int(0) > 1000 %}
-              {% set power = 1500 + range(1, 9)|random %}
+          {% if is_state('switch.living_room_heater_socket', 'on') %}
+            {% set power = states('sensor.living_room_heater_socket_power')|int(0) %}
+          {% else %} {# fallback #}
+            {% if is_state('switch.living_room_heater', 'on') %}
+              {% if states('sensor.sockets_power_supply_power')|int(0) -
+                    states('sensor.living_room_intake_fan_heater_power')|int(0) > 1000 %}
+                {% set power = 1500 + range(1, 9)|random %}
+              {% endif %}
             {% endif %}
           {% endif %}
 

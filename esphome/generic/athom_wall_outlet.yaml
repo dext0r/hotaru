@@ -1,0 +1,93 @@
+# https://github.com/athom-tech/athom-configs/blob/main/athom-wall-outlet.yaml
+packages:
+  base: !include ../common/base.yaml
+
+substitutions:
+  relay_restore_mode: ALWAYS_OFF
+
+esphome:
+  name: athom-wall-outlet
+  model: Athom Wall Outlet
+  on_boot:
+    priority: -100.0
+    then:
+      - if:
+          condition:
+            - switch.is_on: relay
+          then:
+            - light.turn_on: button_led
+
+esp8266:
+  board: esp8285
+  restore_from_flash: true
+
+preferences:
+  flash_write_interval: 10min
+
+logger:
+  baud_rate: 0
+
+uart:
+  rx_pin: RX
+  baud_rate: 4800
+
+time:
+  - platform: homeassistant
+    timezone: Europe/Moscow
+    on_time_sync:
+      then:
+        - logger.log: Synchronized system clock
+
+binary_sensor:
+  - id: button
+    platform: gpio
+    internal: true
+    pin:
+      number: 5
+    on_press:
+      then:
+        switch.toggle: relay
+
+sensor:
+  - platform: cse7766
+    update_interval: 10s
+    voltage:
+      name: $device_name Voltage
+      accuracy_decimals: 0
+      disabled_by_default: true
+    power:
+      id: power
+      name: $device_name Power
+      accuracy_decimals: 0
+      filters:
+        - lambda: |-
+            if (x < 1.0) return 0;
+            return x;
+
+  - platform: total_daily_energy
+    name: $device_name Energy
+    unit_of_measurement: kWh
+    accuracy_decimals: 2
+    power_id: power
+    filters:
+      - multiply: 0.001
+
+light:
+  - id: button_led
+    platform: status_led
+    internal: true
+    pin:
+      number: 13
+      inverted: true
+
+switch:
+  - id: relay
+    platform: gpio
+    name: $device_name
+    device_class: outlet
+    pin: 12
+    restore_mode: $relay_restore_mode
+    on_turn_on:
+      - light.turn_on: button_led
+    on_turn_off:
+      - light.turn_off: button_led

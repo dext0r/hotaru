@@ -1,0 +1,57 @@
+packages:
+  base: !include ../common/base.yaml
+
+substitutions:
+  icon: mdi:lightbulb
+
+esphome:
+  name: hiper-iot-c1-rgb
+  model: HIPER IoT C1 RGB
+
+bk72xx:
+  board: cblc5
+
+bp5758d:
+  data_pin: P24
+  clock_pin: P26
+
+output:
+  - id: light_r
+    platform: bp5758d
+    channel: 2
+    current: 20
+
+  - id: light_g
+    platform: bp5758d
+    channel: 1
+    current: 20
+
+  - id: light_b
+    platform: bp5758d
+    channel: 3
+    current: 20
+
+  - id: light_cw
+    platform: bp5758d
+    channel: 5
+    current: 11
+
+  - id: light_ww
+    platform: bp5758d
+    channel: 4
+    current: 11
+
+light:
+  - platform: rgbww
+    name: $device_name
+    icon: $icon
+    red: light_r
+    green: light_g
+    blue: light_b
+    warm_white: light_ww
+    cold_white: light_cw
+    warm_white_color_temperature: 2700 K
+    cold_white_color_temperature: 6500 K
+    color_interlock: true
+    constant_brightness: true
+    gamma_correct: 0

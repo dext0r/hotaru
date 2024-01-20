@@ -660,11 +660,30 @@ views:
                 entity: light.bedroom_bed
                 name: Bed
               - type: tile
-                entity: light.bedroom_moon
-                name: Moon
-              - type: custom:mushroom-entity-card
-                entity: switch.bedroom_moon_light_charger
-                name: Moon Charger
+                entity: light.bedroom_cat
+                name: Cat
+              - type: custom:stack-in-card
+                mode: horizontal
+                cards:
+                  - type: tile
+                    entity: light.bedroom_moon
+                    name: Moon
+                    style: |
+                      ha-card {
+                        border: 0;
+                      }
+                  - type: custom:mushroom-entity-card
+                    entity: switch.bedroom_moon_light_charger
+                    primary_info: none
+                    secondary_info: none
+                    style: |
+                      ha-card {
+                        border: 0;
+                      }
+
+                      :host {
+                        max-width: 70px;
+                      }
           - type: conditional
             conditions:
               - entity: light.bedroom_moon

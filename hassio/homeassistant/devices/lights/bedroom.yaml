@@ -1,4 +1,3 @@
-
 automation:
   - id: bedroom_light_turn_on
     alias: 'Bedroom Light: Turn on'
@@ -27,7 +26,7 @@ automation:
 
       - condition: state
         entity_id:
-          - binary_sensor.dim_light
+          - input_boolean.scene_sleepy_mood
           - binary_sensor.bedroom_bed_any_occupancy
           - group.bedroom_lights
         state: 'off'
@@ -38,12 +37,17 @@ automation:
           {{ (now() - states.binary_sensor.bedroom_bed_any_occupancy.last_changed).total_seconds() > 30 }}
     action:
       - service: light.turn_on
-        target:
-          entity_id:
+        entity_id:
           - light.bedroom_bed
           - light.bedroom_moon
         data:
           rgb_color: [10, 214, 255]
+          brightness_pct: 100
+
+      - service: light.turn_on
+        entity_id: light.bedroom_cat
+        data:
+          kelvin: 2700
           brightness_pct: 100
 
   - id: bedroom_bed_light_turn_on_night
@@ -168,6 +172,7 @@ automation:
         entity_id:
           - light.bedroom_moon
           - light.bedroom_bed
+          - light.bedroom_cat
         state: 'on'
         match: any
 
@@ -179,6 +184,7 @@ automation:
         entity_id:
           - light.bedroom_moon
           - light.bedroom_bed
+          - light.bedroom_cat
 
   - id: bedroom_moon_light_charger_turn_on
     alias: 'Bedroom Moon Light Charger: Turn on'
@@ -227,3 +233,4 @@ group:
       - light.bedroom_main
       - light.bedroom_bed
       - light.bedroom_moon
+      - light.bedroom_cat

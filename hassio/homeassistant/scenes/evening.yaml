@@ -40,6 +40,10 @@ automation:
         entity_id: binary_sensor.living_room_balcony_door
         state: 'off'
 
+      - condition: state
+        entity_id: cover.living_room
+        state: open
+
       - condition: template
         value_template: >
           {{ (now() - state_attr('automation.living_room_evening',
@@ -82,7 +86,6 @@ automation:
 
       - service: cover.close_cover
         entity_id: cover.living_room
-
 
   - id: bedroom_evening
     alias: 'Bedroom: Evening'
@@ -136,4 +139,7 @@ automation:
             state: 'on'
         then:
           - service: light.turn_on
-            entity_id: light.bedroom_main
+            entity_id: light.bedroom_cat
+            data:
+              kelvin: 2700
+              brightness_pct: 100

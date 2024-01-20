@@ -57,6 +57,7 @@
 
 ### Остальное
 * Светильник Луна 20 см. с алихи: управляется через IR от Hyper IoT v1 и [релейный модуль](https://aliexpress.ru/item/1624699191.html), который был под рукой ([безумная конфигурация](esphome/bedroom-moon-light.yaml))
+* 1x Лампа **Hiper IOT C1 RGB**: Перешита на esphome с разборкой и паянием, вставлена в няшный [светильник-кот](https://leroymerlin.ru/product/nastolnaya-lampa-rexant-kot-s-zontom-cvet-belyy-87542876/#reviews)
 * 6x Лампа **Yeelight YLDP004-A**: декоративная подсветка.
 * 1x Реле **Sonoff Basic R2** (esphome): диодная лента над ванной (IP67, всё по-красоте)
 * 1x Реле **Sonoff Mini** (esphome): простой светильник из мерлена над зеркалом в ванне.
@@ -179,5 +180,5 @@
 
 ## Статистика по устройствам
 * Zigbee устройств: 58
-* Esphome устройств: 26
+* Esphome устройств: 28
 * Прочих УД устройств на wifi: 16

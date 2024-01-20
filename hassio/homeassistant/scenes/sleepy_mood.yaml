@@ -42,6 +42,12 @@ automation:
             ]|random }}
           brightness_pct: 100
 
+      - service: light.turn_on
+        entity_id: light.bedroom_cat
+        data:
+          kelvin: 2700
+          brightness_pct: 12
+
       - delay:
           milliseconds: 500
 

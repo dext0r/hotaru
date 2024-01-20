@@ -15,27 +15,22 @@ automation:
   - id: appliance_left_on_alert
     alias: Appliance Left On Alert
     trigger:
-      - id: 15min
-        platform: state
-        entity_id:
-          - binary_sensor.stove
-          - binary_sensor.kitchen_appliances
-        to: 'on'
+      - platform: state
+        entity_id: binary_sensor.kitchen_motion
+        from: 'on'
+        to: 'off'
         for:
-          minutes: 15
-
-      - id: 60min
-        platform: state
-        entity_id:
-          - binary_sensor.stove
-          - binary_sensor.kitchen_appliances
-        to: 'on'
-        for:
-          minutes: 60
+          minutes: 20
 
       - platform: state
         entity_id: binary_sensor.anyone_home
         to: 'off'
+
+      - platform: state
+        entity_id: input_boolean.scene_meal
+        to: 'on'
+        for:
+          minutes: 3
     condition:
       - condition: state
         entity_id:
@@ -43,22 +38,8 @@ automation:
           - binary_sensor.kitchen_appliances
         match: any
         state: 'on'
-
-      - or:
-          - condition: trigger
-            id: 60min
-
-          - and:
-              - condition: trigger
-                id: 15min
-
-              - condition: state
-                entity_id: binary_sensor.kitchen_motion
-                state: 'off'
-
-              - condition: template
-                value_template: >
-                  {{ (now() - states.binary_sensor.kitchen_motion.last_changed).total_seconds() > 15 * 60 }}
+        for:
+          minutes: 5
     action:
       - service: notify.dextor
         data:

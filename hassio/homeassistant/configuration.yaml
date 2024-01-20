@@ -184,6 +184,7 @@ recorder:
       - sensor.*_intake_fan_target_temperature
       - sensor.*_humidifier_target_mode
       - sensor.*_humidifier_target_humidity
+      - sensor.*_humidifier_target_fan_speed
       - sensor.*_raw
       - sensor.person_pronoun_*
       - switch.*_light*

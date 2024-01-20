@@ -11,8 +11,16 @@ template:
       state: >
         {% set mode = 'auto' %}
 
-        {% if is_state('input_select.home_mode', 'Night') or is_state('binary_sensor.anyone_home', 'off') %}
-          {% set mode = 'sleep' %}
+        {% if states('sensor.living_room_humidifier_target_fan_speed')|int(0) > 0 %}
+          {% set mode = 'manual' %}
+        {% endif %}
+
+        {% if is_state('input_boolean.scene_waking_up', 'off') %}
+          {% if is_state('binary_sensor.anyone_home', 'off') or
+                is_state('input_boolean.scene_sleepy_mood', 'on') or
+                is_state('input_select.home_mode', 'Night') %}
+            {% set mode = 'sleep' %}
+          {% endif %}
         {% endif %}
 
         {% if states('sensor.living_room_humidifier_water_level')|int(0) <= 10 %}
@@ -25,7 +33,47 @@ template:
       name: 'Living Room Humidifier: Target humidity'
       icon: mdi:target-variant
       state: >
-        {{ states('input_number.home_target_humidity')|int(30) - 2 }}
+        {{ states('input_number.home_target_humidity')|int - 2 }}
+
+    - unique_id: sensor.living_room_humidifier_target_fan_speed
+      name: 'Living Room Humidifier: Target Fan Speed'
+      icon: mdi:fan-clock
+      state: >
+        {% set speed = 0 %}
+
+        {% set indoor_humidity = states('sensor.living_room_humidity')|int(0) %}
+        {% set target_humidity = states('input_number.home_target_humidity')|int(0) %}
+        {% set outdoor_temperature = states('sensor.outside_temperature')|float(0) %}
+
+        {% if outdoor_temperature < 5 and indoor_humidity > 0 %}
+          {% if indoor_humidity < target_humidity - 4 %}
+            {% set speed = 100 %}
+          {% elif indoor_humidity < target_humidity - 2 %}
+            {% set speed = 80 %}
+          {% elif indoor_humidity < target_humidity %}
+            {% set speed = 60 %}
+          {% elif indoor_humidity < target_humidity + 2 %}
+            {% set speed = 34 %}
+          {% else %}
+            {% set speed = 14 %}
+          {% endif %}
+
+          {% set speed = min(80, speed) %}
+
+          {% if is_state('input_boolean.scene_meal', 'on') %}
+            {% set speed = min(70, speed) %}
+          {% endif %}
+
+          {% if is_state('input_boolean.scene_movie', 'on') %}
+            {% set speed = min(64, speed) %}
+          {% endif %}
+
+          {% if is_state('binary_sensor.living_room_occupancy', 'off') and speed == 80 %}
+            {% set speed = 100 %}
+          {% endif %}
+        {% endif %}
+
+        {{ speed }}
 
 automation:
   - id: living_room_humidifier_update
@@ -39,9 +87,13 @@ automation:
 
       - platform: state
         entity_id:
+          - binary_sensor.anyone_home
+          - binary_sensor.living_room_occupancy
+          - input_boolean.scene_movie
+          - input_boolean.scene_sleepy_mood
+          - input_boolean.scene_waking_up
           - input_number.home_target_humidity
           - input_select.home_mode
-          - binary_sensor.anyone_home
 
       - platform: state
         entity_id: sensor.ups_status
@@ -94,6 +146,24 @@ automation:
                 entity_id: humidifier.living_room_humidifier
                 data:
                   mode: '{{ states("sensor.living_room_humidifier_target_mode") }}'
+
+              - delay:
+                  seconds: 1
+
+          - if:
+              - condition: state
+                entity_id: humidifier.living_room_humidifier
+                attribute: mode
+                state: manual
+
+              - condition: template
+                value_template: >
+                  {{ states('number.living_room_humidifier_fan_speed')|string != states("sensor.living_room_humidifier_target_fan_speed")|string }}
+            then:
+              - service: number.set_value
+                entity_id: number.living_room_humidifier_fan_speed
+                data:
+                  value: '{{ states("sensor.living_room_humidifier_target_fan_speed") }}'
 
           - if:
               - condition: state

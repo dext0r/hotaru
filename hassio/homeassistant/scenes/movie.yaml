@@ -1,0 +1,206 @@
+input_boolean:
+  scene_movie:
+    name: 'Scene: Movie'
+    icon: mdi:popcorn
+    initial: false
+
+automation:
+  - id: scene_movie_turn_on
+    alias: 'Scene Movie: Turn on'
+    trigger:
+      - platform: event
+        event_type: yandex_intent
+        event_data:
+          text: Посмотрим кино
+    action:
+      - if:
+          - condition: state
+            entity_id: binary_sensor.living_room_balcony_door
+            state: 'on'
+        then:
+          - service: script.yandex_station_tts
+            data:
+              target: >
+                {{ trigger.event.data.get('entity_id', 'last') }}
+              text: Давай, только закрой дверь на балкон
+
+      - condition: state
+        entity_id: binary_sensor.living_room_balcony_door
+        state: 'off'
+
+      - if:
+          - condition: state
+            entity_id: binary_sensor.evening_time
+            state: 'off'
+        then:
+          - service: cover.close_cover
+            entity_id:
+              - cover.bedroom
+              - cover.workshop
+
+      - service: light.turn_on
+        entity_id: light.living_room_backlight
+        data:
+          brightness_pct: 23
+          rgb_color: [215, 150, 255]
+
+      - service: light.turn_on
+        entity_id: light.living_room_tv
+        data:
+          brightness_pct: 50
+
+      - service: cover.close_cover
+        entity_id: cover.living_room
+
+      - if:
+          - condition: state
+            entity_id: media_player.tv
+            state: 'off'
+        then:
+          - service: media_player.turn_on
+            entity_id:
+              - media_player.tv
+              - media_player.atv
+
+      - service: light.turn_off
+        entity_id:
+          - group.bedroom_lights
+          - group.path_lights
+          - group.workshop_lights
+          - light.entrance
+          - light.hallway
+          - light.wardrobe
+
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.scene_movie
+
+      - service: script.yandex_station_tts
+        data:
+          target: >
+            {{ trigger.event.data.get('entity_id', 'last') }}
+          text: Приятного просмотра!
+
+  - id: scene_movie_turn_off
+    alias: 'Scene Movie: Turn off'
+    trigger:
+      - platform: event
+        id: yandex_intent
+        event_type: yandex_intent
+        event_data:
+          text: Просмотр окончен
+
+      - platform: state
+        entity_id: media_player.tv
+        to: 'off'
+
+      - platform: state
+        entity_id: media_player.atv
+        from:
+          - playing
+          - paused
+        to: standby
+
+      - platform: state
+        entity_id: media_player.atv
+        attribute: app_id
+        from: com.plexapp.plex
+    condition:
+      - condition: state
+        entity_id: input_boolean.scene_movie
+        state: 'on'
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.scene_movie
+
+      - if:
+          - condition: state
+            entity_id: binary_sensor.evening_time
+            state: 'off'
+        then:
+          - service: cover.open_cover
+            entity_id:
+              - cover.bedroom
+              - cover.living_room
+              - cover.workshop
+
+      - if:
+          - condition: numeric_state
+            entity_id: sensor.illuminance_south_side
+            below: 150
+        then:
+          - service: light.turn_on
+            entity_id: light.living_room_tv
+            data:
+              brightness_pct: 100
+              transition: 5
+
+          - service: light.turn_on
+            entity_id: light.living_room_backlight
+            data:
+              brightness_pct: 23
+              kelvin: 3400
+              transition: 5
+
+  - id: scene_movie_playing
+    alias: 'Scene Movie: Playing'
+    trigger:
+      - platform: state
+        entity_id: media_player.atv
+        to: playing
+    condition:
+      - condition: state
+        entity_id: input_boolean.scene_movie
+        state: 'on'
+
+      - condition: state
+        entity_id: light.living_room_tv
+        state: 'on'
+
+      - condition: state
+        entity_id: light.living_room_tv
+        attribute: brightness
+        state: '255'
+    action:
+      - service: light.turn_off
+        entity_id:
+          - light.living_room_tv
+          - light.living_room_backlight
+        data:
+          transition: 5
+
+  - id: scene_movie_pause
+    alias: 'Scene Movie: Pause'
+    trigger:
+      - platform: state
+        entity_id: media_player.atv
+        from: playing
+        to: paused
+    condition:
+      - condition: state
+        entity_id: input_boolean.scene_movie
+        state: 'on'
+
+      - condition: template
+        value_template: >
+          {{ (now() - state_attr('automation.scene_movie_pause',
+                                 'last_triggered')|default(now() - timedelta(days=1), true)).seconds > 30 }}
+    action:
+      - service: light.turn_on
+        entity_id: light.living_room_backlight
+        data:
+          brightness_pct: 30
+          rgb_color: [255, 68, 71]
+
+  - id: scene_movie_resume
+    alias: 'Scene Movie: Resume'
+    trigger:
+      - platform: state
+        entity_id: media_player.atv
+        to: playing
+    condition:
+      - condition: state
+        entity_id: input_boolean.scene_movie
+        state: 'on'
+    action:
+      - service: light.turn_off
+        entity_id: group.home_lights

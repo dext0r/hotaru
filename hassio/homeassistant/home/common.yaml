@@ -82,7 +82,7 @@ automation:
     alias: 'Home Mode Day: Auto turn on'
     trigger:
       - platform: time
-        at: '13:00'
+        at: '14:00'
     condition:
       - condition: state
         entity_id: binary_sensor.anyone_home

@@ -28,6 +28,26 @@ automation:
           - light.hallway
           - light.entrance
 
+  - id: entrance_light_turn_off
+    alias: 'Entrance Light: Turn off'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.entrance_motion
+        to: 'off'
+        for:
+          minutes: 15
+    condition:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+
+      - condition: state
+        entity_id: light.entrance
+        state: 'on'
+    action:
+      - service: light.turn_off
+        entity_id: light.entrance
+
 light:
   - platform: template
     lights:

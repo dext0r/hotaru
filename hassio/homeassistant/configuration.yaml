@@ -105,6 +105,7 @@ logbook:
   exclude:
     entity_globs:
       - sensor.*_uptime
+      - sensor.*_debug
 logger:
   default: warning
   logs:
@@ -164,7 +165,6 @@ recorder:
       - sensor.tv_volume_level
       - switch.kettle_power
     entity_globs:
-      - '*.*_debug'
       - '*.0x*'
       - automation.*_airing_swap_modes
       - automation.*_log

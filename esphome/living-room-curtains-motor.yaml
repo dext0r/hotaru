@@ -1,11 +1,24 @@
 packages:
-  base: !include generic/tuya_cover.yaml
-  uptime: !include common/uptime.yaml
-  wifi_signal: !include common/wifi_signal.yaml
-
-substitutions:
-  device_name: Living Room Curtains Motor
+  base: !include common/base.yaml
 
 esphome:
   name: living-room-curtains-motor
+  model: WB2S / Tuya
   name_add_mac_suffix: false
+
+bk72xx:
+  board: wb2s
+
+uart:
+  tx_pin: TX1
+  rx_pin: RX1
+  baud_rate: 9600
+
+tuya:
+
+cover:
+  - platform: tuya
+    name: Living Room Curtains Motor
+    control_datapoint: 1
+    position_datapoint: 2
+    position_report_datapoint: 3

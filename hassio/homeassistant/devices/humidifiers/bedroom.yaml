@@ -21,7 +21,7 @@ template:
 
         {% if states('sensor.bedroom_humidity')|int(0) >= states('input_number.home_target_humidity')|int %}
           {% set mode = 'Sleep' %}
-        {% elif states('sensor.bedroom_humidity')|int(0) >= states('input_number.home_target_humidity')|int + 5 %}
+        {% elif states('sensor.bedroom_humidity')|int(0) >= states('input_number.home_target_humidity')|int + 2 %}
           {% set mode = 'off' %}
         {% endif %}
 

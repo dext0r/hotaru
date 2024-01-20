@@ -62,7 +62,7 @@ template:
           {% set mode = 'Level2' %}
         {% endif %}
 
-        {% if states('sensor.workshop_humidity')|int(0) >= states('input_number.home_target_humidity')|int + 5 %}
+        {% if states('sensor.workshop_humidity')|int(0) >= states('input_number.home_target_humidity')|int + 2 %}
           {% set mode = 'off' %}
         {% elif states('sensor.workshop_humidifier_water_level')|int(0) == 0 %}
           {% set mode = 'off' %}

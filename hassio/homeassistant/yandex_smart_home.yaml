@@ -250,3 +250,8 @@ entity_config:
       {% if not is_state('binary_sensor.living_room_balcony_door', 'off') %}
         DOOR_OPEN
       {% endif %}
+  sensor.kettle_water_level_ml:
+    type: smart_meter
+    properties:
+      - type: meter
+        entity: sensor.kettle_water_level_ml

@@ -11,6 +11,12 @@ input_boolean:
     name: Workshop Intake Fan Control
     icon: mdi:refresh-auto
 
+timer:
+  workshop_intake_fan_restart:
+    name: 'Workshop Intake Fan: Restart'
+    duration:
+      minutes: 60
+
 template:
   sensor:
     - unique_id: sensor.workshop_intake_fan_target_temperature
@@ -36,10 +42,6 @@ template:
           {% elif indoor_temperature < 24 %}
             {% set v = 20 %}
           {% endif %}
-
-          {% if is_state('climate.workshop_ac', 'heat') %}
-            {% set v = 10 %}
-          {% endif %}
         {% endif %}
 
         {% if is_state('input_boolean.workshop_airing_warm', 'on') %}
@@ -48,8 +50,11 @@ template:
           {% set v = 0 %}
         {% endif %}
 
-        {% if is_state('input_select.washing_machine_status', 'Running') %}
-          {% set v = 0 %}
+        {% if outdoor_temperature < 7 %}
+          {% if is_state('input_select.washing_machine_status', 'Running') or
+                is_state('climate.workshop_ac', 'heat') %}
+            {% set v = 5 %}
+          {% endif %}
         {% endif %}
 
         {{ v }}
@@ -61,6 +66,7 @@ template:
         {% set v = 1 %}
 
         {% set co2_level = states('sensor.workshop_co2')|int(0) %}
+        {% set indoor_temperature = states('sensor.workshop_temperature')|float(0) %}
         {% set outdoor_temperature = states('sensor.outside_temperature')|float(0) %}
 
         {% if is_state('input_select.home_mode', 'Day') %}
@@ -91,6 +97,12 @@ template:
 
         {% if is_state('switch.workshop_intake_fan_recirculation', 'on') %}
           {% set v = 1 %}
+        {% endif %}
+
+        {% if outdoor_temperature < -12 %}
+          {% if is_state('input_select.home_mode', 'Night') or is_state('input_boolean.scene_sleepy_mood', 'on') %}
+            {% set v = 0 %}
+          {% endif %}
         {% endif %}
 
         {{ v }}
@@ -161,7 +173,7 @@ automation:
         entity_id: climate.workshop_intake_fan
         data:
           fan_mode: >
-            {{ states('sensor.workshop_intake_fan_target_fan_speed') }}
+            {{ max(1, states('sensor.workshop_intake_fan_target_fan_speed')|int(0)) }}
 
       - delay:
           seconds: 1
@@ -171,7 +183,50 @@ automation:
         data:
           temperature: >
             {{ states('sensor.workshop_intake_fan_target_temperature')|float(20) }}
-          hvac_mode: heat
+
+      - if:
+          - condition: state
+            entity_id: sensor.workshop_intake_fan_target_fan_speed
+            state: '0'
+
+          - condition: state
+            entity_id: climate.workshop_intake_fan
+            state:
+              - heat
+              - fan_only
+
+          - condition: state
+            entity_id: timer.workshop_intake_fan_restart
+            state: idle
+        then:
+          - delay:
+              seconds: 1
+
+          - service: climate.set_hvac_mode
+            entity_id: climate.workshop_intake_fan
+            data:
+              hvac_mode: 'off'
+
+      - if:
+          - not:
+              - condition: state
+                entity_id: sensor.workshop_intake_fan_target_fan_speed
+                state: '0'
+
+          - condition: state
+            entity_id: climate.workshop_intake_fan
+            state: 'off'
+        then:
+          - delay:
+              seconds: 1
+
+          - service: timer.start
+            entity_id: timer.workshop_intake_fan_restart
+
+          - service: climate.set_hvac_mode
+            entity_id: climate.workshop_intake_fan
+            data:
+              hvac_mode: 'heat'
 
   - id: workshop_airing_swap_modes
     alias: 'Workshop Airing: Swap modes'

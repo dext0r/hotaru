@@ -163,6 +163,7 @@ recorder:
       - sensor.tv_power
       - sensor.tv_state
       - sensor.tv_volume_level
+      - sensor.humidifier_need_refill
       - switch.kettle_power
     entity_globs:
       - '*.0x*'

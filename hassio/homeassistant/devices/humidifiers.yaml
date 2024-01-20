@@ -98,6 +98,9 @@ automation:
                     'Не любишь сухие губы? Налей воды в увлажнители!'
                     ]|random
                 }}
+                {% if not is_state('sensor.humidifier_need_refill', 'unavailable') %}
+                  {{ states('sensor.humidifier_need_refill') }}
+                {% endif %}
 
   - id: humidifiers_cleanup
     alias: 'Humidifiers: Cleanup'
@@ -113,3 +116,27 @@ automation:
         entity_id: input_datetime.humidifiers_last_cleanup
         data:
           date: '{{ now().strftime("%Y-%m-%d") }}'
+
+
+template:
+  - sensor:
+      - name: 'Humidifier: Need Refill'
+        icon: mdi:water-well-outline
+        state: >
+          {% set data = namespace(humidifiers=[]) %}
+
+          {% if is_state('input_boolean.bedroom_humidifier_on_duty', 'on') and states('sensor.bedroom_humidifier_water_level')|int(100) < 30 %}
+            {% set data.humidifiers = data.humidifiers + ['спальне'] %}
+          {% endif %}
+
+          {% if is_state('input_boolean.living_room_humidifier_on_duty', 'on') and states('sensor.living_room_humidifier_water_level')|int(100) < 30 %}
+            {% set data.humidifiers = data.humidifiers + ['гостиной'] %}
+          {% endif %}
+
+          {% if is_state('input_boolean.workshop_humidifier_on_duty', 'on') and states('sensor.workshop_humidifier_water_level')|int(100) < 30 %}
+            {% set data.humidifiers = data.humidifiers + ['мастерской'] %}
+          {% endif %}
+
+          {% if data.humidifiers %}
+            в {{ data.humidifiers|join(', ') }}
+          {% endif %}

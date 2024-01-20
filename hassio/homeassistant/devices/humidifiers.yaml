@@ -66,7 +66,7 @@ automation:
           - condition: template
             value_template: >
               {{ (now()|as_timestamp - state_attr('input_datetime.humidifiers_last_cleanup',
-                                                  'timestamp')) > (60 * 60 * 24 * 3) }}
+                                                  'timestamp')) > (60 * 60 * 24 * 5) }}
         then:
           - service: script.yandex_station_tts
             data:

@@ -136,23 +136,40 @@ automation:
           - input_select.dishwasher_status
           - input_select.home_mode
     action:
-      - if:
-          - condition: state
-            entity_id: input_select.dishwasher_status
-            state: Done
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_select.home_mode
+                state:
+                  - Day
+                  - Vacation
 
-          - condition: state
-            entity_id: input_select.home_mode
-            state:
-              - Day
-              - Vacation
-        then:
-          - service: light.turn_on
-            entity_id: light.dishwasher_status
-            data:
-              brightness_pct: 30
-              rgbw_color: [0, 255, 0, 0]
-        else:
+              - condition: state
+                entity_id: input_select.dishwasher_status
+                state: Done
+            sequence:
+              - service: light.turn_on
+                entity_id: light.dishwasher_status
+                data:
+                  brightness_pct: 30
+                  rgbw_color: [0, 255, 0, 0]
+          - conditions:
+              - condition: state
+                entity_id: input_select.home_mode
+                state:
+                  - Day
+                  - Vacation
+
+              - condition: state
+                entity_id: input_select.dishwasher_status
+                state: Dirty
+            sequence:
+              - service: light.turn_on
+                entity_id: light.dishwasher_status
+                data:
+                  brightness_pct: 40
+                  rgbw_color: [255, 0, 215, 0]
+        default:
           - service: light.turn_off
             entity_id: light.dishwasher_status
 

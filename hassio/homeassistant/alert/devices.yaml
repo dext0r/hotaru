@@ -41,7 +41,7 @@ automation:
             {%- if (now() - entity.last_changed).total_seconds() > 180 and
                     not is_state_attr(entity.entity_id, 'volatile', true) and
                     not is_state_attr(entity.entity_id, 'restored', true) and
-                    not entity.entity_id.startswith('xmas_') -%}
+                    not 'xmas_' in entity.entity_id -%}
               {%- set ns.break = true -%}
               true
             {%- endif -%}

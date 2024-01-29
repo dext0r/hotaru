@@ -443,7 +443,7 @@
   retain: true
   temperature_precision: 1
 '0x00158d00075fa58e':
-  friendly_name: Workshop Entrance Motion
+  friendly_name: Workshop Motion
   homeassistant: {}
   humidity_precision: 1
   legacy: false
@@ -509,3 +509,14 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+'0xa4c138edaeb5d672':
+  friendly_name: Workshop Presence
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+  description: >-
+    sensitivity: 6, min range: 0.15, max range: 3.4, detection delay: 0.5,
+    fading time: 45

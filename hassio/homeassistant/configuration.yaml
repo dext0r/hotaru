@@ -39,7 +39,6 @@ homeassistant:
     home_kitchen: !include home/kitchen.yaml
     home_smoke: !include home/smoke.yaml
     home_water: !include home/water.yaml
-    home_workshop: !include home/workshop.yaml
     hotaru: !include devices/hotaru.yaml
     humidifiers_bedroom: !include devices/humidifiers/bedroom.yaml
     humidifiers_living_room: !include devices/humidifiers/living_room.yaml
@@ -153,7 +152,6 @@ recorder:
     entities:
       - automation.yandex_station_busy
       - binary_sensor.motion_anywhere
-      - binary_sensor.workshop_motion  # группа
       - media_player.atv
       - number.kettle_target_temperature
       - sensor.alert_greeting

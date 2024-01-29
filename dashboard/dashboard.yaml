@@ -202,7 +202,7 @@ views:
                           border: 0;
                         }
                   - type: custom:mushroom-entity-card
-                    entity: binary_sensor.workshop_entrance_motion
+                    entity: binary_sensor.workshop_motion
                     primary_info: none
                     secondary_info: none
                     icon_color: accent
@@ -957,7 +957,7 @@ views:
                           border: 0;
                         }
                   - type: custom:mushroom-entity-card
-                    entity: binary_sensor.workshop_entrance_motion
+                    entity: binary_sensor.workshop_motion
                     primary_info: none
                     secondary_info: none
                     icon_color: accent
@@ -3166,7 +3166,7 @@ views:
             type: grid
             cards:
               - type: tile
-                entity: binary_sensor.workshop_entrance_motion
+                entity: binary_sensor.workshop_motion
                 vertical: true
                 name: Entrance Motion
                 state_content: last-changed
@@ -3175,3 +3175,8 @@ views:
                 vertical: true
                 name: Desk Motion
                 state_content: last-changed
+              - type: tile
+                vertical: true
+                state_content: last-changed
+                entity: binary_sensor.workshop_occupancy
+                name: Occupancy

@@ -50,13 +50,7 @@ automation:
 
       - id: entrance_motion
         platform: state
-        entity_id: binary_sensor.workshop_entrance_motion
-        from: 'off'
-        to: 'on'
-
-      - id: desk_motion
-        platform: state
-        entity_id: binary_sensor.workshop_desk_motion
+        entity_id: binary_sensor.workshop_motion
         from: 'off'
         to: 'on'
     condition:
@@ -109,21 +103,29 @@ automation:
   - id: workshop_main_light_turn_off
     alias: 'Workshop Main Light: Turn off'
     trigger:
-      - id: day
-        platform: state
-        entity_id: binary_sensor.workshop_motion
+      - platform: state
+        entity_id: binary_sensor.workshop_occupancy
         from: 'on'
         to: 'off'
         for:
           minutes: 10
+    condition:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
 
-      - platform: state
-        entity_id: binary_sensor.workshop_motion
-        from: 'on'
-        to: 'off'
-        for:
-          minutes: 2
+      - condition: state
+        entity_id: light.workshop_main
+        state: 'on'
+    action:
+      - service: light.turn_off
+        entity_id: light.workshop_main
+        data:
+          transition: 10
 
+  - id: workshop_main_light_turn_off_door
+    alias: 'Workshop Main Light: Turn off (door)'
+    trigger:
       - id: door
         platform: state
         entity_id: binary_sensor.workshop_door
@@ -137,32 +139,56 @@ automation:
       - condition: state
         entity_id: light.workshop_main
         state: 'on'
+    action:
+      - service: light.turn_off
+        entity_id: light.workshop_main
+        data:
+          transition: 4
 
-      - condition: or
-        conditions:
-          - condition: state
-            entity_id: input_select.home_mode
-            state: Night
+  - id: workshop_main_light_turn_off_tv_activity
+    alias: 'Workshop Main Light: Turn off (TV activity)'
+    mode: single
+    max_exceeded: silent
+    trigger:
+      - platform: state
+        entity_id: media_player.tv
+        from: 'off'
+        to: 'on'
 
-          - condition: trigger
-            id: day
+      - platform: state
+        entity_id: media_player.tv
+        attribute: source
 
-          - condition: trigger
-            id: door
+      - platform: state
+        entity_id: media_player.atv
+        to: playing
+    condition:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+
+      - condition: state
+        entity_id: light.workshop_main
+        state: 'on'
     action:
       - if:
-          - condition: trigger
-            id: door
+          - condition: state
+            entity_id: binary_sensor.workshop_occupancy
+            state: 'on'
         then:
-          - service: light.turn_off
-            entity_id: light.workshop_main
-            data:
-              transition: 4
-        else:
-          - service: light.turn_off
-            entity_id: light.workshop_main
-            data:
-              transition: 10
+          - wait_for_trigger:
+              - platform: state
+                entity_id: binary_sensor.workshop_occupancy
+                from: 'on'
+                to: 'off'
+            timeout:
+              minutes: 2
+            continue_on_timeout: false
+
+      - service: light.turn_off
+        entity_id: light.workshop_main
+        data:
+          transition: 10
 
   - id: workshop_light_control_turn_on
     alias: 'Workshop Light Control: Turn on'

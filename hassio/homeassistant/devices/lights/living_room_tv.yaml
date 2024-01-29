@@ -29,23 +29,6 @@ automation:
         entity_id: light.living_room_tv
         state: 'off'
     action:
-      # TODO: зачем это было? оО
-      # - if:
-      #     - condition: state
-      #       entity_id: input_boolean.scene_movie
-      #       state: 'on'
-      #   then:
-      #     - service: light.turn_on
-      #       entity_id: light.living_room_tv
-      #       data:
-      #         brightness_pct: 1
-
-      #     - service: light.turn_on
-      #       entity_id: light.room_tv
-      #       data:
-      #         transition: 5
-      #         brightness_pct: 100
-      #   then:
       - service: light.turn_on
         entity_id: light.living_room_tv
         data:

@@ -72,8 +72,6 @@ script:
     sequence:
       - service: wake_on_lan.send_magic_packet
         data:
-          broadcast_address: 192.168.0.1
-          broadcast_port: 9
           mac: 64:AE:F1:1F:D2:F2
 
       - if:

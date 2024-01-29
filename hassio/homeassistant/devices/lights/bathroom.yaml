@@ -72,7 +72,8 @@ automation:
     trigger:
       - id: no_occupancy
         platform: state
-        entity_id: binary_sensor.bathroom_any_occupancy
+        entity_id: binary_sensor.bathroom_occupancy
+        from: 'on'
         to: 'off'
         for:
           minutes: 1
@@ -80,22 +81,11 @@ automation:
       - id: no_motion
         platform: state
         entity_id: binary_sensor.bathroom_motion
+        from: 'on'
         to: 'off'
         for:
-          minutes: 40
+          hours: 1
     condition:
-      # при отвале датчика присутствия - отключение только по отсутствию движения
-      - condition: or
-        conditions:
-          - condition: trigger
-            id: no_motion
-
-          - condition: state
-            entity_id: binary_sensor.bathroom_occupancy
-            state:
-              - 'on'
-              - 'off'
-
       - condition: state
         entity_id:
           - input_boolean.light_control

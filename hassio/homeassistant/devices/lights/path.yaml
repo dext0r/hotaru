@@ -35,7 +35,8 @@ automation:
     trigger:
       - id: no_occupancy_1
         platform: state
-        entity_id: binary_sensor.bathroom_any_occupancy
+        entity_id: binary_sensor.bathroom_occupancy
+        from: 'on'
         to: 'off'
         for:
           minutes: 1
@@ -43,7 +44,8 @@ automation:
       # за это время все точно улеглись и больше не ходят в спальне
       - id: no_occupancy_10
         platform: state
-        entity_id: binary_sensor.bathroom_any_occupancy
+        entity_id: binary_sensor.bathroom_occupancy
+        from: 'on'
         to: 'off'
         for:
           minutes: 10
@@ -51,9 +53,10 @@ automation:
       - id: no_motion
         platform: state
         entity_id: binary_sensor.bathroom_motion
+        from: 'on'
         to: 'off'
         for:
-          minutes: 40
+          hours: 1
     condition:
       - condition: state
         entity_id: input_boolean.scene_sleepy_mood

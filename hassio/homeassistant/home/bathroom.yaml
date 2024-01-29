@@ -44,15 +44,6 @@ input_boolean:
     name: Bathroom Bathtub Occupancy
     initial: false
 
-binary_sensor:
-  - platform: group
-    unique_id: binary_sensor.bathroom_any_occupancy
-    name: Bathroom Any Occupancy
-    device_class: occupancy
-    entities:
-      - binary_sensor.bathroom_occupancy
-      - binary_sensor.bathroom_motion
-
 template:
   binary_sensor:
     - name: Bathroom Bathtub Occupancy

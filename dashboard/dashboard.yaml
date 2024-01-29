@@ -28,7 +28,7 @@ views:
       - type: horizontal-stack
         cards:
           - type: custom:mushroom-template-card
-            primary: '{{ states(''input_select.home_mode'') }}'
+            primary: "{{ states('input_select.home_mode') }}"
             secondary: ''
             icon: |-
               {% set state = states('input_select.home_mode') %}
@@ -271,7 +271,7 @@ views:
             icon: mdi:lightning-bolt
           - type: template
             icon: mdi:kettle-outline
-            content: '{{ states(''sensor.kettle_water_level_ml'') }} mL'
+            content: "{{ states('sensor.kettle_water_level_ml') }} mL"
             entity: climate.kettle
             tap_action:
               action: more-info
@@ -391,11 +391,12 @@ views:
                 entities:
                   - entity: sensor.bedroom_temperature
                     color: '#3498db'
-                style: |
-                  ha-card {
-                    --mdc-icon-size: 20px;
-                    --mdc-icon-size: 20px;
-                  }
+                card_mod:
+                  style: |
+                    ha-card {
+                      --mdc-icon-size: 20px;
+                      --mdc-icon-size: 20px;
+                    }
               - type: custom:mini-graph-card
                 name: Bedroom
                 align_icon: state
@@ -406,11 +407,12 @@ views:
                 entities:
                   - entity: sensor.bedroom_humidity
                     color: '#1498db'
-                style: |
-                  ha-card {
-                    --mdc-icon-size: 20px;
-                    --mdc-icon-size: 20px;
-                  }
+                card_mod:
+                  style: |
+                    ha-card {
+                      --mdc-icon-size: 20px;
+                      --mdc-icon-size: 20px;
+                    }
               - type: custom:mini-graph-card
                 name: Bedroom
                 align_icon: state
@@ -431,11 +433,12 @@ views:
                 entities:
                   - entity: sensor.workshop_temperature
                     color: '#af52b0'
-                style: |
-                  ha-card {
-                    --mdc-icon-size: 20px;
-                    --mdc-icon-size: 20px;
-                  }
+                card_mod:
+                  style: |
+                    ha-card {
+                      --mdc-icon-size: 20px;
+                      --mdc-icon-size: 20px;
+                    }
               - type: custom:mini-graph-card
                 name: Workshop
                 align_icon: state
@@ -446,11 +449,12 @@ views:
                 entities:
                   - entity: sensor.workshop_humidity
                     color: '#6f52b0'
-                style: |
-                  ha-card {
-                    --mdc-icon-size: 20px;
-                    --mdc-icon-size: 20px;
-                  }
+                card_mod:
+                  style: |
+                    ha-card {
+                      --mdc-icon-size: 20px;
+                      --mdc-icon-size: 20px;
+                    }
               - type: custom:mini-graph-card
                 name: Workshop
                 align_icon: state
@@ -471,11 +475,12 @@ views:
                 entities:
                   - entity: sensor.living_room_temperature
                     color: '#f1c40f'
-                style: |
-                  ha-card {
-                    --mdc-icon-size: 20px;
-                    --mdc-icon-size: 20px;
-                  }
+                card_mod:
+                  style: |
+                    ha-card {
+                      --mdc-icon-size: 20px;
+                      --mdc-icon-size: 20px;
+                    }
               - type: custom:mini-graph-card
                 name: Living Room
                 align_icon: state
@@ -486,11 +491,12 @@ views:
                 entities:
                   - entity: sensor.living_room_humidity
                     color: '#e1c40f'
-                style: |
-                  ha-card {
-                    --mdc-icon-size: 20px;
-                    --mdc-icon-size: 20px;
-                  }
+                card_mod:
+                  style: |
+                    ha-card {
+                      --mdc-icon-size: 20px;
+                      --mdc-icon-size: 20px;
+                    }
               - type: custom:mini-graph-card
                 name: Living Room
                 align_icon: state
@@ -912,11 +918,12 @@ views:
             entities:
               - entity: sensor.bedroom_temperature
                 color: '#3498db'
-            style: |
-              ha-card {
-                --mdc-icon-size: 20px;
-                --mdc-icon-size: 20px;
-              }
+            card_mod:
+              style: |
+                ha-card {
+                  --mdc-icon-size: 20px;
+                  --mdc-icon-size: 20px;
+                }
           - type: custom:mini-graph-card
             name: Bedroom
             align_icon: state
@@ -927,11 +934,12 @@ views:
             entities:
               - entity: sensor.bedroom_humidity
                 color: '#1498db'
-            style: |
-              ha-card {
-                --mdc-icon-size: 20px;
-                --mdc-icon-size: 20px;
-              }
+            card_mod:
+              style: |
+                ha-card {
+                  --mdc-icon-size: 20px;
+                  --mdc-icon-size: 20px;
+                }
           - type: custom:mini-graph-card
             name: Bedroom
             align_icon: state
@@ -952,11 +960,12 @@ views:
             entities:
               - entity: sensor.workshop_temperature
                 color: '#af52b0'
-            style: |
-              ha-card {
-                --mdc-icon-size: 20px;
-                --mdc-icon-size: 20px;
-              }
+            card_mod:
+              style: |
+                ha-card {
+                  --mdc-icon-size: 20px;
+                  --mdc-icon-size: 20px;
+                }
           - type: custom:mini-graph-card
             name: Workshop
             align_icon: state
@@ -967,11 +976,12 @@ views:
             entities:
               - entity: sensor.workshop_humidity
                 color: '#6f52b0'
-            style: |
-              ha-card {
-                --mdc-icon-size: 20px;
-                --mdc-icon-size: 20px;
-              }
+            card_mod:
+              style: |
+                ha-card {
+                  --mdc-icon-size: 20px;
+                  --mdc-icon-size: 20px;
+                }
           - type: custom:mini-graph-card
             name: Workshop
             align_icon: state
@@ -992,11 +1002,12 @@ views:
             entities:
               - entity: sensor.living_room_temperature
                 color: '#f1c40f'
-            style: |
-              ha-card {
-                --mdc-icon-size: 20px;
-                --mdc-icon-size: 20px;
-              }
+            card_mod:
+              style: |
+                ha-card {
+                  --mdc-icon-size: 20px;
+                  --mdc-icon-size: 20px;
+                }
           - type: custom:mini-graph-card
             name: Living Room
             align_icon: state
@@ -1007,11 +1018,12 @@ views:
             entities:
               - entity: sensor.living_room_humidity
                 color: '#e1c40f'
-            style: |
-              ha-card {
-                --mdc-icon-size: 20px;
-                --mdc-icon-size: 20px;
-              }
+            card_mod:
+              style: |
+                ha-card {
+                  --mdc-icon-size: 20px;
+                  --mdc-icon-size: 20px;
+                }
           - type: custom:mini-graph-card
             name: Living Room
             align_icon: state
@@ -1072,11 +1084,12 @@ views:
                   {% elif action == 'idle' %}
                     var(--rgb-grey)
                   {% endif %}
-                style: |
-                  ha-card {
-                    --ha-card-border-width: 0;
-                    padding-bottom: 0 !important;
-                  }
+                card_mod:
+                  style: |
+                    ha-card {
+                      --ha-card-border-width: 0;
+                      padding-bottom: 0 !important;
+                    }
               - type: custom:simple-thermostat
                 entity: climate.bedroom_ac
                 step_size: 0.5
@@ -1089,24 +1102,25 @@ views:
                 layout:
                   step: row
                 control: false
-                style: |
-                  ha-card {
-                    --st-spacing: 0px;
-                    --ha-card-border-width: 0;
-                  }
-                  ha-card .thermostat-trigger {
-                    color: #bdbdbd;
-                  }
-                  ha-card .current--value {
-                    font-size: 24px;
-                  }
-                  ha-icon {
-                    margin-top: -8px;
+                card_mod:
+                  style: |
+                    ha-card {
+                      --st-spacing: 0px;
+                      --ha-card-border-width: 0;
                     }
-                  header {
-                    margin-bottom: 10px !important;
-                    padding-bottom: 0px !important;
-                  }
+                    ha-card .thermostat-trigger {
+                      color: #bdbdbd;
+                    }
+                    ha-card .current--value {
+                      font-size: 24px;
+                    }
+                    ha-icon {
+                      margin-top: -8px;
+                      }
+                    header {
+                      margin-bottom: 10px !important;
+                      padding-bottom: 0px !important;
+                    }
           - type: custom:simple-thermostat
             entity: climate.bedroom_ac
             header: false
@@ -1121,36 +1135,38 @@ views:
                 names: false
             control:
               - hvac
-            style: |
-              ha-card {
-                --ha-card-border-width: 0;
-                padding-top: 0 !important;
-                padding-bottom: 10px !important;
-                margin-left: 12px;
-                margin-right: 12px;
-              }
-              ha-card .mode-item {
-                --st-spacing: 8px;
-              }
-              ha-card .modes {
-                grid-gap: 12px
-              }
-              ha-card section.body {
-                display: none;
-              }
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-border-width: 0;
+                  padding-top: 0 !important;
+                  padding-bottom: 10px !important;
+                  margin-left: 12px;
+                  margin-right: 12px;
+                }
+                ha-card .mode-item {
+                  --st-spacing: 8px;
+                }
+                ha-card .modes {
+                  grid-gap: 12px
+                }
+                ha-card section.body {
+                  display: none;
+                }
           - type: entities
             entities:
               - entity: switch.bedroom_ac_display
             show_header_toggle: false
             state_color: true
-            style: |
-              ha-card {
-                --ha-card-border-width: 0;
-              }
-              ha-card .card-content {
-                padding-top: 0;
-                padding-bottom: 10px;
-              }
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-border-width: 0;
+                }
+                ha-card .card-content {
+                  padding-top: 0;
+                  padding-bottom: 10px;
+                }
       - type: custom:stack-in-card
         cards:
           - type: horizontal-stack
@@ -1201,11 +1217,12 @@ views:
                   {% elif action == 'idle' %}
                     var(--rgb-grey)
                   {% endif %}
-                style: |
-                  ha-card {
-                    --ha-card-border-width: 0;
-                    padding-bottom: 0 !important;
-                  }
+                card_mod:
+                  style: |
+                    ha-card {
+                      --ha-card-border-width: 0;
+                      padding-bottom: 0 !important;
+                    }
               - type: custom:simple-thermostat
                 entity: climate.workshop_ac
                 step_size: 0.5
@@ -1218,24 +1235,25 @@ views:
                 layout:
                   step: row
                 control: false
-                style: |
-                  ha-card {
-                    --st-spacing: 0px;
-                    --ha-card-border-width: 0;
-                  }
-                  ha-card .thermostat-trigger {
-                    color: #bdbdbd;
-                  }
-                  ha-card .current--value {
-                    font-size: 24px;
-                  }
-                  ha-icon {
-                    margin-top: -8px;
+                card_mod:
+                  style: |
+                    ha-card {
+                      --st-spacing: 0px;
+                      --ha-card-border-width: 0;
                     }
-                  header {
-                    margin-bottom: 10px !important;
-                    padding-bottom: 0px !important;
-                  }
+                    ha-card .thermostat-trigger {
+                      color: #bdbdbd;
+                    }
+                    ha-card .current--value {
+                      font-size: 24px;
+                    }
+                    ha-icon {
+                      margin-top: -8px;
+                      }
+                    header {
+                      margin-bottom: 10px !important;
+                      padding-bottom: 0px !important;
+                    }
           - type: custom:simple-thermostat
             entity: climate.workshop_ac
             header: false
@@ -1250,23 +1268,24 @@ views:
                 names: false
             control:
               - hvac
-            style: |
-              ha-card {
-                --ha-card-border-width: 0;
-                padding-top: 0 !important;
-                padding-bottom: 10px !important;
-                margin-left: 12px;
-                margin-right: 12px;
-              }
-              ha-card .mode-item {
-                --st-spacing: 8px;
-              }
-              ha-card .modes {
-                grid-gap: 12px
-              }
-              ha-card section.body {
-                display: none;
-              }
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-border-width: 0;
+                  padding-top: 0 !important;
+                  padding-bottom: 10px !important;
+                  margin-left: 12px;
+                  margin-right: 12px;
+                }
+                ha-card .mode-item {
+                  --st-spacing: 8px;
+                }
+                ha-card .modes {
+                  grid-gap: 12px
+                }
+                ha-card section.body {
+                  display: none;
+                }
       - square: false
         type: grid
         columns: 3
@@ -1281,11 +1300,12 @@ views:
             entities:
               - entity: sensor.weather_temperature
                 color: '#34495e'
-            style: |
-              ha-card {
-                --mdc-icon-size: 20px;
-                --mdc-icon-size: 20px;
-              }
+            card_mod:
+              style: |
+                ha-card {
+                  --mdc-icon-size: 20px;
+                  --mdc-icon-size: 20px;
+                }
           - type: custom:mini-graph-card
             name: Wardrobe
             align_icon: state
@@ -1296,11 +1316,12 @@ views:
             entities:
               - entity: sensor.wardrobe_temperature
                 color: '#3498db'
-            style: |
-              ha-card {
-                --mdc-icon-size: 20px;
-                --mdc-icon-size: 20px;
-              }
+            card_mod:
+              style: |
+                ha-card {
+                  --mdc-icon-size: 20px;
+                  --mdc-icon-size: 20px;
+                }
           - type: custom:mini-graph-card
             name: Server room
             align_icon: state
@@ -1311,11 +1332,12 @@ views:
             entities:
               - entity: sensor.server_room_temperature
                 color: '#1928db'
-            style: |
-              ha-card {
-                --mdc-icon-size: 20px;
-                --mdc-icon-size: 20px;
-              }
+            card_mod:
+              style: |
+                ha-card {
+                  --mdc-icon-size: 20px;
+                  --mdc-icon-size: 20px;
+                }
           - type: custom:mini-graph-card
             name: Kitchen
             align_icon: state
@@ -1326,11 +1348,12 @@ views:
             entities:
               - entity: sensor.kitchen_temperature
                 color: '#6f52b0'
-            style: |
-              ha-card {
-                --mdc-icon-size: 20px;
-                --mdc-icon-size: 20px;
-              }
+            card_mod:
+              style: |
+                ha-card {
+                  --mdc-icon-size: 20px;
+                  --mdc-icon-size: 20px;
+                }
           - type: custom:mini-graph-card
             name: Kitchen
             align_icon: state
@@ -1341,11 +1364,12 @@ views:
             entities:
               - entity: sensor.kitchen_humidity
                 color: '#af52b0'
-            style: |
-              ha-card {
-                --mdc-icon-size: 20px;
-                --mdc-icon-size: 20px;
-              }
+            card_mod:
+              style: |
+                ha-card {
+                  --mdc-icon-size: 20px;
+                  --mdc-icon-size: 20px;
+                }
           - type: custom:mini-graph-card
             name: Bathroom
             align_icon: state
@@ -1356,11 +1380,12 @@ views:
             entities:
               - entity: sensor.bathroom_temperature
                 color: '#f1c40f'
-            style: |
-              ha-card {
-                --mdc-icon-size: 20px;
-                --mdc-icon-size: 20px;
-              }
+            card_mod:
+              style: |
+                ha-card {
+                  --mdc-icon-size: 20px;
+                  --mdc-icon-size: 20px;
+                }
           - type: custom:mini-graph-card
             name: Bathroom
             align_icon: state
@@ -1371,11 +1396,12 @@ views:
             entities:
               - entity: sensor.bathroom_humidity
                 color: '#e1c40f'
-            style: |
-              ha-card {
-                --mdc-icon-size: 20px;
-                --mdc-icon-size: 20px;
-              }
+            card_mod:
+              style: |
+                ha-card {
+                  --mdc-icon-size: 20px;
+                  --mdc-icon-size: 20px;
+                }
           - type: custom:mini-graph-card
             name: Workshop
             align_icon: state
@@ -1386,11 +1412,12 @@ views:
             entities:
               - entity: sensor.workshop_pm_2_5
                 color: '#b1c40f'
-            style: |
-              ha-card {
-                --mdc-icon-size: 20px;
-                --mdc-icon-size: 20px;
-              }
+            card_mod:
+              style: |
+                ha-card {
+                  --mdc-icon-size: 20px;
+                  --mdc-icon-size: 20px;
+                }
         view_layout:
           show:
             mediaquery: '(min-width: 800px)'
@@ -1421,22 +1448,24 @@ views:
                   {% else %}
                     var(--rgb-grey)
                   {% endif %}
-                style: |
-                  ha-card {
-                    border: 0;
-                  }
+                card_mod:
+                  style: |
+                    ha-card {
+                      border: 0;
+                    }
               - type: custom:mushroom-entity-card
                 entity: switch.living_room_heater_socket
                 primary_info: none
                 secondary_info: none
-                style: |
-                  ha-card {
-                    border: 0;
-                  }
+                card_mod:
+                  style: |
+                    ha-card {
+                      border: 0;
+                    }
 
-                  :host {
-                    max-width: 70px;
-                  }
+                    :host {
+                      max-width: 70px;
+                    }
           - type: tile
             entity: switch.home_airing
           - type: tile
@@ -1516,16 +1545,17 @@ views:
                     toggle_action: >
                       (state, entity) => this.call_service('input_boolean',
                       'toggle', { entity_id: entity.entity_id })
-                style: |
-                  :host .entity__controls {
-                    display: none;
-                  }
-                  :host .entity__icon {
-                    display: none;
-                  }
-                  :host .mc__bg {
-                    display: none;
-                  }
+                card_mod:
+                  style: |
+                    :host .entity__controls {
+                      display: none;
+                    }
+                    :host .entity__icon {
+                      display: none;
+                    }
+                    :host .mc__bg {
+                      display: none;
+                    }
           - type: custom:stack-in-card
             cards:
               - type: custom:mini-climate
@@ -1592,16 +1622,17 @@ views:
                     toggle_action: >
                       (state, entity) => this.call_service('input_boolean',
                       'toggle', { entity_id: entity.entity_id })
-                style: |
-                  :host .entity__controls {
-                    display: none;
-                  }
-                  :host .entity__icon {
-                    display: none;
-                  }
-                  :host .mc__bg {
-                    display: none;
-                  }
+                card_mod:
+                  style: |
+                    :host .entity__controls {
+                      display: none;
+                    }
+                    :host .entity__icon {
+                      display: none;
+                    }
+                    :host .mc__bg {
+                      display: none;
+                    }
           - type: custom:stack-in-card
             cards:
               - type: custom:mini-climate
@@ -1668,16 +1699,17 @@ views:
                     toggle_action: >
                       (state, entity) => this.call_service('input_boolean',
                       'toggle', { entity_id: entity.entity_id })
-                style: |
-                  :host .entity__controls {
-                    display: none;
-                  }
-                  :host .entity__icon {
-                    display: none;
-                  }
-                  :host .mc__bg {
-                    display: none;
-                  }
+                card_mod:
+                  style: |
+                    :host .entity__controls {
+                      display: none;
+                    }
+                    :host .entity__icon {
+                      display: none;
+                    }
+                    :host .mc__bg {
+                      display: none;
+                    }
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
@@ -1702,13 +1734,14 @@ views:
                     tap_action: more-info
                     source:
                       entity: number.living_room_humidifier_fan_speed
-                style: |
-                  :host .mh-humidifier {
-                    padding-bottom: 0 !important;
-                  }
-                  :host .mh__bg {
-                    display: none;
-                  }
+                card_mod:
+                  style: |
+                    :host .mh-humidifier {
+                      padding-bottom: 0 !important;
+                    }
+                    :host .mh__bg {
+                      display: none;
+                    }
               - type: custom:mushroom-chips-card
                 chips:
                   - type: template
@@ -1740,11 +1773,12 @@ views:
                     tap_action:
                       action: more-info
                 alignment: end
-                style: |
-                  ha-card {
-                    --chip-border-width: 0;
-                    --chip-box-shadow: none;
-                  }
+                card_mod:
+                  style: |
+                    ha-card {
+                      --chip-border-width: 0;
+                      --chip-box-shadow: none;
+                    }
           - type: custom:stack-in-card
             cards:
               - type: custom:mini-humidifier
@@ -1763,13 +1797,14 @@ views:
                         const service = current_state === 'on' ? 'turn_off' : 'turn_on';
                         return this.call_service('switch', service, { entity_id: entity.entity_id });
                       }
-                style: |
-                  :host .mh-humidifier {
-                    padding-bottom: 0 !important;
-                  }
-                  :host .mh__bg {
-                    display: none;
-                  }
+                card_mod:
+                  style: |
+                    :host .mh-humidifier {
+                      padding-bottom: 0 !important;
+                    }
+                    :host .mh__bg {
+                      display: none;
+                    }
               - type: custom:mushroom-chips-card
                 chips:
                   - type: template
@@ -1799,35 +1834,38 @@ views:
                     tap_action:
                       action: more-info
                 alignment: end
-                style: |
-                  ha-card {
-                    --chip-border-width: 0;
-                    --chip-box-shadow: none;
-                  }
+                card_mod:
+                  style: |
+                    ha-card {
+                      --chip-border-width: 0;
+                      --chip-box-shadow: none;
+                    }
           - type: custom:stack-in-card
             cards:
               - type: custom:mini-humidifier
                 name: Workshop
                 entity: humidifier.workshop_humidifier
                 model: zhimi.humidifier.ca1
-                style: |
-                  :host .mh-humidifier {
-                    padding-bottom: 0 !important;
-                  }
-                  :host .mh__bg {
-                    display: none;
-                  }
+                card_mod:
+                  style: |
+                    :host .mh-humidifier {
+                      padding-bottom: 0 !important;
+                    }
+                    :host .mh__bg {
+                      display: none;
+                    }
               - type: custom:mini-humidifier
                 name: Workshop X
                 entity: humidifier.workshop_humidifier_x
                 model: zhimi.humidifier.ca1
-                style: |
-                  :host .mh-humidifier {
-                    padding-bottom: 0 !important;
-                  }
-                  :host .mh__bg {
-                    display: none;
-                  }
+                card_mod:
+                  style: |
+                    :host .mh-humidifier {
+                      padding-bottom: 0 !important;
+                    }
+                    :host .mh__bg {
+                      display: none;
+                    }
               - type: custom:mushroom-chips-card
                 chips:
                   - type: template
@@ -1859,11 +1897,12 @@ views:
                     tap_action:
                       action: more-info
                 alignment: end
-                style: |
-                  ha-card {
-                    --chip-border-width: 0;
-                    --chip-box-shadow: none;
-                  }
+                card_mod:
+                  style: |
+                    ha-card {
+                      --chip-border-width: 0;
+                      --chip-box-shadow: none;
+                    }
       - square: false
         type: grid
         columns: 3
@@ -1878,11 +1917,12 @@ views:
             entities:
               - entity: sensor.weather_temperature
                 color: '#34495e'
-            style: |
-              ha-card {
-                --mdc-icon-size: 20px;
-                --mdc-icon-size: 20px;
-              }
+            card_mod:
+              style: |
+                ha-card {
+                  --mdc-icon-size: 20px;
+                  --mdc-icon-size: 20px;
+                }
           - type: custom:mini-graph-card
             name: Wardrobe
             align_icon: state
@@ -1893,11 +1933,12 @@ views:
             entities:
               - entity: sensor.wardrobe_temperature
                 color: '#3498db'
-            style: |
-              ha-card {
-                --mdc-icon-size: 20px;
-                --mdc-icon-size: 20px;
-              }
+            card_mod:
+              style: |
+                ha-card {
+                  --mdc-icon-size: 20px;
+                  --mdc-icon-size: 20px;
+                }
           - type: custom:mini-graph-card
             name: Server room
             align_icon: state
@@ -1908,11 +1949,12 @@ views:
             entities:
               - entity: sensor.server_room_temperature
                 color: '#1928db'
-            style: |
-              ha-card {
-                --mdc-icon-size: 20px;
-                --mdc-icon-size: 20px;
-              }
+            card_mod:
+              style: |
+                ha-card {
+                  --mdc-icon-size: 20px;
+                  --mdc-icon-size: 20px;
+                }
           - type: custom:mini-graph-card
             name: Kitchen
             align_icon: state
@@ -1923,11 +1965,12 @@ views:
             entities:
               - entity: sensor.kitchen_temperature
                 color: '#6f52b0'
-            style: |
-              ha-card {
-                --mdc-icon-size: 20px;
-                --mdc-icon-size: 20px;
-              }
+            card_mod:
+              style: |
+                ha-card {
+                  --mdc-icon-size: 20px;
+                  --mdc-icon-size: 20px;
+                }
           - type: custom:mini-graph-card
             name: Kitchen
             align_icon: state
@@ -1938,11 +1981,12 @@ views:
             entities:
               - entity: sensor.kitchen_humidity
                 color: '#af52b0'
-            style: |
-              ha-card {
-                --mdc-icon-size: 20px;
-                --mdc-icon-size: 20px;
-              }
+            card_mod:
+              style: |
+                ha-card {
+                  --mdc-icon-size: 20px;
+                  --mdc-icon-size: 20px;
+                }
           - type: custom:mini-graph-card
             name: Bathroom
             align_icon: state
@@ -1953,11 +1997,12 @@ views:
             entities:
               - entity: sensor.bathroom_temperature
                 color: '#f1c40f'
-            style: |
-              ha-card {
-                --mdc-icon-size: 20px;
-                --mdc-icon-size: 20px;
-              }
+            card_mod:
+              style: |
+                ha-card {
+                  --mdc-icon-size: 20px;
+                  --mdc-icon-size: 20px;
+                }
           - type: custom:mini-graph-card
             name: Bathroom
             align_icon: state
@@ -1968,11 +2013,12 @@ views:
             entities:
               - entity: sensor.bathroom_humidity
                 color: '#e1c40f'
-            style: |
-              ha-card {
-                --mdc-icon-size: 20px;
-                --mdc-icon-size: 20px;
-              }
+            card_mod:
+              style: |
+                ha-card {
+                  --mdc-icon-size: 20px;
+                  --mdc-icon-size: 20px;
+                }
           - type: custom:mini-graph-card
             name: Workshop
             align_icon: state
@@ -1983,11 +2029,12 @@ views:
             entities:
               - entity: sensor.workshop_pm_2_5
                 color: '#b1c40f'
-            style: |
-              ha-card {
-                --mdc-icon-size: 20px;
-                --mdc-icon-size: 20px;
-              }
+            card_mod:
+              style: |
+                ha-card {
+                  --mdc-icon-size: 20px;
+                  --mdc-icon-size: 20px;
+                }
         view_layout:
           show:
             mediaquery: '(max-width: 400px)'
@@ -2003,35 +2050,38 @@ views:
             entity: input_select.washing_machine_status
             name: Washing Machine
             icon_color: indigo
-            style: |
-              ha-card {
-                border: 0;
-              }
+            card_mod:
+              style: |
+                ha-card {
+                  border: 0;
+                }
           - type: custom:mushroom-entity-card
             entity: binary_sensor.washing_machine_door
             primary_info: none
             secondary_info: none
-            style: |
-              ha-card {
-                border: 0;
-              }
+            card_mod:
+              style: |
+                ha-card {
+                  border: 0;
+                }
 
-              :host {
-                max-width: 50px;
-                border: 0;
-              }
+                :host {
+                  max-width: 50px;
+                  border: 0;
+                }
           - type: custom:mushroom-entity-card
             entity: switch.washing_machine_socket
             primary_info: none
             secondary_info: none
-            style: |
-              ha-card {
-                border: 0;
-              }
+            card_mod:
+              style: |
+                ha-card {
+                  border: 0;
+                }
 
-              :host {
-                max-width: 70px;
-              }
+                :host {
+                  max-width: 70px;
+                }
       - type: custom:stack-in-card
         mode: horizontal
         cards:
@@ -2039,10 +2089,11 @@ views:
             entity: input_select.dishwasher_status
             name: Dishwasher
             icon_color: light-green
-            style: |
-              ha-card {
-                border: 0;
-              }
+            card_mod:
+              style: |
+                ha-card {
+                  border: 0;
+                }
           - type: custom:mushroom-light-card
             entity: light.dishwasher_status
             icon: mdi:dome-light
@@ -2051,38 +2102,41 @@ views:
             use_light_color: true
             tap_action:
               action: more-info
-            style: |
-              ha-card {
-                border: 0;
-              }
+            card_mod:
+              style: |
+                ha-card {
+                  border: 0;
+                }
 
-              :host {
-                max-width: 50px;
-              }
+                :host {
+                  max-width: 50px;
+                }
           - type: custom:mushroom-entity-card
             entity: binary_sensor.dishwasher_door
             primary_info: none
             secondary_info: none
-            style: |
-              ha-card {
-                border: 0;
-              }
+            card_mod:
+              style: |
+                ha-card {
+                  border: 0;
+                }
 
-              :host {
-                max-width: 50px;
-              }
+                :host {
+                  max-width: 50px;
+                }
           - type: custom:mushroom-entity-card
             entity: switch.dishwasher_socket
             primary_info: none
             secondary_info: none
-            style: |
-              ha-card {
-                border: 0;
-              }
+            card_mod:
+              style: |
+                ha-card {
+                  border: 0;
+                }
 
-              :host {
-                max-width: 70px;
-              }
+                :host {
+                  max-width: 70px;
+                }
       - square: false
         type: grid
         cards:
@@ -2132,10 +2186,11 @@ views:
                     round: 0
                     source:
                       entity: sensor.kettle_water_level_ml
-            style: |
-              :host {
-               --mini-climate-background-opacity: 0;
-              }
+            card_mod:
+              style: |
+                :host {
+                --mini-climate-background-opacity: 0;
+                }
       - type: vertical-stack
         cards:
           - type: horizontal-stack
@@ -2309,6 +2364,7 @@ views:
                 name: Hot Water
                 color: pink
   - icon: mdi:candycane
+    visible: []
     badges: []
     cards:
       - square: false
@@ -2811,6 +2867,7 @@ views:
     icon: mdi:radar
     title: Occupancy
     path: occupancy
+    type: custom:masonry-layout
     badges: []
     cards:
       - type: vertical-stack

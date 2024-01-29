@@ -128,64 +128,165 @@ views:
         cards:
           - type: custom:gap-card
             height: 10
-          - square: true
-            columns: 4
+          - square: false
+            columns: 2
             type: grid
             cards:
+              - type: custom:stack-in-card
+                mode: horizontal
+                cards:
+                  - type: custom:mushroom-entity-card
+                    entity: binary_sensor.living_room_occupancy
+                    name: Living Room
+                    fill_container: false
+                    secondary_info: last-changed
+                    card_mod:
+                      style: |
+                        ha-card {
+                          border: 0;
+                        }
+                  - type: custom:mushroom-entity-card
+                    entity: binary_sensor.living_room_motion
+                    primary_info: none
+                    secondary_info: none
+                    icon_color: accent
+                    card_mod:
+                      style: |
+                        ha-card {
+                          border: 0;
+                        }
+
+                        :host {
+                          position: absolute;
+                          right: 0;
+                        }
+              - type: custom:stack-in-card
+                mode: horizontal
+                cards:
+                  - type: custom:mushroom-entity-card
+                    entity: binary_sensor.bedroom_any_occupancy
+                    name: Bedroom
+                    fill_container: false
+                    secondary_info: last-changed
+                    card_mod:
+                      style: |
+                        ha-card {
+                          border: 0;
+                        }
+                  - type: custom:mushroom-entity-card
+                    entity: binary_sensor.bedroom_motion
+                    primary_info: none
+                    secondary_info: none
+                    icon_color: accent
+                    card_mod:
+                      style: |
+                        ha-card {
+                          border: 0;
+                        }
+
+                        :host {
+                          position: absolute;
+                          right: 0;
+                        }
+              - type: custom:stack-in-card
+                mode: horizontal
+                cards:
+                  - type: custom:mushroom-entity-card
+                    entity: binary_sensor.workshop_occupancy
+                    name: Workshop
+                    fill_container: false
+                    secondary_info: last-changed
+                    card_mod:
+                      style: |
+                        ha-card {
+                          border: 0;
+                        }
+                  - type: custom:mushroom-entity-card
+                    entity: binary_sensor.workshop_entrance_motion
+                    primary_info: none
+                    secondary_info: none
+                    icon_color: accent
+                    card_mod:
+                      style: |
+                        ha-card {
+                          border: 0;
+                        }
+
+                        :host {
+                          position: absolute;
+                          right: 0;
+                        }
+              - type: custom:stack-in-card
+                mode: horizontal
+                cards:
+                  - type: custom:mushroom-entity-card
+                    entity: binary_sensor.kitchen_occupancy
+                    name: Kitchen
+                    fill_container: false
+                    secondary_info: last-changed
+                    card_mod:
+                      style: |
+                        ha-card {
+                          border: 0;
+                        }
+                  - type: custom:mushroom-entity-card
+                    entity: binary_sensor.kitchen_motion
+                    primary_info: none
+                    secondary_info: none
+                    icon_color: accent
+                    card_mod:
+                      style: |
+                        ha-card {
+                          border: 0;
+                        }
+
+                        :host {
+                          position: absolute;
+                          right: 0;
+                        }
+              - type: custom:stack-in-card
+                mode: horizontal
+                cards:
+                  - type: custom:mushroom-entity-card
+                    entity: binary_sensor.bathroom_occupancy
+                    name: Bathroom
+                    fill_container: false
+                    secondary_info: last-changed
+                    card_mod:
+                      style: |
+                        ha-card {
+                          border: 0;
+                        }
+                  - type: custom:mushroom-entity-card
+                    entity: binary_sensor.bathroom_motion
+                    primary_info: none
+                    secondary_info: none
+                    icon_color: accent
+                    card_mod:
+                      style: |
+                        ha-card {
+                          border: 0;
+                        }
+
+                        :host {
+                          position: absolute;
+                          right: 0;
+                        }
               - type: custom:mushroom-entity-card
                 entity: binary_sensor.entrance_motion
-                layout: vertical
                 name: Entrance
-                secondary_info: none
-                primary_info: name
+                fill_container: false
+                secondary_info: last-changed
               - type: custom:mushroom-entity-card
                 entity: binary_sensor.hallway_motion
-                layout: vertical
                 name: Hallway
-                secondary_info: none
-                primary_info: name
-              - type: custom:mushroom-entity-card
-                entity: binary_sensor.kitchen_motion
-                layout: vertical
-                name: Kitchen
-                secondary_info: none
-                primary_info: name
-              - type: custom:mushroom-entity-card
-                entity: binary_sensor.bedroom_motion
-                layout: vertical
-                name: Bedroom
-                secondary_info: none
-                primary_info: name
-              - type: custom:mushroom-entity-card
-                entity: binary_sensor.living_room_motion
-                layout: vertical
-                name: Living Room
-                secondary_info: none
-                primary_info: name
+                fill_container: false
+                secondary_info: last-changed
               - type: custom:mushroom-entity-card
                 entity: binary_sensor.wardrobe_motion
-                layout: vertical
                 name: Wardrobe
-                secondary_info: none
-                primary_info: name
-              - type: custom:mushroom-entity-card
-                entity: binary_sensor.living_room_occupancy
-                layout: vertical
-                name: Living Room
-                secondary_info: none
-                primary_info: name
-              - type: custom:mushroom-entity-card
-                entity: binary_sensor.bathroom_any_occupancy
-                layout: vertical
-                name: Bathroom
-                secondary_info: none
-                primary_info: name
-              - type: custom:mushroom-entity-card
-                entity: binary_sensor.workshop_occupancy
-                layout: vertical
-                name: Workshop
-                secondary_info: none
-                primary_info: name
+                fill_container: false
+                secondary_info: last-changed
         view_layout:
           show:
             mediaquery: '(min-width: 800px)'
@@ -196,6 +297,11 @@ views:
             type: grid
             cards:
               - type: custom:mushroom-entity-card
+                entity: binary_sensor.workshop_door
+                name: Workshop
+                secondary_info: none
+                layout: vertical
+              - type: custom:mushroom-entity-card
                 entity: binary_sensor.closet_door
                 name: Closet
                 secondary_info: none
@@ -203,11 +309,6 @@ views:
               - type: custom:mushroom-entity-card
                 entity: binary_sensor.wardrobe_door
                 name: Wardrobe
-                secondary_info: none
-                layout: vertical
-              - type: custom:mushroom-entity-card
-                entity: binary_sensor.workshop_door
-                name: Workshop
                 secondary_info: none
                 layout: vertical
               - type: custom:mushroom-entity-card
@@ -530,15 +631,131 @@ views:
         cards:
           - type: custom:mushroom-title-card
             title: ''
-            subtitle: Workshop Light
+            subtitle: Bedroom Lights
             alignment: center
           - square: false
             columns: 2
             type: grid
             cards:
               - type: tile
-                entity: light.workshop_main
+                entity: light.bedroom_main
                 name: Main
+              - type: tile
+                entity: light.bedroom_bed
+                name: Bed
+              - type: tile
+                entity: light.bedroom_cat
+                name: Cat
+              - type: tile
+                entity: light.bedroom_string
+                name: String
+              - type: custom:stack-in-card
+                mode: horizontal
+                cards:
+                  - type: tile
+                    entity: light.bedroom_moon
+                    name: Moon
+                    card_mod:
+                      style: |
+                        ha-card {
+                          border: 0;
+                        }
+                  - type: custom:mushroom-entity-card
+                    entity: switch.bedroom_moon_light_charger
+                    primary_info: none
+                    secondary_info: none
+                    card_mod:
+                      style: |
+                        ha-card {
+                          border: 0;
+                        }
+
+                        :host {
+                          max-width: 70px;
+                        }
+          - type: conditional
+            conditions:
+              - entity: light.bedroom_moon
+                state: 'on'
+            card:
+              type: entities
+              entities:
+                - type: custom:rgb-light-card
+                  entity: light.bedroom_moon
+                  size: 16
+                  colors:
+                    - rgb_color:
+                        - 255
+                        - 255
+                        - 255
+                    - rgb_color:
+                        - 255
+                        - 10
+                        - 10
+                    - rgb_color:
+                        - 255
+                        - 60
+                        - 0
+                    - rgb_color:
+                        - 255
+                        - 71
+                        - 51
+                    - rgb_color:
+                        - 202
+                        - 255
+                        - 10
+                    - rgb_color:
+                        - 255
+                        - 112
+                        - 10
+                    - rgb_color:
+                        - 10
+                        - 255
+                        - 71
+                    - rgb_color:
+                        - 10
+                        - 255
+                        - 173
+                    - rgb_color:
+                        - 10
+                        - 255
+                        - 243
+                    - rgb_color:
+                        - 10
+                        - 71
+                        - 255
+                    - rgb_color:
+                        - 10
+                        - 214
+                        - 255
+                    - rgb_color:
+                        - 229
+                        - 233
+                        - 255
+                    - rgb_color:
+                        - 133
+                        - 10
+                        - 255
+                    - rgb_color:
+                        - 173
+                        - 10
+                        - 255
+                    - rgb_color:
+                        - 255
+                        - 10
+                        - 231
+                    - rgb_color:
+                        - 255
+                        - 10
+                        - 153
+                    - rgb_color:
+                        - 255
+                        - 43
+                        - 54
+                    - rgb_color:
+                        - 255
+                        - 0
+                        - 85
       - type: custom:layout-break
       - type: vertical-stack
         cards:
@@ -653,190 +870,178 @@ views:
         cards:
           - type: custom:mushroom-title-card
             title: ''
-            subtitle: Bedroom Lights
+            subtitle: Workshop Light
             alignment: center
           - square: false
             columns: 2
             type: grid
             cards:
               - type: tile
-                entity: light.bedroom_main
+                entity: light.workshop_main
                 name: Main
-              - type: tile
-                entity: light.bedroom_bed
-                name: Bed
-              - type: tile
-                entity: light.bedroom_cat
-                name: Cat
+      - type: vertical-stack
+        cards:
+          - type: custom:gap-card
+            height: 10
+          - square: false
+            columns: 1
+            type: grid
+            cards:
               - type: custom:stack-in-card
                 mode: horizontal
                 cards:
-                  - type: tile
-                    entity: light.bedroom_moon
-                    name: Moon
-                    style: |
-                      ha-card {
-                        border: 0;
-                      }
                   - type: custom:mushroom-entity-card
-                    entity: switch.bedroom_moon_light_charger
+                    entity: binary_sensor.living_room_occupancy
+                    name: Living Room
+                    fill_container: false
+                    secondary_info: last-changed
+                    card_mod:
+                      style: |
+                        ha-card {
+                          border: 0;
+                        }
+                  - type: custom:mushroom-entity-card
+                    entity: binary_sensor.living_room_motion
                     primary_info: none
                     secondary_info: none
-                    style: |
-                      ha-card {
-                        border: 0;
-                      }
+                    icon_color: accent
+                    card_mod:
+                      style: |
+                        ha-card {
+                          border: 0;
+                        }
 
-                      :host {
-                        max-width: 70px;
-                      }
-          - type: conditional
-            conditions:
-              - entity: light.bedroom_moon
-                state: 'on'
-            card:
-              type: entities
-              entities:
-                - type: custom:rgb-light-card
-                  entity: light.bedroom_moon
-                  size: 16
-                  colors:
-                    - rgb_color:
-                        - 255
-                        - 255
-                        - 255
-                    - rgb_color:
-                        - 255
-                        - 10
-                        - 10
-                    - rgb_color:
-                        - 255
-                        - 60
-                        - 0
-                    - rgb_color:
-                        - 255
-                        - 71
-                        - 51
-                    - rgb_color:
-                        - 202
-                        - 255
-                        - 10
-                    - rgb_color:
-                        - 255
-                        - 112
-                        - 10
-                    - rgb_color:
-                        - 10
-                        - 255
-                        - 71
-                    - rgb_color:
-                        - 10
-                        - 255
-                        - 173
-                    - rgb_color:
-                        - 10
-                        - 255
-                        - 243
-                    - rgb_color:
-                        - 10
-                        - 71
-                        - 255
-                    - rgb_color:
-                        - 10
-                        - 214
-                        - 255
-                    - rgb_color:
-                        - 229
-                        - 233
-                        - 255
-                    - rgb_color:
-                        - 133
-                        - 10
-                        - 255
-                    - rgb_color:
-                        - 173
-                        - 10
-                        - 255
-                    - rgb_color:
-                        - 255
-                        - 10
-                        - 231
-                    - rgb_color:
-                        - 255
-                        - 10
-                        - 153
-                    - rgb_color:
-                        - 255
-                        - 43
-                        - 54
-                    - rgb_color:
-                        - 255
-                        - 0
-                        - 85
-      - type: vertical-stack
-        cards:
-          - type: custom:mushroom-title-card
-            title: ''
-            subtitle: Motion/Doors
-            alignment: center
-          - square: true
-            columns: 4
-            type: grid
-            cards:
+                        :host {
+                          position: absolute;
+                          right: 0;
+                        }
+              - type: custom:stack-in-card
+                mode: horizontal
+                cards:
+                  - type: custom:mushroom-entity-card
+                    entity: binary_sensor.bedroom_any_occupancy
+                    name: Bedroom
+                    fill_container: false
+                    secondary_info: last-changed
+                    card_mod:
+                      style: |
+                        ha-card {
+                          border: 0;
+                        }
+                  - type: custom:mushroom-entity-card
+                    entity: binary_sensor.bedroom_motion
+                    primary_info: none
+                    secondary_info: none
+                    icon_color: accent
+                    card_mod:
+                      style: |
+                        ha-card {
+                          border: 0;
+                        }
+
+                        :host {
+                          position: absolute;
+                          right: 0;
+                        }
+              - type: custom:stack-in-card
+                mode: horizontal
+                cards:
+                  - type: custom:mushroom-entity-card
+                    entity: binary_sensor.workshop_occupancy
+                    name: Workshop
+                    fill_container: false
+                    secondary_info: last-changed
+                    card_mod:
+                      style: |
+                        ha-card {
+                          border: 0;
+                        }
+                  - type: custom:mushroom-entity-card
+                    entity: binary_sensor.workshop_entrance_motion
+                    primary_info: none
+                    secondary_info: none
+                    icon_color: accent
+                    card_mod:
+                      style: |
+                        ha-card {
+                          border: 0;
+                        }
+
+                        :host {
+                          position: absolute;
+                          right: 0;
+                        }
+              - type: custom:stack-in-card
+                mode: horizontal
+                cards:
+                  - type: custom:mushroom-entity-card
+                    entity: binary_sensor.kitchen_occupancy
+                    name: Kitchen
+                    fill_container: false
+                    secondary_info: last-changed
+                    card_mod:
+                      style: |
+                        ha-card {
+                          border: 0;
+                        }
+                  - type: custom:mushroom-entity-card
+                    entity: binary_sensor.kitchen_motion
+                    primary_info: none
+                    secondary_info: none
+                    icon_color: accent
+                    card_mod:
+                      style: |
+                        ha-card {
+                          border: 0;
+                        }
+
+                        :host {
+                          position: absolute;
+                          right: 0;
+                        }
+              - type: custom:stack-in-card
+                mode: horizontal
+                cards:
+                  - type: custom:mushroom-entity-card
+                    entity: binary_sensor.bathroom_occupancy
+                    name: Bathroom
+                    fill_container: false
+                    secondary_info: last-changed
+                    card_mod:
+                      style: |
+                        ha-card {
+                          border: 0;
+                        }
+                  - type: custom:mushroom-entity-card
+                    entity: binary_sensor.bathroom_motion
+                    primary_info: none
+                    secondary_info: none
+                    icon_color: accent
+                    card_mod:
+                      style: |
+                        ha-card {
+                          border: 0;
+                        }
+
+                        :host {
+                          position: absolute;
+                          right: 0;
+                        }
               - type: custom:mushroom-entity-card
                 entity: binary_sensor.entrance_motion
-                layout: vertical
                 name: Entrance
-                secondary_info: none
-                primary_info: name
+                fill_container: false
+                secondary_info: last-changed
               - type: custom:mushroom-entity-card
                 entity: binary_sensor.hallway_motion
-                layout: vertical
                 name: Hallway
-                secondary_info: none
-                primary_info: name
-              - type: custom:mushroom-entity-card
-                entity: binary_sensor.kitchen_motion
-                layout: vertical
-                name: Kitchen
-                secondary_info: none
-                primary_info: name
-              - type: custom:mushroom-entity-card
-                entity: binary_sensor.bedroom_motion
-                layout: vertical
-                name: Bedroom
-                secondary_info: none
-                primary_info: name
-              - type: custom:mushroom-entity-card
-                entity: binary_sensor.living_room_motion
-                layout: vertical
-                name: Living Room
-                secondary_info: none
-                primary_info: name
+                fill_container: false
+                secondary_info: last-changed
               - type: custom:mushroom-entity-card
                 entity: binary_sensor.wardrobe_motion
-                layout: vertical
                 name: Wardrobe
-                secondary_info: none
-                primary_info: name
-              - type: custom:mushroom-entity-card
-                entity: binary_sensor.living_room_occupancy
-                layout: vertical
-                name: Living Room
-                secondary_info: none
-                primary_info: name
-              - type: custom:mushroom-entity-card
-                entity: binary_sensor.bathroom_any_occupancy
-                layout: vertical
-                name: Bathroom
-                secondary_info: none
-                primary_info: name
-              - type: custom:mushroom-entity-card
-                entity: binary_sensor.workshop_occupancy
-                layout: vertical
-                name: Workshop
-                secondary_info: none
-                primary_info: name
+                fill_container: false
+                secondary_info: last-changed
         view_layout:
           show:
             mediaquery: '(max-width: 400px)'

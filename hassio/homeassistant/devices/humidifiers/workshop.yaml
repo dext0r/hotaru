@@ -82,13 +82,6 @@ automation:
 
       - platform: state
         entity_id: input_number.home_target_humidity
-
-      - platform: state
-        entity_id: sensor.ups_status
-        from: 'On Battery'
-        to: 'Online'
-        for:
-          seconds: 60
     condition:
       - condition: template
         value_template: >
@@ -148,20 +141,15 @@ automation:
 
       - platform: state
         entity_id: input_number.home_target_humidity
-
-      - platform: state
-        entity_id: sensor.ups_status
-        from: 'On Battery'
-        to: 'Online'
-        for:
-          seconds: 60
     condition:
       - condition: template
         value_template: >
           {{ states('humidifier.workshop_humidifier_x') not in ['unavailable', 'unknown'] }}
 
       - condition: state
-        entity_id: input_boolean.climate_control
+        entity_id:
+          - input_boolean.climate_control
+          - input_boolean.bedroom_humidifier_on_duty
         state: 'on'
     action:
       - if:

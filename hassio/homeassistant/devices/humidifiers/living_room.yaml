@@ -94,13 +94,6 @@ automation:
           - input_boolean.scene_waking_up
           - input_number.home_target_humidity
           - input_select.home_mode
-
-      - platform: state
-        entity_id: sensor.ups_status
-        from: 'On Battery'
-        to: 'Online'
-        for:
-          seconds: 45
     condition:
       - condition: template
         value_template: >

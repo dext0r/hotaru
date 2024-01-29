@@ -42,9 +42,9 @@ ld2410:
   # g0: 100 100
   # g1: 100 100
   # g2: 45 30
-  # g3: 30 9
-  # g4: 17 9
-  # g5: 17 25
+  # g3: 100 9
+  # g4: 100 9
+  # g5: 100 25
   # g6: 100 100
   # g7: 100 100
   # g8: 100 100
@@ -53,7 +53,7 @@ binary_sensor:
   - platform: ld2410
     has_target:
       name: Living Room Occupancy
-      device_class: occupancy
+      icon: ''
 
 sensor:
   - platform: pvvx_mithermometer

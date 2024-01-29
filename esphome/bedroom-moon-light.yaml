@@ -146,10 +146,11 @@ light:
 
           }
 
-  - id: xmas_light_w
+  - id: string_light_w
     platform: binary
-    name: Xmas Bedroom Light
-    output: xmas_light_relay
+    name: Bedroom String Light
+    icon: mdi:string-lights
+    output: string_light_relay
 
 switch:
   - id: led
@@ -175,7 +176,7 @@ output:
     type: float
     write_action: []
 
-  - id: xmas_light_relay
+  - id: string_light_relay
     platform: gpio
     pin:
       number: 2

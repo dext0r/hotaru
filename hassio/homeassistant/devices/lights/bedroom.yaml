@@ -45,7 +45,9 @@ automation:
           brightness_pct: 100
 
       - service: light.turn_on
-        entity_id: light.bedroom_cat
+        entity_id:
+          - light.bedroom_cat
+          - light.bedroom_string
         data:
           kelvin: 2700
           brightness_pct: 100
@@ -173,6 +175,7 @@ automation:
           - light.bedroom_moon
           - light.bedroom_bed
           - light.bedroom_cat
+          - light.bedroom_string
         state: 'on'
         match: any
 
@@ -185,6 +188,7 @@ automation:
           - light.bedroom_moon
           - light.bedroom_bed
           - light.bedroom_cat
+          - light.bedroom_string
 
   - id: bedroom_moon_light_charger_turn_on
     alias: 'Bedroom Moon Light Charger: Turn on'
@@ -234,3 +238,4 @@ group:
       - light.bedroom_bed
       - light.bedroom_moon
       - light.bedroom_cat
+      - light.bedroom_string

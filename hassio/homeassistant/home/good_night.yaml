@@ -49,6 +49,7 @@ automation:
         entity_id:
           - light.bedroom_cat
           - light.bedroom_moon
+          - light.bedroom_string
 
       - service: media_player.turn_off
         entity_id: media_player.tv

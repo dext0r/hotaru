@@ -9,7 +9,6 @@ group:
       - light.xmas_workshop_door
       - light.xmas_front_door
       - light.xmas_kitchen
-      - light.xmas_bedroom
 
 light:
   - platform: group
@@ -266,52 +265,6 @@ automation:
     action:
       - service: light.turn_off
         entity_id: light.xmas_workshop_door
-
-  - id: xmas_bedroom_light_turn_on
-    alias: 'Xmas Bedroom Light: Turn on'
-    trigger:
-      - platform: state
-        entity_id: group.bedroom_lights
-        from: 'off'
-        to: 'on'
-
-      - platform: state
-        entity_id: input_boolean.scene_sleepy_mood
-        to: 'on'
-    condition:
-      - condition: state
-        entity_id: input_boolean.light_control
-        state: 'on'
-
-      - condition: state
-        entity_id: input_select.home_mode
-        state: Day
-
-      - condition: state
-        entity_id: light.xmas_bedroom
-        state: 'off'
-    action:
-      - service: light.turn_on
-        entity_id: light.xmas_bedroom
-
-  - id: xmas_bedroom_light_turn_off
-    alias: 'Xmas Bedroom Light: Turn off'
-    trigger:
-      - platform: state
-        entity_id: group.bedroom_lights
-        from: 'on'
-        to: 'off'
-    condition:
-      - condition: state
-        entity_id: input_boolean.light_control
-        state: 'on'
-
-      - condition: state
-        entity_id: light.xmas_bedroom
-        state: 'on'
-    action:
-      - service: light.turn_off
-        entity_id: light.xmas_bedroom
 
   - id: xmas_living_room_curtains_light_turn_on
     alias: 'Xmas Living Room Curtains Light: Turn on'

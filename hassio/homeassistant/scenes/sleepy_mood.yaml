@@ -43,7 +43,9 @@ automation:
           brightness_pct: 100
 
       - service: light.turn_on
-        entity_id: light.bedroom_cat
+        entity_id:
+          - light.bedroom_cat
+          - light.bedroom_string
         data:
           kelvin: 2700
           brightness_pct: 12

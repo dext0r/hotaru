@@ -95,7 +95,9 @@ automation:
           {{ states('humidifier.workshop_humidifier') not in ['unavailable', 'unknown'] }}
 
       - condition: state
-        entity_id: input_boolean.climate_control
+        entity_id:
+          - input_boolean.climate_control
+          - input_boolean.bedroom_humidifier_on_duty
         state: 'on'
     action:
       - if:

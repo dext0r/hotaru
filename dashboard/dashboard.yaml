@@ -1872,7 +1872,7 @@ views:
                   error_codes:
                     icon: mdi:alert-circle-outline
                     source:
-                      entity: sensor.workshop_intake_fan_error_codes
+                      entity: sensor.workshop_intake_fan_errors
                     hide: |
                       (state) => state === ''
                 buttons:

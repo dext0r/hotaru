@@ -1,0 +1,159 @@
+input_select:
+  dryer_status:
+    name: Dryer Status
+    icon: mdi:tumble-dryer
+    options:
+      - Idle
+      - Running
+      - Done
+    initial: Idle
+
+input_number:
+  dryer_done_alert_count:
+    name: 'Dryer: Done alert count'
+    min: 0
+    max: 5
+    step: 1
+
+automation:
+  - id: dryer_cycle
+    alias: 'Dryer: Cycle'
+    max_exceeded: silent
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.dryer_power
+      above: 0
+      for:
+        seconds: 15
+    condition:
+      - condition: state
+        entity_id: input_select.dryer_status
+        state: Idle
+    action:
+      - service: input_select.select_option
+        entity_id: input_select.dryer_status
+        data:
+          option: Running
+
+      - wait_for_trigger:
+          - platform: numeric_state
+            entity_id: sensor.dryer_power
+            below: 1
+            for:
+              minutes: 2
+        timeout:
+          hours: 6
+        continue_on_timeout: true
+
+      - condition: state
+        entity_id: input_select.dryer_status
+        state: Running
+
+      - service: input_select.select_option
+        entity_id: input_select.dryer_status
+        data:
+          option: Done
+
+  - id: dryer_door_open
+    alias: 'Dryer: Door open'
+    trigger:
+      platform: state
+      entity_id: binary_sensor.dryer_door
+      from: 'off'
+      to: 'on'
+    condition:
+      - condition: state
+        entity_id: input_select.dryer_status
+        state:
+          - Running
+          - Done
+    action:
+      - service: input_select.select_option
+        entity_id: input_select.dryer_status
+        data:
+          option: Idle
+
+  - id: dryer_idle
+    alias: 'Dryer: Idle'
+    trigger:
+      platform: state
+      entity_id: input_select.dryer_status
+      to: Idle
+    action:
+      - service: input_number.set_value
+        entity_id: input_number.dryer_done_alert_count
+        data:
+          value: 0
+
+  - id: dryer_done_alert
+    alias: 'Dryer: Done alert'
+    trigger:
+      - platform: time_pattern
+        minutes: '/45'
+
+      - platform: state
+        entity_id: input_select.dryer_status
+        from: Running
+        to: Done
+    condition:
+      - condition: state
+        entity_id: input_select.home_mode
+        state:
+          - Day
+          - Vacation
+
+      - condition: state
+        entity_id: input_select.dryer_status
+        state: Done
+
+      - condition: numeric_state
+        entity_id: input_number.dryer_done_alert_count
+        below: 4
+
+      - condition: template
+        value_template: >
+          {{ (now() - states.input_number.dryer_done_alert_count.last_changed).total_seconds() > 1200 }}
+    action:
+      - service: script.yandex_station_tts
+        data:
+          target: all
+          type: attention
+          text: >
+            {{ states.sensor.alert_greeting.state }}
+            {{ [
+                'Сушилка ждёт тебя, пора раскладывать бельё по полочкам.',
+                'Сушилка ждет тебя, в ней тебя ждёт что-то особенное.',
+                'Сушилка закончила, пора достать из неё мягонькое бельё.',
+                ]|random
+            }}
+            {% if states('input_number.dryer_done_alert_count')|int == 2 %}
+              Если я ошиблась - закрой дверцу машины и открой снова.
+            {% endif %}
+            {% if states('input_number.dryer_done_alert_count')|int == 3 %}
+              Это последнее предупреждение! Мятое белье останется там навсегда!
+            {% endif %}
+
+      - service: input_number.increment
+        entity_id: input_number.dryer_done_alert_count
+
+  - id: dryer_status
+    alias: 'Dryer: Status'
+    trigger:
+      platform: event
+      event_type: yandex_intent
+      event_data:
+        text: Что с сушильной машиной
+    action:
+      - service: script.yandex_station_tts
+        data:
+          target: >
+            {{ trigger.event.data.get('entity_id', 'last') }}
+          text: >
+            Сушилка
+            {% if is_state('input_select.dryer_status', 'Running') %}
+              делает пух-пух. Скоро вещи будут сухими и мягонькими
+            {% elif is_state('input_select.dryer_status', 'Done') %}
+              закончила, доставай быстрее белье и развешивай в гардеробную
+            {% elif is_state('input_select.dryer_status', 'Idle') %}
+              простаивает без дела и скучает по мокрому бельёю
+            {% endif %}

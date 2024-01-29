@@ -2291,6 +2291,45 @@ views:
         mode: horizontal
         cards:
           - type: custom:mushroom-entity-card
+            entity: input_select.dryer_status
+            name: Dryer
+            icon_color: purple
+            card_mod:
+              style: |
+                ha-card {
+                  border: 0;
+                }
+          - type: custom:mushroom-entity-card
+            entity: binary_sensor.dryer_door
+            primary_info: none
+            secondary_info: none
+            card_mod:
+              style: |
+                ha-card {
+                  border: 0;
+                }
+
+                :host {
+                  max-width: 50px;
+                  border: 0;
+                }
+          - type: custom:mushroom-entity-card
+            entity: switch.dryer_socket
+            primary_info: none
+            secondary_info: none
+            card_mod:
+              style: |
+                ha-card {
+                  border: 0;
+                }
+
+                :host {
+                  max-width: 70px;
+                }
+      - type: custom:stack-in-card
+        mode: horizontal
+        cards:
+          - type: custom:mushroom-entity-card
             entity: input_select.dishwasher_status
             name: Dishwasher
             icon_color: light-green
@@ -2725,6 +2764,28 @@ views:
                 tap_action:
                   action: more-info
               - type: custom:mushroom-template-card
+                primary: Living Room Heater
+                secondary: >-
+                  {{ states('switch.living_room_heater_socket')|capitalize }}
+
+                  {% if not is_state('sensor.living_room_heater_socket_power',
+                  'unavailable') %}
+                    | {{ states('sensor.living_room_heater_socket_power') }} W
+                  {% endif %}
+                icon: mdi:radiator
+                entity: switch.living_room_heater_socket
+                icon_color: >-
+                  {% if is_state('switch.living_room_heater_socket',
+                  'unavailable') %}
+                    var(--rgb-disabled)
+                  {% elif is_state('switch.living_room_heater_socket', 'on') %}
+                    var(--rgb-state-entity)
+                  {% else %}
+                    var(--rgb-grey)
+                  {% endif %}
+                tap_action:
+                  action: more-info
+              - type: custom:mushroom-template-card
                 primary: Washing Machine
                 secondary: >-
                   {{ states('switch.washing_machine_socket')|capitalize }}
@@ -2747,6 +2808,25 @@ views:
                 tap_action:
                   action: more-info
               - type: custom:mushroom-template-card
+                primary: Dryer
+                secondary: |-
+                  {{ states('switch.dryer_socket')|capitalize }}
+                  {% if not is_state('sensor.dryer_power', 'unavailable') %}
+                    | {{ states('sensor.dryer_power') }} W
+                  {% endif %}
+                icon: mdi:tumble-dryer
+                entity: Dryer Socker
+                icon_color: |-
+                  {% if is_state('switch.dryer_socket', 'unavailable') %}
+                    var(--rgb-disabled)
+                  {% elif is_state('switch.dryer_socket', 'on') %}
+                    var(--rgb-state-entity)
+                  {% else %}
+                    var(--rgb-grey)
+                  {% endif %}
+                tap_action:
+                  action: more-info
+              - type: custom:mushroom-template-card
                 primary: Water Heater
                 secondary: >-
                   {{ states('switch.water_heater_socket')|capitalize }}
@@ -2761,28 +2841,6 @@ views:
                   {% if is_state('switch.water_heater_socket', 'unavailable') %}
                     var(--rgb-disabled)
                   {% elif is_state('switch.water_heater_socket', 'on') %}
-                    var(--rgb-state-entity)
-                  {% else %}
-                    var(--rgb-grey)
-                  {% endif %}
-                tap_action:
-                  action: more-info
-              - type: custom:mushroom-template-card
-                primary: Living Room Heater
-                secondary: >-
-                  {{ states('switch.living_room_heater_socket')|capitalize }}
-
-                  {% if not is_state('sensor.living_room_heater_socket_power',
-                  'unavailable') %}
-                    | {{ states('sensor.living_room_heater_socket_power') }} W
-                  {% endif %}
-                icon: mdi:radiator
-                entity: switch.living_room_heater_socket
-                icon_color: >-
-                  {% if is_state('switch.living_room_heater_socket',
-                  'unavailable') %}
-                    var(--rgb-disabled)
-                  {% elif is_state('switch.living_room_heater_socket', 'on') %}
                     var(--rgb-state-entity)
                   {% else %}
                     var(--rgb-grey)

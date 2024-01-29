@@ -50,10 +50,9 @@ template:
           {% set v = 0 %}
         {% endif %}
 
-        {% if outdoor_temperature < 7 %}
-          {% if is_state('input_select.washing_machine_status', 'Running') or
-                is_state('climate.workshop_ac', 'heat') %}
-            {% set v = 5 %}
+        {% if outdoor_temperature < 0 %}
+          {% if is_state('climate.workshop_ac', 'heat') %}
+            {% set v = v - 10 %}
           {% endif %}
         {% endif %}
 
@@ -97,6 +96,12 @@ template:
 
         {% if is_state('switch.workshop_intake_fan_recirculation', 'on') %}
           {% set v = 1 %}
+        {% endif %}
+
+        {% if outdoor_temperature < 5 %}
+          {% if is_state('input_select.washing_machine_status', 'Running') %}
+            {% set v = 1 %}
+          {% endif %}
         {% endif %}
 
         {% if outdoor_temperature < -12 %}

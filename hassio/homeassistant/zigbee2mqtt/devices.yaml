@@ -411,7 +411,7 @@
   retain: true
   temperature_precision: 1
 '0xa4c13845111a6874':
-  friendly_name: Scooter Charger Socket
+  friendly_name: Dryer Socket
   homeassistant: {}
   humidity_precision: 1
   legacy: false
@@ -520,3 +520,19 @@
   description: >-
     sensitivity: 6, min range: 0.15, max range: 3.4, detection delay: 0.5,
     fading time: 45
+'0x00158d0007050d79':
+  friendly_name: Dryer Door
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0xa4c138ce97b152c2':
+  friendly_name: Scooter Charger Socket
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1

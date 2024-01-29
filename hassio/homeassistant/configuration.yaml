@@ -30,6 +30,7 @@ homeassistant:
     covers_workshop: !include devices/covers/workshop.yaml
     devices_ups: !include devices/ups.yaml
     dishwasher: !include devices/dishwasher.yaml
+    dryer: !include devices/dryer.yaml
     fridge: !include devices/fridge.yaml
     geo: !include integrations/geo.yaml
     home_bathroom: !include home/bathroom.yaml
@@ -147,7 +148,7 @@ recorder:
     entity_globs:
       - input_boolean.*_airing_*
       - input_boolean.scene_*
-      - input_select.*_status  # состояние стиралки/посудомойки
+      - input_select.*_status  # состояние стиралки/посудомойки/сушилки
   exclude:
     entities:
       - automation.yandex_station_busy

@@ -45,7 +45,7 @@ media_player:
             {% set sourceid = 4 %} {# HDMI1 #}
           {% elif source == 'ATV' %}
             {% set sourceid = 5 %} {# HDMI2 #}
-          {% elif source == 'Playstation 4' %}
+          {% elif source == 'Playstation' %}
             {% set sourceid = 6 %} {# HDMI3 #}
           {% endif %}
 
@@ -63,7 +63,7 @@ input_select:
     options:
       - 'Off'
       - ATV
-      - Playstation 4
+      - Playstation
       - Switch
 
 script:
@@ -103,52 +103,118 @@ script:
 
   tv_volume_set:
     alias: 'TV: Volume set'
+    mode: restart
     fields:
       level:
         example: 5
     sequence:
-      - repeat:
-          sequence:
-            - delay:
-                milliseconds: 500
+      - condition: state
+        entity_id: media_player.tv
+        state: 'on'
 
-            - service: media_player.volume_down
-              entity_id: media_player.tv
-          until:
-            - condition: template
-              value_template: >
-                {{ state_attr('media_player.tv', 'volume_level') != None or repeat.index > 5 }}
       - if:
+          - not:
+              - condition: state
+                entity_id: number.av_receiver_volume_up
+                state:
+                  - unknown
+                  - unavailable
+        then: # через IR команды напрямую на ресивер
+          - service: media_player.volume_up
+            entity_id: media_player.tv
+
+          - delay:
+              milliseconds: 500
+
           - condition: template
             value_template: >
               {{ state_attr('media_player.tv', 'volume_level') != None }}
-        then:
+
+          - service: number.set_value
+            data_template:
+              entity_id: >
+                {% if state_attr('media_player.tv', 'volume_level')|float < level %}
+                  number.av_receiver_volume_up
+                {% else %}
+                  number.av_receiver_volume_down
+                {% endif %}
+              value: >
+                {{ ((level - state_attr('media_player.tv', 'volume_level')|float) * 100)|round|abs }}
+
+          - delay:
+              milliseconds: >
+                {{ ((level - state_attr('media_player.tv', 'volume_level')|float) * 100)|round|abs * 2 * 100 }}
+
+          - service: >
+              {% if state_attr('media_player.tv', 'volume_level')|float < level %}
+                media_player.volume_down
+              {% else %}
+                media_player.volume_up
+              {% endif %}
+            entity_id: media_player.tv
+
+          - delay:
+              milliseconds: 500
+
+          - if:
+              - condition: template
+                value_template: >
+                  {{ state_attr('media_player.tv', 'volume_level')|float < level }}
+            then:
+              - service: media_player.volume_up
+                entity_id: media_player.tv
+
+          - if:
+              - condition: template
+                value_template: >
+                  {{ state_attr('media_player.tv', 'volume_level')|float > level }}
+            then:
+              - service: media_player.volume_down
+                entity_id: media_player.tv
+
+        else: # старый медленный способ через кнопки VOLUME_UP/DOWN
           - repeat:
               sequence:
                 - delay:
-                    milliseconds: 250
-                - choose:
-                    - conditions:
-                        - condition: template
-                          value_template: >
-                            {{ state_attr('media_player.tv', 'volume_level') < level }}
-                      sequence:
-                        - service: media_player.volume_up
-                          entity_id: media_player.tv
+                    milliseconds: 500
 
-                    - conditions:
-                        - condition: template
-                          value_template: >
-                            {{ state_attr('media_player.tv', 'volume_level') > level }}
-                      sequence:
-                        - service: media_player.volume_down
-                          entity_id: media_player.tv
+                - service: media_player.volume_down
+                  entity_id: media_player.tv
               until:
-                - condition: or
-                  conditions:
-                    - '(level - 1) <= {{ state_attr("media_player.tv", "volume_level") <= (level + 1) }}'
-                    - '{{ state_attr("media_player.tv", "volume_level") == level }}'
-                    - '{{ repeat.index > 50 }}'
+                - condition: template
+                  value_template: >
+                    {{ state_attr('media_player.tv', 'volume_level') != None or repeat.index > 5 }}
+          - if:
+              - condition: template
+                value_template: >
+                  {{ state_attr('media_player.tv', 'volume_level') != None }}
+            then:
+              - repeat:
+                  sequence:
+                    - delay:
+                        milliseconds: 250
+                    - choose:
+                        - conditions:
+                            - condition: template
+                              value_template: >
+                                {{ state_attr('media_player.tv', 'volume_level') < level }}
+                          sequence:
+                            - service: media_player.volume_up
+                              entity_id: media_player.tv
+
+                        - conditions:
+                            - condition: template
+                              value_template: >
+                                {{ state_attr('media_player.tv', 'volume_level') > level }}
+                          sequence:
+                            - service: media_player.volume_down
+                              entity_id: media_player.tv
+                  until:
+                    - condition: or
+                      conditions:
+                        - '(level - 1) <= {{ state_attr("media_player.tv", "volume_level") <= (level + 1) }}'
+                        - '{{ state_attr("media_player.tv", "volume_level") == level }}'
+                        - '{{ repeat.index > 50 }}'
 
   tv_press_button:
     alias: 'TV: Press button'
@@ -252,6 +318,27 @@ automation:
         then:
           - service: media_player.turn_off
             entity_id: media_player.tv
+
+  - id: tv_set_volume_playstation
+    alias: 'TV: Set volume (Playstation)'
+    trigger:
+      - platform: state
+        entity_id: media_player.tv
+        attribute: source
+        to: Playstation
+    condition:
+      - condition: template
+        value_template: >
+          {{ state_attr('media_player.tv', 'volume_level')|float(0) >= 0.41 }}
+    action:
+      - delay:
+          seconds: 2
+
+      - service: media_player.volume_set
+        entity_id: media_player.tv
+        data:
+          volume_level: 0.38
+
 template:
   sensor:
     - name: 'TV: State'
@@ -283,7 +370,7 @@ mqtt:
         {%- elif value_json.sourcename == 'HDMI2' -%}
           ATV
         {%- elif value_json.sourcename == 'HDMI3' -%}
-          Playstation 4
+          Playstation
         {%- else -%}
           Off
         {% endif %}

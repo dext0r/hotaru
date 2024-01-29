@@ -1,0 +1,49 @@
+packages:
+  base: !include common/base.yaml
+
+substitutions:
+  device_name: Kitchen Presence
+
+esphome:
+  name: kitchen-presence
+  model: Kitchen Presence
+  name_add_mac_suffix: false
+
+esp8266:
+  board: d1_mini
+
+logger:
+  baud_rate: 0
+
+uart:
+  - id: ld2410_uart
+    rx_pin: 13
+    tx_pin: 15
+    baud_rate: 256000
+    parity: NONE
+    stop_bits: 1
+
+ld2410:
+# timeout: 60
+# max gate: 6
+# g0: 10 0
+# g1: 60 0
+# g2: 40 25
+# g3: 35 25
+# g4: 35 15
+# g5: 100 15
+# g6: 100 15
+# g7: 100 20
+# g8: 100 20
+
+binary_sensor:
+  - platform: ld2410
+    has_target:
+      name: Kitchen Occupancy
+      icon: ''
+
+switch:
+  - platform: ld2410
+    bluetooth:
+      name: Kitchen Occupancy LD2410 Bluetooth
+      disabled_by_default: true

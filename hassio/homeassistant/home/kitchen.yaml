@@ -16,7 +16,7 @@ automation:
     alias: Appliance Left On Alert
     trigger:
       - platform: state
-        entity_id: binary_sensor.kitchen_motion
+        entity_id: binary_sensor.kitchen_occupancy
         from: 'on'
         to: 'off'
         for:

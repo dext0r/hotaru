@@ -120,7 +120,7 @@
 
 ## Датчики DIY
 * 3x CO2 **[SenseAir S8](https://aliexpress.ru/item/32863793412.html)**
-* 2x Присутствие **[LD2410C](https://aliexpress.ru/item/1005004351593073.html)**. Собраны в совместным корпусах с S8 ([фото](images/ubox.jpg)), подключение по UART.
+* 3x Присутствие **[LD2410C](https://aliexpress.ru/item/1005004351593073.html)**. Собраны в совместным корпусах с S8 ([фото](images/ubox.jpg)), подключение по UART.
 * 2x Потребление воды на осмосе (Гейзер Престиж): [крутилка](https://aliexpress.ru/item/1005002080608743.html) + esphome ([фото](images/water-filter.jpg))
 
 ## Странный DIY

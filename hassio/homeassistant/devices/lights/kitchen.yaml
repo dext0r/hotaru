@@ -98,11 +98,11 @@ automation:
     alias: 'Kitchen Light: Dim worktop'
     trigger:
       - platform: state
-        entity_id: binary_sensor.kitchen_motion
+        entity_id: binary_sensor.kitchen_occupancy
         from: 'on'
         to: 'off'
         for:
-          minutes: 10
+          minutes: 4
     condition:
       - condition: state
         entity_id: input_boolean.light_control
@@ -130,11 +130,11 @@ automation:
     alias: 'Kitchen Light: Turn off'
     trigger:
       - platform: state
-        entity_id: binary_sensor.kitchen_motion
+        entity_id: binary_sensor.kitchen_occupancy
         from: 'on'
         to: 'off'
         for:
-          minutes: 15
+          minutes: 10
     condition:
       - condition: state
         entity_id:

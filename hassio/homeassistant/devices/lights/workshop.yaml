@@ -90,10 +90,21 @@ automation:
         to: 'off'
         for:
           minutes: 10
+
+      - platform: state
+        entity_id: binary_sensor.workshop_occupancy
+        from: 'on'
+        to: 'off'
+        for:
+          minutes: 15
     condition:
       - condition: state
         entity_id: input_boolean.light_control
         state: 'on'
+
+      - condition: state
+        entity_id: binary_sensor.workshop_motion
+        state: 'off'
 
       - condition: state
         entity_id: light.workshop_main

@@ -2584,6 +2584,14 @@ views:
             entity: binary_sensor.bathroom_sink_water_leak
             name: Bathroom Sink
             vertical: true
+          - type: tile
+            entity: binary_sensor.bathroom_hot_water_meter_leak
+            name: Bathroom Hot Meter
+            vertical: true
+          - type: tile
+            entity: binary_sensor.bathroom_cold_water_meter_leak
+            name: Bathroom Cold Meter
+            vertical: true
       - type: custom:layout-break
       - type: horizontal-stack
         cards:

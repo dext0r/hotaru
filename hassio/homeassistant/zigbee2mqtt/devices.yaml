@@ -544,3 +544,19 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+'0x54ef44100071abb6':
+  friendly_name: Bathroom Hot Water Meter Leak
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x54ef441000aa7b88':
+  friendly_name: Bathroom Cold Water Meter Leak
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1

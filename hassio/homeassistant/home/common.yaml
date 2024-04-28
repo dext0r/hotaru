@@ -78,27 +78,6 @@ automation:
         data:
           datetime: '{{ now().strftime("%Y-%m-%d %H:%M:%S") }}'
 
-  - id: home_mode_day_auto_turn_on
-    alias: 'Home Mode Day: Auto turn on'
-    trigger:
-      - platform: time
-        at: '14:00'
-    condition:
-      - condition: state
-        entity_id: binary_sensor.anyone_home
-        state: 'on'
-
-      - condition: not
-        conditions:
-          - condition: state
-            entity_id: input_select.home_mode
-            state: Day
-    action:
-      - service: input_select.select_option
-        entity_id: input_select.home_mode
-        data:
-          option: Day
-
   - id: home_mode_night_auto_turn_on
     alias: 'Home Mode Night: Auto turn on'
     trigger:

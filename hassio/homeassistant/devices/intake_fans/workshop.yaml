@@ -98,7 +98,7 @@ template:
           {% set v = 1 %}
         {% endif %}
 
-        {% if outdoor_temperature < 5 %}
+        {% if outdoor_temperature < -5 %}
           {% if is_state('input_select.washing_machine_status', 'Running') %}
             {% set v = 1 %}
           {% endif %}

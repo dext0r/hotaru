@@ -42,9 +42,9 @@ template:
           {% if is_state('binary_sensor.living_room_occupancy', 'on') and outdoor_temperature < 15 %}
               {% if indoor_temperature < 20 %}
                 {% set v = 24 %}
-              {% elif indoor_temperature < 22 %}
+              {% elif indoor_temperature < 23 %}
                 {% set v = 22 %}
-              {% elif indoor_temperature < 23.5 %}
+              {% elif indoor_temperature < 24.5 %}
                 {% set v = 18 %}
               {% endif %}
           {% endif %}

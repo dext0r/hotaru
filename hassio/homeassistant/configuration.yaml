@@ -180,8 +180,6 @@ recorder:
       - binary_sensor.*workday*
       - binary_sensor.workday*
       - light.workshop_main_*
-      - sensor.*_intake_fan_target_fan_speed
-      - sensor.*_intake_fan_target_temperature
       - sensor.*_intake_fan_target_*
       - sensor.*_humidifier_target_*
       - sensor.*_raw

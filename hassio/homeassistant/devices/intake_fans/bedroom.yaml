@@ -79,7 +79,7 @@ template:
           {% endif %}
 
           {# очень холодно зимой #}
-          {% if outdoor_temperature < 5 and is_state('binary_sensor.bedroom_desk_occupancy', 'on') %}
+          {% if outdoor_temperature < -10 and is_state('binary_sensor.bedroom_desk_occupancy', 'on') %}
             {% set v = max(v - 1, 1) %}
           {% endif %}
         {% endif %}
@@ -91,6 +91,10 @@ template:
             {% set v = 3 %}
           {% elif co2_level > 500 %}
             {% set v = 2 %}
+          {% endif %}
+
+          {% if is_state('input_boolean.bedroom_humidifier_on_duty', 'off') %}
+            {% set v = v + 1 %}  {# больше шума для жены :) #}
           {% endif %}
         {% endif %}
 
@@ -110,7 +114,7 @@ template:
           {% set v = 1 %}
         {% endif %}
 
-        {{ v }}
+        {{ min(v, 6) }}
 
 automation:
   - id: bedroom_intake_fan_update

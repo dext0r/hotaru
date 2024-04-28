@@ -29,11 +29,3 @@ zone:
     radius: 27
     icon: mdi:home
     passive: true
-
-proximity:
-  home_dextor:
-    zone: home
-    devices:
-      - device_tracker.misaka_app
-    tolerance: 200
-    unit_of_measurement: m

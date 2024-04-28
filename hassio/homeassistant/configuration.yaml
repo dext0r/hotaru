@@ -176,8 +176,6 @@ recorder:
       - automation.tv_*
       - cover.*_motor  # сырые моторы для шаблонных штор с ограничением открытия
       - binary_sensor.*_contact  # сырые герконы для шаблонов
-      - binary_sensor.*_any_occupancy
-      - binary_sensor.*_full_occupancy
       - binary_sensor.*_humidifier_target_*
       - binary_sensor.*workday*
       - binary_sensor.workday*

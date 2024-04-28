@@ -70,17 +70,15 @@ automation:
   - id: bathroom_light_turn_off
     alias: 'Bathroom Light: Turn off'
     trigger:
-      - id: no_occupancy
-        platform: state
-        entity_id: binary_sensor.bathroom_occupancy
+      - platform: state
+        entity_id: binary_sensor.bathroom_any_occupancy
         from: 'on'
         to: 'off'
         for:
-          minutes: 1
+          minutes: 2
 
-      - id: no_motion
-        platform: state
-        entity_id: binary_sensor.bathroom_motion
+      - platform: state
+        entity_id: binary_sensor.bathroom_any_occupancy
         from: 'on'
         to: 'off'
         for:

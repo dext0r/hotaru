@@ -39,6 +39,15 @@ automation:
       - service: input_boolean.turn_off
         entity_id: input_boolean.bathroom_bathtub_occupancy
 
+binary_sensor:
+  - platform: group
+    unique_id: binary_sensor.bathroom_any_occupancy
+    name: Bathroom Any Occupancy
+    device_class: occupancy
+    entities:
+      - binary_sensor.bathroom_motion
+      - binary_sensor.bathroom_occupancy
+
 input_boolean:
   bathroom_bathtub_occupancy:
     name: Bathroom Bathtub Occupancy

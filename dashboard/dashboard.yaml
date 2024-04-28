@@ -3284,3 +3284,13 @@ views:
                 state_content: last-changed
                 entity: binary_sensor.workshop_occupancy
                 name: Occupancy
+  - icon: mdi:camera
+    path: stream
+    type: custom:grid-layout
+    badges: []
+    cards:
+      - show_state: true
+        show_name: true
+        camera_view: auto
+        type: picture-entity
+        entity: camera.192_168_5_58

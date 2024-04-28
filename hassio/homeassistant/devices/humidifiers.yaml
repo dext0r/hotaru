@@ -15,27 +15,35 @@ automation:
         entity_id: binary_sensor.anyone_home
         state: 'on'
 
-      - condition: state
-        entity_id:
-          - input_boolean.bedroom_humidifier_on_duty
-          - input_boolean.living_room_humidifier_on_duty
-          - input_boolean.workshop_humidifier_on_duty
-        match: any
-        state: 'on'
-
       - condition: or
         conditions:
-          - condition: numeric_state
-            entity_id: sensor.bedroom_humidifier_water_level
-            below: 30
+          - and:
+              - condition: numeric_state
+                entity_id: sensor.bedroom_humidifier_water_level
+                below: 25
 
-          - condition: numeric_state
-            entity_id: sensor.living_room_humidifier_water_level
-            below: 30
+              - condition: state
+                entity_id: input_boolean.bedroom_humidifier_on_duty
+                state: 'on'
 
-          - condition: numeric_state
-            entity_id: sensor.workshop_humidifier_water_level
-            below: 30
+          - and:
+              - condition: numeric_state
+                entity_id: sensor.living_room_humidifier_water_level
+                below: 25
+
+              - condition: state
+                entity_id: input_boolean.living_room_humidifier_on_duty
+                state: 'on'
+
+          - and:
+              - condition: numeric_state
+                entity_id: sensor.workshop_humidifier_water_level
+                below: 25
+
+
+              - condition: state
+                entity_id: input_boolean.workshop_humidifier_on_duty
+                state: 'on'
 
       - condition: state
         entity_id:
@@ -60,13 +68,8 @@ automation:
     action:
       - if:
           - condition: state
-            entity_id: person.dextor
-            state: home
-
-          - condition: template
-            value_template: >
-              {{ (now()|as_timestamp - state_attr('input_datetime.humidifiers_last_cleanup',
-                                                  'timestamp')) > (60 * 60 * 24 * 5) }}
+            entity_id: binary_sensor.humidifier_cleanup_notice
+            state: 'on'
         then:
           - service: script.yandex_station_tts
             data:
@@ -117,10 +120,18 @@ automation:
         data:
           date: '{{ now().strftime("%Y-%m-%d") }}'
 
+group:
+  humidifiers_on_duty:
+    name: 'Humidifiers: On Duty'
+    entities:
+      - input_boolean.bedroom_humidifier_on_duty
+      - input_boolean.living_room_humidifier_on_duty
+      - input_boolean.workshop_humidifier_on_duty
 
 template:
   - sensor:
-      - name: 'Humidifier: Need Refill'
+      - unique_id: sensor.humidifier_need_refill
+        name: 'Humidifier: Need Refill'
         icon: mdi:water-well-outline
         state: >
           {% set data = namespace(humidifiers=[]) %}
@@ -140,3 +151,20 @@ template:
           {% if data.humidifiers %}
             в {{ data.humidifiers|join(', ') }}
           {% endif %}
+
+  - binary_sensor:
+      - unique_id: binary_sensor.humidifier_cleanup_notice
+        name: 'Humidifier: Cleanup notice'
+        icon: mdi:bulletin-board
+        state: >
+          {% set v = (now()|as_timestamp - state_attr('input_datetime.humidifiers_last_cleanup',
+                                              'timestamp')) > (60 * 60 * 24 * 5) %}
+          {% if not is_state('person.dextor', 'home') %}
+            {% set v = false %}
+          {% elif now().hour >= 22 or now().hour < 15 %}
+            {% set v = false %}
+          {% elif is_state('group.humidifiers_on_duty', 'off') %}
+            {% set v = false %}
+          {% endif %}
+
+          {{ v }}

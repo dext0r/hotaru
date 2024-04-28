@@ -35,6 +35,21 @@ template:
 
         {{ mode }}
 
+  binary_sensor:
+    - unique_id: binary_sensor.bedroom_humidifier_target_heater
+      name: 'Bedroom Humidifier: Target heater'
+      icon: mdi:target-variant
+      state: >
+        {% set indoor_humidity = states('sensor.bedroom_humidity')|int(0) %}
+        {% set target_humidity = states('input_number.home_target_humidity')|int(0) %}
+
+        {% if indoor_humidity < target_humidity - 2 %}
+          on
+        {% else %}
+          off
+        {% endif %}
+
+
 automation:
   - id: bedroom_humidifier_update
     alias: 'Bedroom Humidifier: Update'
@@ -165,14 +180,13 @@ automation:
             entity_id: switch.bedroom_humidifier_sound
 
       - if:
-          - condition: state
-            entity_id: switch.bedroom_humidifier_heater
-            state: 'off'
+          - condition: template
+            value_template: '{{ not is_state("switch.bedroom_humidifier_heater", states("binary_sensor.bedroom_humidifier_target_heater")) }}'
         then:
           - delay:
               seconds: 3
 
-          - service: switch.turn_on
+          - service: switch.turn_{{ states("binary_sensor.bedroom_humidifier_target_heater") }}
             entity_id: switch.bedroom_humidifier_heater
 
       - if:

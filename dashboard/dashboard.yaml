@@ -2000,13 +2000,34 @@ views:
                 name: Bedroom
                 entity: humidifier.bedroom_humidifier
                 model: zhimi.humidifier.ca1
+                toggle:
+                  default: 'on'
+                  hide: 'on'
                 buttons:
                   led:
                     type: button
                     state:
                       entity: switch.bedroom_humidifier_screen
-                    on_states: 'on'
-                    off_states: 'off'
+                    toggle_action: |
+                      (current_state, entity) => {
+                        const service = current_state === 'on' ? 'turn_off' : 'turn_on';
+                        return this.call_service('switch', service, { entity_id: entity.entity_id });
+                      }
+                  sound:
+                    type: button
+                    icon: mdi:volume-high
+                    state:
+                      entity: switch.bedroom_humidifier_sound
+                    toggle_action: |
+                      (current_state, entity) => {
+                        const service = current_state === 'on' ? 'turn_off' : 'turn_on';
+                        return this.call_service('switch', service, { entity_id: entity.entity_id });
+                      }
+                  heater:
+                    type: button
+                    icon: mdi:heat-wave
+                    state:
+                      entity: switch.bedroom_humidifier_heater
                     toggle_action: |
                       (current_state, entity) => {
                         const service = current_state === 'on' ? 'turn_off' : 'turn_on';

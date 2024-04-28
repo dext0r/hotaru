@@ -176,14 +176,14 @@ recorder:
       - binary_sensor.*_contact  # сырые герконы для шаблонов
       - binary_sensor.*_any_occupancy
       - binary_sensor.*_full_occupancy
+      - binary_sensor.*_humidifier_target_*
       - binary_sensor.*workday*
       - binary_sensor.workday*
       - light.workshop_main_*
       - sensor.*_intake_fan_target_fan_speed
       - sensor.*_intake_fan_target_temperature
-      - sensor.*_humidifier_target_mode
-      - sensor.*_humidifier_target_humidity
-      - sensor.*_humidifier_target_fan_speed
+      - sensor.*_intake_fan_target_*
+      - sensor.*_humidifier_target_*
       - sensor.*_raw
       - sensor.person_pronoun_*
       - switch.*_light*

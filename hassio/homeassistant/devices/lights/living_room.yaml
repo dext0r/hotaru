@@ -56,6 +56,13 @@ automation:
         to: 'off'
         for:
           minutes: 20
+
+      - platform: state
+        entity_id: binary_sensor.living_room_motion
+        from: 'on'
+        to: 'off'
+        for:
+          hours: 2
     condition:
       - condition: state
         entity_id:

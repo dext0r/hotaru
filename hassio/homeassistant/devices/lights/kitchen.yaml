@@ -124,6 +124,13 @@ automation:
         to: 'off'
         for:
           minutes: 10
+
+      - platform: state
+        entity_id: binary_sensor.kitchen_motion
+        from: 'on'
+        to: 'off'
+        for:
+          hours: 2
     condition:
       - condition: state
         entity_id:

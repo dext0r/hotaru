@@ -60,13 +60,13 @@ binary_sensor:
     platform: template
     device_class: presence
     lambda: |-
-      return id(bed_a0).state > 200;
+      return id(bed_a0).state > 165;
 
   - name: 'Bed Presence: layma'
     platform: template
     device_class: presence
     lambda: |-
-      return id(bed_a1).state > 200;
+      return id(bed_a1).state > 165;
 
 light:
   - name: Hallway Path Light

@@ -28,7 +28,7 @@ views:
       - type: horizontal-stack
         cards:
           - type: custom:mushroom-template-card
-            primary: "{{ states('input_select.home_mode') }}"
+            primary: '{{ states(''input_select.home_mode'') }}'
             secondary: ''
             icon: |-
               {% set state = states('input_select.home_mode') %}
@@ -287,6 +287,11 @@ views:
                 name: Wardrobe
                 fill_container: false
                 secondary_info: last-changed
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.closet_motion
+                name: Closet
+                fill_container: false
+                secondary_info: last-changed
         view_layout:
           show:
             mediaquery: '(min-width: 800px)'
@@ -372,7 +377,7 @@ views:
             icon: mdi:lightning-bolt
           - type: template
             icon: mdi:kettle-outline
-            content: "{{ states('sensor.kettle_water_level_ml') }} mL"
+            content: '{{ states(''sensor.kettle_water_level_ml'') }} mL'
             entity: climate.kettle
             tap_action:
               action: more-info
@@ -1050,6 +1055,11 @@ views:
               - type: custom:mushroom-entity-card
                 entity: binary_sensor.wardrobe_motion
                 name: Wardrobe
+                fill_container: false
+                secondary_info: last-changed
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.closet_motion
+                name: Closet
                 fill_container: false
                 secondary_info: last-changed
         view_layout:
@@ -3260,12 +3270,7 @@ views:
               - type: tile
                 entity: binary_sensor.workshop_motion
                 vertical: true
-                name: Entrance Motion
-                state_content: last-changed
-              - type: tile
-                entity: binary_sensor.workshop_desk_motion
-                vertical: true
-                name: Desk Motion
+                name: Motion
                 state_content: last-changed
               - type: tile
                 vertical: true

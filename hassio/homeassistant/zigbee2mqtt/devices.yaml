@@ -435,7 +435,7 @@
   retain: true
   temperature_precision: 1
 '0x00158d000775a0d4':
-  friendly_name: Workshop Desk Motion
+  friendly_name: Closet Motion
   homeassistant: {}
   humidity_precision: 1
   legacy: false

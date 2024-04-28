@@ -42,14 +42,12 @@ automation:
     alias: 'Workshop Main Light: Turn on'
     max_exceeded: silent
     trigger:
-      - id: door
-        platform: state
+      - platform: state
         entity_id: binary_sensor.workshop_door
         from: 'off'
         to: 'on'
 
-      - id: entrance_motion
-        platform: state
+      - platform: state
         entity_id: binary_sensor.workshop_motion
         from: 'off'
         to: 'on'
@@ -61,23 +59,6 @@ automation:
       - condition: state
         entity_id: light.workshop_main
         state: 'off'
-
-      - condition: or
-        conditions:
-          - condition: trigger
-            id: door
-
-          - condition: trigger
-            id: entrance_motion
-
-          - condition: and
-            conditions:
-              - condition: trigger
-                id: desk_motion
-
-              - condition: template
-                value_template: >
-                  {{ (now() - states.light.workshop_main.last_changed).total_seconds() < 15 }}
     action:
       - if:
           - condition: or

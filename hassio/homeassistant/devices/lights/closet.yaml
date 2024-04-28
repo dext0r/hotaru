@@ -4,6 +4,12 @@ automation:
     trigger:
       - platform: state
         entity_id: binary_sensor.closet_door
+        from: 'off'
+        to: 'on'
+
+      - platform: state
+        entity_id: binary_sensor.closet_motion
+        from: 'off'
         to: 'on'
     condition:
       - condition: state
@@ -24,13 +30,21 @@ automation:
     trigger:
       - platform: state
         entity_id: binary_sensor.closet_door
+        from: 'on'
         to: 'off'
+
+      - platform: state
+        entity_id: binary_sensor.closet_motion
+        from: 'on'
+        to: 'off'
+        for:
+          minutes: 5
 
       - platform: state
         entity_id: light.closet
         to: 'on'
         for:
-          minutes: 20
+          minutes: 30
     condition:
       - condition: state
         entity_id:

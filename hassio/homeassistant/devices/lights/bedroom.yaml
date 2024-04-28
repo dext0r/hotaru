@@ -22,7 +22,7 @@ automation:
 
           - condition: state
             entity_id: cover.bedroom
-            state: 'off'
+            state: closed
 
       - condition: state
         entity_id:

@@ -124,7 +124,7 @@ automation:
 
           - condition: state
             entity_id: cover.living_room
-            state: 'off'
+            state: closed
 
       - condition: state
         entity_id:
@@ -238,7 +238,7 @@ automation:
 
           - condition: state
             entity_id: cover.kitchen
-            state: 'off'
+            state: closed
 
       - condition: state
         entity_id:

@@ -118,14 +118,14 @@ automation:
         from: 'on'
         to: 'off'
         for:
-          minutes: 3
+          minutes: 1
 
       - platform: state
         entity_id: binary_sensor.bedroom_bed_full_occupancy
         from: 'off'
         to: 'on'
         for:
-          minutes: 1
+          seconds: 30
     condition:
       - condition: state
         entity_id:

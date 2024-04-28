@@ -2947,18 +2947,25 @@ views:
             name: Sleepy mood
             secondary_info: none
           - type: custom:mushroom-entity-card
-            entity: input_boolean.scene_waking_up
-            tap_action:
-              action: more-info
-            layout: vertical
-            name: Waking up
-            secondary_info: none
-          - type: custom:mushroom-entity-card
             entity: input_boolean.scene_wait_guests
             tap_action:
               action: more-info
             layout: vertical
             name: Wait guests
+            secondary_info: none
+          - type: custom:mushroom-entity-card
+            entity: input_boolean.scene_overnight_guests
+            tap_action:
+              action: more-info
+            layout: vertical
+            name: Overnight guests
+            secondary_info: none
+          - type: custom:mushroom-entity-card
+            entity: input_boolean.scene_waking_up
+            tap_action:
+              action: more-info
+            layout: vertical
+            name: Waking up
             secondary_info: none
           - type: custom:mushroom-entity-card
             entity: binary_sensor.evening_time

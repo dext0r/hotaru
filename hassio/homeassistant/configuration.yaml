@@ -75,6 +75,7 @@ homeassistant:
     scene_evening: !include scenes/evening.yaml
     scene_meal: !include scenes/meal.yaml
     scene_movie: !include scenes/movie.yaml
+    scene_overnight_guests: !include scenes/overnight_guests.yaml
     scene_sleepy_mood: !include scenes/sleepy_mood.yaml
     scene_wait_guests: !include scenes/wait_guests.yaml
     scene_waking_up: !include scenes/waking_up.yaml

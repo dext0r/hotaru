@@ -1,0 +1,22 @@
+input_boolean:
+  scene_overnight_guests:
+    name: 'Scene: Overnight guests'
+    icon: mdi:wizard-hat
+    initial: false
+
+automation:
+  - id: scene_overnight_guests_turn_off
+    alias: 'Scene Overnight Guests: Turn off'
+    trigger:
+      - platform: state
+        entity_id: input_boolean.scene_overnight_guests
+        to: 'on'
+        for:
+          hours: 14
+    condition:
+      - condition: state
+        entity_id: input_boolean.scene_overnight_guests
+        state: 'on'
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.scene_overnight_guests

@@ -38,7 +38,7 @@ template:
           {% set v = 0 %}
         {% endif %}
 
-        {% if is_state('input_select.home_mode', 'Day') %}
+        {% if is_state('input_select.home_mode', 'Day') or is_state('input_boolean.scene_overnight_guests', 'on') %}
           {% if is_state('binary_sensor.living_room_occupancy', 'on') and outdoor_temperature < 15 %}
               {% if indoor_temperature < 20 %}
                 {% set v = 24 %}
@@ -50,7 +50,7 @@ template:
           {% endif %}
         {% endif %}
 
-        {% if is_state('input_select.home_mode', 'Night') %}
+        {% if is_state('input_select.home_mode', 'Night') and is_state('input_boolean.scene_overnight_guests', 'off') %}
           {% if outdoor_temperature >= 5 %}
             {% set v = 0 %}
           {% else %}
@@ -179,6 +179,7 @@ automation:
       - platform: state
         entity_id:
           - input_select.home_mode
+          - input_boolean.scene_sleepy_mood
           - input_boolean.living_room_intake_fan_control
 
       - id: room_airing

@@ -15,7 +15,7 @@ template:
           {% set mode = 'manual' %}
         {% endif %}
 
-        {% if is_state('input_boolean.scene_waking_up', 'off') %}
+        {% if is_state('input_boolean.scene_waking_up', 'off') or is_state('input_boolean.scene_overnight_guests', 'on') %}
           {% if is_state('binary_sensor.anyone_home', 'off') or
                 is_state('input_boolean.scene_sleepy_mood', 'on') or
                 is_state('input_select.home_mode', 'Night') %}
@@ -45,7 +45,7 @@ template:
         {% set target_humidity = states('input_number.home_target_humidity')|int(0) %}
         {% set outdoor_temperature = states('sensor.outside_temperature')|float(0) %}
 
-        {% if outdoor_temperature < 5 and indoor_humidity > 0 %}
+        {% if outdoor_temperature < 13 and indoor_humidity > 0 %}
           {% if indoor_humidity < target_humidity - 4 %}
             {% set speed = 100 %}
           {% elif indoor_humidity < target_humidity - 2 %}

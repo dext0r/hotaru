@@ -125,6 +125,7 @@ automation:
         entity_id:
           - input_select.home_mode
           - input_select.washing_machine_status
+          - input_boolean.scene_sleepy_mood
           - input_boolean.workshop_intake_fan_control
           - binary_sensor.workshop_occupancy
 

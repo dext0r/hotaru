@@ -181,11 +181,14 @@ automation:
     alias: 'Hallway Path Light: Turn off'
     trigger:
       - id: no_motion
-        platform: template
-        value_template: >
-          {{ is_state('binary_sensor.hallway_motion', 'off') and is_state('binary_sensor.entrance_motion', 'off') }}
+        platform: state
+        entity_id:
+          - binary_sensor.hallway_motion
+          - binary_sensor.entrance_motion
+        from: 'on'
+        to: 'off'
         for:
-          minutes: 1
+          seconds: 30
 
       - platform: state
         entity_id:
@@ -201,6 +204,17 @@ automation:
       - condition: state
         entity_id: input_boolean.scene_sleepy_mood
         state: 'off'
+
+      - or:
+          - not:
+              - condition: trigger
+                id: no_motion
+
+          - condition: state
+            entity_id:
+              - binary_sensor.hallway_motion
+              - binary_sensor.entrance_motion
+            state: 'off'
 
       - condition: state
         entity_id:
@@ -286,10 +300,12 @@ automation:
   - id: kitchen_path_light_turn_off
     alias: 'Kitchen Path Light: Turn off'
     trigger:
-      - platform: state
+      - id: no_motion
+        platform: state
         entity_id:
           - binary_sensor.hallway_motion
-          - binary_sensor.kitchen_motion
+          - binary_sensor.entrance_motion
+          - binary_sensor.kitchen_occupancy
         from: 'on'
         to: 'off'
         for:
@@ -307,6 +323,18 @@ automation:
       - condition: state
         entity_id: input_boolean.scene_sleepy_mood
         state: 'off'
+
+      - or:
+          - not:
+              - condition: trigger
+                id: no_motion
+
+          - condition: state
+            entity_id:
+              - binary_sensor.hallway_motion
+              - binary_sensor.entrance_motion
+              - binary_sensor.kitchen_occupancy
+            state: 'off'
 
       - condition: state
         entity_id:

@@ -33,6 +33,10 @@ template:
           {% set mode = 'off' %}
         {% endif %}
 
+        {% if is_state('input_select.home_mode', 'Vacation') %}
+          {% set mode = 'off' %}
+        {% endif %}
+
         {{ mode }}
 
   binary_sensor:

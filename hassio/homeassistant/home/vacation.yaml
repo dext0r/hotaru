@@ -1,0 +1,47 @@
+automation:
+  - id: home_mode_set_vacation
+    alias: 'Home Mode: Set Vacation'
+    trigger:
+      - platform: event
+        event_type: yandex_intent
+        event_data:
+          text: Включи режим отпуска
+    action:
+      - service: input_select.select_option
+        entity_id: input_select.home_mode
+        data:
+          option: Vacation
+
+      - service: script.yandex_station_tts
+        data:
+          target: >
+            {{ trigger.event.data.get('entity_id', 'last') }}
+          text: Дом переключен в режим отпуск, буду скучать по вам
+
+  - id: home_mode_to_vacation
+    alias: 'Home Mode: To Vacation'
+    trigger:
+      platform: state
+      entity_id: input_select.home_mode
+      to: Vacation
+    action:
+      - service: notify.dextor
+        data:
+          message: 🌴 Дом перевёден в режим отпуска
+
+      - service: cover.open_cover
+        entity_id:
+          - cover.bedroom
+          - cover.kitchen
+          - cover.living_room
+
+  - id: home_mode_from_vacation
+    alias: 'Home Mode: From vacation'
+    trigger:
+      platform: state
+      entity_id: input_select.home_mode
+      from: Vacation
+    action:
+      - service: notify.dextor
+        data:
+          message: 😟 Дом возвращён из режима отпуска

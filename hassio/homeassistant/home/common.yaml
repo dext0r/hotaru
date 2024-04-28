@@ -135,28 +135,6 @@ automation:
                 {{ trigger.event.data.get('entity_id', 'last') }}
               text: Переключила дом в дневной режим
 
-  - id: home_mode_to_vacation_alert
-    alias: 'Home Mode: To vacation alert'
-    trigger:
-      platform: state
-      entity_id: input_select.home_mode
-      to: Vacation
-    action:
-      - service: notify.dextor
-        data:
-          message: 🌴 Дом перевёден в режим отпуска
-
-  - id: home_mode_from_vacation_alert
-    alias: 'Home Mode: From vacation alert'
-    trigger:
-      platform: state
-      entity_id: input_select.home_mode
-      from: Vacation
-    action:
-      - service: notify.dextor
-        data:
-          message: 😟 Дом возвращён из режима отпуска
-
 input_select:
   home_mode:
     name: Home Mode

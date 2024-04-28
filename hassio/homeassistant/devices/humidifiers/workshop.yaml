@@ -68,6 +68,10 @@ template:
           {% set mode = 'off' %}
         {% endif %}
 
+        {% if is_state('input_select.home_mode', 'Vacation') %}
+          {% set mode = 'off' %}
+        {% endif %}
+
         {{ mode }}
 
 automation:
@@ -81,7 +85,9 @@ automation:
         minutes: '/7'
 
       - platform: state
-        entity_id: input_number.home_target_humidity
+        entity_id:
+          - input_number.home_target_humidity
+          - input_select.home_mode
     condition:
       - condition: template
         value_template: >
@@ -140,7 +146,9 @@ automation:
         minutes: '/7'
 
       - platform: state
-        entity_id: input_number.home_target_humidity
+        entity_id:
+          - input_number.home_target_humidity
+          - input_select.home_mode
     condition:
       - condition: template
         value_template: >

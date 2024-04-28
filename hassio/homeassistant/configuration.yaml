@@ -41,6 +41,7 @@ homeassistant:
     home_pills: !include home/pills.yaml
     home_smoke: !include home/smoke.yaml
     home_water: !include home/water.yaml
+    home_vacation: !include home/vacation.yaml
     hotaru: !include devices/hotaru.yaml
     humidifiers_bedroom: !include devices/humidifiers/bedroom.yaml
     humidifiers_living_room: !include devices/humidifiers/living_room.yaml

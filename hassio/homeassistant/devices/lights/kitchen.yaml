@@ -1,6 +1,6 @@
 automation:
-  - id: kitchen_light_turn_on_full_low_light
-    alias: 'Kitchen Light: Turn on (full / low light)'
+  - id: kitchen_light_turn_on_full
+    alias: 'Kitchen Light: Turn on (full)'
     trigger:
       - platform: state
         entity_id: binary_sensor.kitchen_motion
@@ -17,18 +17,13 @@ automation:
           - input_boolean.scene_sleepy_mood
         state: 'off'
 
-      - condition: numeric_state
-        entity_id: sensor.illuminance_north_side
-        below: 1250
-
       - condition: state
         entity_id: input_select.home_mode
         state:
           - Day
           - Vacation
 
-      - condition: or
-        conditions:
+      - or:
           - condition: state
             entity_id: light.kitchen_mood
             state: 'off'
@@ -45,8 +40,8 @@ automation:
       - service: light.turn_on
         entity_id: light.kitchen_mood
 
-  - id: kitchen_light_turn_on_dimmed_low_light
-    alias: 'Kitchen Light: Turn on (dimmed / low light)'
+  - id: kitchen_light_turn_on_dimmed
+    alias: 'Kitchen Light: Turn on (dimmed)'
     trigger:
       - platform: state
         entity_id: binary_sensor.kitchen_motion
@@ -62,10 +57,6 @@ automation:
         entity_id: light.kitchen_main
         state: 'off'
 
-      - condition: numeric_state
-        entity_id: sensor.illuminance_north_side
-        below: 730
-
       - condition: state
         entity_id: input_select.home_mode
         state:
@@ -76,8 +67,7 @@ automation:
         entity_id: input_boolean.scene_sleepy_mood
         state: 'off'
 
-      - condition: or
-        conditions:
+      - or:
           - condition: state
             entity_id: light.kitchen_mood
             state: 'off'
@@ -108,8 +98,7 @@ automation:
         entity_id: input_boolean.light_control
         state: 'on'
 
-      - condition: or
-        conditions:
+      - or:
           - condition: state
             entity_id: light.kitchen_main
             state: 'on'

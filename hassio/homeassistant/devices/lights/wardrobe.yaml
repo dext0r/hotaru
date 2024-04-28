@@ -4,10 +4,12 @@ automation:
     trigger:
       - platform: state
         entity_id: binary_sensor.wardrobe_door
+        from: 'off'
         to: 'on'
 
       - platform: state
         entity_id: binary_sensor.wardrobe_motion
+        from: 'off'
         to: 'on'
     condition:
       - condition: state

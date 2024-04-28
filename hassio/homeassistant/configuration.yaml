@@ -60,6 +60,7 @@ homeassistant:
     lights_living_room: !include devices/lights/living_room.yaml
     lights_path: !include devices/lights/path.yaml
     lights_porch: !include devices/lights/porch.yaml
+    lights_status: !include devices/lights/status.yaml
     lights_wardrobe: !include devices/lights/wardrobe.yaml
     lights_workshop: !include devices/lights/workshop.yaml
     lights: !include devices/lights.yaml

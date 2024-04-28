@@ -115,6 +115,31 @@ number:
 
           id(av_receiver_volume_down).publish_state(0);
 
+light:
+  - name: Living Room TV Status Light Left
+    platform: partition
+    segments:
+      - id: status_led_strip
+        from: 4
+        to: 7
+    gamma_correct: 1
+
+  - name: Living Room TV Status Light Right
+    platform: partition
+    segments:
+      - id: status_led_strip
+        from: 0
+        to: 3
+    gamma_correct: 1
+
+  - id: status_led_strip
+    platform: esp32_rmt_led_strip
+    chipset: ws2812
+    pin: 32
+    num_leds: 8
+    rmt_channel: 2
+    rgb_order: GRB
+
 sensor:
   - platform: pvvx_mithermometer
     mac_address: A4:C1:38:42:B7:5D

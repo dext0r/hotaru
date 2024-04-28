@@ -627,6 +627,16 @@ views:
               - type: tile
                 entity: light.living_room_backlight
                 name: Backlight
+              - type: horizontal-stack
+                cards:
+                  - type: tile
+                    entity: light.living_room_tv_status_left
+                    name: Left
+                    hide_state: true
+                  - type: tile
+                    entity: light.living_room_tv_status_right
+                    name: Right
+                    hide_state: true
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card

@@ -1,0 +1,133 @@
+automation:
+  - id: living_room_tv_status_light_update
+    alias: 'Living Room TV Status Light: Update'
+    mode: queued
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.anyone_home
+          - binary_sensor.humidifier_cleanup_notice
+          - input_boolean.scene_movie
+          - input_select.dryer_status
+          - input_select.home_mode
+          - input_select.washing_machine_status
+          - sensor.living_room_humidifier_water_level
+
+      - platform: time_pattern
+        minutes: '/10'
+    action:
+      - if:
+          - condition: state
+            entity_id: input_select.home_mode
+            state: Day
+
+          - condition: state
+            entity_id: binary_sensor.anyone_home
+            state: 'on'
+
+          - condition: state
+            entity_id: input_boolean.scene_movie
+            state: 'off'
+        then:
+          - choose:
+              - conditions:
+                  - condition: state
+                    entity_id:
+                      - input_select.washing_machine_status
+                      - input_select.dryer_status
+                    state: Done
+                    match: any
+                sequence:
+                  - service: light.turn_on
+                    entity_id:
+                      - light.living_room_tv_status_left
+                      - light.living_room_tv_status_right
+                    data:
+                      brightness_pct: 100
+                      rgb_color: [0, 225, 255]  # голубой
+
+              - conditions:
+                  - or:
+                      - condition: state
+                        entity_id: binary_sensor.humidifier_cleanup_notice
+                        state: 'on'
+
+                      - and:
+                          - condition: state
+                            entity_id: input_boolean.living_room_humidifier_on_duty
+                            state: 'on'
+
+                          - condition: state
+                            entity_id: humidifier.living_room_humidifier
+                            state:
+                              - 'on'
+                              - 'off'
+
+                          - condition: numeric_state
+                            entity_id: sensor.living_room_humidifier_water_level
+                            below: 35
+                sequence:
+                  - if:
+                      - condition: state
+                        entity_id: binary_sensor.humidifier_cleanup_notice
+                        state: 'on'
+                    then:
+                      - service: light.turn_on
+                        entity_id: light.living_room_tv_status_left
+                        data:
+                          brightness_pct: 25
+                          rgb_color: [255, 36, 0] # почти красный
+                    else:
+                      - service: light.turn_on
+                        entity_id: light.living_room_tv_status_left
+                        data:
+                          brightness_pct: 25
+                          rgb_color: [255, 110, 0] # оранжевый
+
+                  # TODO: стрёмное дублирование
+                  - if:
+                      - condition: state
+                        entity_id: input_boolean.living_room_humidifier_on_duty
+                        state: 'on'
+
+                      - condition: state
+                        entity_id: humidifier.living_room_humidifier
+                        state:
+                          - 'on'
+                          - 'off'
+
+                      - condition: numeric_state
+                        entity_id: sensor.living_room_humidifier_water_level
+                        below: 35
+                    then:
+                      - service: light.turn_on
+                        entity_id: light.living_room_tv_status_right
+                        data:
+                          brightness_pct: 25
+                          rgb_color: [255, 110, 0] # оранжевый
+            default:
+              - if:
+                  - condition: state
+                    entity_id:
+                      - light.living_room_tv_status_left
+                      - light.living_room_tv_status_right
+                    state: 'on'
+                    match: any
+                then:
+                  - service: light.turn_off
+                    entity_id:
+                      - light.living_room_tv_status_left
+                      - light.living_room_tv_status_right
+        else:
+          - if:
+              - condition: state
+                entity_id:
+                  - light.living_room_tv_status_left
+                  - light.living_room_tv_status_right
+                state: 'on'
+                match: any
+            then:
+              - service: light.turn_off
+                entity_id:
+                  - light.living_room_tv_status_left
+                  - light.living_room_tv_status_right

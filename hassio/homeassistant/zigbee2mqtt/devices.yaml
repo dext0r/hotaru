@@ -377,14 +377,6 @@
   optimistic: true
   retain: true
   temperature_precision: 1
-'0x00158d000198df03':
-  friendly_name: Porch Door
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
 '0x00158d00044b1211':
   friendly_name: Living Room Motion
   homeassistant: {}
@@ -402,14 +394,6 @@
   retain: true
   temperature_precision: 1
   occupancy_timeout: 8
-'0x00158d00019942ec':
-  friendly_name: Bedroom Window
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
 '0xa4c13845111a6874':
   friendly_name: Dryer Socket
   homeassistant: {}
@@ -460,14 +444,6 @@
   temperature_precision: 1
 '0x00158d0002b18420':
   friendly_name: Fridge Door
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-'0x00158d0002aef0e9':
-  friendly_name: Closet Door
   homeassistant: {}
   humidity_precision: 1
   legacy: false
@@ -530,6 +506,30 @@
   temperature_precision: 1
 '0xa4c138ce97b152c2':
   friendly_name: Scooter Charger Socket
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00158d0002aef0e9':
+  friendly_name: Porch Door
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00158d0000b483bd':
+  friendly_name: Closet Door
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
+'0x00158d00019942ec':
+  friendly_name: Bedroom Window
   homeassistant: {}
   humidity_precision: 1
   legacy: false

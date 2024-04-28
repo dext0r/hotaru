@@ -1,0 +1,53 @@
+automation:
+  - id: Pills taken
+    alias: 'Pills taken'
+    mode: single
+    max_exceeded: silent
+    trigger:
+      - platform: device
+        domain: mqtt
+        device_id: 9be5a240d99a0f8b0fc13585cda78fba
+        type: action
+        subtype: single
+        discovery_id: 0x00158d0006c8b148 action_single
+
+      - platform: device
+        domain: mqtt
+        device_id: 9be5a240d99a0f8b0fc13585cda78fba
+        type: action
+        subtype: double
+        discovery_id: 0x00158d0006c8b148 action_double
+    action:
+      - service: input_datetime.set_datetime
+        entity_id: input_datetime.pills_takes
+        data:
+          datetime: '{{ now().strftime("%Y-%m-%d %H:%M:%S") }}'
+
+      - service: script.yandex_station_tts
+        data:
+          target: media_player.kitchen_station
+          text: >
+            <speaker audio="alice-sounds-game-boot-1.opus">
+          volume: 0.4
+
+input_datetime:
+  pills_takes:
+    name: Pills Taken
+    has_date: true
+    has_time: true
+    icon: mdi:pill-multiple
+
+template:
+  binary_sensor:
+    - name: Time to take pills
+      unique_id: binary_sensor.time_to_take_pills
+      icon: mdi:timer-alert-outline
+      state: >
+        {% set v = 'off' %}
+        {% if now().hour >= 22 or now().hour <= 6 %}
+          {% if (now()|as_timestamp - state_attr('input_datetime.pills_takes', 'timestamp')) > (60 * 60 * 12) %}
+            {% set v = 'on' %}
+          {% endif %}
+        {% endif %}
+
+        {{ v }}

@@ -512,6 +512,14 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+'0x00158d0006c8b148':
+  friendly_name: Kitchen Pills Button
+  homeassistant: {}
+  humidity_precision: 1
+  legacy: false
+  optimistic: true
+  retain: true
+  temperature_precision: 1
 '0x00158d0002aef0e9':
   friendly_name: Porch Door
   homeassistant: {}

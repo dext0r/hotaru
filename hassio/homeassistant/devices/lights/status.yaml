@@ -1,4 +1,67 @@
 automation:
+  - id: kitchen_status_light_update
+    alias: 'Kitchen: Status light update'
+    mode: queued
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.anyone_home
+          - binary_sensor.freezer_door
+          - binary_sensor.fridge_door
+          - binary_sensor.time_to_take_pills
+          - input_select.home_mode
+    action:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.fridge_door
+                state: 'on'
+            sequence:
+              - service: light.turn_on
+                entity_id: light.kitchen_status
+                data:
+                  brightness_pct: 50
+                  rgbw_color: [7, 44, 255, 0]
+                  effect: None
+                  transition: 0.5
+
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.freezer_door
+                state: 'on'
+            sequence:
+              - service: light.turn_on
+                entity_id: light.kitchen_status
+                data:
+                  brightness_pct: 50
+                  rgbw_color: [255, 110, 0, 0]
+                  effect: None
+                  transition: 0.5
+
+          - conditions:
+              - condition: state
+                entity_id:
+                  - binary_sensor.time_to_take_pills
+                  - binary_sensor.anyone_home
+                state: 'on'
+
+              - condition: state
+                entity_id: input_select.home_mode
+                state: Day
+            sequence:
+              - service: light.turn_on
+                entity_id: light.kitchen_status
+                data:
+                  brightness_pct: 100
+                  rgbw_color: [252, 0, 181, 0]  # сиреневый
+                  effect: pulse
+                  transition: 2
+        default:
+          - service: light.turn_off
+            entity_id: light.kitchen_status
+            data:
+              transition: 0.5
+
   - id: living_room_tv_status_light_update
     alias: 'Living Room TV Status Light: Update'
     mode: queued

@@ -38,6 +38,7 @@ homeassistant:
     home_good_morning: !include home/good_morning.yaml
     home_good_night: !include home/good_night.yaml
     home_kitchen: !include home/kitchen.yaml
+    home_pills: !include home/pills.yaml
     home_smoke: !include home/smoke.yaml
     home_water: !include home/water.yaml
     hotaru: !include devices/hotaru.yaml
@@ -131,6 +132,7 @@ recorder:
       - climate
       - cover
       - humidifier
+      - input_datetime
       - light
       - lock
       - media_player
@@ -179,6 +181,7 @@ recorder:
       - binary_sensor.*_humidifier_target_*
       - binary_sensor.*workday*
       - binary_sensor.workday*
+      - input_datetime.*_last_seen
       - light.workshop_main_*
       - sensor.*_intake_fan_target_*
       - sensor.*_humidifier_target_*

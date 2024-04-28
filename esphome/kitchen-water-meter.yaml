@@ -68,21 +68,24 @@ light:
         from: 0
         to: 0
     gamma_correct: 1
-    restore_mode: ALWAYS_OFF
     effects:
       - pulse:
           name: pulse
           update_interval: 2s
           transition_length: 2s
 
-  - name: Fridge Status Light
+  - name: Kitchen Status Light
     platform: partition
     segments:
       - id: led
         from: 54
         to: 54
     gamma_correct: 1
-    restore_mode: ALWAYS_OFF
+    effects:
+      - pulse:
+          name: pulse
+          update_interval: 2s
+          transition_length: 2s
 
   - name: Kitchen Path Light
     platform: partition
@@ -91,7 +94,6 @@ light:
         from: 1
         to: 53
     gamma_correct: 1
-    restore_mode: ALWAYS_OFF
 
   - id: led
     platform: neopixelbus

@@ -2422,15 +2422,12 @@ views:
             entity: binary_sensor.freezer_door
             name: Freezer
           - type: custom:mushroom-entity-card
-            entity: light.fridge_status
-            name: Status
-          - type: custom:mushroom-entity-card
             entity: binary_sensor.stove
             name: Stove
           - type: custom:mushroom-entity-card
             entity: binary_sensor.kitchen_appliances
             name: Appliances
-        columns: 3
+        columns: 2
       - type: horizontal-stack
         cards:
           - type: custom:stack-in-card
@@ -2974,6 +2971,9 @@ views:
                 name: Schedule from
               - entity: input_datetime.scene_delivery_scheduled_to
                 name: Schedule to
+      - type: entities
+        entities:
+          - input_datetime.pills_takes
       - type: custom:layout-break
       - square: false
         columns: 2
@@ -2985,6 +2985,9 @@ views:
           - type: tile
             entity: input_boolean.climate_control
             name: Climate control
+          - type: tile
+            entity: light.kitchen_status
+            name: Kitchen Status
       - square: false
         columns: 2
         type: grid

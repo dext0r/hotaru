@@ -150,44 +150,6 @@ automation:
           type: alert
           text: В морозильнике очень жарко, проверь что там как
 
-  - id: fridge_status_light_update
-    alias: 'Fridge: Status light update'
-    mode: queued
-    trigger:
-      - platform: state
-        entity_id:
-          - binary_sensor.freezer_door
-          - binary_sensor.fridge_door
-    action:
-      - choose:
-          - conditions:
-              - condition: state
-                entity_id: binary_sensor.fridge_door
-                state: 'on'
-            sequence:
-              - service: light.turn_on
-                entity_id: light.fridge_status
-                data:
-                  brightness_pct: 50
-                  rgbw_color: [7, 44, 255, 0]
-                  transition: 0.5
-
-          - conditions:
-              - condition: state
-                entity_id: binary_sensor.freezer_door
-                state: 'on'
-            sequence:
-              - service: light.turn_on
-                entity_id: light.fridge_status
-                data:
-                  brightness_pct: 50
-                  rgbw_color: [255, 110, 0, 0]
-                  transition: 0.5
-        default:
-          - service: light.turn_off
-            entity_id: light.fridge_status
-            data:
-              transition: 0.5
 
 template:
   binary_sensor:

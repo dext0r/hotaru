@@ -20,11 +20,19 @@ automation:
     alias: 'Dryer: Cycle'
     max_exceeded: silent
     trigger:
-      platform: numeric_state
-      entity_id: sensor.dryer_power
-      above: 0
-      for:
-        seconds: 15
+      - platform: numeric_state
+        entity_id: sensor.dryer_power
+        above: 0
+        for:
+          seconds: 10
+
+      # если кратковременно открывали розетка не успеет скинуть потребление на 0
+      # поэтому попытка поймать ещё раз другим изменением
+      - platform: numeric_state
+        entity_id: sensor.dryer_power
+        above: 200
+        for:
+          seconds: 10
     condition:
       - condition: state
         entity_id: input_select.dryer_status
@@ -41,6 +49,11 @@ automation:
             below: 1
             for:
               minutes: 2
+
+          - platform: state
+            entity_id: binary_sensor.dryer_door
+            from: 'off'
+            to: 'on'
         timeout:
           hours: 6
         continue_on_timeout: true
@@ -49,10 +62,20 @@ automation:
         entity_id: input_select.dryer_status
         state: Running
 
-      - service: input_select.select_option
-        entity_id: input_select.dryer_status
-        data:
-          option: Done
+      - if:
+          - condition: state
+            entity_id: binary_sensor.dryer_door
+            state: 'on'
+        then:
+          - service: input_select.select_option
+            entity_id: input_select.dryer_status
+            data:
+              option: Idle
+        else:
+          - service: input_select.select_option
+            entity_id: input_select.dryer_status
+            data:
+              option: Done
 
   - id: dryer_door_open
     alias: 'Dryer: Door open'
@@ -64,9 +87,7 @@ automation:
     condition:
       - condition: state
         entity_id: input_select.dryer_status
-        state:
-          - Running
-          - Done
+        state: Done
     action:
       - service: input_select.select_option
         entity_id: input_select.dryer_status

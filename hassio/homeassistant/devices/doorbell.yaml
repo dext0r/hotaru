@@ -1,0 +1,51 @@
+automation:
+  - id: doorbell_ringing
+    alias: 'Doorbell: Ringing'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.doorbell_ringing
+        to: 'on'
+    action:
+      - service: notify.dextor
+        data:
+          message: 🔔 Динг-донг, кто-то звонит в дверь
+
+  - id: doorbell_mode_update
+    alias: 'Doorbell: Mode update'
+    trigger:
+      - platform: time_pattern
+        minutes: /10
+
+      - platform: state
+        entity_id: input_select.home_mode
+    action:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_select.home_mode
+                state: Night
+            sequence:
+              - service: select.select_option
+                entity_id: select.doorbell_mode
+                data:
+                  option: Night
+        default:
+          - service: select.select_option
+            entity_id: select.doorbell_mode
+            data:
+              option: Day
+
+  - id: doorbell_stop_playing
+    alias: 'Doorbell: Stop playing'
+    mode: single
+    max_exceeded: silent
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.front_door
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: binary_sensor.doorbell_ringing
+        state: 'on'
+    action:
+      - service: esphome.doorbell_stop

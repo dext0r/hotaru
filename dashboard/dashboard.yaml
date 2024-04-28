@@ -292,6 +292,11 @@ views:
                 name: Closet
                 fill_container: false
                 secondary_info: last-changed
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.doorbell_ringing
+                name: Doorbell
+                fill_container: false
+                secondary_info: last-changed
         view_layout:
           show:
             mediaquery: '(min-width: 800px)'
@@ -1060,6 +1065,11 @@ views:
               - type: custom:mushroom-entity-card
                 entity: binary_sensor.closet_motion
                 name: Closet
+                fill_container: false
+                secondary_info: last-changed
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.doorbell_ringing
+                name: Doorbell
                 fill_container: false
                 secondary_info: last-changed
         view_layout:
@@ -3059,6 +3069,7 @@ views:
       - type: entities
         entities:
           - select.intercom_mode
+          - select.doorbell_mode
   - theme: Mushroom
     title: Media
     path: media

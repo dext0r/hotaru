@@ -1,0 +1,120 @@
+packages:
+  base: !include common/base.yaml
+  esp_idf: !include common/idf.yaml
+
+esphome:
+  name: doorbell
+  model: Linptech G6LW-E
+  name_add_mac_suffix: false
+
+esp32:
+  board: esp32doit-devkit-v1
+  framework:
+    type: esp-idf
+    sdkconfig_options:
+      CONFIG_FREERTOS_UNICORE: y
+    advanced:
+      ignore_efuse_mac_crc: true
+
+external_components:
+  - source: github://pauln/esphome-linp-doorbell-g04
+    components: [ linptech_g6l ]
+
+substitutions:
+  doorbell_mode_day: Day # (0)
+  doorbell_mode_night: Night # (1)
+
+globals:
+  - id: doorbell_mode
+    type: int
+    initial_value: '0'
+
+api:
+  reboot_timeout: 5min
+  services:
+    - service: ring
+      variables:
+        tune: int
+        volume: int
+      then:
+        - remote_transmitter.transmit_szy8039b:
+            tune: !lambda 'return tune;'
+            volume: !lambda 'return volume;'
+    - service: stop
+      then:
+        - remote_transmitter.transmit_szy8039b:
+            command: STOP
+
+binary_sensor:
+  - id: left_button
+    platform: gpio
+    pin:
+      number: 36
+      inverted: true
+    on_press:
+      - script.execute: ring
+
+  - id: right_button
+    platform: gpio
+    pin:
+      number: 39
+      inverted: true
+
+  - name: Doorbell Ringing
+    platform: remote_receiver
+    icon: mdi:alarm-bell
+    linptech_g6l:
+      address: 0x85EA01
+    filters:
+      delayed_off: 10s
+    on_press:
+      - script.execute: ring
+
+linptech_g6l:
+
+output:
+  - id: blue_led
+    platform: gpio
+    pin: 4
+
+  - id: orange_led
+    platform: gpio
+    pin: 13
+
+status_led:
+  pin: 13
+
+select:
+  - id: doorbell_mode_select
+    platform: template
+    name: Doorbell Mode
+    icon: mdi:bell-cog-outline
+    optimistic: true
+    options:
+      - ${doorbell_mode_day}
+      - ${doorbell_mode_night}
+    initial_option: ${doorbell_mode_day}
+    on_value:
+      lambda: |-
+        id(doorbell_mode) = i;
+
+script:
+  - id: ring
+    then:
+      - if:
+          condition:
+            lambda: 'return id(doorbell_mode) == 0;'
+          then:
+            - remote_transmitter.transmit_szy8039b:
+                tune: 3
+                volume: 6
+
+remote_receiver:
+  pin: 26
+  dump: linptech_g6l
+  filter: 20us
+  idle: 900us
+
+remote_transmitter:
+  pin: 15
+  carrier_duty_percent: 100%

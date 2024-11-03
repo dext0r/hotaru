@@ -19,6 +19,9 @@ esphome/secrets.yaml
 esphome/common/secrets.yaml
 esphome/test
 etc/transmission
+etc/containers
+etc/bin
+etc/crontab
 gw
 legacy
 sync

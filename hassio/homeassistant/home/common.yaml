@@ -238,7 +238,7 @@ template:
 
       - name: Energy Tariff
         unit_of_measurement: RUB/kWh
-        state: '3.37'
+        state: '3.69'
 
   - trigger:
       - platform: time_pattern

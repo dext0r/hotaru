@@ -7,7 +7,7 @@ automation:
         from: 'on'
         to: 'off'
         for:
-          minutes: 20
+          minutes: 40
 
       - platform: state
         entity_id: input_boolean.scene_sleepy_mood

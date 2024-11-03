@@ -27,10 +27,6 @@ automation:
           - dry
         for:
           hours: 12
-
-      - platform: state
-        entity_id: input_select.washing_machine_status
-        to: Running
     condition:
       - condition: state
         entity_id: climate.workshop_ac
@@ -50,13 +46,24 @@ automation:
         seconds: /30
 
       - platform: state
-        entity_id: climate.workshop_ac
+        entity_id:
+          - climate.workshop_ac
+          - input_select.washing_machine_status
     condition:
       - condition: or
         conditions:
-          - condition: state
-            entity_id: input_select.washing_machine_status
-            state: Running
+          - and:
+            - condition: state
+              entity_id: input_select.washing_machine_status
+              state: Running
+
+            - condition: state
+              entity_id: climate.bedroom_ac
+              state:
+                - heat_cool
+                - cool
+                - heat
+                - dry
 
           - condition: numeric_state
             entity_id: sensor.outside_temperature

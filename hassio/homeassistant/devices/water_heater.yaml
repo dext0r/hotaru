@@ -1,4 +1,32 @@
 automation:
+  - id: water_heater_turn_on
+    alias: 'Water Heater: Turn on'
+    trigger:
+      - platform: state
+        entity_id:
+          - input_select.dryer_status
+          - input_select.washing_machine_status
+        to:
+          - Idle
+          - Done
+    condition:
+      - condition: state
+        entity_id:
+          - input_boolean.hot_water_supply
+          - switch.water_heater_socket
+        state: 'off'
+
+      - condition: state
+        entity_id:
+          - input_select.dryer_status
+          - input_select.washing_machine_status
+        state:
+          - Idle
+          - Done
+    action:
+      - service: switch.turn_on
+        entity_id: switch.water_heater_socket
+
   - id: water_heater_turn_off
     alias: 'Water Heater: Turn off'
     trigger:
@@ -17,8 +45,11 @@ automation:
             state: 'on'
 
           - condition: state
-            entity_id: input_select.washing_machine_status
+            entity_id:
+              - input_select.dryer_status
+              - input_select.washing_machine_status
             state: Running
+            match: any
 
       - condition: state
         entity_id: switch.water_heater_socket

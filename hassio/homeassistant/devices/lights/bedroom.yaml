@@ -16,9 +16,14 @@ automation:
 
       - condition: or
         conditions:
-          - condition: numeric_state
-            entity_id: sensor.illuminance_north_side
-            below: 102
+          - and:
+              - condition: time
+                after: '13:00:00'
+                before: '04:00:00'
+
+              - condition: numeric_state
+                entity_id: sensor.illuminance_north_side
+                below: 20
 
           - condition: state
             entity_id: cover.bedroom

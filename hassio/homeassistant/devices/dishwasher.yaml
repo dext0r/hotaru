@@ -39,7 +39,7 @@ automation:
             for:
               minutes: 10
         timeout:
-          hours: 2
+          hours: 4
         continue_on_timeout: true
 
       - if:

@@ -24,6 +24,10 @@ automation:
           seconds: 20
     condition:
       - condition: state
+        entity_id: input_select.home_mode
+        state: Day
+
+      - condition: state
         entity_id: binary_sensor.evening_time
         state: 'on'
 
@@ -103,6 +107,10 @@ automation:
         for:
           minutes: 5
     condition:
+      - condition: state
+        entity_id: input_select.home_mode
+        state: Day
+
       - condition: state
         entity_id: binary_sensor.evening_time
         state: 'on'

@@ -5,11 +5,6 @@ automation:
       - platform: state
         entity_id: media_player.tv
         to: 'on'
-
-      - platform: state
-        entity_id: timer.tv_warm_up
-        from: 'idle'
-        to: 'active'
     condition:
       - condition: state
         entity_id: input_select.home_mode
@@ -21,10 +16,6 @@ automation:
         entity_id: input_boolean.light_control
         state: 'on'
 
-      - condition: time # сам включается ночью 😭
-        after: 02:05:00
-        before: 01:55:00
-
       - condition: state
         entity_id: light.living_room_tv
         state: 'off'
@@ -32,7 +23,7 @@ automation:
       - service: light.turn_on
         entity_id: light.living_room_tv
         data:
-          brightness_pct: 100
+          brightness_pct: 45
 
   - id: living_room_tv_light_turn_off
     alias: 'Living Room TV Light: Turn off'

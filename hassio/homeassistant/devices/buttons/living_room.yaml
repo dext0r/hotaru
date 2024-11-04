@@ -51,7 +51,7 @@ automation:
     action:
       - service: script.tv_press_button
         data:
-          button: ok
+          button: enter
 
   - id: living_room_light_switch_single_right
     alias: 'Living Room Light Switch: Single right'

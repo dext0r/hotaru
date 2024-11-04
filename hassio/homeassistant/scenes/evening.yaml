@@ -70,7 +70,7 @@ automation:
               - service: light.turn_on
                 entity_id: light.living_room_tv
                 data:
-                  brightness_pct: 100
+                  brightness_pct: 45
                   transition: 2
 
           - if:

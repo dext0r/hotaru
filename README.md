@@ -119,6 +119,7 @@
 * 1x **Яндекс Хаб**
 * Телевизор **Hisense H50B7100** (управляется по MQTT)
 * Apple TV
+* PS5 (через [аддон](https://github.com/FunkeyFlo/ps5-mqtt))
 
 ## Разное
 * 4x Приводы на краны Zigbee **[Tuya ZN231392](https://aliexpress.ru/item/1005003766950419.html)**

@@ -3124,6 +3124,9 @@ views:
             entity: media_player.workshop_station
           - type: media-control
             entity: media_player.kitchen_station
+          - type: entity
+            entity: switch.ps5_power
+            name: PS5
   - theme: Backend-selected
     title: CO2
     icon: mdi:molecule-co2

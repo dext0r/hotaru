@@ -1,5 +1,6 @@
 .git*
 !.gitignore
+.vscode
 hassio/addons
 hassio/ssl
 hassio/store

@@ -2377,61 +2377,91 @@ views:
                 :host {
                   max-width: 70px;
                 }
-      - type: custom:stack-in-card
-        mode: horizontal
+      - type: vertical-stack
         cards:
-          - type: custom:mushroom-entity-card
-            entity: input_select.dishwasher_status
-            name: Dishwasher
-            icon_color: light-green
-            card_mod:
-              style: |
-                ha-card {
-                  border: 0;
-                }
-          - type: custom:mushroom-light-card
-            entity: light.dishwasher_status
-            icon: mdi:dome-light
-            primary_info: none
-            secondary_info: none
-            use_light_color: true
-            tap_action:
-              action: more-info
-            card_mod:
-              style: |
-                ha-card {
-                  border: 0;
-                }
+          - type: custom:stack-in-card
+            mode: horizontal
+            cards:
+              - type: custom:mushroom-entity-card
+                entity: input_select.dishwasher_status
+                name: Dishwasher
+                icon_color: light-green
+                card_mod:
+                  style: |
+                    ha-card {
+                      border: 0;
+                    }
+              - type: custom:mushroom-light-card
+                entity: light.dishwasher_status
+                icon: mdi:dome-light
+                primary_info: none
+                secondary_info: none
+                use_light_color: true
+                tap_action:
+                  action: more-info
+                card_mod:
+                  style: |
+                    ha-card {
+                      border: 0;
+                    }
 
-                :host {
-                  max-width: 50px;
-                }
-          - type: custom:mushroom-entity-card
-            entity: binary_sensor.dishwasher_door
-            primary_info: none
-            secondary_info: none
-            card_mod:
-              style: |
-                ha-card {
-                  border: 0;
-                }
+                    :host {
+                      max-width: 50px;
+                    }
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.dishwasher_door
+                primary_info: none
+                secondary_info: none
+                card_mod:
+                  style: |
+                    ha-card {
+                      border: 0;
+                    }
 
-                :host {
-                  max-width: 50px;
-                }
-          - type: custom:mushroom-entity-card
-            entity: switch.dishwasher_socket
-            primary_info: none
-            secondary_info: none
-            card_mod:
-              style: |
-                ha-card {
-                  border: 0;
-                }
+                    :host {
+                      max-width: 50px;
+                    }
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.dishwasher_door_latch
+                primary_info: none
+                secondary_info: none
+                card_mod:
+                  style: |
+                    ha-card {
+                      border: 0;
+                    }
 
-                :host {
-                  max-width: 70px;
-                }
+                    :host {
+                      max-width: 50px;
+                    }
+              - type: custom:mushroom-entity-card
+                entity: switch.dishwasher_socket
+                primary_info: none
+                secondary_info: none
+                card_mod:
+                  style: |
+                    ha-card {
+                      border: 0;
+                    }
+
+                    :host {
+                      max-width: 70px;
+                    }
+          - type: conditional
+            conditions:
+              - entity: input_select.dishwasher_status
+                state: Running
+            card:
+              type: custom:mushroom-chips-card
+              chips:
+                - type: entity
+                  entity: sensor.dishwasher_progress
+                - type: entity
+                  entity: sensor.dishwasher_mode
+                - type: entity
+                  entity: sensor.dishwasher_time_remaining
+                - type: entity
+                  entity: sensor.dishwasher_temperature
       - square: false
         type: grid
         cards:

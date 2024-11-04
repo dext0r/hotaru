@@ -12,20 +12,12 @@ input_select:
 automation:
   - id: dishwasher_cycle
     alias: 'Dishwasher: Cycle'
-    max_exceeded: silent
+    mode: restart
     trigger:
-      platform: numeric_state
-      entity_id: sensor.dishwasher_power
-      above: 10
-      for:
-        seconds: 30
-    condition:
-      - condition: state
-        entity_id: input_select.dishwasher_status
-        state:
-          - Idle
-          - Dirty
-          - Done
+      platform: state
+      entity_id: sensor.dishwasher_progress
+      from: Idle
+      to: Pre-wash
     action:
       - service: input_select.select_option
         entity_id: input_select.dishwasher_status
@@ -33,11 +25,11 @@ automation:
           option: Running
 
       - wait_for_trigger:
-          - platform: numeric_state
-            entity_id: sensor.dishwasher_power
-            below: 5
-            for:
-              minutes: 10
+          - platform: state
+            entity_id: sensor.dishwasher_progress
+            to:
+              - Complete
+              - Idle
         timeout:
           hours: 4
         continue_on_timeout: true
@@ -118,13 +110,27 @@ automation:
             {% if is_state('input_select.dishwasher_status', 'Dirty') %}
               с грязной посудой, в ожидании запуска.
             {% elif is_state('input_select.dishwasher_status', 'Running') %}
-              делает бурлык-бурлык. Посуда скоро будет чистой.
+              {% if is_state('sensor.dishwasher_progress', 'Pre-wash') %}
+                в процессе предварительной мойки
+              {% elif is_state('sensor.dishwasher_progress', 'Wash') %}
+                в процессе основной мойки
+              {% elif is_state('sensor.dishwasher_progress', 'Rinse') %}
+                вспаласкивает тарелочки
+              {% elif is_state('sensor.dishwasher_progress', 'Dry') %}
+                сушит кружечки
+              {% else %}
+                делает бурлык-бурлык, посуда скоро будет чистой
+              {% endif %}
             {% elif is_state('input_select.dishwasher_status', 'Done') %}
-              закончила
+              закончила, можно доставать посуду
             {% elif is_state('input_select.dishwasher_status', 'Idle') %}
-              простаивает без дела, может загрузить в неё посуду?
+              простаивает без дела
             {% else %}
               в каком-то непонятном состоянии, что я даже хз
+            {% endif %}
+
+            {% if states('sensor.dishwasher_time_remaining') | float(0) > 0 %}
+              . Осталось {{ states('sensor.dishwasher_time_remaining') }} мин.
             {% endif %}
 
   - id: dishwasher_status_light_update
@@ -137,6 +143,23 @@ automation:
           - input_select.home_mode
     action:
       - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_select.home_mode
+                state:
+                  - Day
+                  - Vacation
+
+              - condition: state
+                entity_id: input_select.dishwasher_status
+                state: Running
+            sequence:
+              - service: light.turn_on
+                entity_id: light.dishwasher_status
+                data:
+                  brightness_pct: 100
+                  rgbw_color: [255, 0, 0, 0]
+
           - conditions:
               - condition: state
                 entity_id: input_select.home_mode

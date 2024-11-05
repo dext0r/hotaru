@@ -1,3 +1,3 @@
 .venv*
-.esphome/
+.esphome
 common/ld2410_debug*.yaml

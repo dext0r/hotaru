@@ -74,6 +74,61 @@ button:
           address: 0xBF00
           command: 0xF20D
 
+  - platform: template
+    name: AV Receiver Dimmer High
+    on_press:
+      - script.execute: av_receiver_func_menu
+      - script.wait: av_receiver_func_menu
+      - remote_transmitter.transmit_nec: # up
+          address: 0x857A
+          command: 0x629D
+      - delay: 100ms
+      - remote_transmitter.transmit_nec: # enter
+          address: 0x857A
+          command: 0x21DE
+      - delay: 100ms
+      - remote_transmitter.transmit_nec: # left
+          address: 0x857A
+          command: 0x609F
+          repeat:
+            times: 4
+            wait_time: 100ms
+      - delay: 100ms
+      - remote_transmitter.transmit_nec: # right
+          address: 0x857A
+          command: 0x619E
+          repeat:
+            times: 2
+            wait_time: 100ms
+      - delay: 3s
+      - remote_transmitter.transmit_nec: # setup
+          address: 0x857A
+          command: 0x7B84
+
+  - platform: template
+    name: AV Receiver Dimmer Low
+    on_press:
+      - script.execute: av_receiver_func_menu
+      - script.wait: av_receiver_func_menu
+      - remote_transmitter.transmit_nec: # up
+          address: 0x857A
+          command: 0x629D
+      - delay: 100ms
+      - remote_transmitter.transmit_nec: # enter
+          address: 0x857A
+          command: 0x21DE
+      - delay: 100ms
+      - remote_transmitter.transmit_nec: # left
+          address: 0x857A
+          command: 0x609F
+          repeat:
+            times: 4
+            wait_time: 100ms
+      - delay: 3s
+      - remote_transmitter.transmit_nec: # setup
+          address: 0x857A
+          command: 0x7B84
+
 number:
   - id: av_receiver_volume_up
     platform: template
@@ -168,3 +223,28 @@ switch:
     bluetooth:
       name: Living Room LD2410 Bluetooth
       disabled_by_default: true
+
+script:
+  - id: av_receiver_func_menu
+    then:
+      - remote_transmitter.transmit_nec: # return
+          address: 0x857A
+          command: 0x55AA
+          repeat:
+            times: 3
+      - delay: 100ms
+      - remote_transmitter.transmit_nec: # setup
+          address: 0x857A
+          command: 0x7B84
+      - delay: 100ms
+      - remote_transmitter.transmit_nec: # up
+          address: 0x857A
+          command: 0x629D
+          repeat:
+            times: 3
+            wait_time: 100ms
+      - delay: 100ms
+      - remote_transmitter.transmit_nec: # enter
+          address: 0x857A
+          command: 0x21DE
+      - delay: 100ms

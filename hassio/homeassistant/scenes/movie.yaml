@@ -47,7 +47,7 @@ automation:
       - service: light.turn_on
         entity_id: light.living_room_tv
         data:
-          brightness_pct: 20
+          brightness_pct: 14
 
       - service: cover.close_cover
         entity_id: cover.living_room
@@ -79,6 +79,37 @@ automation:
           target: >
             {{ trigger.event.data.get('entity_id', 'last') }}
           text: Приятного просмотра!
+
+      - service: script.yandex_station_command
+        data:
+          target: media_player.living_room_station
+          command: выключи часы
+
+      - service: button.press
+        entity_id: button.av_receiver_dimmer_low
+
+      - wait_for_trigger:
+          - platform: state
+            entity_id: media_player.atv
+            to:
+              - standby
+              - idle
+        timeout:
+          seconds: 5
+        continue_on_timeout: true
+
+      - if:
+          - condition: state
+            entity_id: media_player.atv
+            state:
+              - standby
+              - idle
+        then:
+          - service: media_player.select_source
+            target:
+              entity_id: media_player.atv
+            data:
+              source: Plex
 
   - id: scene_movie_turn_off
     alias: 'Scene Movie: Turn off'
@@ -140,6 +171,14 @@ automation:
               brightness_pct: 23
               kelvin: 3400
               transition: 5
+
+      - service: script.yandex_station_command
+        data:
+          target: media_player.living_room_station
+          command: включи часы
+
+      - service: button.press
+        entity_id: button.av_receiver_dimmer_high
 
   - id: scene_movie_playing
     alias: 'Scene Movie: Playing'

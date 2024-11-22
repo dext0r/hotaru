@@ -17,7 +17,9 @@ automation:
       platform: state
       entity_id: sensor.dishwasher_progress
       from: Idle
-      to: Pre-wash
+      to:
+        - Pre-wash
+        - Wash
     action:
       - service: input_select.select_option
         entity_id: input_select.dishwasher_status

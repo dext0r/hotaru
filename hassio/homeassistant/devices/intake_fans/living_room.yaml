@@ -35,7 +35,7 @@ template:
         {% set outdoor_temperature = states('sensor.outside_temperature')|float(0) %}
 
         {% if outdoor_temperature >= 10 %}
-          {% set v = 0 %}
+          {% set v = 1 %}
         {% endif %}
 
         {% if is_state('input_select.home_mode', 'Day') or is_state('input_boolean.scene_overnight_guests', 'on') %}
@@ -52,7 +52,7 @@ template:
 
         {% if is_state('input_select.home_mode', 'Night') and is_state('input_boolean.scene_overnight_guests', 'off') %}
           {% if outdoor_temperature >= 5 %}
-            {% set v = 0 %}
+            {% set v = 1 %}
           {% else %}
             {% set v = 7 %}
           {% endif %}
@@ -65,7 +65,7 @@ template:
         {% if is_state('input_boolean.living_room_airing_warm', 'on') %}
           {% set v = 20 %}
         {% elif is_state('input_boolean.living_room_airing_cold', 'on') %}
-          {% set v = 0 %}
+          {% set v = 1 %}
         {% endif %}
 
         {{ v }}
@@ -115,7 +115,7 @@ template:
 
         {% if outdoor_temperature < -12 %}
           {% if is_state('input_select.home_mode', 'Night') or is_state('input_boolean.scene_sleepy_mood', 'on') %}
-            {% set v = 0 %}
+            {% set v = 1 %}
           {% endif %}
         {% endif %}
 

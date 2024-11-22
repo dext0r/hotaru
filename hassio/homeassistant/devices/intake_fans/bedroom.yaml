@@ -25,7 +25,7 @@ template:
         {% set outdoor_temperature = states('sensor.outside_temperature')|float(0) %}
 
         {% if outdoor_temperature >= 5 %}
-          {% set v = 0 %}
+          {% set v = 1 %}
         {% endif %}
 
         {% if is_state('input_select.home_mode', 'Day') %}
@@ -47,11 +47,11 @@ template:
         {% if is_state('input_boolean.bedroom_airing_warm', 'on') %}
           {% set v = 20 %}
         {% elif is_state('input_boolean.bedroom_airing_cold', 'on') %}
-          {% set v = 0 %}
+          {% set v = 1 %}
         {% endif %}
 
         {% if is_state('input_select.washing_machine_status', 'Running') %}
-          {% set v = 0 %}
+          {% set v = 1 %}
         {% endif %}
 
         {{ v }}

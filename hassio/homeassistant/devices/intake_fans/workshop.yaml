@@ -31,7 +31,7 @@ template:
         {% set outdoor_temperature = states('sensor.outside_temperature')|float(0) %}
 
         {% if outdoor_temperature >= 7 %}
-          {% set v = 0 %}
+          {% set v = 1 %}
         {% endif %}
 
         {% if is_state('binary_sensor.workshop_occupancy', 'on') and outdoor_temperature < 15 %}
@@ -47,7 +47,7 @@ template:
         {% if is_state('input_boolean.workshop_airing_warm', 'on') %}
           {% set v = 23 %}
         {% elif is_state('input_boolean.workshop_airing_cold', 'on') %}
-          {% set v = 0 %}
+          {% set v = 1 %}
         {% endif %}
 
         {% if outdoor_temperature < 0 %}
@@ -56,7 +56,7 @@ template:
           {% endif %}
         {% endif %}
 
-        {{ v }}
+        {{ max(v, 1) }}
 
     - unique_id: sensor.workshop_intake_fan_target_fan_speed
       name: 'Workshop Intake Fan: Target fan speed'
@@ -106,7 +106,7 @@ template:
 
         {% if outdoor_temperature < -12 %}
           {% if is_state('input_select.home_mode', 'Night') or is_state('input_boolean.scene_sleepy_mood', 'on') %}
-            {% set v = 0 %}
+            {% set v = 1 %}
           {% endif %}
         {% endif %}
 

@@ -26,8 +26,9 @@ climate:
         off
       {% endif %}
     set_hvac_mode:
-      - service: notify.debug
+      - service: notify.send_message
         data:
+          entity_id: notify.debug
           message: 'Set HVAC mode: {{ hvac_mode }}'
 
       - choose:
@@ -70,8 +71,9 @@ climate:
           - service: switch.turn_off
             entity_id: switch.kettle_power
     set_temperature:
-      - service: notify.debug
+      - service: notify.send_message
         data:
+          entity_id: notify.debug
           message: 'Set temperature: {{ temperature }}'
 
       - service: number.set_value

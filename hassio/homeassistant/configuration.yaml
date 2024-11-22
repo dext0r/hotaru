@@ -8,6 +8,8 @@ frontend:
   themes: !include_dir_merge_named themes
 history:
 homeassistant:
+  allowlist_external_dirs:
+    - /config
   packages:
     ac_bedroom: !include devices/ac/bedroom.yaml
     ac_workshop: !include devices/ac/workshop.yaml
@@ -100,11 +102,6 @@ notify:
   - platform: telegram
     name: dextor
     chat_id: !secret telegram_chat_id
-
-  - platform: file
-    name: debug
-    filename: /config/debug.log
-    timestamp: true
 none:
 logbook:
   exclude:
@@ -120,7 +117,6 @@ logger:
     custom_components.yandex_station_intents: debug
     custom_components.yandex_station: debug
     homeassistant.components.telegram_bot: debug
-map:
 mobile_app:
 morph_numbers:
 my:

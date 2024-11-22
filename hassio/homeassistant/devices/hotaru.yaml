@@ -9,11 +9,6 @@ automation:
         data:
           addon: core_letsencrypt
 
-sensor:
-  - platform: systemmonitor
-    resources:
-      - type: processor_use
-
 template:
   - sensor:
       - unique_id: sensor.hotaru_exhaust_fan_speed

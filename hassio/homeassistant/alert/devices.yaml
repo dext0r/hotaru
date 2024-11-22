@@ -95,6 +95,7 @@ automation:
         value_template: >
           {{ trigger.event.data.new_state and trigger.event.data.new_state.state == 'unavailable' }}
     action:
-      - service: notify.debug
+      - service: notify.send_message
         data:
+          entity_id: notify.debug
           message: 'Device unavailable: {{ trigger.event.data.new_state.entity_id }}'

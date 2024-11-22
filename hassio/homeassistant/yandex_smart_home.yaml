@@ -175,43 +175,43 @@ entity_config:
   switch.home_airing:
     name: Общее проветривание
     room: Служебные
-    type: devices.types.fan
+    type: devices.types.ventilation.fan
   input_boolean.living_room_airing_warm:
     name: Теплое проветривание
     room: Гостиная
-    type: devices.types.fan
+    type: devices.types.ventilation.fan
   input_boolean.living_room_airing_cold:
     name: Холодное проветривание
     room: Гостиная
-    type: devices.types.fan
+    type: devices.types.ventilation.fan
   switch.living_room_airing:
     name: Проветривание
     room: Гостиная
-    type: devices.types.fan
+    type: devices.types.ventilation.fan
   input_boolean.bedroom_airing_warm:
     name: Теплое проветривание
     room: Спальня
-    type: devices.types.fan
+    type: devices.types.ventilation.fan
   input_boolean.bedroom_airing_cold:
     name: Холодное проветривание
     room: Спальня
-    type: devices.types.fan
+    type: devices.types.ventilation.fan
   switch.bedroom_airing:
     name: Проветривание
     room: Спальня
-    type: devices.types.fan
+    type: devices.types.ventilation.fan
   input_boolean.workshop_airing_warm:
     name: Теплое проветривание
     room: Мастерская
-    type: devices.types.fan
+    type: devices.types.ventilation.fan
   input_boolean.workshop_airing_cold:
     name: Холодное проветривание
     room: Мастерская
-    type: devices.types.fan
+    type: devices.types.ventilation.fan
   switch.workshop_airing:
     name: Проветривание
     room: Мастерская
-    type: devices.types.fan
+    type: devices.types.ventilation.fan
   script.living_room_cozy_light:
     name: Уютный свет
     room: Гостиная

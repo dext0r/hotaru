@@ -78,8 +78,8 @@ light:
     platform: partition
     segments:
       - id: led
-        from: 54
-        to: 54
+        from: 52
+        to: 52
     gamma_correct: 1
     effects:
       - pulse:
@@ -92,7 +92,7 @@ light:
     segments:
       - id: led
         from: 1
-        to: 53
+        to: 51
     gamma_correct: 1
 
   - id: led
@@ -100,4 +100,4 @@ light:
     pin: 13
     type: GRBW
     variant: SK6812
-    num_leds: 55
+    num_leds: 53

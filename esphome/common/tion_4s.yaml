@@ -4,12 +4,13 @@ external_components:
     components: [crash_info, etl, vport]
 
 esphome:
-  min_version: 2023.7.0
+  min_version: 2024.11.0
 
 ota:
-  on_begin:
-    then:
-      - lambda: id(tion_ble_client).set_enabled(false);
+  - platform: esphome
+    on_begin:
+      then:
+        - lambda: id(tion_ble_client).set_enabled(false);
 
 ble_client:
   - mac_address: $tion_mac_address

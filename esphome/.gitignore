@@ -1,3 +1,4 @@
 .venv*
 .esphome
+poetry.lock
 common/ld2410_debug*.yaml

@@ -1,0 +1,68 @@
+https://github.com/esphome/esphome/pull/2823
+
+--- a/esphome/components/api/api_connection.cpp
++++ b/esphome/components/api/api_connection.cpp
+@@ -1475,5 +1475,5 @@
+   resp.manufacturer = "Host";
+ #endif
+-  resp.model = ESPHOME_BOARD;
++  resp.model = ESPHOME_DEVICE_MODEL;
+ #ifdef USE_DEEP_SLEEP
+   resp.has_deep_sleep = deep_sleep::global_has_deep_sleep;
+diff -U 2 -r a/esphome/components/mqtt/mqtt_component.cpp esphome/components/mqtt/mqtt_component.cpp
+--- a/esphome/components/mqtt/mqtt_component.cpp
++++ b/esphome/components/mqtt/mqtt_component.cpp
+@@ -164,5 +164,5 @@
+         const char *model = std::strchr(ESPHOME_PROJECT_NAME, '.');
+         if (model == nullptr) {  // must never happen but check anyway
+-          device_info[MQTT_DEVICE_MODEL] = ESPHOME_BOARD;
++          device_info[MQTT_DEVICE_MODEL] = ESPHOME_DEVICE_MODEL;
+           device_info[MQTT_DEVICE_MANUFACTURER] = ESPHOME_PROJECT_NAME;
+         } else {
+@@ -172,5 +172,5 @@
+ #else
+         device_info[MQTT_DEVICE_SW_VERSION] = ESPHOME_VERSION " (" + App.get_compilation_time() + ")";
+-        device_info[MQTT_DEVICE_MODEL] = ESPHOME_BOARD;
++        device_info[MQTT_DEVICE_MODEL] = ESPHOME_DEVICE_MODEL;
+ #if defined(USE_ESP8266) || defined(USE_ESP32)
+         device_info[MQTT_DEVICE_MANUFACTURER] = "Espressif";
+diff -U 2 -r a/esphome/core/config.py esphome/core/config.py
+--- a/esphome/core/config.py
++++ b/esphome/core/config.py
+@@ -20,4 +20,5 @@
+     CONF_INCLUDES,
+     CONF_LIBRARIES,
++    CONF_MODEL,
+     CONF_MIN_VERSION,
+     CONF_NAME,
+@@ -162,4 +163,5 @@
+                 }
+             ),
++            cv.Optional(CONF_MODEL): cv.string,
+             cv.Optional(CONF_MIN_VERSION, default=ESPHOME_VERSION): cv.All(
+                 cv.version_number, cv.validate_esphome_version
+@@ -232,4 +234,7 @@
+         )
+     if newstyle_found:
++        if CONF_MODEL not in conf:
++            conf[CONF_MODEL] = [key for key in TARGET_PLATFORMS if key in config][0]
++
+         # Convert to newstyle
+         for key in oldstyle_opts:
+@@ -405,4 +410,7 @@
+             )
+
++    if CONF_MODEL in config:
++        cg.add_define("ESPHOME_DEVICE_MODEL", config[CONF_MODEL])
++
+     if config[CONF_PLATFORMIO_OPTIONS]:
+         CORE.add_job(_add_platformio_options, config[CONF_PLATFORMIO_OPTIONS])
+diff -U 2 -r a/esphome/core/defines.h esphome/core/defines.h
+--- a/esphome/core/defines.h
++++ b/esphome/core/defines.h
+@@ -10,4 +10,5 @@
+ // Informative flags
+ #define ESPHOME_BOARD "dummy_board"
++#define ESPHOME_DEVICE_MODEL "dummy model"
+ #define ESPHOME_PROJECT_NAME "dummy project"
+ #define ESPHOME_PROJECT_VERSION "v2"

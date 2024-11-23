@@ -11,10 +11,7 @@ logger:
   level: DEBUG
 
 ota:
-  - platform: esphome
-    password: !secret password
-
-safe_mode:
+  password: !secret password
   num_attempts: 5
 
 preferences:

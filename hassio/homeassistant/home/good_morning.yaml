@@ -130,7 +130,7 @@ automation:
         data:
           target: >
             {{ trigger.event.data.get('entity_id', 'last') }}
-          command: Какой сегодня день
+          command: Какой сегодня день и время
 
       - service: script.yandex_station_command
         data:

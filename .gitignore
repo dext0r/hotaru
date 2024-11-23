@@ -11,6 +11,7 @@ hassio/homeassistant/blueprints
 hassio/homeassistant/image
 hassio/homeassistant/tts
 hassio/homeassistant/www
+hassio/homeassistant/ps5-mqtt
 hassio/homeassistant/zigbee2mqtt/*
 !hassio/homeassistant/zigbee2mqtt/devices.yaml
 hassio/homeassistant/www

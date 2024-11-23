@@ -265,3 +265,10 @@ entity_config:
     properties:
       - type: meter
         entity: sensor.kettle_water_level_ml
+  switch.avr_power:
+    type: media_device.receiver
+  media_player.tv:
+    range:
+      min: 0
+      max: 100
+      precision: 5

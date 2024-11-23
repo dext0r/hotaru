@@ -1,0 +1,22 @@
+automation:
+  - id: avr_turn_off_no_tv
+    alias: 'AVR: Turn off (no TV)'
+    mode: restart
+    trigger:
+      - platform: state
+        entity_id: switch.avr_power
+        to: 'on'
+    action:
+      - delay:
+          minutes: 1
+
+      - condition: state
+        entity_id: media_player.tv
+        state: 'off'
+
+      - condition: state
+        entity_id: switch.avr_power
+        state: 'on'
+
+      - action: switch.turn_off
+        entity_id: switch.avr_power

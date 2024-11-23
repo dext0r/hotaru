@@ -135,6 +135,7 @@
 * Датчик присутствия в кровати: две [ленты](https://aliexpress.ru/item/1005001572817402.html) + модуль [ADS1115](https://aliexpress.ru/item/32817162654.html) + ESP. Гайд: https://dannytsang.co.uk/bed-sensor-with-home-assistant/
 * Чайник Redmond **SkyKettle G240S** с контролем уровня воды на весах HX711: esphome + патченный компонент [ESPHome-Ready4Sky](https://github.com/KomX/ESPHome-Ready4Sky). Подробнее о реализации - https://t.me/yandex_smart_home/48400 (для владельцев 3D принтеров - https://github.com/malinovsku/device-esphome/tree/master/kyxna-kettle)
 * [Диодная полоска](https://www.ozon.ru/product/modul-iz-8-rgb-svetodiodov-ws2812b-297834581/) для индикации всякого в гостиной, подключена к "универсальной коробке"
+* ESP8266 управлялка ресивером Yamaha RX-V371 через HDMI-CEC и IR. Родилась из-за ленивых программистов компании LG, которые не могут обработать 6 байт по шине CEC для получения актуальной громкости ресивера (весь Reddit тоже стонет). По CEC получаем громкость и питание ресивера, по IR управляем громкостью (IR сильно быстрее HDMI, когда нужно послать много команд).
 
 ## Новогодний DLC
 * Несколько гирлянд с перемычками, чтобы не мигали эпилиптично
@@ -189,5 +190,5 @@
 
 ## Статистика по устройствам
 * Zigbee устройств: 64
-* Esphome устройств: 30
+* Esphome устройств: 31
 * Прочих УД устройств на wifi: 17

@@ -85,8 +85,10 @@ automation:
           target: media_player.living_room_station
           command: выключи часы
 
-      - service: button.press
-        entity_id: button.av_receiver_dimmer_low
+      - action: select.select_option
+        entity_id: select.avr_display_brightness
+        data:
+          option: Low
 
       - wait_for_trigger:
           - platform: state
@@ -177,8 +179,10 @@ automation:
           target: media_player.living_room_station
           command: включи часы
 
-      - service: button.press
-        entity_id: button.av_receiver_dimmer_high
+      - action: select.select_option
+        entity_id: select.avr_display_brightness
+        data:
+          option: High
 
   - id: scene_movie_playing
     alias: 'Scene Movie: Playing'

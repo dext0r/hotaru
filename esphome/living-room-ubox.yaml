@@ -35,17 +35,6 @@ uart:
     parity: NONE
     stop_bits: 1
 
-remote_transmitter:
-  id: transmitter
-  pin: 25
-  carrier_duty_percent: 50%
-
-# remote_receiver:
-#   pin:
-#     number: 33
-#     inverted: true
-#   dump: all
-
 ld2410:
   uart_id: ld2410_uart
   # timeout: 90
@@ -65,110 +54,6 @@ binary_sensor:
     has_target:
       name: Living Room Occupancy
       icon: ''
-
-button:
-  - platform: template
-    name: TV Toggle Power
-    on_press:
-      - remote_transmitter.transmit_nec:
-          address: 0xBF00
-          command: 0xF20D
-
-  - platform: template
-    name: AV Receiver Dimmer High
-    on_press:
-      - script.execute: av_receiver_func_menu
-      - script.wait: av_receiver_func_menu
-      - remote_transmitter.transmit_nec: # up
-          address: 0x857A
-          command: 0x629D
-      - delay: 100ms
-      - remote_transmitter.transmit_nec: # enter
-          address: 0x857A
-          command: 0x21DE
-      - delay: 100ms
-      - remote_transmitter.transmit_nec: # left
-          address: 0x857A
-          command: 0x609F
-          repeat:
-            times: 4
-            wait_time: 100ms
-      - delay: 100ms
-      - remote_transmitter.transmit_nec: # right
-          address: 0x857A
-          command: 0x619E
-          repeat:
-            times: 2
-            wait_time: 100ms
-      - delay: 3s
-      - remote_transmitter.transmit_nec: # setup
-          address: 0x857A
-          command: 0x7B84
-
-  - platform: template
-    name: AV Receiver Dimmer Low
-    on_press:
-      - script.execute: av_receiver_func_menu
-      - script.wait: av_receiver_func_menu
-      - remote_transmitter.transmit_nec: # up
-          address: 0x857A
-          command: 0x629D
-      - delay: 100ms
-      - remote_transmitter.transmit_nec: # enter
-          address: 0x857A
-          command: 0x21DE
-      - delay: 100ms
-      - remote_transmitter.transmit_nec: # left
-          address: 0x857A
-          command: 0x609F
-          repeat:
-            times: 4
-            wait_time: 100ms
-      - delay: 3s
-      - remote_transmitter.transmit_nec: # setup
-          address: 0x857A
-          command: 0x7B84
-
-number:
-  - id: av_receiver_volume_up
-    platform: template
-    name: AV Receiver Volume Up
-    min_value: 0
-    max_value: 40
-    step: 1
-    icon: mdi:volume-plus
-    set_action:
-      - lambda: |-
-          remote_base::NECAction<> *ir_action;
-          ir_action = new remote_base::NECAction<>();
-          ir_action->set_parent(id(transmitter));
-          ir_action->set_send_times(int(x) * 2);
-          ir_action->set_send_wait(30000);
-          ir_action->set_address(0x857A);
-          ir_action->set_command(0xE51A);
-          ir_action->play();
-
-          id(av_receiver_volume_up).publish_state(0);
-
-  - id: av_receiver_volume_down
-    platform: template
-    name: AV Receiver Volume Down
-    min_value: 0
-    max_value: 40
-    step: 1
-    icon: mdi:volume-minus
-    set_action:
-      - lambda: |-
-          remote_base::NECAction<> *ir_action;
-          ir_action = new remote_base::NECAction<>();
-          ir_action->set_parent(id(transmitter));
-          ir_action->set_send_times(int(x) * 2);
-          ir_action->set_send_wait(30000);
-          ir_action->set_address(0x857A);
-          ir_action->set_command(0xE41B);
-          ir_action->play();
-
-          id(av_receiver_volume_down).publish_state(0);
 
 light:
   - name: Living Room TV Status Light Left
@@ -223,28 +108,3 @@ switch:
     bluetooth:
       name: Living Room LD2410 Bluetooth
       disabled_by_default: true
-
-script:
-  - id: av_receiver_func_menu
-    then:
-      - remote_transmitter.transmit_nec: # return
-          address: 0x857A
-          command: 0x55AA
-          repeat:
-            times: 3
-      - delay: 100ms
-      - remote_transmitter.transmit_nec: # setup
-          address: 0x857A
-          command: 0x7B84
-      - delay: 100ms
-      - remote_transmitter.transmit_nec: # up
-          address: 0x857A
-          command: 0x629D
-          repeat:
-            times: 3
-            wait_time: 100ms
-      - delay: 100ms
-      - remote_transmitter.transmit_nec: # enter
-          address: 0x857A
-          command: 0x21DE
-      - delay: 100ms

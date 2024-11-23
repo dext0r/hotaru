@@ -70,6 +70,7 @@ homeassistant:
     lights_workshop: !include devices/lights/workshop.yaml
     lights: !include devices/lights.yaml
     locks: !include devices/locks.yaml
+    media_avr: !include devices/media/avr.yaml
     media_tv: !include devices/media/tv.yaml
     media_yandex_station: !include devices/media/yandex_station.yaml
     portable_fan: !include devices/portable_fan.yaml

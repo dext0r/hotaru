@@ -1,0 +1,226 @@
+packages:
+  base: !include common/base.yaml
+
+external_components:
+  - source: lib
+
+esphome:
+  name: avr
+  model: Yamaha RX-V371 / ESP8266
+  name_add_mac_suffix: false
+  on_boot:
+    - script.execute: avr_cec_give_audio_status
+
+esp8266:
+  board: d1_mini
+  restore_from_flash: true
+
+ota:
+  - platform: esphome
+    on_begin:
+      then:
+        - lambda: id(cec).stop();
+
+remote_transmitter:
+  id: transmitter
+  pin: D2
+  carrier_duty_percent: 50%
+
+# remote_receiver:
+#   pin:
+#     number: D1
+#     inverted: true
+#   dump: all
+
+globals:
+  - id: avr_power
+    type: bool
+    initial_value: 'false'
+
+  - id: avr_volume_level
+    type: float
+    initial_value: '0'
+
+  - id: avr_volume_muted
+    type: bool
+    initial_value: 'false'
+
+number:
+  - id: avr_volume_level_number
+    platform: template
+    name: AVR Volume Level
+    icon: mdi:volume-source
+    lambda: |-
+      return id(avr_volume_level);
+    set_action:
+      - script.execute:
+          id: avr_set_volume
+          target_level: !lambda return x;
+    min_value: 0
+    max_value: 1
+    step: 0.01
+
+script:
+  - id: avr_cec_give_audio_status
+    then:
+      - hdmi_cec.send:
+          destination: 0x5
+          data: [0x71]
+
+  - id: avr_set_volume
+    mode: restart
+    parameters:
+      target_level: float
+    then:
+      - script.execute: avr_cec_give_audio_status
+      - delay: 1s
+      - if:
+          condition:
+            lambda: return id(avr_volume_level) > target_level;
+          then:
+            - remote_transmitter.transmit_nec: # volume up
+                address: 0x857A
+                command: 0xE41B
+                repeat:
+                  times: !lambda return int((id(avr_volume_level) - target_level) * 100 * 2);
+                  wait_time: 30ms
+            - script.execute: avr_cec_give_audio_status
+      - if:
+          condition:
+            lambda: return id(avr_volume_level) < target_level;
+          then:
+            - remote_transmitter.transmit_nec: # volume down
+                address: 0x857A
+                command: 0xE51A
+                repeat:
+                  times: !lambda return  int((target_level - id(avr_volume_level)) * 100 * 2);
+                  wait_time: 30ms
+            - script.execute: avr_cec_give_audio_status
+
+  - id: avr_set_display_brightness
+    mode: queued
+    parameters:
+      brightness: string
+    then:
+      - remote_transmitter.transmit_nec: # return
+          address: 0x857A
+          command: 0x55AA
+          repeat:
+            times: 3
+      - delay: 100ms
+      - remote_transmitter.transmit_nec: # setup
+          address: 0x857A
+          command: 0x7B84
+      - delay: 100ms
+      - remote_transmitter.transmit_nec: # up
+          address: 0x857A
+          command: 0x629D
+          repeat:
+            times: 3
+            wait_time: 100ms
+      - delay: 100ms
+      - remote_transmitter.transmit_nec: # enter
+          address: 0x857A
+          command: 0x21DE
+      - delay: 100ms
+      - remote_transmitter.transmit_nec: # up
+          address: 0x857A
+          command: 0x629D
+      - delay: 100ms
+      - remote_transmitter.transmit_nec: # enter
+          address: 0x857A
+          command: 0x21DE
+      - delay: 100ms
+      - remote_transmitter.transmit_nec: # left
+          address: 0x857A
+          command: 0x609F
+          repeat:
+            times: 4
+            wait_time: 100ms
+      - delay: 100ms
+      - remote_transmitter.transmit_nec: # right
+          address: 0x857A
+          command: 0x619E
+          repeat:
+            times: !lambda |-
+              return (brightness == "High") ? 2 : 0;
+            wait_time: 100ms
+      - delay: 3s
+      - remote_transmitter.transmit_nec: # setup
+          address: 0x857A
+          command: 0x7B84
+
+select:
+  - platform: template
+    name: AVR Display Brightness
+    icon: mdi:brightness-percent
+    optimistic: true
+    options:
+      - High
+      - Low
+    initial_option: High
+    restore_value: true
+    set_action:
+      - script.execute:
+          id: avr_set_display_brightness
+          brightness: !lambda return x;
+
+switch:
+  - platform: template
+    name: AVR Power
+    lambda: return id(avr_power);
+    turn_on_action:
+      - remote_transmitter.transmit_nec: # power
+          address: 0x817E
+          command: 0xD52A
+    turn_off_action:
+      - remote_transmitter.transmit_nec: # power
+          address: 0x817E
+          command: 0xD52A
+
+  - platform: template
+    name: AVR Volume Muted
+    icon: mdi:volume-off
+    lambda: return id(avr_volume_muted);
+    turn_on_action:
+      - hdmi_cec.send:
+          destination: 0x5
+          data: [0x44, 0x43]  # User Control Pressed: Mute
+    turn_off_action:
+      - hdmi_cec.send:
+          destination: 0x5
+          data: [0x44, 0x43]
+
+hdmi_cec:
+  id: cec
+  pin: D4
+  address: 0xE
+  physical_address: 0x2400
+  promiscuous_mode: true
+  on_message:
+    - data: [0x72, 0x01]  # Set System Audio Mode: On
+      then:
+        - globals.set:
+            id: avr_power
+            value: 'true'
+        - delay: 7s
+        - script.execute: avr_cec_give_audio_status
+
+    - data: [0x72, 0x00]  # Set System Audio Mode: Off
+      then:
+        - globals.set:
+            id: avr_power
+            value: 'false'
+
+    - opcode: 0x7A  # Report Audio Status
+      then:
+        - lambda: |-
+            if (data[1] > 100) {
+              id(avr_volume_muted) = true;
+              return;
+            }
+
+            id(avr_volume_level) = data[1] / 100.0;
+            id(avr_volume_level_number).update();
+            id(avr_volume_muted) = false;
+            id(avr_power) = true;

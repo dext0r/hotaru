@@ -5,6 +5,7 @@ media_player:
   device_class: tv
   children:
     - media_player.living_room_tv_base
+  active_child_template: media_player.living_room_tv_base
   commands:
     turn_on:
       service: wake_on_lan.send_magic_packet
@@ -15,7 +16,38 @@ media_player:
     turn_off:
       service: script.tv_turn_off
 
+    volume_set:
+      action: number.set_value
+      entity_id: number.avr_volume_level
+      data:
+        value: '{{ volume_level }}'
+
+    volume_mute:
+      action: switch.turn_on
+      target:
+        entity_id: switch.avr_volume_muted
+  attributes:
+    volume_level: number.avr_volume_level
+    is_volume_muted: switch.avr_volume_muted
+
 automation:
+  - id: tv_fix_sound
+    alias: 'TV: Fix sound'
+    trigger:
+      - platform: event
+        event_type: yandex_intent
+        event_data:
+          text: Почини звук
+    action:
+      - action: switch.toggle
+        entity_id: switch.avr_power
+
+      - delay:
+          seconds: 3
+
+      - action: switch.toggle
+        entity_id: switch.avr_power
+
   - id: tv_switch_to_atv
     alias: 'TV: Switch to ATV'
     trigger:
@@ -37,6 +69,26 @@ automation:
         entity_id: media_player.living_room_tv_base
         data:
           source: ATV
+
+  - id: tv_set_volume_ps5
+    alias: 'TV: Set volume (PS5)'
+    trigger:
+      - platform: state
+        entity_id: media_player.tv
+        attribute: source
+        to: PS5
+    condition:
+      - condition: template
+        value_template: >
+          {{ state_attr('media_player.tv', 'volume_level')|float(0) >= 0.41 }}
+    action:
+      - delay:
+          seconds: 3
+
+      - service: media_player.volume_set
+        entity_id: media_player.tv
+        data:
+          volume_level: 0.39
 
 script:
   tv_turn_off:

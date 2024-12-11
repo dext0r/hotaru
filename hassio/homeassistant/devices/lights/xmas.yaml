@@ -1,3 +1,8 @@
+input_boolean:
+  xmas_lighting:
+    name: Xmas Lighting
+    icon: mdi:snowman
+
 group:
   xmas_lights:
     name: Xmas Lights
@@ -31,7 +36,9 @@ automation:
         to: active
     condition:
       - condition: state
-        entity_id: input_boolean.light_control
+        entity_id:
+          - input_boolean.light_control
+          - input_boolean.xmas_lighting
         state: 'on'
     action:
       - service: light.turn_on
@@ -58,7 +65,9 @@ automation:
         discovery_id: 0x00158d00039723b6 action_single
     condition:
       - condition: state
-        entity_id: input_boolean.light_control
+        entity_id:
+          - input_boolean.light_control
+          - input_boolean.xmas_lighting
         state: 'on'
     action:
       - service: light.turn_off
@@ -95,7 +104,9 @@ automation:
         to: active
     condition:
       - condition: state
-        entity_id: input_boolean.light_control
+        entity_id:
+          - input_boolean.light_control
+          - input_boolean.xmas_lighting
         state: 'on'
 
       - condition: state
@@ -141,7 +152,9 @@ automation:
         to: 'on'
     condition:
       - condition: state
-        entity_id: input_boolean.light_control
+        entity_id:
+          - input_boolean.light_control
+          - input_boolean.xmas_lighting
         state: 'on'
 
       - condition: state
@@ -165,7 +178,9 @@ automation:
         to: 'on'
     condition:
       - condition: state
-        entity_id: input_boolean.light_control
+        entity_id:
+          - input_boolean.light_control
+          - input_boolean.xmas_lighting
         state: 'on'
 
       - condition: state
@@ -194,7 +209,9 @@ automation:
           seconds: 10
     condition:
       - condition: state
-        entity_id: input_boolean.light_control
+        entity_id:
+          - input_boolean.light_control
+          - input_boolean.xmas_lighting
         state: 'on'
 
       - condition: state
@@ -223,7 +240,9 @@ automation:
         to: 'on'
     condition:
       - condition: state
-        entity_id: input_boolean.light_control
+        entity_id:
+          - input_boolean.light_control
+          - input_boolean.xmas_lighting
         state: 'on'
 
       - condition: state
@@ -250,7 +269,9 @@ automation:
           seconds: 10
     condition:
       - condition: state
-        entity_id: input_boolean.light_control
+        entity_id:
+          - input_boolean.light_control
+          - input_boolean.xmas_lighting
         state: 'on'
 
       - condition: state
@@ -282,7 +303,9 @@ automation:
         to: closed
     condition:
       - condition: state
-        entity_id: input_boolean.light_control
+        entity_id:
+          - input_boolean.light_control
+          - input_boolean.xmas_lighting
         state: 'on'
 
       - condition: state
@@ -342,7 +365,9 @@ automation:
         to: open
     condition:
       - condition: state
-        entity_id: input_boolean.light_control
+        entity_id:
+          - input_boolean.light_control
+          - input_boolean.xmas_lighting
         state: 'on'
 
       - condition: state

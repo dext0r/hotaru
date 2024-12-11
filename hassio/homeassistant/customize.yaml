@@ -31,8 +31,6 @@ switch.living_room_heater:
   volatile: true
 sensor.living_room_heater_energy:
   volatile: true
-switch.portable_fan:
-  volatile: true
 switch.ps5_power:
   volatile: true
 sensor.kitchen_stove_energy:

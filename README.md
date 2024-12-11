@@ -88,7 +88,6 @@
 * 2x Инверторный **Midea MSAG1-09N8C2**: управляется по USB через esphome платой [ESP8266 ESP-12F](https://aliexpress.ru/item/32815395082.html) (там есть конвертер уровней) + диодик для управления подсветкой/follow me
 * 3x Бризер **Tion 4S**: управляется по BT через ESP32 (https://github.com/dentra/esphome-tion)
 * Тупой обогреватель на **Sonoff Basic R3** (esphome)
-* Тупой вентилятор на **Sonoff Basic** (esphome) - временно решение для нагнетания холодного воздуха в гостиную
 * 2x Увлажнитель **Smartmi Zhimi Air Humidifier CJXJSQ02ZM** (интеграция Xiaomi Miot Auto)
 * Увлажнитель **Xiaomi Mijia Pure Smart Humidifier Pro CJSJSQ02LX** (интеграция Xiaomi Miot Auto)
 * Увлажнитель **Tion Iris**, он же **AIRMX A3S**: куплен с безумной скидкой на Мегамаркете. По такому случаю даже пришлось написать [собственную интеграцию](https://github.com/dext0r/airmx) :)
@@ -190,5 +189,5 @@
 
 ## Статистика по устройствам
 * Zigbee устройств: 64
-* Esphome устройств: 31
+* Esphome устройств: 30
 * Прочих УД устройств на wifi: 17

@@ -72,14 +72,6 @@ automation:
           temperature: 22
           hvac_mode: cool
 
-      - if:
-          - condition: template
-            value_template: >
-              {{ is_state('switch.portable_fan', 'off') }}
-        then:
-          - service: switch.turn_on
-            entity_id: switch.portable_fan
-
       - service: script.yandex_station_tts
         data:
           target: >
@@ -99,14 +91,6 @@ automation:
         entity_id:
           - climate.bedroom_ac
           - climate.workshop_ac
-
-      - if:
-          - condition: template
-            value_template: >
-              {{ is_state('switch.portable_fan', 'on') }}
-        then:
-          - service: switch.turn_off
-            entity_id: switch.portable_fan
 
       - service: script.yandex_station_tts
         data:

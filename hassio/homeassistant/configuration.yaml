@@ -68,6 +68,7 @@ homeassistant:
     lights_status: !include devices/lights/status.yaml
     lights_wardrobe: !include devices/lights/wardrobe.yaml
     lights_workshop: !include devices/lights/workshop.yaml
+    lights_xmas: !include devices/lights/xmas.yaml
     lights: !include devices/lights.yaml
     locks: !include devices/locks.yaml
     media_avr: !include devices/media/avr.yaml

@@ -272,3 +272,7 @@ entity_config:
       min: 0
       max: 100
       precision: 5
+  group.xmas_lights:
+    name: Новогоднее освещение
+    room: Служебные
+    type: light

@@ -2696,9 +2696,10 @@ views:
                 name: Hot Water
                 color: pink
   - icon: mdi:candycane
-    visible: []
     badges: []
     cards:
+      - type: tile
+        entity: input_boolean.xmas_lighting
       - square: false
         type: grid
         cards:

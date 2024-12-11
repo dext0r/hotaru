@@ -460,7 +460,7 @@
   temperature_precision: 1
 '0x84fd27fffe60916f':
   friendly_name: Xmas Hallway Wall Light
-  disabled: true
+  disabled: false
   homeassistant: {}
   humidity_precision: 1
   legacy: false

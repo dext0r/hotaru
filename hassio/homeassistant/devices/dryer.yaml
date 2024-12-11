@@ -118,6 +118,10 @@ automation:
         to: Done
     condition:
       - condition: state
+        entity_id: binary_sensor.anyone_home
+        state: 'on'
+
+      - condition: state
         entity_id: input_select.home_mode
         state:
           - Day
@@ -135,6 +139,12 @@ automation:
         value_template: >
           {{ (now() - states.input_number.dryer_done_alert_count.last_changed).total_seconds() > 1200 }}
     action:
+      - wait_template: >
+          {{ not is_state('media_player.atv', ['playing', 'pause']) }}
+        timeout:
+          minutes: 33
+        continue_on_timeout: true
+
       - service: script.yandex_station_tts
         data:
           target: all

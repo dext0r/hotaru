@@ -66,6 +66,12 @@ automation:
           {{ (now() - state_attr('automation.humidifiers_maintenance_alert',
                                  'last_triggered')|default(now() - timedelta(days=1), true)).total_seconds() > 60 * 60 }}
     action:
+      - wait_template: >
+          {{ not is_state('media_player.atv', ['playing', 'pause']) }}
+        timeout:
+          minutes: 28
+        continue_on_timeout: true
+
       - if:
           - condition: state
             entity_id: binary_sensor.humidifier_cleanup_notice

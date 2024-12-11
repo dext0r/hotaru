@@ -1,6 +1,9 @@
 packages:
   base: !include ../common/base.yaml
 
+substitutions:
+  relay_restore_mode: ALWAYS_OFF
+
 esphome:
   name: cbe-socket
   model: CBE Socket
@@ -94,3 +97,4 @@ switch:
     name: $device_name
     device_class: outlet
     pin: 14
+    restore_mode: $relay_restore_mode

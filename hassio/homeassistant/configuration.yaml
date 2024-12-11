@@ -160,10 +160,6 @@ recorder:
       - sensor.alert_greeting
       - sensor.chores
       - sensor.kettle_water_temperature
-      - sensor.tv_has_signal
-      - sensor.tv_power
-      - sensor.tv_state
-      - sensor.tv_volume_level
       - sensor.humidifier_need_refill
       - switch.kettle_power
     entity_globs:

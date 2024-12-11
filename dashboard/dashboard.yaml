@@ -1132,8 +1132,7 @@ views:
             entity: binary_sensor.fridge_overheated
             vertical: true
             name: Fridge
-  - theme: Mushroom
-    icon: mdi:home-thermometer
+  - icon: mdi:home-thermometer
     layout:
       max_cols: 2
     type: custom:vertical-layout
@@ -2292,6 +2291,7 @@ views:
         view_layout:
           show:
             mediaquery: '(max-width: 400px)'
+    theme: Mushroom
   - theme: Mushroom
     icon: mdi:washing-machine
     type: custom:vertical-layout

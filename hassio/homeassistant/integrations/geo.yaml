@@ -11,12 +11,6 @@ zone:
     radius: 50
     icon: mdi:glass-cocktail
 
-  - name: Karman
-    latitude: !secret geo_karman_latitude
-    longitude: !secret geo_karman_longitude
-    radius: 70
-    icon: mdi:camera
-
   - name: Near Home
     latitude: !secret geo_home_latitude
     longitude: !secret geo_home_longitude

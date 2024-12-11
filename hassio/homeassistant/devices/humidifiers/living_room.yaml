@@ -109,6 +109,9 @@ automation:
           - input_boolean.living_room_humidifier_on_duty
         state: 'on'
     action:
+      - delay:
+          seconds: 1
+
       - if:
           - condition: state
             entity_id: sensor.living_room_humidifier_target_mode

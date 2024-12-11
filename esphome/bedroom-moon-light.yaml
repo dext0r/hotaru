@@ -47,17 +47,18 @@ light:
           LightColorValues v = id(light_rgb).remote_values;
           remote_base::NECAction<> *ir_action;
           ir_action = new remote_base::NECAction<>();
-          ir_action->set_parent(id(ir));
+          ir_action->set_transmitter(id(ir));
+          ir_action->set_command_repeats(1);
           ir_action->set_address(0xEF00);
 
           if (id(light_rgb).remote_values.is_on()) {
             // turn on
             ir_action->set_command(0xFC03);
-            ir_action->play();
+            ir_action->play_complex();
           } else {
             // turn off
             ir_action->set_command(0xFD02);
-            ir_action->play();
+            ir_action->play_complex();
           }
 
           if (id(light_rgb).remote_values.is_on()) {
@@ -122,8 +123,7 @@ light:
                   ir_action->set_command(0xE916);
                   break;
               }
-
-              ir_action->play();
+              ir_action->play_complex();
             }
 
             int target_brightness = v.get_brightness() * 10;
@@ -131,7 +131,7 @@ light:
               while (target_brightness != current_ir_brightness) {
                 current_ir_brightness++;
                 ir_action->set_command(0xFF00);
-                ir_action->play();
+                ir_action->play_complex();
                 delay(10);
               }
             }
@@ -139,11 +139,10 @@ light:
               while (target_brightness != current_ir_brightness) {
                 current_ir_brightness--;
                 ir_action->set_command(0xFE01);
-                ir_action->play();
+                ir_action->play_complex();
                 delay(10);
               }
             }
-
           }
 
   - id: string_light_w

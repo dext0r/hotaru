@@ -37,8 +37,6 @@ esphome:
     - lib/intercom/delivery.mp3.h
     - lib/intercom/reject.mp3.h
     - lib/intercom/guests.mp3.h
-  platformio_options:
-    build_flags: -DFS_NO_GLOBALS
   on_boot:
     priority: -100
     then:

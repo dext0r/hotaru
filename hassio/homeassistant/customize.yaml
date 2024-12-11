@@ -5,6 +5,8 @@ binary_sensor.bathroom_washing_machine_water_leak:
   alert_text: в ванне под стиралкой
 binary_sensor.bathroom_sink_water_leak:
   alert_text: в ванне под раковиной
+binary_sensor.bathroom_toilet_water_leak:
+  alert_text: в ванне за унитазом
 binary_sensor.bathroom_hot_water_meter_leak:
   alert_text: в ванне горячий счётчик
 binary_sensor.bathroom_cold_water_meter_leak:

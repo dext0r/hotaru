@@ -560,3 +560,8 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+'0x54ef441000a6843a':
+  friendly_name: Bathroom Toilet Water Leak
+  homeassistant: {}
+  optimistic: true
+  retain: true

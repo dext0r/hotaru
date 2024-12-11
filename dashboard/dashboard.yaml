@@ -2623,6 +2623,10 @@ views:
             name: Bathroom Sink
             vertical: true
           - type: tile
+            entity: binary_sensor.bathroom_toilet_water_leak
+            name: Bathroom Toilet
+            vertical: true
+          - type: tile
             entity: binary_sensor.bathroom_hot_water_meter_leak
             name: Bathroom Hot Meter
             vertical: true

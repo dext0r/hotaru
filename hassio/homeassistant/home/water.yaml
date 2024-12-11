@@ -8,6 +8,7 @@ automation:
           - binary_sensor.closet_water_leak
           - binary_sensor.bathroom_washing_machine_water_leak
           - binary_sensor.bathroom_sink_water_leak
+          - binary_sensor.bathroom_toilet_water_leak
           - binary_sensor.bathroom_hot_water_meter_leak
           - binary_sensor.bathroom_cold_water_meter_leak
         from: 'off'
@@ -19,6 +20,7 @@ automation:
           - binary_sensor.closet_water_leak
           - binary_sensor.bathroom_washing_machine_water_leak
           - binary_sensor.bathroom_sink_water_leak
+          - binary_sensor.bathroom_toilet_water_leak
           - binary_sensor.bathroom_hot_water_meter_leak
           - binary_sensor.bathroom_cold_water_meter_leak
         from: 'off'
@@ -107,6 +109,7 @@ automation:
           - binary_sensor.closet_water_leak
           - binary_sensor.bathroom_washing_machine_water_leak
           - binary_sensor.bathroom_sink_water_leak
+          - binary_sensor.bathroom_toilet_water_leak
           - binary_sensor.bathroom_hot_water_meter_leak
           - binary_sensor.bathroom_cold_water_meter_leak
         from: 'on'
@@ -127,6 +130,7 @@ binary_sensor:
       - binary_sensor.closet_water_leak
       - binary_sensor.bathroom_washing_machine_water_leak
       - binary_sensor.bathroom_sink_water_leak
+      - binary_sensor.bathroom_toilet_water_leak
       - binary_sensor.bathroom_hot_water_meter_leak
       - binary_sensor.bathroom_cold_water_meter_leak
 

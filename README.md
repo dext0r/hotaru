@@ -74,7 +74,7 @@
 * 10x Движение **Xiaomi RTCGQ01LM/RTCGQ11LM**: разбросаны по всему дому, несколько с [перемычкой](https://community.smartthings.com/t/making-xiaomi-motion-sensor-a-super-motion-sensor/139806) для ускорения срабатывания. Применёна хитрость с переворачиванием чтобы не ловили котов (см. [диаграмму направленности](https://smarthomeinfo.ru/wp-content/uploads/2020/09/dalnost-obnarujenia.jpg)).
 * 1x Присутствие **Xiaomi RTCZCGQ11LM**: безупречно определяет присутствие по всей ванной комнате, жаль стоит дорого :(
 * 1x Присутствие **Tuya ZY-M100-S_2**: настенный на 5Ghz, работает не хуже FP1, но не умеет в зоны, и не настолько гибок как DIY на LD2410.
-* 6x Протечка **Xiaomi SJCGQ11LM**
+* 7x Протечка **Xiaomi SJCGQ11LM** / **Xiaomi SJCGQ12LM**
 * 2x Открытие **SONOFF SNZB-04**: концевики для ригелей во входной двери ([фото 1](images/lock-1.jpg), [фото 2](images/lock-2.jpg))
 * 3x Дым **GS SSHM-I1**
 * 1x PM 2.5 **IKEA E2014 Vindriktning**: c ESP32 и SenseAir S8 внутри. Планировалось для ловли дыма когда сосед курит и его мерзкий дым затягивает в приточку. Датчик дым не видит :( Поэтому использую как корпус для S8.
@@ -188,6 +188,6 @@
 Второй способ: Покупаем готовое полотно на трубе здесь - https://m-pl.ru/rulonnye-shtory-krep-blackout-pod-motor
 
 ## Статистика по устройствам
-* Zigbee устройств: 64
+* Zigbee устройств: 65
 * Esphome устройств: 30
 * Прочих УД устройств на wifi: 17

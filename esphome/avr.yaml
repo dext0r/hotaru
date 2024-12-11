@@ -16,7 +16,7 @@ esp8266:
   restore_from_flash: true
 
 ota:
-  - platform: esphome
+  - id: !extend ota_esphome
     on_begin:
       then:
         - lambda: id(cec).stop();

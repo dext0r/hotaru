@@ -7,7 +7,7 @@ esphome:
   min_version: 2024.11.0
 
 ota:
-  - platform: esphome
+  - id: !extend ota_esphome
     on_begin:
       then:
         - lambda: id(tion_ble_client).set_enabled(false);

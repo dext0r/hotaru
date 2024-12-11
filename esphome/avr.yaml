@@ -1,8 +1,12 @@
 packages:
   base: !include common/base.yaml
+  uptime: !include common/uptime.yaml
 
 external_components:
   - source: lib
+
+substitutions:
+  device_name: AVR
 
 esphome:
   name: avr
@@ -63,6 +67,13 @@ number:
 script:
   - id: avr_cec_give_audio_status
     then:
+      - hdmi_cec.send:
+          destination: 0x5
+          data: [0x71]
+
+  - id: avr_cec_give_audio_status_delayed
+    then:
+      - delay: 7s
       - hdmi_cec.send:
           destination: 0x5
           data: [0x71]
@@ -203,8 +214,7 @@ hdmi_cec:
         - globals.set:
             id: avr_power
             value: 'true'
-        - delay: 7s
-        - script.execute: avr_cec_give_audio_status
+        - script.execute: avr_cec_give_audio_status_delayed
 
     - data: [0x72, 0x00]  # Set System Audio Mode: Off
       then:

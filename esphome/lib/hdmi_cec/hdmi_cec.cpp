@@ -151,11 +151,11 @@ void HDMICEC::try_builtin_handler_(uint8_t source, uint8_t destination, const st
     }
 
     // "Give Device Power Status" request
-    // case 0x8F: {
-    //   // reply with "Report Power Status" (0x90)
-    //   send(address_, source, {0x90, 0x01});  // "Standby"
-    //   break;
-    // }
+    case 0x8F: {
+      // reply with "Report Power Status" (0x90)
+      send(address_, source, {0x90, 0x01});  // "Standby"
+      break;
+    }
 
     // "Give OSD Name" request
     case 0x46: {

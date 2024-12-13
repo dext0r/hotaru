@@ -1,9 +1,0 @@
-packages:
-  base: !include generic/sonoff_basic_r2.yaml
-
-substitutions:
-  device_name: Portable Fan
-
-esphome:
-  name: portable-fan
-  name_add_mac_suffix: false

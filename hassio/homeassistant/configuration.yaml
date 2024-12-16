@@ -54,6 +54,7 @@ homeassistant:
     intake_fan_living_room: !include devices/intake_fans/living_room.yaml
     intake_fan_workshop: !include devices/intake_fans/workshop.yaml
     intercom: !include devices/intercom.yaml
+    ironing_board: !include devices/ironing_board.yaml
     ios: !include integrations/ios.yaml
     kettle: !include devices/kettle.yaml
     lights_bathroom: !include devices/lights/bathroom.yaml

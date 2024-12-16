@@ -27,6 +27,10 @@ automation:
         from: 'off'
         to: 'on'
 
+      - platform: state
+        entity_id: switch.ironing_board_socket
+        to: 'on'
+
       - platform: numeric_state
         entity_id: sensor.sockets_power_supply_power
         above: 3600
@@ -36,6 +40,20 @@ automation:
         state: 'on'
     action:
       - service: switch.turn_off
+        entity_id: switch.living_room_heater
+
+  - id: living_room_heater_turn_off_protect
+    alias: 'Living Room Heater: Turn off (protect)'
+    trigger:
+      - platform: state
+        entity_id: switch.living_room_heater
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: switch.ironing_board_socket
+        state: 'on'
+    action:
+      - action: switch.turn_off
         entity_id: switch.living_room_heater
 
   - id: living_room_heater_turn_off_idle

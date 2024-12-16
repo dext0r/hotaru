@@ -97,6 +97,16 @@ automation:
           - light.bedroom_main
         state: 'on'
 
+      - not:
+          - and:
+            - condition: state
+              entity_id: input_select.ironing_board_room
+              state: Bedroom
+
+            - condition: state
+              entity_id: switch.ironing_board_socket
+              state: 'on'
+
       - condition: state
         entity_id: input_boolean.scene_sleepy_mood
         state: 'off'

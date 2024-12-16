@@ -68,6 +68,10 @@ template:
           {% set v = 1 %}
         {% endif %}
 
+        {% if is_state('switch.ironing_board_socket', 'on') %}
+          {% set v = 1 %}
+        {% endif %}
+
         {{ v }}
 
     - unique_id: sensor.living_room_intake_fan_target_fan_speed
@@ -110,6 +114,10 @@ template:
         {% endif %}
 
         {% if is_state('switch.living_room_intake_fan_recirculation', 'on') %}
+          {% set v = 1 %}
+        {% endif %}
+
+        {% if is_state('switch.ironing_board_socket', 'on') %}
           {% set v = 1 %}
         {% endif %}
 
@@ -181,6 +189,7 @@ automation:
           - input_select.home_mode
           - input_boolean.scene_sleepy_mood
           - input_boolean.living_room_intake_fan_control
+          - switch.ironing_board_socket
 
       - id: room_airing
         platform: state

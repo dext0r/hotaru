@@ -117,7 +117,7 @@ automation:
 
                       - and:
                           - condition: state
-                            entity_id: input_boolean.living_room_humidifier_on_duty
+                            entity_id: input_boolean.living_room_humidifier_control
                             state: 'on'
 
                           - condition: state
@@ -150,7 +150,7 @@ automation:
                   # TODO: стрёмное дублирование
                   - if:
                       - condition: state
-                        entity_id: input_boolean.living_room_humidifier_on_duty
+                        entity_id: input_boolean.living_room_humidifier_control
                         state: 'on'
 
                       - condition: state

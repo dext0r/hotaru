@@ -16,7 +16,7 @@ automation:
             entity_id: binary_sensor.anyone_home
             to: 'off'
         timeout:
-          minutes: 7
+          minutes: 10
         continue_on_timeout: false
 
       - service: light.turn_off

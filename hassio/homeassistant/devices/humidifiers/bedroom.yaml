@@ -47,12 +47,13 @@ template:
         {% set indoor_humidity = states('sensor.bedroom_humidity')|int(0) %}
         {% set target_humidity = states('input_number.home_target_humidity')|int(0) %}
 
-        {% if indoor_humidity < target_humidity - 2 %}
+        {% if indoor_humidity < target_humidity - 2 and is_state('sensor.bedroom_humidifier_target_mode', 'Strong') %}
+          on
+        {% elif indoor_humidity < target_humidity - 15 %}
           on
         {% else %}
           off
         {% endif %}
-
 
 automation:
   - id: bedroom_humidifier_update

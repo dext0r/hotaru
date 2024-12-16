@@ -1,0 +1,111 @@
+input_select:
+  ironing_board_room:
+    name: Ironing Board Room
+    icon: mdi:map-marker-radius-outline
+    options:
+      - Living Room
+      - Bedroom
+
+automation:
+  - id: ironing_board_turn_off_living_room
+    alias: 'Ironing Board: Turn off (Living Room)'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.living_room_occupancy
+        to: 'off'
+        for:
+          minutes: 18
+    condition:
+      - condition: state
+        entity_id: switch.ironing_board_socket
+        state: 'on'
+
+      - condition: state
+        entity_id: input_select.ironing_board_room
+        state: 'Living Room'
+    action:
+      - action: switch.turn_off
+        entity_id: switch.ironing_board_socket
+
+  - id: ironing_board_turn_off_bedroom
+    alias: 'Ironing Board: Turn off (Bedroom)'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.bedroom_any_occupancy
+        to: 'off'
+        for:
+          minutes: 18
+    condition:
+      - condition: state
+        entity_id: switch.ironing_board_socket
+        state: 'on'
+
+      - condition: state
+        entity_id: input_select.ironing_board_room
+        state: Bedroom
+    action:
+      - action: switch.turn_off
+        entity_id: switch.ironing_board_socket
+
+  - id: ironing_board_turn_off_no_one_home
+    alias: 'Ironing Board: Turn off (no one home)'
+    trigger:
+      - platform: state
+        entity_id: switch.ironing_board_socket
+        to: 'on'
+
+      - platform: time_pattern
+        minutes: '/1'
+
+      - platform: state
+        entity_id: binary_sensor.anyone_home
+        to: 'off'
+    condition:
+      - condition: state
+        entity_id: switch.ironing_board_socket
+        state: 'on'
+
+      - condition: state
+        entity_id: binary_sensor.anyone_home
+        state: 'off'
+    action:
+      - action: switch.turn_off
+        entity_id: switch.ironing_board_socket
+
+  - id: ironing_board_turn_off_overload
+    alias: 'Ironing Board: Turn off (overload)'
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.ironing_board_socket_power
+        above: 2600
+
+      - platform: numeric_state
+        entity_id: sensor.ironing_board_socket_power
+        above: 2590
+    condition:
+      - condition: state
+        entity_id: switch.ironing_board_socket
+        state: 'on'
+    action:
+      - action: switch.turn_off
+        entity_id: switch.ironing_board_socket
+
+  - id: ironing_board_alarm
+    alias: 'Ironing Board: Alarm'
+    trigger:
+      - platform: state
+        entity_id: switch.ironing_board_socket
+        to: 'on'
+        for:
+          minutes: 50
+    action:
+      - action: notify.dextor
+        data:
+          message: 🪠 Гладильная доска долго включена, вряд ли так должно быть
+        continue_on_error: true
+
+      - action: script.yandex_station_tts
+        data:
+          target: all
+          type: alert
+          text: Гладильная доска долго включена, вряд ли так должно быть

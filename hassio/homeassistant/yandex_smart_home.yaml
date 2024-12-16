@@ -276,3 +276,10 @@ entity_config:
     name: Новогоднее освещение
     room: Служебные
     type: light
+  switch.living_room_heater:
+    error_code_template: |
+      {% if capability.type == 'devices.capabilities.on_off' and capability.state.instance == 'on' and capability.state.value %}
+        {% if is_state('switch.ironing_board_socket', 'on') %}
+          REMOTE_CONTROL_DISABLED
+        {% endif %}
+      {% endif %}

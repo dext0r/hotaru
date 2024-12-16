@@ -2435,6 +2435,38 @@ views:
                   entity: sensor.dishwasher_time_remaining
                 - type: entity
                   entity: sensor.dishwasher_temperature
+      - type: custom:stack-in-card
+        mode: horizontal
+        cards:
+          - type: custom:mushroom-entity-card
+            entity: switch.ironing_board_socket
+            name: Ironing Board
+            icon_color: pink
+            card_mod:
+              style: |
+                ha-card {
+                  border: 0;
+                }
+          - type: custom:mushroom-chips-card
+            chips:
+              - type: entity
+                entity: input_select.ironing_board_room
+            primary_info: none
+            secondary_info: none
+            card_mod:
+              style: |
+                ha-card {
+                  --chip-border-width: 0;
+                  --chip-font-weight: 400;
+                  --chip-font-size: 0.35em;
+                  --chip-box-shadow: none;
+                }
+
+                ha-card .chip-container {
+                  margin-top: 0.65em;
+                  margin-right: 1em;
+                  justify-content: end;
+                }
       - square: false
         type: grid
         cards:
@@ -2882,6 +2914,28 @@ views:
                     var(--rgb-disabled)
                   {% elif is_state('switch.dryer_socket', 'on') %}
                     var(--rgb-state-entity)
+                  {% else %}
+                    var(--rgb-grey)
+                  {% endif %}
+                tap_action:
+                  action: more-info
+              - type: custom:mushroom-template-card
+                primary: Ironing Board
+                secondary: >-
+                  {{ states('switch.ironing_board_socket')|capitalize }}
+
+                  {% if not is_state('sensor.ironing_board_socket',
+                  'unavailable') %}
+                    | {{ states('sensor.ironing_board_socket_power') }} W
+                  {% endif %}
+                icon: mdi:iron-board
+                entity: switch.ironing_board_socket
+                icon_color: >-
+                  {% if is_state('switch.ironing_board_socket', 'unavailable')
+                  %}
+                    var(--rgb-disabled)
+                  {% elif is_state('switch.ironing_board_socket', 'on') %}
+                    var(--rgb-pink)
                   {% else %}
                     var(--rgb-grey)
                   {% endif %}

@@ -2705,9 +2705,6 @@ views:
           - type: custom:mushroom-light-card
             entity: light.xmas_kitchen
             name: Kitchen
-          - type: custom:mushroom-light-card
-            entity: light.xmas_bedroom
-            name: Bedroom
         columns: 2
   - theme: Mushroom
     icon: mdi:lightning-bolt-outline

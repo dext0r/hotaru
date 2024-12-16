@@ -4,6 +4,7 @@ packages:
 
 substitutions:
   relay_restore_mode: ALWAYS_OFF
+  update_interval: 10s
 
 esphome:
   name: athom-wall-outlet
@@ -30,6 +31,7 @@ logger:
 uart:
   rx_pin: RX
   baud_rate: 4800
+  parity: EVEN
 
 time:
   - platform: homeassistant
@@ -50,18 +52,20 @@ binary_sensor:
 
 sensor:
   - platform: cse7766
-    update_interval: 10s
     voltage:
       name: $device_name Voltage
       accuracy_decimals: 0
       disabled_by_default: true
+      filters:
+        - throttle_average: ${update_interval}
     power:
       id: power
       name: $device_name Power
       accuracy_decimals: 0
       filters:
+        - throttle_average: ${update_interval}
         - lambda: |-
-            if (x < 1.0) return 0;
+            if (x < 2.0) return 0;
             return x;
 
   - platform: total_daily_energy

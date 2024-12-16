@@ -1997,11 +1997,23 @@ views:
                     tap_action:
                       action: more-info
                   - type: template
-                    entity: input_datetime.humidifiers_last_cleanup
-                    content: >-
-                      Last cleanup: {{
-                      states('input_datetime.humidifiers_last_cleanup') }}
-                    icon: mdi:spray-bottle
+                    entity: input_boolean.living_room_humidifier_control
+                    content: >
+                      {% if
+                      is_state('input_boolean.living_room_humidifier_control',
+                      'on') %}
+                        Auto
+                      {% else %}
+                        Idle
+                      {% endif %}
+                    icon: >
+                      {% if
+                      is_state('input_boolean.living_room_humidifier_control',
+                      'on') %}
+                        mdi:alpha-a-circle
+                      {% else %}
+                        mdi:alpha-a-circle-outline
+                      {% endif %}
                     tap_action:
                       action: more-info
                 alignment: end
@@ -2020,6 +2032,17 @@ views:
                 toggle:
                   default: 'on'
                   hide: 'on'
+                indicators:
+                  control:
+                    tap_action: more-info
+                    icon:
+                      template: >
+                        (v) => v == 'Auto' ? 'mdi:alpha-a-circle' :
+                        'mdi:alpha-a-circle-outline'
+                    source:
+                      entity: input_boolean.bedroom_humidifier_control
+                      mapper: |
+                        (state) => state == 'on' ? 'Auto': ' Idle'
                 buttons:
                   led:
                     type: button
@@ -2052,46 +2075,8 @@ views:
                       }
                 card_mod:
                   style: |
-                    :host .mh-humidifier {
-                      padding-bottom: 0 !important;
-                    }
                     :host .mh__bg {
                       display: none;
-                    }
-              - type: custom:mushroom-chips-card
-                chips:
-                  - type: template
-                    entity: input_boolean.bedroom_humidifier_on_duty
-                    content: >
-                      {% if is_state('input_boolean.bedroom_humidifier_on_duty',
-                      'on') %}
-                        On duty
-                      {% else %}
-                        Idle
-                      {% endif %}
-                    icon: >
-                      {% if is_state('input_boolean.bedroom_humidifier_on_duty',
-                      'on') %}
-                        mdi:watering-can
-                      {% else %}
-                        mdi:watering-can-outline
-                      {% endif %}
-                    tap_action:
-                      action: more-info
-                  - type: template
-                    entity: input_datetime.humidifiers_last_cleanup
-                    content: >-
-                      Last cleanup: {{
-                      states('input_datetime.humidifiers_last_cleanup') }}
-                    icon: mdi:spray-bottle
-                    tap_action:
-                      action: more-info
-                alignment: end
-                card_mod:
-                  style: |
-                    ha-card {
-                      --chip-border-width: 0;
-                      --chip-box-shadow: none;
                     }
           - type: custom:stack-in-card
             cards:
@@ -2099,6 +2084,17 @@ views:
                 name: Workshop
                 entity: humidifier.workshop_humidifier
                 model: zhimi.humidifier.ca1
+                indicators:
+                  control:
+                    tap_action: more-info
+                    icon:
+                      template: >
+                        (v) => v == 'Auto' ? 'mdi:alpha-a-circle' :
+                        'mdi:alpha-a-circle-outline'
+                    source:
+                      entity: input_boolean.workshop_humidifier_control
+                      mapper: |
+                        (state) => state == 'on' ? 'Auto': ' Idle'
                 card_mod:
                   style: |
                     :host .mh-humidifier {
@@ -2111,51 +2107,30 @@ views:
                 name: Workshop X
                 entity: humidifier.workshop_humidifier_x
                 model: zhimi.humidifier.ca1
+                indicators:
+                  control:
+                    tap_action: more-info
+                    icon:
+                      template: >
+                        (v) => v == 'Auto' ? 'mdi:alpha-a-circle' :
+                        'mdi:alpha-a-circle-outline'
+                    source:
+                      entity: input_boolean.workshop_humidifier_control
+                      mapper: |
+                        (state) => state == 'on' ? 'Auto': ' Idle'
                 card_mod:
                   style: |
-                    :host .mh-humidifier {
-                      padding-bottom: 0 !important;
-                    }
                     :host .mh__bg {
                       display: none;
                     }
-              - type: custom:mushroom-chips-card
-                chips:
-                  - type: template
-                    entity: input_boolean.workshop_humidifier_on_duty
-                    content: >
-                      {% if
-                      is_state('input_boolean.workshop_humidifier_on_duty',
-                      'on') %}
-                        On duty
-                      {% else %}
-                        Idle
-                      {% endif %}
-                    icon: >
-                      {% if
-                      is_state('input_boolean.workshop_humidifier_on_duty',
-                      'on') %}
-                        mdi:watering-can
-                      {% else %}
-                        mdi:watering-can-outline
-                      {% endif %}
-                    tap_action:
-                      action: more-info
-                  - type: template
-                    entity: input_datetime.humidifiers_last_cleanup
-                    content: >-
-                      Last cleanup: {{
-                      states('input_datetime.humidifiers_last_cleanup') }}
-                    icon: mdi:spray-bottle
-                    tap_action:
-                      action: more-info
-                alignment: end
-                card_mod:
-                  style: |
-                    ha-card {
-                      --chip-border-width: 0;
-                      --chip-box-shadow: none;
-                    }
+          - square: false
+            columns: 2
+            type: grid
+            cards:
+              - type: tile
+                entity: input_datetime.humidifiers_last_cleanup
+                name: Last Cleanup
+                color: brown
       - square: false
         type: grid
         columns: 3

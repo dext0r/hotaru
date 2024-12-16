@@ -23,7 +23,7 @@ automation:
                 below: 25
 
               - condition: state
-                entity_id: input_boolean.bedroom_humidifier_on_duty
+                entity_id: input_boolean.bedroom_humidifier_control
                 state: 'on'
 
           - and:
@@ -32,7 +32,7 @@ automation:
                 below: 25
 
               - condition: state
-                entity_id: input_boolean.living_room_humidifier_on_duty
+                entity_id: input_boolean.living_room_humidifier_control
                 state: 'on'
 
           - and:
@@ -42,7 +42,7 @@ automation:
 
 
               - condition: state
-                entity_id: input_boolean.workshop_humidifier_on_duty
+                entity_id: input_boolean.workshop_humidifier_control
                 state: 'on'
 
       - condition: state
@@ -128,12 +128,12 @@ automation:
           date: '{{ now().strftime("%Y-%m-%d") }}'
 
 group:
-  humidifiers_on_duty:
-    name: 'Humidifiers: On Duty'
+  humidifiers_control:
+    name: 'Humidifiers: Control'
     entities:
-      - input_boolean.bedroom_humidifier_on_duty
-      - input_boolean.living_room_humidifier_on_duty
-      - input_boolean.workshop_humidifier_on_duty
+      - input_boolean.bedroom_humidifier_control
+      - input_boolean.living_room_humidifier_control
+      - input_boolean.workshop_humidifier_control
 
 template:
   - sensor:
@@ -143,15 +143,15 @@ template:
         state: >
           {% set data = namespace(humidifiers=[]) %}
 
-          {% if is_state('input_boolean.bedroom_humidifier_on_duty', 'on') and states('sensor.bedroom_humidifier_water_level')|int(100) < 30 %}
+          {% if is_state('input_boolean.bedroom_humidifier_control', 'on') and states('sensor.bedroom_humidifier_water_level')|int(100) < 30 %}
             {% set data.humidifiers = data.humidifiers + ['спальне'] %}
           {% endif %}
 
-          {% if is_state('input_boolean.living_room_humidifier_on_duty', 'on') and states('sensor.living_room_humidifier_water_level')|int(100) < 30 %}
+          {% if is_state('input_boolean.living_room_humidifier_control', 'on') and states('sensor.living_room_humidifier_water_level')|int(100) < 30 %}
             {% set data.humidifiers = data.humidifiers + ['гостиной'] %}
           {% endif %}
 
-          {% if is_state('input_boolean.workshop_humidifier_on_duty', 'on') and states('sensor.workshop_humidifier_water_level')|int(100) < 30 %}
+          {% if is_state('input_boolean.workshop_humidifier_control', 'on') and states('sensor.workshop_humidifier_water_level')|int(100) < 30 %}
             {% set data.humidifiers = data.humidifiers + ['мастерской'] %}
           {% endif %}
 
@@ -170,7 +170,7 @@ template:
             {% set v = false %}
           {% elif now().hour >= 22 or now().hour < 15 %}
             {% set v = false %}
-          {% elif is_state('group.humidifiers_on_duty', 'off') %}
+          {% elif is_state('group.humidifiers_control', 'off') %}
             {% set v = false %}
           {% endif %}
 

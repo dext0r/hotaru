@@ -1,7 +1,7 @@
 input_boolean:
-  workshop_humidifier_on_duty:
-    name: 'Workshop Humidifier: On duty'
-    icon: mdi:watering-can
+  workshop_humidifier_control:
+    name: 'Workshop Humidifier: Control'
+    icon: mdi:refresh-auto
 
 template:
   binary_sensor:
@@ -96,7 +96,7 @@ automation:
       - condition: state
         entity_id:
           - input_boolean.climate_control
-          - input_boolean.bedroom_humidifier_on_duty
+          - input_boolean.bedroom_humidifier_control
         state: 'on'
     action:
       - if:
@@ -157,7 +157,7 @@ automation:
       - condition: state
         entity_id:
           - input_boolean.climate_control
-          - input_boolean.bedroom_humidifier_on_duty
+          - input_boolean.bedroom_humidifier_control
         state: 'on'
     action:
       - if:

@@ -191,17 +191,17 @@ template:
             {% set data.chores = data.chores + ['включить посудомойку'] %}
           {% endif %}
 
-          {% if is_state('input_boolean.living_room_humidifier_on_duty', 'on') and
+          {% if is_state('input_boolean.living_room_humidifier_control', 'on') and
                 states('sensor.living_room_humidifier_water_level')|int(100) <= 50 %}
             {% set data.chores = data.chores + ['долить воды в гостиной'] %}
           {% endif %}
 
-          {% if is_state('input_boolean.bedroom_humidifier_on_duty', 'on') and
+          {% if is_state('input_boolean.bedroom_humidifier_control', 'on') and
                 states('sensor.bedroom_humidifier_water_level')|int(100) <= 50 %}
             {% set data.chores = data.chores + ['долить воды в спальне'] %}
           {% endif %}
 
-          {% if is_state('input_boolean.workshop_humidifier_on_duty', 'on') and
+          {% if is_state('input_boolean.workshop_humidifier_control', 'on') and
                 states('sensor.workshop_humidifier_water_level')|int(100) <= 50 %}
             {% set data.chores = data.chores + ['долить воды в мастерской'] %}
           {% endif %}

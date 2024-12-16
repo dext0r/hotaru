@@ -1,7 +1,7 @@
 input_boolean:
-  bedroom_humidifier_on_duty:
-    name: 'Bedroom Humidifier: On duty'
-    icon: mdi:watering-can
+  bedroom_humidifier_control:
+    name: 'Bedroom Humidifier: Control'
+    icon: mdi:refresh-auto
 
 template:
   sensor:
@@ -84,7 +84,7 @@ automation:
       - condition: state
         entity_id:
           - input_boolean.climate_control
-          - input_boolean.bedroom_humidifier_on_duty
+          - input_boolean.bedroom_humidifier_control
         state: 'on'
     action:
       - if:

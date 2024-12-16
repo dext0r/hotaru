@@ -27,6 +27,11 @@ template:
           {% set mode = 'off' %}
         {% endif %}
 
+        {# после отключения с низким уровнем вода из трубок стекает вниз и уровень снова возрастает #}
+        {% if this.state == 'off' and states('sensor.living_room_humidifier_water_level')|int(0) <= 25 %}
+          {% set mode = 'off' %}
+        {% endif %}
+
         {% if is_state('input_select.home_mode', 'Vacation') %}
           {% set mode = 'off' %}
         {% endif %}
@@ -50,10 +55,8 @@ template:
         {% set outdoor_temperature = states('sensor.outside_temperature')|float(0) %}
 
         {% if outdoor_temperature < 13 and indoor_humidity > 0 %}
-          {% if indoor_humidity < target_humidity - 4 %}
-            {% set speed = 100 %}
-          {% elif indoor_humidity < target_humidity - 2 %}
-            {% set speed = 80 %}
+          {% if indoor_humidity < target_humidity - 2 %}
+            {% set speed = 84 %}
           {% elif indoor_humidity < target_humidity %}
             {% set speed = 60 %}
           {% elif indoor_humidity < target_humidity + 2 %}
@@ -62,7 +65,9 @@ template:
             {% set speed = 14 %}
           {% endif %}
 
-          {% set speed = min(80, speed) %}
+          {% if is_state('media_player.tv', 'on') %}
+            {% set speed = min(80, speed) %}
+          {% endif %}
 
           {% if is_state('input_boolean.scene_meal', 'on') %}
             {% set speed = min(70, speed) %}
@@ -72,8 +77,10 @@ template:
             {% set speed = min(64, speed) %}
           {% endif %}
 
-          {% if is_state('binary_sensor.living_room_occupancy', 'off') and speed == 80 %}
-            {% set speed = 100 %}
+          {% if speed >= 80 %}
+              {% if is_state('binary_sensor.living_room_occupancy', 'off') or is_state('input_boolean.scene_waking_up', 'on') %}
+                {% set speed = 100 %}
+              {% endif %}
           {% endif %}
         {% endif %}
 
@@ -98,6 +105,7 @@ automation:
           - input_boolean.scene_waking_up
           - input_number.home_target_humidity
           - input_select.home_mode
+          - media_player.tv
     condition:
       - condition: template
         value_template: >

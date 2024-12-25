@@ -66,7 +66,6 @@ automation:
     alias: 'Porch Door: Unlock'
     mode: restart
     trigger:
-
       - platform: state
         entity_id: sensor.intercom_status
         to: Door opened
@@ -78,11 +77,8 @@ automation:
       - condition: or
         conditions:
           - condition: state
-            entity_id:
-              - person.dextor
-              - person.layma
-            state: Near Home
-            match: any
+            entity_id: binary_sensor.anyone_near_home
+            state: 'on'
 
           - condition: state
             entity_id: input_boolean.scene_wait_guests

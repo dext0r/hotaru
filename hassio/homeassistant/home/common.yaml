@@ -157,6 +157,11 @@ template:
           {{ states('zone.home')|int(0) > 0 }}
         device_class: presence
 
+      - name: Anyone Near Home
+        state: >
+          {{ states('zone.near_home')|int(0) > 0 }}
+        device_class: presence
+
   - sensor:
       - name: Alert Greeting
         icon: mdi:account-voice

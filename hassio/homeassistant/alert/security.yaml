@@ -25,17 +25,10 @@ automation:
         to: 'on'
     condition:
       - condition: state
-        entity_id: binary_sensor.anyone_home
+        entity_id:
+          - binary_sensor.anyone_home
+          - binary_sensor.anyone_near_home
         state: 'off'
-
-      - condition: not
-        conditions:
-          - condition: state
-            entity_id:
-              - person.dextor
-              - person.layma
-            match: any
-            state: Near Home
 
       - condition: template
         value_template: >

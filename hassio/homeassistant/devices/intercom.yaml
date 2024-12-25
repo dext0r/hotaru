@@ -60,8 +60,8 @@ automation:
                       - Vacation
 
                   - condition: state
-                    entity_id: person.dextor
-                    state: Near Home
+                    entity_id: binary_sensor.anyone_near_home
+                    state: 'on'
             sequence:
               - service: select.select_option
                 entity_id: select.intercom_mode

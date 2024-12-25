@@ -248,6 +248,16 @@ automation:
                       ]|random
                     }}
 
+          - conditions:
+              - condition: state
+                entity_id: person.layma
+                state: Near Home
+            sequence:
+              - service: script.yandex_station_tts
+                data:
+                  target: all
+                  type: alert
+                  text: Жёнушка на пороге, готовься встречать
         default:
           - service: script.yandex_station_tts
             data:

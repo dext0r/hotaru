@@ -3,7 +3,7 @@ packages:
   time: !include common/time.yaml
   tion_4s: !include common/tion_4s.yaml
   senseair_s8: !include common/senseair_s8.yaml
-  mithermometer_ble: !include common/mithermometer_ble.yaml
+  esp32_ble_tracker: !include common/esp32_ble_tracker.yaml
   esp_idf: !include common/idf.yaml
   # debug: !include common/ld2410_debug.yaml
 

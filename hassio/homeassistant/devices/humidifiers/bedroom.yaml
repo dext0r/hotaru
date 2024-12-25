@@ -52,7 +52,11 @@ template:
         {% elif indoor_humidity < target_humidity - 15 %}
           on
         {% else %}
-          off
+          {% if this.state == 'on' and (now() - this.last_changed).total_seconds() < 1800 %}
+            on
+          {% else %}
+            off
+          {% endif %}
         {% endif %}
 
 automation:

@@ -55,7 +55,7 @@ template:
         {% set outdoor_temperature = states('sensor.outside_temperature')|float(0) %}
 
         {% if outdoor_temperature < 13 and indoor_humidity > 0 %}
-          {% if indoor_humidity < target_humidity - 2 %}
+          {% if indoor_humidity < target_humidity - 4 %}
             {% set speed = 84 %}
           {% elif indoor_humidity < target_humidity %}
             {% set speed = 60 %}
@@ -105,7 +105,12 @@ automation:
           - input_boolean.scene_waking_up
           - input_number.home_target_humidity
           - input_select.home_mode
-          - media_player.tv
+
+      - platform: state
+        entity_id: media_player.tv
+        to:
+          - 'on'
+          - 'off'
     condition:
       - condition: template
         value_template: >

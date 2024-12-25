@@ -2085,6 +2085,15 @@ views:
                 entity: humidifier.workshop_humidifier
                 model: zhimi.humidifier.ca1
                 indicators:
+                  water_tank:
+                    tap_action: more-info
+                    icon:
+                      template: >
+                        (v, state) => state.state == 'on' ? 'mdi:cube' :
+                        'mdi:cube-outline'
+                    source:
+                      entity: binary_sensor.workshop_humidifier_water_tank
+                      mapper: () => ''
                   control:
                     tap_action: more-info
                     icon:
@@ -2108,6 +2117,15 @@ views:
                 entity: humidifier.workshop_humidifier_x
                 model: zhimi.humidifier.ca1
                 indicators:
+                  water_tank:
+                    tap_action: more-info
+                    icon:
+                      template: >
+                        (v, state) => state.state == 'on' ? 'mdi:cube' :
+                        'mdi:cube-outline'
+                    source:
+                      entity: binary_sensor.workshop_humidifier_x_water_tank
+                      mapper: () => ''
                   control:
                     tap_action: more-info
                     icon:

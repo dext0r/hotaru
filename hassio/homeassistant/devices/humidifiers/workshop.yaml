@@ -10,7 +10,7 @@ template:
       icon: mdi:car-coolant-level
       device_class: connectivity
       state: >
-        {{ not is_state('sensor.workshop_humidifier_water_level_raw', '127') }}
+        {{ states('sensor.workshop_humidifier_water_level_raw')|int(127) != 127 }}
       availability: >
         {{ states('humidifier.workshop_humidifier') not in ['unknown', 'unavailable'] }}
 
@@ -19,7 +19,7 @@ template:
       icon: mdi:car-coolant-level
       device_class: connectivity
       state: >
-        {{ not is_state('sensor.workshop_humidifier_x_water_level_raw', '127') }}
+        {{ states('sensor.workshop_humidifier_x_water_level_raw')|int(127) != 127 }}
       availability: >
         {{ states('humidifier.workshop_humidifier_x') not in ['unknown', 'unavailable'] }}
 
@@ -64,7 +64,7 @@ template:
 
         {% if states('sensor.workshop_humidity')|int(0) >= states('input_number.home_target_humidity')|int + 2 %}
           {% set mode = 'off' %}
-        {% elif states('sensor.workshop_humidifier_water_level')|int(0) <= 15 %}
+        {% elif states('sensor.workshop_humidifier_water_level')|int(0) <= 15 or states('sensor.workshop_humidifier_x_water_level')|int(0) <= 15 %}
           {% set mode = 'off' %}
         {% endif %}
 

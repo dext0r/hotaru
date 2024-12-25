@@ -1,0 +1,30 @@
+packages:
+  base: !include generic/sonoff_basic_r2.yaml
+
+substitutions:
+  device_name: Living Room Humidifier Socket
+  relay_restore_mode: RESTORE_DEFAULT_OFF
+
+esphome:
+  name: living-room-humidifier-socket
+  name_add_mac_suffix: false
+
+api:
+  on_client_disconnected:
+    - script.execute: relay_turn_off
+
+switch:
+  - id: !extend relay
+    device_class: outlet
+
+script:
+  - id: relay_turn_off
+    mode: restart
+    then:
+      - delay: 10min
+      - if:
+          condition:
+            not:
+              api.connected:
+          then:
+            - switch.turn_off: relay

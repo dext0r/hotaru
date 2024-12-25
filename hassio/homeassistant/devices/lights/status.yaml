@@ -75,6 +75,7 @@ automation:
           - input_select.home_mode
           - input_select.washing_machine_status
           - sensor.living_room_humidifier_water_level
+          - sensor.living_room_humidifier_water_tank_level
 
       - platform: time_pattern
         minutes: '/10'
@@ -126,9 +127,14 @@ automation:
                               - 'on'
                               - 'off'
 
-                          - condition: numeric_state
-                            entity_id: sensor.living_room_humidifier_water_level
-                            below: 35
+                          - or:
+                              - condition: numeric_state
+                                entity_id: sensor.living_room_humidifier_water_level
+                                below: 35
+
+                              - condition: numeric_state
+                                entity_id: sensor.living_room_humidifier_water_tank_level
+                                below: 15
                 sequence:
                   - if:
                       - condition: state
@@ -159,9 +165,14 @@ automation:
                           - 'on'
                           - 'off'
 
-                      - condition: numeric_state
-                        entity_id: sensor.living_room_humidifier_water_level
-                        below: 35
+                      - or:
+                          - condition: numeric_state
+                            entity_id: sensor.living_room_humidifier_water_level
+                            below: 35
+
+                          - condition: numeric_state
+                            entity_id: sensor.living_room_humidifier_water_tank_level
+                            below: 15
                     then:
                       - service: light.turn_on
                         entity_id: light.living_room_tv_status_right

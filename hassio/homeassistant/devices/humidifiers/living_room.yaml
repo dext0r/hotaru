@@ -194,3 +194,128 @@ automation:
                 entity_id: humidifier.living_room_humidifier
                 data:
                   humidity: '{{ states("sensor.living_room_humidifier_target_humidity") }}'
+
+  - id: living_room_humidifier_water_leak
+    alias: 'Living Room Humidifier: Water Leak'
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.living_room_humidifier_water_leak
+          - binary_sensor.living_room_humidifier_water_tank_leak
+        from: 'off'
+        to: 'on'
+
+      - platform: state
+        entity_id:
+          - binary_sensor.living_room_humidifier_water_leak
+          - binary_sensor.living_room_humidifier_water_tank_leak
+        from: 'off'
+        to: 'on'
+        for:
+          minutes: 5
+    action:
+      - if:
+          - condition: template
+            value_template: >
+              {{ trigger.entity_id == 'binary_sensor.living_room_humidifier_water_leak' }}
+        then:
+          - action: switch.turn_off
+            entity_id: switch.living_room_humidifier_socket
+
+          - service: notify.mobile_app_misaka
+            data:
+              message: >
+                🚨 Обнаружена протечка {{ state_attr(trigger.from_state.entity_id, 'alert_text')|default('', True) }}
+              data:
+                push:
+                  sound:
+                    name: sms-received2.caf
+                    critical: 1
+                    volume: 1
+            continue_on_error: true
+
+          - service: script.yandex_station_tts
+            data:
+              target: all
+              type: alert
+              text: >
+                Обнаружена протечка {{ state_attr(trigger.from_state.entity_id, 'alert_text')|default('', True) }}.
+                Повторяю. Обнаружена протечка!
+
+      - service: notify.dextor
+        data:
+          message: >
+            🚨 Обнаружена протечка {{ state_attr(trigger.from_state.entity_id, 'alert_text')|default('', True) }}
+        continue_on_error: true
+
+  - id: living_room_humidifier_water_tank_auto_refill_update
+    alias: 'Living Room Humidifier Water Tank: Auto Refill Update'
+    mode: queued
+    trigger:
+      - platform: time_pattern
+        minutes: '/7'
+
+      - platform: state
+        entity_id:
+          - input_select.home_mode
+          - binary_sensor.anyone_home
+          - input_boolean.scene_waking_up
+          - input_boolean.living_room_humidifier_control
+    conditions:
+      - condition: state
+        entity_id: switch.living_room_humidifier_water_tank_auto_refill
+        state:
+          - 'on'
+          - 'off'
+    actions:
+      - if:
+          - or:
+              - condition: state
+                entity_id: input_boolean.scene_waking_up
+                state: 'on'
+
+              - condition: state
+                entity_id: input_select.home_mode
+                state:
+                  - Day
+                  - Night
+
+          - condition: state
+            entity_id:
+              - binary_sensor.anyone_home
+              - input_boolean.living_room_humidifier_control
+            state: 'on'
+        then:
+          - if:
+              - condition: state
+                entity_id: switch.living_room_humidifier_water_tank_auto_refill
+                state: 'off'
+            then:
+              - action: switch.turn_on
+                entity_id: switch.living_room_humidifier_water_tank_auto_refill
+
+              - if:
+                  - condition: state
+                    entity_id: switch.living_room_humidifier_water_tank_maintenance
+                    state: 'off'
+                then:
+                  - action: button.press
+                    entity_id: button.living_room_humidifier_water_tank_refill
+        else:
+          - action: switch.turn_off
+            entity_id: switch.living_room_humidifier_water_tank_auto_refill
+
+  - id: living_room_humidifier_water_tank_problem_alert
+    alias: 'Living Room Humidifier Water Tank: Problem alert'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.living_room_humidifier_water_tank_problem
+        to: 'on'
+    actions:
+      - delay:
+          seconds: 1
+
+      - service: notify.dextor
+        data:
+          message: >
+            🌊 Что-то не так с доливом в увлажнитель: {{ states('sensor.living_room_humidifier_water_tank_state') }}

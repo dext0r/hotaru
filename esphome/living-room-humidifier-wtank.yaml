@@ -1,0 +1,386 @@
+packages:
+  base: !include common/base.yaml
+
+substitutions:
+  device_name: Living Room Humidifier Water Tank
+
+esphome:
+  name: living-room-humidifer-wtank
+  name_add_mac_suffix: false
+  on_boot:
+    - lambda: |-
+        if (id(leak).state) {
+          id(problem).publish_state(true);
+          id(diagnostic).publish_state("Water leak");
+          return;
+        }
+
+        id(set_idle).execute();
+
+esp8266:
+  board: d1_mini
+  restore_from_flash: true
+
+preferences:
+  flash_write_interval: 5s
+
+logger:
+  logs:
+    ultrasonic.sensor: INFO
+
+globals:
+  - id: low_water_level
+    type: float
+    initial_value: '45'
+
+  - id: target_water_level
+    type: float
+    initial_value: '70'
+
+  - id: refill_control_started_at_water_level
+    type: float
+
+button:
+  - name: $device_name Clear Problem
+    platform: template
+    entity_category: diagnostic
+    on_press:
+      - script.execute: stop_all
+      - lambda: |-
+          id(problem).publish_state(false);
+          id(set_idle).execute();
+
+  - name: $device_name Refill
+    platform: template
+    icon: mdi:basket-fill
+    on_press:
+      - script.execute: refill
+
+  - name: $device_name Test Pump
+    platform: template
+    icon: mdi:pump
+    on_press:
+      - script.execute: test_pump
+
+binary_sensor:
+  - id: btn
+    platform: gpio
+    internal: true
+    pin:
+      number: D7
+      mode:
+        input: true
+        pullup: true
+      inverted: true
+    on_click:
+      min_length: 200ms
+      max_length: 500ms
+      then:
+        - switch.toggle: maintenance
+        - delay: 1s
+        - switch.turn_on: valve_relay
+        - delay: 100ms
+        - switch.turn_off: valve_relay
+        - if:
+            condition:
+              switch.is_off: maintenance
+            then:
+            - switch.turn_on: valve_relay
+            - delay: 100ms
+            - switch.turn_off: valve_relay
+    on_double_click:
+      - script.execute: test_pump
+
+  - id: leak
+    platform: gpio
+    name: $device_name Leak
+    device_class: moisture
+    pin:
+      number: D1
+      inverted: true
+    filters:
+      - delayed_off: 5s
+    on_press:
+      - script.execute: stop_all
+      - lambda: |-
+          id(problem).publish_state(true);
+          id(diagnostic).publish_state("Water leak");
+
+  - id: problem
+    platform: template
+    name: $device_name Problem
+    device_class: problem
+    entity_category: diagnostic
+
+interval:
+  - interval: 10min
+    then:
+      - if:
+          all:
+            - switch.is_on: auto_refill
+            - switch.is_off: maintenance
+          then:
+            script.execute: refill
+
+sensor:
+  - id: humidifier_water_level
+    platform: homeassistant
+    entity_id: sensor.living_room_humidifier_water_level
+    on_value:
+      - lambda: |-
+          if (isnan(x) || x <= 5) {
+            id(stop_all).execute();
+            id(set_idle).execute();
+          }
+
+  - id: tank_water_level
+    platform: ultrasonic
+    trigger_pin: D0
+    echo_pin: D6
+    unit_of_measurement: '%'
+    accuracy_decimals: 0
+    update_interval: 500ms
+    filters:
+      - lambda: |-
+          if (id(maintenance).state) {
+            return NAN;
+          }
+
+          return x;
+      - multiply: 10000
+      - calibrate_linear:
+          datapoints:
+            - 3010 -> 0
+            - 700 -> 100
+      - round: 0
+      - median:
+          window_size: 481
+          send_every: 481
+          send_first_at: 9
+      - clamp:
+          min_value: 0
+          max_value: 110
+
+  - name: $device_name Level
+    platform: template
+    unit_of_measurement: '%'
+    icon: mdi:water-percent
+    accuracy_decimals: 0
+    lambda: |-
+      if (id(maintenance).state) {
+        return NAN;
+      }
+
+      return id(tank_water_level).state;
+    update_interval: 10s
+
+  # время, которое заняло изменить уровень воды при наливе (один шаг)
+  - id: refill_step_time
+    platform: duty_time
+    name: $device_name Refill Step Time
+    state_class: measurement
+    accuracy_decimals: 0
+    update_interval: never
+
+switch:
+  - id: pump_relay
+    platform: gpio
+    name: $device_name Pump
+    pin:
+      number: D2
+      inverted: true
+    internal: true
+
+  - id: valve_relay
+    platform: gpio
+    name: $device_name Valve
+    pin:
+      number: D5
+      inverted: true
+    internal: true
+
+  - id: maintenance
+    name: $device_name Maintenance
+    platform: template
+    icon: mdi:wrench-cog-outline
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+    turn_on_action:
+      - script.execute: stop_all
+      - script.wait: stop_all
+      - output.turn_on: blue_led
+      - lambda: id(diagnostic).publish_state("Maintenance");
+    turn_off_action:
+      - output.turn_off: blue_led
+    on_turn_off:
+      - lambda: |-
+          id(problem).publish_state(false);
+      - script.execute: set_idle
+
+  - id: auto_refill
+    name: $device_name Auto Refill
+    platform: template
+    icon: mdi:basket-fill
+    optimistic: true
+    turn_off_action:
+      - script.execute: set_idle
+
+script:
+  - id: set_idle
+    then:
+      - lambda: |-
+          if (id(maintenance).state) {
+            id(diagnostic).publish_state("Maintenance");
+          } else {
+            id(diagnostic).publish_state("Idle");
+          }
+
+  - id: stop_all
+    then:
+      - script.stop: refill
+      - script.stop: refill_control
+      - script.stop: test_pump
+      - script.stop: turn_on_pump
+      - script.stop: turn_off_pump
+      - switch.turn_off: pump_relay
+      - switch.turn_off: valve_relay
+      - sensor.duty_time.stop: refill_step_time
+      - sensor.duty_time.reset: refill_step_time
+
+  - id: turn_on_pump
+    then:
+      - switch.turn_on: valve_relay
+      - delay: 500ms
+      - switch.turn_on: pump_relay
+
+  - id: turn_off_pump
+    then:
+      - switch.turn_off: pump_relay
+      - delay: 2s
+      - switch.turn_off: valve_relay
+
+  - id: test_pump
+    mode: restart
+    then:
+      - script.stop: refill
+      - script.stop: refill_control
+      - script.stop: turn_on_pump
+      - script.stop: turn_off_pump
+      - sensor.duty_time.stop: refill_step_time
+      - sensor.duty_time.reset: refill_step_time
+
+      - lambda: |-
+          id(diagnostic).publish_state("Pump Test");
+      - script.execute: turn_on_pump
+      - script.wait: turn_on_pump
+      - delay: 30s
+      - script.execute: turn_off_pump
+      - script.wait: turn_off_pump
+      - script.execute: set_idle
+
+  - id: refill_control
+    mode: restart
+    then:
+      - lambda: |-
+          auto h_level = id(humidifier_water_level).state;
+          ESP_LOGD("refill_control", "Started at water level %f%%", h_level);
+          id(refill_control_started_at_water_level) = h_level;
+      - sensor.duty_time.reset: refill_step_time
+      - sensor.duty_time.start: refill_step_time
+
+      - wait_until:
+          condition:
+            lambda: return id(humidifier_water_level).state > id(refill_control_started_at_water_level);
+          timeout: 4min
+
+      - if:
+          condition:
+            - lambda: return id(humidifier_water_level).state >= id(target_water_level);
+          then:
+            - lambda: |-
+                ESP_LOGD("refill_control", "Reached target level");
+            - script.stop: refill_control
+            # остановка refill_step_time в cкрипте refill
+
+      - if:
+          condition:
+            - lambda: return id(humidifier_water_level).state > id(refill_control_started_at_water_level);
+          then:
+            - lambda: |-
+                ESP_LOGD("refill_control", "Water level increased to %f%%, restarting", id(humidifier_water_level).state);
+            - sensor.duty_time.stop: refill_step_time
+            - script.execute: refill_control
+          else:
+            - lambda: |-
+                ESP_LOGD("refill_control", "Water level stayed the same after 4min");
+                id(problem).publish_state(true);
+                id(diagnostic).publish_state("Refilling failed");
+            - script.stop: refill
+            - script.execute: turn_off_pump
+            - script.wait: turn_off_pump
+            - sensor.duty_time.stop: refill_step_time
+            - sensor.duty_time.reset: refill_step_time
+
+  - id: refill
+    then:
+      - script.stop: refill_control
+      - script.stop: test_pump
+      - script.stop: turn_on_pump
+      - script.stop: turn_off_pump
+      - switch.turn_off: pump_relay
+      - switch.turn_off: valve_relay
+
+      - lambda: |-
+          auto h_level = id(humidifier_water_level).state;
+
+          if (id(problem).state) {
+            ESP_LOGD("refill", "Has problem, do nothing");
+            return id(refill).stop();
+          }
+
+          if (isnan(h_level) || h_level <= 5) {
+            id(diagnostic).publish_state("Unknown humidifer water level");
+            return id(refill).stop();
+          }
+
+          if (h_level > id(low_water_level)) {
+            id(diagnostic).publish_state("Idle: Normal level");
+            return id(refill).stop();
+          }
+
+          if (h_level >= id(target_water_level)) {
+            id(diagnostic).publish_state("Reached target level");
+            return id(refill).stop();
+          }
+
+          id(diagnostic).publish_state("Refilling");
+
+      - script.execute: turn_on_pump
+      - script.wait: turn_on_pump
+
+      - script.execute: refill_control
+      - wait_until:
+          condition:
+            lambda: return id(humidifier_water_level).state >= id(target_water_level);
+          timeout: 12min  # дольше не хочется, греется клапан, ведь он на 4.5 вольта :)
+      - script.stop: refill_control
+
+      - script.execute: turn_off_pump
+      - script.wait: turn_off_pump
+      - sensor.duty_time.stop: refill_step_time
+      - sensor.duty_time.reset: refill_step_time
+
+      - lambda: id(diagnostic).publish_state("Done");
+
+output:
+  - id: blue_led
+    platform: gpio
+    pin:
+      number: D4
+      inverted: true
+
+text_sensor:
+  - id: diagnostic
+    platform: template
+    name: $device_name State
+    entity_category: diagnostic

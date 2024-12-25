@@ -27,6 +27,12 @@ automation:
                 state: 'on'
 
           - and:
+              - condition: state
+                entity_id: switch.living_room_humidifier_water_tank_maintenance
+                state:
+                  - 'off'
+                  - 'unavailable'
+
               - condition: numeric_state
                 entity_id: sensor.living_room_humidifier_water_level
                 below: 25
@@ -40,6 +46,9 @@ automation:
                 entity_id: sensor.workshop_humidifier_water_level
                 below: 25
 
+              - condition: state
+                entity_id: binary_sensor.workshop_humidifier_water_tank
+                state: 'on'
 
               - condition: state
                 entity_id: input_boolean.workshop_humidifier_control
@@ -149,6 +158,10 @@ template:
 
           {% if is_state('input_boolean.living_room_humidifier_control', 'on') and states('sensor.living_room_humidifier_water_level')|int(100) < 30 %}
             {% set data.humidifiers = data.humidifiers + ['гостиной'] %}
+          {% endif %}
+
+          {% if is_state('switch.living_room_humidifier_water_tank_auto_refill', 'on') and states('sensor.living_room_humidifier_water_tank_level')|int(100) < 15 %}
+            {% set data.humidifiers = data.humidifiers + ['злой бочке'] %}
           {% endif %}
 
           {% if is_state('input_boolean.workshop_humidifier_control', 'on') and states('sensor.workshop_humidifier_water_level')|int(100) < 30 %}

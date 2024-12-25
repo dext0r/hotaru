@@ -1966,6 +1966,78 @@ views:
                     tap_action: more-info
                     source:
                       entity: number.living_room_humidifier_fan_speed
+                  water_level_tank:
+                    tap_action: more-info
+                    icon: mdi:car-coolant-level
+                    unit: '%'
+                    source:
+                      entity: sensor.living_room_humidifier_water_tank_level
+                  problem:
+                    tap_action: more-info
+                    icon:
+                      template: >
+                        (state) => state == 'problem' ?
+                        'mdi:alert-circle-outline' : ''
+                    source:
+                      entity: binary_sensor.living_room_humidifier_water_tank_problem
+                      mapper: |
+                        (state) => state == 'on' ? 'problem' : ''
+                  leak:
+                    tap_action: more-info
+                    icon:
+                      template: |
+                        (state) => state == 'leak' ? 'mdi:pipe-leak' : ''
+                      style: |
+                        () => { return {color: 'red'} }
+                    source:
+                      entity: binary_sensor.living_room_humidifier_water_tank_leak
+                      mapper: |
+                        (state) => state == 'on' ? 'leak' : ''
+                buttons:
+                  test_pump:
+                    type: button
+                    order: 10
+                    icon: mdi:pump
+                    state:
+                      entity: sensor.living_room_humidifier_water_tank_state
+                      mapper: |
+                        (state) => state == 'Pump Test' ? 'on' : 'off'
+                    toggle_action: >
+                      () => this.call_service('button', 'press', { entity_id:
+                      'button.living_room_humidifier_water_tank_test_pump' })
+                  refill:
+                    type: button
+                    order: 10
+                    icon: mdi:basket-fill
+                    state:
+                      entity: sensor.living_room_humidifier_water_tank_state
+                      mapper: |
+                        (state) => state == 'Refilling' ? 'on' : 'off'
+                    toggle_action: >
+                      () => this.call_service('button', 'press', { entity_id:
+                      'button.living_room_humidifier_water_tank_refill' })
+                  clear_problem:
+                    type: button
+                    order: 11
+                    icon: mdi:check
+                    state:
+                      entity: sensor.living_room_humidifier_water_tank_state
+                      mapper: () => 'off'
+                    toggle_action: >
+                      () => this.call_service('button', 'press', { entity_id:
+                      'button.living_room_humidifier_water_tank_clear_problem'
+                      })
+                  heater:
+                    type: button
+                    icon: mdi:wrench-cog-outline
+                    order: 12
+                    state:
+                      entity: switch.living_room_humidifier_water_tank_maintenance
+                    toggle_action: |
+                      (state, entity) => {
+                        const service = state === 'on' ? 'turn_off' : 'turn_on';
+                        return this.call_service('switch', service, { entity_id: entity.entity_id });
+                      }
                 card_mod:
                   style: |
                     :host .mh-humidifier {
@@ -1977,22 +2049,31 @@ views:
               - type: custom:mushroom-chips-card
                 chips:
                   - type: template
-                    entity: input_boolean.living_room_humidifier_on_duty
+                    entity: sensor.living_room_humidifier_water_tank_state
+                    content: >
+                      {{
+                      states('sensor.living_room_humidifier_water_tank_state')
+                      }}
+                    icon: mdi:information-outline
+                    tap_action:
+                      action: more-info
+                  - type: template
+                    entity: switch.living_room_humidifier_water_tank_auto_refill
                     content: >
                       {% if
-                      is_state('input_boolean.living_room_humidifier_on_duty',
+                      is_state('switch.living_room_humidifier_water_tank_auto_refill',
                       'on') %}
-                        On duty
+                        Auto Refill
                       {% else %}
-                        Idle
+                        No Auto Refill
                       {% endif %}
                     icon: >
                       {% if
-                      is_state('input_boolean.living_room_humidifier_on_duty',
+                      is_state('switch.living_room_humidifier_water_tank_auto_refill',
                       'on') %}
-                        mdi:watering-can
+                        mdi:storage-tank
                       {% else %}
-                        mdi:watering-can-outline
+                        mdi:storage-tank-outline
                       {% endif %}
                     tap_action:
                       action: more-info
@@ -2149,6 +2230,9 @@ views:
                 entity: input_datetime.humidifiers_last_cleanup
                 name: Last Cleanup
                 color: brown
+              - type: tile
+                entity: switch.living_room_humidifier_socket
+                name: LR Humidifier Socket
       - square: false
         type: grid
         columns: 3
@@ -2658,6 +2742,14 @@ views:
           - type: tile
             entity: binary_sensor.bathroom_cold_water_meter_leak
             name: Bathroom Cold Meter
+            vertical: true
+          - type: tile
+            entity: binary_sensor.living_room_humidifier_water_leak
+            name: Living Room Humidifier
+            vertical: true
+          - type: tile
+            entity: binary_sensor.living_room_humidifier_water_tank_leak
+            name: Living Room Humidifier Tank
             vertical: true
       - type: custom:layout-break
       - type: horizontal-stack

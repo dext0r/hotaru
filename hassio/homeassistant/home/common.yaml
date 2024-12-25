@@ -197,6 +197,7 @@ template:
           {% endif %}
 
           {% if is_state('input_boolean.living_room_humidifier_control', 'on') and
+                not is_state('switch.living_room_humidifier_water_tank_auto_refill', 'on') and
                 states('sensor.living_room_humidifier_water_level')|int(100) <= 50 %}
             {% set data.chores = data.chores + ['долить воды в гостиной'] %}
           {% endif %}

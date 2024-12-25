@@ -133,6 +133,8 @@ binary_sensor:
       - binary_sensor.bathroom_toilet_water_leak
       - binary_sensor.bathroom_hot_water_meter_leak
       - binary_sensor.bathroom_cold_water_meter_leak
+      - binary_sensor.living_room_humidifier_water_leak
+      - binary_sensor.living_room_humidifier_water_tank_leak
 
 input_boolean:
   hot_water_supply:

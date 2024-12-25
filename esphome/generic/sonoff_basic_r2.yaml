@@ -1,6 +1,9 @@
 packages:
   base: !include ../common/base.yaml
 
+substitutions:
+  relay_restore_mode: ALWAYS_OFF
+
 esphome:
   name: sonoff-basic-r2
   model: Sonoff Basic R2
@@ -31,6 +34,7 @@ switch:
     platform: gpio
     pin: 12
     name: $device_name
+    restore_mode: $relay_restore_mode
 
 output:
   - id: status_led

@@ -72,3 +72,22 @@ automation:
                 'Прикрой входную дверь, а то украдут!'
                 ]|random
             }}
+
+  - id: porch_door_opened_alert
+    alias: 'Porch Door: Opened alert'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.porch_door
+        to: 'on'
+        for:
+          hours: 6
+
+      - platform: state
+        entity_id: lock.porch_door
+        to: 'unlocked'
+        for:
+          hours: 6
+    action:
+      - service: notify.dextor
+        data:
+          message: 🔑 Дверь на крыльцо долго открыта. Это вообще нормально?!

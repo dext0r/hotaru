@@ -14,6 +14,29 @@ automation:
         data:
           message: 🐷 Кто-то ломится в дверь когда все спят. Может курьер?
 
+  - id: intercom_unexpected_ring
+    alias: 'Intercom: Unexpected ring'
+    trigger:
+      - platform: state
+        entity_id: sensor.intercom_status
+        to: Incoming call
+    condition:
+      - condition: state
+        entity_id: input_select.home_mode
+        state:
+          - Day
+          - Vacation
+
+      - condition: state
+        entity_id:
+          - binary_sensor.anyone_home
+          - binary_sensor.anyone_near_home
+        state: 'off'
+    action:
+      - service: notify.dextor
+        data:
+          message: 🐷 Кто-то ломится в дверь когда никого нет дома
+
   - id: intercom_mode_update
     alias: 'Intercom: Mode update'
     mode: single

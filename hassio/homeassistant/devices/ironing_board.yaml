@@ -7,8 +7,8 @@ input_select:
       - Bedroom
 
 automation:
-  - id: ironing_board_turn_off_living_room
-    alias: 'Ironing Board: Turn off (Living Room)'
+  - id: ironing_board_turn_off_occupance_living_room
+    alias: 'Ironing Board: Turn off (Occupancy / Living Room)'
     trigger:
       - platform: state
         entity_id: binary_sensor.living_room_occupancy
@@ -27,8 +27,43 @@ automation:
       - action: switch.turn_off
         entity_id: switch.ironing_board_socket
 
-  - id: ironing_board_turn_off_bedroom
-    alias: 'Ironing Board: Turn off (Bedroom)'
+  - id: ironing_board_turn_off_idle_living_room
+    alias: 'Ironing Board: Turn off (Idle / Living Room)'
+    trigger:
+      - platform: state
+        entity_id: switch.ironing_board_socket
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: binary_sensor.living_room_motion
+        state:
+          - 'off'
+          - 'unavailable'
+
+      - condition: state
+        entity_id: input_select.ironing_board_room
+        state: 'Living Room'
+    action:
+      - wait_for_trigger:
+          - platform: state
+            entity_id: binary_sensor.living_room_motion
+            to: 'on'
+        timeout:
+          minutes: 10
+        continue_on_timeout: true
+
+      - if:
+          - condition: state
+            entity_id: binary_sensor.living_room_motion
+            state:
+              - 'off'
+              - 'unavailable'
+        then:
+          - action: switch.turn_off
+            entity_id: switch.ironing_board_socket
+
+  - id: ironing_board_turn_off_occupancy_bedroom
+    alias: 'Ironing Board: Turn off (Occupancy / Bedroom)'
     trigger:
       - platform: state
         entity_id: binary_sensor.bedroom_any_occupancy
@@ -46,6 +81,41 @@ automation:
     action:
       - action: switch.turn_off
         entity_id: switch.ironing_board_socket
+
+  - id: ironing_board_turn_off_idle_bedroom
+    alias: 'Ironing Board: Turn off (Idle / Bedroom)'
+    trigger:
+      - platform: state
+        entity_id: switch.ironing_board_socket
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: binary_sensor.bedroom_motion
+        state:
+          - 'off'
+          - 'unavailable'
+
+      - condition: state
+        entity_id: input_select.ironing_board_room
+        state: Bedroom
+    action:
+      - wait_for_trigger:
+          - platform: state
+            entity_id: binary_sensor.bedroom_motion
+            to: 'on'
+        timeout:
+          minutes: 10
+        continue_on_timeout: true
+
+      - if:
+          - condition: state
+            entity_id: binary_sensor.bedroom_motion
+            state:
+              - 'off'
+              - 'unavailable'
+        then:
+          - action: switch.turn_off
+            entity_id: switch.ironing_board_socket
 
   - id: ironing_board_turn_off_no_one_home
     alias: 'Ironing Board: Turn off (no one home)'

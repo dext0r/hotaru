@@ -50,7 +50,7 @@ automation:
           - input_select.home_mode
           - input_boolean.scene_delivery
           - input_boolean.scene_wait_guests
-          - person.dextor
+          - binary_sensor.anyone_near_home
     action:
       - choose:
           - conditions:

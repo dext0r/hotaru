@@ -42,7 +42,7 @@ automation:
             for:
               minutes: 2
         timeout:
-          hours: 3
+          hours: 4
         continue_on_timeout: true
 
       - condition: state

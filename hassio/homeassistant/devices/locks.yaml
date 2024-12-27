@@ -102,6 +102,27 @@ automation:
           - service: lock.lock
             entity_id: lock.porch_door
 
+  - id: porch_door_presence_unlock
+    alias: 'Porch Door: Presence Unlock'
+    trigger:
+      - platform: state
+        entity_id:
+          - person.dextor
+          - person.layma
+        to: home
+    condition:
+      - condition: state
+        entity_id: lock.porch_door
+        state: locked
+
+      - condition: template
+        value_template: >
+          {{ (now() - state_attr('automation.porch_door_unlock',
+                                 'last_triggered')|default(now() - timedelta(days=1), true)).total_seconds() < 120 }}
+    action:
+      - service: lock.unlock
+        entity_id: lock.porch_door
+
 lock:
   - platform: template
     unique_id: lock.front_door_vacation

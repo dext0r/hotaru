@@ -2604,12 +2604,14 @@ views:
                       entity: switch.kettle_boiling
                 indicators:
                   water_level:
+                    tap_action: more-info
                     icon: mdi:water-percent
                     unit: '%'
                     round: 0
                     source:
                       entity: sensor.kettle_water_level
                   water_level_ml:
+                    tap_action: more-info
                     icon: mdi:water
                     unit: mL
                     round: 0

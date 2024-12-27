@@ -1703,6 +1703,9 @@ views:
           - type: tile
             entity: switch.home_airing
           - type: tile
+            entity: input_select.season
+            name: Season
+          - type: tile
             entity: input_number.home_target_humidity
             name: Target Humidity
       - type: vertical-stack

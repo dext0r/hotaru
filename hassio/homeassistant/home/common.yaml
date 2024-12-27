@@ -142,6 +142,12 @@ input_select:
       - Day
       - Night
       - Vacation
+  season:
+    name: Season
+    icon: mdi:sun-snowflake-variant
+    options:
+      - Winter
+      - Summer
 
 input_datetime:
   anyone_home_last_seen:

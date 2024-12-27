@@ -24,11 +24,15 @@ automation:
         conditions:
           - condition: numeric_state
             entity_id: sensor.illuminance_south_side
-            below: 250
+            below: 500
 
           - condition: state
             entity_id: cover.living_room
             state: closed
+
+          - condition: state
+            entity_id: binary_sensor.winter_bright_light
+            state: 'on'
 
       - condition: state
         entity_id:
@@ -48,9 +52,9 @@ automation:
           kelvin: 3400
 
       - if:
-          - condition: time
-            after: '08:00:00'
-            before: '14:00:00'
+          - condition: state
+            entity_id: binary_sensor.winter_bright_light
+            state: 'on'
         then:
           - action: light.turn_on
             entity_id: light.living_room_main
@@ -80,6 +84,35 @@ automation:
     action:
       - service: light.turn_off
         entity_id: group.living_room_lights
+
+  - id: living_room_main_light_turn_on
+    alias: 'Living Room Main Light: Turn on'
+    trigger:
+      - platform: state
+        entity_id: input_boolean.scene_meal
+        from: 'on'
+        to: 'off'
+    condition:
+      - condition: state
+        entity_id:
+          - input_boolean.light_control
+          - binary_sensor.winter_bright_light
+        state: 'on'
+
+      - condition: state
+        entity_id: input_select.home_mode
+        state:
+          - Day
+          - Vacation
+
+      - condition: state
+        entity_id:
+          - light.living_room_main
+          - binary_sensor.dim_light
+        state: 'off'
+    action:
+      - action: light.turn_on
+        entity_id: light.living_room_main
 
 light:
   - platform: group

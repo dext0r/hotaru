@@ -34,7 +34,11 @@ automation:
     condition:
       - condition: numeric_state
         entity_id: sensor.illuminance_south_side
-        above: 100
+        above: 500
+
+      - condition: state
+        entity_id: binary_sensor.winter_bright_light
+        state: 'off'
 
       - condition: state
         entity_id:

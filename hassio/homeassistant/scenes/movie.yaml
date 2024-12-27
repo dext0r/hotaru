@@ -159,7 +159,7 @@ automation:
       - if:
           - condition: numeric_state
             entity_id: sensor.illuminance_south_side
-            below: 150
+            below: 500
         then:
           - service: light.turn_on
             entity_id: light.living_room_tv

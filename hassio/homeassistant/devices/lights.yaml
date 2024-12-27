@@ -6,13 +6,23 @@ input_boolean:
 
 template:
   binary_sensor:
-    - name: Dim Light  #  необходимость "приглушённого света", приоритетнее чем просто ночной режим
+    # необходимость "приглушённого света", приоритетнее чем просто ночной режим
+    - name: Dim Light
       unique_id: binary_sensor.dim_light
       state: >
         {{
           is_state('input_boolean.scene_movie', 'on') or
           is_state('input_boolean.scene_waking_up', 'on') or
           is_state('input_boolean.scene_sleepy_mood', 'on')
+        }}
+
+    # "запрос" яркого света зимой, жена грустит в темноте :(
+    - name: Winter Bright Light
+      unique_id: binary_sensor.winter_bright_light
+      state: >
+        {{
+          is_state('input_select.season', 'Winter') and
+          now().hour >= 8 and now().hour <= 17
         }}
 
 automation:

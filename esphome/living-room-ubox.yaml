@@ -55,6 +55,18 @@ binary_sensor:
       name: Living Room Occupancy
       icon: ''
 
+  - name: Misaka Living Room Presence
+    platform: ble_presence
+    irk: !secret misaka_irk
+    timeout: 30s
+    device_class: presence
+
+  - name: Layma iPhone Living Room Presence
+    platform: ble_presence
+    irk: !secret layma_iphone_irk
+    timeout: 30s
+    device_class: presence
+
 light:
   - name: Living Room TV Status Light Left
     platform: partition

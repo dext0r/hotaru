@@ -1,3 +1,32 @@
+device_tracker_template:
+  - unique_id: device_tracker.misaka_near_home
+    name: Misaka Near Home
+    icon: mdi:home-floor-negative-1
+    location: >
+      {{ 'Near Home' if is_state('binary_sensor.misaka_kitchen_balcony_presence', 'on') else False }}
+    source_type: gps
+
+  - unique_id: device_tracker.layma_iphone_near_home
+    name: Layma iPhone Near Home
+    icon: mdi:home-floor-negative-1
+    location: >
+      {{ 'Near Home' if is_state('binary_sensor.layma_iphone_kitchen_balcony_presence', 'on') else False }}
+    source_type: gps
+
+  - unique_id: device_tracker.misaka_ble
+    name: Misaka BLE
+    icon: mdi:bluetooth-connect
+    location: >
+      {{ is_state('binary_sensor.misaka_hallway_presence', 'on') or is_state('binary_sensor.misaka_living_room_presence', 'on') }}
+    source_type: bluetooth_le
+
+  - unique_id: device_tracker.layma_iphone_ble
+    name: Layma iPhone BLE
+    icon: mdi:bluetooth-connect
+    location: >
+      {{ is_state('binary_sensor.layma_iphone_hallway_presence', 'on') or is_state('binary_sensor.layma_iphone_living_room_presence', 'on')  }}
+    source_type: bluetooth_le
+
 zone:
   - name: Dextor Work
     latitude: !secret geo_dextor_work_latitude

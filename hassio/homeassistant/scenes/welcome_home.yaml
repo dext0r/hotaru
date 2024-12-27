@@ -9,7 +9,7 @@ automation:
       - condition: template
         value_template: >
           {% set no_one_home_seconds = (as_timestamp(now()) - state_attr('input_datetime.anyone_home_last_seen', 'timestamp'))|int %}
-          {{ no_one_home_seconds > (8 * 60) }}
+          {{ no_one_home_seconds > (5 * 60) }}
 
       - condition: state
         entity_id: input_select.home_mode

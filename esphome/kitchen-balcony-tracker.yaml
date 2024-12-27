@@ -1,0 +1,27 @@
+packages:
+  base: !include common/base.yaml
+  esp_idf: !include common/idf.yaml
+  esp32_ble_tracker: !include common/esp32_ble_tracker.yaml
+
+substitutions:
+  device_name: Kitchen Balcony Tracker
+
+esphome:
+  name: kitchen-balcony-tracker
+  name_add_mac_suffix: false
+
+esp32:
+  board: esp32dev
+
+binary_sensor:
+  - name: Misaka Kitchen Balcony Presence
+    platform: ble_presence
+    irk: !secret misaka_irk
+    timeout: 30s
+    device_class: presence
+
+  - name: Layma iPhone Kitchen Balcony Presence
+    platform: ble_presence
+    irk: !secret layma_iphone_irk
+    timeout: 30s
+    device_class: presence

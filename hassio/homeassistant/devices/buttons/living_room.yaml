@@ -142,3 +142,38 @@ automation:
         else:
           - service: light.turn_off
             entity_id: light.living_room_tv
+
+  - id: living_room_heater_button_turn_on
+    alias: 'Living Room Heater Button: Turn on'
+    trigger:
+      - trigger: device
+        domain: mqtt
+        device_id: 624d122c903dda63a2c71e9d636f4a0c
+        type: action
+        subtype: 'on'
+    action:
+      - action: switch.turn_on
+        entity_id: switch.living_room_heater
+
+  - id: living_room_heater_button_turn_off
+    alias: 'Living Room Heater Button: Turn off'
+    trigger:
+      - trigger: device
+        domain: mqtt
+        device_id: 624d122c903dda63a2c71e9d636f4a0c
+        type: action
+        subtype: 'off'
+    action:
+      - action: switch.turn_off
+        entity_id: switch.living_room_heater
+
+  - id: living_room_heater_button_hold_down
+    alias: 'Living Room Heater Button: Hold down'
+    triggers:
+      - trigger: device
+        domain: mqtt
+        device_id: 624d122c903dda63a2c71e9d636f4a0c
+        type: action
+        subtype: brightness_move_down
+    actions:
+      - event: living_room_heater_button_hold_down

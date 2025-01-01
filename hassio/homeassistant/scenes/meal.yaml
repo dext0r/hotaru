@@ -8,10 +8,14 @@ automation:
   - id: scene_meal_turn_on
     alias: 'Scene Meal: Turn on'
     trigger:
-      - platform: event
+      - trigger: event
         event_type: yandex_intent
         event_data:
           text: Время ужинать
+
+      - id: event
+        trigger: event
+        event_type: kitchen_worktop_button_brightness_up_hold
     action:
       - service: light.turn_on
         entity_id: light.living_room_tv
@@ -82,3 +86,74 @@ automation:
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.scene_meal
+
+  - id: rice_cooking_status
+    alias: 'Rice Cooking: Status'
+    triggers:
+      - trigger: event
+        event_type: yandex_intent
+        event_data:
+          text: Что с рисоваркой
+    actions:
+      - if:
+          - condition: state
+            entity_id: timer.rice_cooking
+            state: active
+        then:
+          - action: timer.pause
+            entity_id: timer.rice_cooking
+
+          - action: timer.start
+            entity_id: timer.rice_cooking
+
+      - service: script.yandex_station_tts
+        data:
+          target: >
+            {{ trigger.event.data.get('entity_id', 'last') }}
+          text: >
+            {% if is_state('timer.rice_cooking', 'idle') %}
+              Рисоварка не запущена
+            {% else %}
+              Осталось примерно {{ state_attr('timer.rice_cooking', 'remaining').split(':')[1] }} мин. до полной готовности
+            {% endif %}
+
+  - id: rice_almost_ready_alert
+    alias: Rice almost ready alert
+    triggers:
+      - trigger: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.rice_almost_ready
+    conditions:
+      - condition: state
+        entity_id: binary_sensor.anyone_home
+        state: 'on'
+
+      - condition: state
+        entity_id: input_select.home_mode
+        state:
+          - Day
+          - Vacation
+    actions:
+      - action: script.yandex_station_tts
+        data:
+          target: all
+          type: attention
+          text: >
+            {{ [
+                'рис почти готов',
+                'рис на подходе, давай накрывать стол',
+                'запах риса на всю кухню, он почти готов',
+                ]|random
+            }}
+
+timer:
+  rice_cooking:
+    name: 'Rice Cooking'
+    duration:
+      minutes: 42
+
+  rice_almost_ready:
+    name: 'Rice Almost Ready'
+    duration:
+      minutes: 31

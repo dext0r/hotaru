@@ -89,3 +89,6 @@ intents:
     extra_phrases:
       - Исправь звук
     say_phrase: Делаю
+  Что с рисоваркой:
+    extra_phrases:
+      - Что с рисом

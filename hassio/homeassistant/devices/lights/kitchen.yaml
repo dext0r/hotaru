@@ -192,3 +192,56 @@ group:
       - light.kitchen_main
       - light.kitchen_mood
       - light.kitchen_worktop
+
+script:
+  kitchen_worktop_right_light_ack_flash:
+    alias: 'Kitchen Worktop Right Light: ACK Flash'
+    description: Подтверждает команду через мигание светильником над рабочей зоной
+    mode: queued
+    sequence:
+      - if:
+          - condition: state
+            entity_id: light.kitchen_worktop_right
+            state: 'off'
+        then:
+          - action: light.turn_on
+            entity_id: light.kitchen_worktop_right
+            data:
+              brightness_pct: >
+                {{ 20 if is_state('input_select.home_mode', 'Night') else 50 }}
+              transition: 0.5
+
+          - delay:
+              milliseconds: 500
+
+          - action: light.turn_off
+            entity_id: light.kitchen_worktop_right
+        else:
+          - service: scene.create
+            data:
+              scene_id: kitchen_worktop_right_light_ack_flash
+              snapshot_entities:
+                - light.kitchen_worktop_right
+
+          - action: light.turn_on
+            entity_id: light.kitchen_worktop_right
+            data:
+              brightness: >
+                {% set brightness = state_attr('light.kitchen_worktop_right', 'brightness')|int(255) %}
+                {% if brightness > 127 %}
+                  {{ brightness - 100 }}
+                {% else %}
+                  {{ brightness + 100 }}
+                {% endif %}
+              transition: 0.5
+
+          - delay:
+              milliseconds: 500
+
+          - service: scene.turn_on
+            entity_id: scene.kitchen_worktop_right_light_ack_flash
+            data:
+              transition: 0.5
+
+      - delay:
+          milliseconds: 500

@@ -4,6 +4,15 @@ input_datetime:
     has_date: true
     icon: mdi:spray-bottle
 
+input_number:
+  humidifiers_water_consumption:
+    name: 'Humidifiers: Water consumption'
+    min: 0
+    max: 99999999
+    step: 5
+    mode: box
+    unit_of_measurement: L
+
 automation:
   - id: humidifiers_maintenance_alert
     alias: 'Humidifiers: Maintenance Alert'
@@ -172,6 +181,14 @@ template:
             в {{ data.humidifiers|join(', ') }}
           {% endif %}
 
+      - unique_id: sensor.humidifiers_water_consumption
+        name: 'Humidifiers: Water consumption'
+        state: >
+          {{ states('input_number.humidifiers_water_consumption') }}
+        unit_of_measurement: L
+        device_class: water
+        state_class: total_increasing
+
   - binary_sensor:
       - unique_id: binary_sensor.humidifier_cleanup_notice
         name: 'Humidifier: Cleanup notice'
@@ -188,3 +205,13 @@ template:
           {% endif %}
 
           {{ v }}
+
+sensor:
+  - name: 'Humidifiers: Water consumption (9d)'
+    unique_id: sensor.humidifiers_water_consumption_9d
+    platform: statistics
+    entity_id: sensor.humidifiers_water_consumption
+    state_characteristic: distance_absolute
+    precision: 0
+    max_age:
+      days: 9

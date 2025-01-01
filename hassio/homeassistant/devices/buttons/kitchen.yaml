@@ -1,32 +1,197 @@
 automation:
-  - id: kitchen_worktop_button_turn_on
-    alias: 'Kitchen Worktop Button: Turn on'
-    trigger:
-      - platform: device
+  - id: kitchen_worktop_button_toggle
+    alias: 'Kitchen Worktop Button: Toggle'
+    triggers:
+      - trigger: device
         domain: mqtt
-        device_id: 624d122c903dda63a2c71e9d636f4a0c
+        device_id: 0ce6ac11002d2638d6f9d4e22f925168
         type: action
-        subtype: 'on'
-        discovery_id: 0x84fd27fffe3b745a action_on
-    action:
-      - service: light.turn_on
+        subtype: toggle
+    actions:
+      - if:
+          - condition: state
+            entity_id: light.kitchen_worktop
+            state: 'off'
+        then:
+          - action: light.turn_on
+            entity_id: light.kitchen_worktop
+            data:
+              brightness_pct: 100
+        else:
+          - action: light.turn_off
+            entity_id: light.kitchen_worktop
+
+  - id: kitchen_worktop_button_brightness_down_click (Day)
+    alias: 'Kitchen Worktop Button: Brightness down click (Day)'
+    triggers:
+      - trigger: device
+        domain: mqtt
+        device_id: 0ce6ac11002d2638d6f9d4e22f925168
+        type: action
+        subtype: brightness_down_click
+    conditions:
+      - condition: state
+        entity_id: input_select.home_mode
+        state: Day
+    actions:
+      - action: script.turn_on
+        entity_id: script.kitchen_worktop_right_light_ack_flash
+
+      - action: script.yandex_station_tts
+        data:
+          target:
+            - media_player.living_room_station
+            - media_player.workshop_station
+          type: attention
+          pause_atv: true
+          text: >
+            {{ [
+                'требуется помощь на кухне',
+                'скорее подойди на кухню',
+                'тебя очень ждут на кухне',
+                ]|random
+            }}
+
+  - id: kitchen_worktop_button_brightness_down_click (Night)
+    alias: 'Kitchen Worktop Button: Brightness down click (Night)'
+    triggers:
+      - trigger: device
+        domain: mqtt
+        device_id: 0ce6ac11002d2638d6f9d4e22f925168
+        type: action
+        subtype: brightness_down_click
+    conditions:
+      - condition: state
+        entity_id: input_select.home_mode
+        state: Night
+    actions:
+      - action: light.turn_on
         entity_id: light.kitchen_worktop
         data:
-          brightness_pct: 100
+          brightness_pct: 20
 
-  - id: kitchen_worktop_button_turn_off
-    alias: 'Kitchen Worktop Button: Turn off'
-    trigger:
-      - platform: device
+  - id: kitchen_worktop_button_brightness_up_click
+    alias: 'Kitchen Worktop Button: Brightness up click'
+    triggers:
+      - trigger: device
         domain: mqtt
-        device_id: 624d122c903dda63a2c71e9d636f4a0c
+        device_id: 0ce6ac11002d2638d6f9d4e22f925168
         type: action
-        subtype: 'off'
-        discovery_id: 0x84fd27fffe3b745a action_off
-    condition:
+        subtype: brightness_up_click
+    conditions:
       - condition: state
-        entity_id: light.kitchen_worktop
-        state: 'on'
-    action:
-      - service: light.turn_off
-        entity_id: light.kitchen_worktop
+        entity_id: input_select.home_mode
+        state: Day
+    actions:
+      - action: script.turn_on
+        entity_id: script.kitchen_worktop_right_light_ack_flash
+
+      - action: script.yandex_station_tts
+        data:
+          target:
+            - media_player.living_room_station
+            - media_player.workshop_station
+          type: attention
+          pause_atv: true
+          text: >
+            {{ [
+                'еда почти готова, время накрывать стол',
+                'еда на подходе, скоро будем кушать',
+                'бросай всё и давай поедим!',
+                ]|random
+            }}
+
+  - id: kitchen_worktop_button_brightness_up_hold
+    alias: 'Kitchen Worktop Button: Brightness up hold'
+    triggers:
+      - trigger: device
+        domain: mqtt
+        device_id: 0ce6ac11002d2638d6f9d4e22f925168
+        type: action
+        subtype: brightness_up_hold
+    conditions:
+      - condition: state
+        entity_id: input_select.home_mode
+        state: Day
+    actions:
+      - action: script.turn_on
+        entity_id: script.kitchen_worktop_right_light_ack_flash
+
+      - event: kitchen_worktop_button_brightness_up_hold
+
+  - id: kitchen_worktop_button_arrow_left_click
+    alias: 'Kitchen Worktop Button: Arrow left click'
+    mode: single
+    max_exceeded: silent
+    triggers:
+      - trigger: device
+        domain: mqtt
+        device_id: 0ce6ac11002d2638d6f9d4e22f925168
+        type: action
+        subtype: arrow_left_click
+    conditions:
+      - condition: state
+        entity_id: person.dextor
+        state: home
+    actions:
+      - action: input_number.increment
+        entity_id: input_number.humidifiers_water_consumption
+
+      - action: script.kitchen_worktop_right_light_ack_flash
+      - action: script.kitchen_worktop_right_light_ack_flash
+
+      - delay:
+          seconds: 10
+
+  - id: kitchen_worktop_button_arrow_right_click
+    alias: 'Kitchen Worktop Button: Arrow right click'
+    triggers:
+      - trigger: device
+        domain: mqtt
+        device_id: 0ce6ac11002d2638d6f9d4e22f925168
+        type: action
+        subtype: arrow_right_click
+    conditions:
+      - condition: state
+        entity_id: input_select.home_mode
+        state: Day
+    actions:
+      - if:
+          - condition: state
+            entity_id: timer.rice_cooking
+            state: active
+        then:
+          - action: timer.pause
+            entity_id: timer.rice_cooking
+
+          - action: timer.start
+            entity_id: timer.rice_cooking
+
+          - service: script.yandex_station_tts
+            data:
+              target: media_player.kitchen_station
+              text: >
+                Осталось примерно {{ state_attr('timer.rice_cooking', 'remaining').split(':')[1] }} мин. до полной готовности риса
+        else:
+          - action: timer.start
+            entity_id:
+              - timer.rice_cooking
+              - timer.rice_almost_ready
+
+          - action: script.turn_on
+            entity_id: script.kitchen_worktop_right_light_ack_flash
+
+  - id: kitchen_worktop_button_arrow_right_hold
+    alias: 'Kitchen Worktop Button: Arrow right hold'
+    triggers:
+      - trigger: device
+        domain: mqtt
+        device_id: 0ce6ac11002d2638d6f9d4e22f925168
+        type: action
+        subtype: arrow_right_hold
+    actions:
+      - action: timer.cancel
+        entity_id: timer.rice_cooking
+
+      - action: script.turn_on
+        entity_id: script.kitchen_worktop_right_light_ack_flash

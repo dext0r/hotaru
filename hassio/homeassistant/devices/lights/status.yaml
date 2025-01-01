@@ -79,6 +79,9 @@ automation:
 
       - platform: time_pattern
         minutes: '/10'
+
+      - platform: event
+        event_type: living_room_tv_status_light_ack_flash_done
     action:
       - if:
           - condition: state
@@ -205,3 +208,33 @@ automation:
                 entity_id:
                   - light.living_room_tv_status_left
                   - light.living_room_tv_status_right
+
+script:
+  living_room_tv_status_light_ack_flash:
+    alias: 'Living Room TV Status Light: ACK Flash'
+    description: Подтверждает команду через мигание статусным светильником у телевизора
+    mode: restart
+    sequence:
+      - action: light.turn_on
+        entity_id:
+          - light.living_room_tv_status_left
+          - light.living_room_tv_status_right
+        data:
+          brightness_pct: 100
+          rgb_color: [12, 255, 0]
+          transition: 0.5
+
+      - delay:
+          milliseconds: 500
+
+      - action: light.turn_off
+        entity_id:
+          - light.living_room_tv_status_left
+          - light.living_room_tv_status_right
+        data:
+          transition: 0.5
+
+      - delay:
+          milliseconds: 500
+
+      - event: living_room_tv_status_light_ack_flash_done

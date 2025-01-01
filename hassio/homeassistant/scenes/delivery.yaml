@@ -26,12 +26,16 @@ input_datetime:
 automation:
   - id: scene_delivery_turn_on
     alias: 'Scene Delivery: Turn on'
-    trigger:
-      - platform: event
+    triggers:
+      - trigger: event
         event_type: yandex_intent
         event_data:
           text: Заказана еда
-    action:
+
+      - id: event
+        trigger: event
+        event_type: living_room_heater_button_hold_down
+    actions:
       - if:
           - condition: state
             entity_id: input_boolean.scene_delivery
@@ -40,10 +44,10 @@ automation:
           - service: script.yandex_station_tts
             data:
               target: >
-                {{ trigger.event.data.get('entity_id', 'last') }}
+                {{ 'media_player.living_room_station' if trigger.id == 'event' else trigger.event.data.get('entity_id', 'last') }}
               text: >
                 {% set elapsed_seconds = as_timestamp(now()) - state_attr('input_datetime.scene_delivery_started', 'timestamp') %}
-                {{ ['Ага', 'Я знаю', 'Наверняка']|random }}, уже как {{ (elapsed_seconds / 60)|int }}мин назад
+                {{ 'Еда заказана' if trigger.id == 'event' else ['Ага,', 'Я знаю,', 'Наверняка,']|random }} уже как {{ (elapsed_seconds / 60)|int }}мин назад
                 {% if elapsed_seconds > 40 * 60 * 60 %}
                   и я немного волнуюсь
                 {% endif %}
@@ -61,20 +65,42 @@ automation:
           datetime: >
             {{ now().strftime('%Y-%m-%d %H:%M:%S') }}
 
-      - service: script.yandex_station_tts
-        data:
-          target: >
-            {{ trigger.event.data.get('entity_id', 'last') }}
-          text: >
-            {{ [
-                'Хорошо, ждём. Очень хочется кушать',
-                'Хорошо, скорей бы привезли кушать',
-                'Отлично, ждём с нетерпением',
-                'Ждем курьера, но почему бы не приготовить самому?',
-                'Ждем курьера, но почему бы не приготовить самому?',
-                'Хорошая новость. Не забудь всё подготовить.',
-               ]|random
-            }}
+      - if:
+          - condition: trigger
+            id: event
+        then:
+          - action: script.turn_on
+            entity_id: script.living_room_tv_status_light_ack_flash
+
+          - service: script.yandex_station_tts
+            data:
+              target: >
+                {{ 'media_player.living_room_station' if trigger.id == 'event' else trigger.event.data.get('entity_id', 'last') }}
+              text: >
+                {{ [
+                    'Еда заказана. Очень хочется кушать',
+                    'Еда заказана. Скорей бы привезли кушать',
+                    'Еда заказана. Ждём с нетерпением',
+                    'Ждем курьера, но почему бы не приготовить самому?',
+                    'Ждем курьера, но почему бы не приготовить самому?',
+                    'Еда заказана. Не забудь всё подготовить.',
+                  ]|random
+                }}
+        else:
+          - service: script.yandex_station_tts
+            data:
+              target: >
+                {{ 'media_player.living_room_station' if trigger.id == 'event' else trigger.event.data.get('entity_id', 'last') }}
+              text: >
+                {{ [
+                    'Хорошо, ждём. Очень хочется кушать',
+                    'Хорошо, скорей бы привезли кушать',
+                    'Отлично, ждём с нетерпением',
+                    'Ждем курьера, но почему бы не приготовить самому?',
+                    'Ждем курьера, но почему бы не приготовить самому?',
+                    'Хорошая новость. Не забудь всё подготовить.',
+                  ]|random
+                }}
 
   - id: scene_delivery_30min_passed
     alias: 'Scene Delivery: 30min passed'

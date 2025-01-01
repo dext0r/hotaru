@@ -119,6 +119,13 @@ script:
             0.9
           {%- endif -%}
         {%- endif -%}
+
+      _pause_atv: >
+        {%- if pause_atv is defined -%}
+          {{ pause_atv }}
+        {%- else -%}
+          false
+        {% endif %}
     fields:
       target:
         name: Target
@@ -148,7 +155,23 @@ script:
             min: 0
             max: 1
             step: 0.1
+      pause_atv:
+        name: Pause ATV
+        selector:
+          boolean:
     sequence:
+      - if:
+          - condition: template
+            value_template: >
+              {{ _pause_atv }}
+
+          - condition: state
+            entity_id: media_player.atv
+            state: playing
+        then:
+          - service: media_player.media_pause
+            entity_id: media_player.atv
+
       - if:
           - condition: template
             value_template: >

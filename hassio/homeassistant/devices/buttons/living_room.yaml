@@ -2,12 +2,11 @@ automation:
   - id: living_room_dinner_table_button_single_press
     alias: 'Living Room Dinner Table Button: Single press'
     trigger:
-      - platform: device
+      - trigger: device
         domain: mqtt
         device_id: 9c3b7479025f7d66f4dd23a779acfd86
         type: action
         subtype: single
-        discovery_id: 0x00158d0003cfe908 action_single
     condition:
       - condition: state
         entity_id: media_player.tv
@@ -20,12 +19,11 @@ automation:
   - id: living_room_dinner_table_button_double_press
     alias: 'Living Room Dinner Table Button: Double press'
     trigger:
-      - platform: device
+      - trigger: device
         domain: mqtt
         device_id: 9c3b7479025f7d66f4dd23a779acfd86
         type: action
         subtype: double
-        discovery_id: 0x00158d0003cfe908 action_double
     condition:
       - condition: state
         entity_id: media_player.tv
@@ -38,12 +36,11 @@ automation:
   - id: living_room_dinner_table_button_triple_press
     alias: 'Living Room Dinner Table Button: Triple press'
     trigger:
-      - platform: device
+      - trigger: device
         domain: mqtt
         device_id: 9c3b7479025f7d66f4dd23a779acfd86
         type: action
         subtype: triple
-        discovery_id: 0x00158d0003cfe908 action_triple
     condition:
       - condition: state
         entity_id: media_player.tv
@@ -56,12 +53,11 @@ automation:
   - id: living_room_light_switch_single_right
     alias: 'Living Room Light Switch: Single right'
     trigger:
-      - platform: device
+      - trigger: device
         domain: mqtt
         device_id: e0a2386c0fbe8ec9b50b6bc773b4d635
         type: action
         subtype: single_right
-        discovery_id: 0x54ef441000275552 action_single_right
     action:
       - choose:
           - conditions:
@@ -128,12 +124,11 @@ automation:
   - id: living_room_light_switch_double_right
     alias: 'Living Room Light Switch: Double right'
     trigger:
-      - platform: device
+      - trigger: device
         domain: mqtt
         device_id: e0a2386c0fbe8ec9b50b6bc773b4d635
         type: action
         subtype: double_right
-        discovery_id: 0x54ef441000275552 action_double_right
     action:
       - if:
           - condition: state

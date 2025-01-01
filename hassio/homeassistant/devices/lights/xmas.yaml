@@ -57,12 +57,11 @@ automation:
           seconds: 3
 
       - id: bedroom_bed_button_single_press
-        platform: device
+        trigger: device
         domain: mqtt
         device_id: 620c20157f0cbf8a0249f3f083a531ff
         type: action
         subtype: single
-        discovery_id: 0x00158d00039723b6 action_single
     condition:
       - condition: state
         entity_id:

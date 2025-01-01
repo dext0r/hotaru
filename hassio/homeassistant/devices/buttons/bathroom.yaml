@@ -2,12 +2,11 @@ automation:
   - id: bathroom_mirror_button_single_press
     alias: 'Bathroom Mirror Button: Single press'
     trigger:
-      - platform: device
+      - trigger: device
         domain: mqtt
         device_id: 88c16946d5bfcee7dfce360e772ab881
         type: action
         subtype: single
-        discovery_id: 0x00158d0003cb48af action_single
     action:
       if:
         - condition: state
@@ -27,12 +26,11 @@ automation:
   - id: bathroom_mirror_button_double
     alias: 'Bathroom Mirror Button: Double'
     trigger:
-      - platform: device
+      - trigger: device
         domain: mqtt
         device_id: 88c16946d5bfcee7dfce360e772ab881
         type: action
         subtype: double
-        discovery_id: 0x00158d0003cb48af action_double
     action:
       - choose:
           - conditions:
@@ -68,12 +66,11 @@ automation:
   - id: bathroom_mirror_button_hold
     alias: 'Bathroom Mirror Button: Hold'
     trigger:
-      - platform: device
+      - trigger: device
         domain: mqtt
         device_id: 88c16946d5bfcee7dfce360e772ab881
         type: action
         subtype: hold
-        discovery_id: 0x00158d0003cb48af action_hold
     action:
       - service: light.turn_off
         entity_id: group.bathroom_path_lights
@@ -81,12 +78,11 @@ automation:
   - id: bathroom_bathtub_button_single_press
     alias: 'Bathroom Bathtub Button: Single press'
     trigger:
-      - platform: device
+      - trigger: device
         domain: mqtt
         device_id: f0a662efaa0eddc62b7028e4e5214d8d
         type: action
         subtype: single
-        discovery_id: 0x00158d0003972602 action_single
     action:
       - if:
           - condition: state
@@ -110,26 +106,23 @@ automation:
   - id: bathroom_bathtub_button_call
     alias: 'Bathroom Bathtube Button: Call'
     trigger:
-      - platform: device
+      - trigger: device
         domain: mqtt
         device_id: f0a662efaa0eddc62b7028e4e5214d8d
         type: action
         subtype: double
-        discovery_id: 0x00158d0003972602 action_double
 
-      - platform: device
+      - trigger: device
         domain: mqtt
         device_id: f0a662efaa0eddc62b7028e4e5214d8d
-        type: triple
-        subtype: single
-        discovery_id: 0x00158d0003972602 action_triple
+        type: action
+        subtype: triple
 
-      - platform: device
+      - trigger: device
         domain: mqtt
         device_id: f0a662efaa0eddc62b7028e4e5214d8d
         type: action
         subtype: many
-        discovery_id: 0x00158d0003972602 action_many
     action:
       - service: script.yandex_station_tts
         data:

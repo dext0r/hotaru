@@ -2,12 +2,11 @@ automation:
   - id: bedroom_bed_button_single_press
     alias: 'Bedroom Bed Button: Single press'
     trigger:
-      - platform: device
+      - trigger: device
         domain: mqtt
         device_id: 620c20157f0cbf8a0249f3f083a531ff
         type: action
         subtype: single
-        discovery_id: 0x00158d00039723b6 action_single
     condition:
       - condition: state
         entity_id: input_boolean.scene_sleepy_mood
@@ -61,12 +60,11 @@ automation:
   - id: bedroom_bed_button_double_press
     alias: 'Bedroom Bed Button: Double press'
     trigger:
-      - platform: device
+      - trigger: device
         domain: mqtt
         device_id: 620c20157f0cbf8a0249f3f083a531ff
         type: action
         subtype: double
-        discovery_id: 0x00158d00039723b6 action_double
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.bedroom_airing_cold
@@ -80,12 +78,11 @@ automation:
   - id: bedroom_bed_button_hold
     alias: 'Bedroom Bed Button: Hold'
     trigger:
-      - platform: device
+      - trigger: device
         domain: mqtt
         device_id: 620c20157f0cbf8a0249f3f083a531ff
         type: action
         subtype: hold
-        discovery_id: 0x00158d00039723b6 action_hold
     action:
       - service: script.yandex_station_tts
         data:
@@ -96,12 +93,11 @@ automation:
   - id: bedroom_light_switch_single_right
     alias: 'Bedroom Light Switch: Single right'
     trigger:
-      - platform: device
+      - trigger: device
         domain: mqtt
         device_id: c109a5cffc3ce01835ed7f55ce3b8cbc
         type: action
         subtype: single_right
-        discovery_id: 0x54ef441000245d07 action_single_right
     action:
       - if:
           - condition: state
@@ -137,12 +133,11 @@ automation:
   - id: bedroom_light_switch_double_right
     alias: 'Bedroom Light Switch: Double right'
     trigger:
-      - platform: device
+      - trigger: device
         domain: mqtt
         device_id: c109a5cffc3ce01835ed7f55ce3b8cbc
         type: action
         subtype: double_right
-        discovery_id: 0x54ef441000245d07 action_double_right
     action:
       - if:
           - condition: state

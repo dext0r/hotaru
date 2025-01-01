@@ -27,6 +27,17 @@ automation:
         data:
           datetime: '{{ now().strftime("%Y-%m-%d %H:%M:%S") }}'
 
+  - id: anyone_near_home_detected
+    alias: 'Anyone Near Home Detected'
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.anyone_near_home
+        from: 'off'
+        to: 'on'
+    actions:
+      - action: timer.start
+        entity_id: timer.anyone_near_home_recently
+
   - id: kitchen_balcony_tracker_led_update
     alias: 'Kitchen Balcony Tracker: LED Update'
     mode: queued
@@ -87,6 +98,12 @@ template:
         state: >
           {{ states('zone.near_home')|int(0) > 0 }}
         device_class: presence
+
+timer:
+  anyone_near_home_recently:
+    name: 'Anyone Near Home: Recently'
+    duration:
+      minutes: 7
 
 zone:
   - name: Dextor Work

@@ -25,3 +25,10 @@ binary_sensor:
     irk: !secret layma_iphone_irk
     timeout: 30s
     device_class: presence
+
+switch:
+  - name: $device_name LED
+    platform: gpio
+    pin: 2
+    entity_category: diagnostic
+    icon: mdi:led-outline

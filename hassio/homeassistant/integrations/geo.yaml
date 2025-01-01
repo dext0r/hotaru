@@ -27,6 +27,19 @@ automation:
         data:
           datetime: '{{ now().strftime("%Y-%m-%d %H:%M:%S") }}'
 
+  - id: kitchen_balcony_tracker_led_update
+    alias: 'Kitchen Balcony Tracker: LED Update'
+    mode: queued
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.anyone_near_home
+        to:
+          - 'on'
+          - 'off'
+    actions:
+      - action: switch.turn_{{ trigger.to_state.state }}
+        entity_id: switch.kitchen_balcony_tracker_led
+
 device_tracker_template:
   - unique_id: device_tracker.misaka_near_home
     name: Misaka Near Home

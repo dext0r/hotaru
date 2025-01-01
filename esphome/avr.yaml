@@ -204,7 +204,7 @@ switch:
 
 hdmi_cec:
   id: cec
-  pin: D4
+  pin: D5
   address: 0xE
   physical_address: 0x2400
   promiscuous_mode: true

@@ -25,7 +25,6 @@ esp32:
 
 logger:
   baud_rate: 0
-  level: INFO
 
 uart:
   - id: ld2410_uart

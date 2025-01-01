@@ -1,3 +1,32 @@
+automation:
+  - id: everybody_left_home
+    alias: Everybody Left Home
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.anyone_home
+        from: 'on'
+        to: 'off'
+    action:
+      - service: input_datetime.set_datetime
+        entity_id: input_datetime.anyone_home_last_seen
+        data:
+          datetime: '{{ now().strftime("%Y-%m-%d %H:%M:%S") }}'
+
+  - id: anyone_home_last_seen_update
+    alias: 'Anyone Home Last Seen: Update'
+    trigger:
+      - platform: time_pattern
+        minutes: /4
+    condition:
+      - condition: state
+        entity_id: binary_sensor.anyone_home
+        state: 'on'
+    action:
+      - service: input_datetime.set_datetime
+        entity_id: input_datetime.anyone_home_last_seen
+        data:
+          datetime: '{{ now().strftime("%Y-%m-%d %H:%M:%S") }}'
+
 device_tracker_template:
   - unique_id: device_tracker.misaka_near_home
     name: Misaka Near Home
@@ -26,6 +55,25 @@ device_tracker_template:
     location: >
       {{ is_state('binary_sensor.layma_iphone_hallway_presence', 'on') or is_state('binary_sensor.layma_iphone_living_room_presence', 'on')  }}
     source_type: bluetooth_le
+
+input_datetime:
+  anyone_home_last_seen:
+    name: 'Anyone Home: Last Seen'
+    has_time: true
+    has_date: true
+    icon: mdi:exit-to-app
+
+template:
+  - binary_sensor:
+      - name: Anyone Home
+        state: >
+          {{ states('zone.home')|int(0) > 0 }}
+        device_class: presence
+
+      - name: Anyone Near Home
+        state: >
+          {{ states('zone.near_home')|int(0) > 0 }}
+        device_class: presence
 
 zone:
   - name: Dextor Work

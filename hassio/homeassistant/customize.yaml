@@ -1,6 +1,3 @@
-sensor.disk_temperature:
-  device_class: temperature
-
 binary_sensor.bathroom_washing_machine_water_leak:
   alert_text: в ванне под стиралкой
 binary_sensor.bathroom_sink_water_leak:
@@ -45,3 +42,12 @@ sensor.bedroom_ac_energy:
   volatile: true
 sensor.workshop_ac_energy:
   volatile: true
+
+sensor.hotaru_sda_temperature:
+  sporadic: true
+sensor.bedroom_ac_outdoor_temperature:
+  sporadic: true
+sensor.workshop_ac_outdoor_temperature:
+  sporadic: true
+sensor.dishwasher_temperature:
+  sporadic: true

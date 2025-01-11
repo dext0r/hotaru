@@ -99,3 +99,35 @@ automation:
         data:
           entity_id: notify.debug
           message: 'Device unavailable: {{ trigger.event.data.new_state.entity_id }}'
+
+  - id: frozen_sensor_alert
+    alias: Frozen sensor alert
+    triggers:
+      - trigger: time
+        at: '12:00'
+      - trigger: time
+        at: '21:00'
+    conditions:
+      - condition: template
+        value_template: >
+          {%- set ns = namespace(break = false) -%}
+          {%- for entity in states if entity.attributes.get('device_class') in ('temperature', 'humidity', 'carbon_dioxide') and ns.break == false -%}
+          {%- if (now() - entity.last_updated).total_seconds() > 6 * 60 * 60 and
+                  not set(entity.entity_id.split('_')).intersection(['target']) and
+                  not is_state_attr(entity.entity_id, 'sporadic', true) -%}
+            {%- set ns.break = true -%}
+            true
+          {%- endif -%}
+          {%- endfor -%}
+    actions:
+      - action: notify.dextor
+        data:
+          message: >
+            📉 <b>Давно не обновлялись датчики:</b>{{ '\n' }}
+            {%- for entity in states if entity.attributes.get('device_class') in ('temperature', 'humidity', 'carbon_dioxide') -%}
+            {%- if (now() - entity.last_updated).total_seconds() > 6 * 60 * 60 and
+                    not set(entity.entity_id.split('_')).intersection(['target']) and
+                    not is_state_attr(entity.entity_id, 'sporadic', true) -%}
+            * {{ entity.name }}: {{ entity.last_updated.strftime('%d.%m.%Y %H:%M') }} {{ '\n' }}
+            {%- endif -%}
+            {%- endfor -%}

@@ -179,3 +179,12 @@ automation:
           target: all
           type: alert
           text: Гладильная доска долго включена, вряд ли так должно быть
+
+
+sensor:
+  - platform: integration
+    unique_id: sensor.ironing_board_energy
+    name: Ironing Board Energy
+    source: sensor.ironing_board_socket_power
+    unit_prefix: k
+    round: 2

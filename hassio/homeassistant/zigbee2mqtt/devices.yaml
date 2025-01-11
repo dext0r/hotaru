@@ -6,6 +6,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/67caa0801772e10821535639970b116c.png
 '0x00124b00226b1703':
   friendly_name: Hallway Light Switch
   homeassistant: {}
@@ -14,6 +15,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/67caa0801772e10821535639970b116c.png
 '0x54ef441000275552':
   friendly_name: Living Room Light Switch
   homeassistant: {}
@@ -22,6 +24,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/d0aacfe1754363dbc83d95e152834262.png
 '0x54ef441000245d07':
   friendly_name: Bedroom Light Switch
   homeassistant: {}
@@ -30,6 +33,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/d0aacfe1754363dbc83d95e152834262.png
 '0xa4c138104391cbaa':
   friendly_name: Dishwasher Socket
   homeassistant: {}
@@ -40,6 +44,7 @@
   temperature_precision: 1
   current_precision: 1
   power_precision: 1
+  icon: device_icons/08a9016bbc0657cf5f581ae9c19c31a5.png
 '0x00124b0023a8b622':
   friendly_name: Closet Light Switch
   homeassistant: {}
@@ -48,6 +53,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/879e82a63045555a205e2e473785d39c.png
 '0x00124b0023add1f3':
   friendly_name: Porch Light Switch
   homeassistant: {}
@@ -56,6 +62,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/879e82a63045555a205e2e473785d39c.png
 '0x00158d0003d05c96':
   friendly_name: Washing Machine Door
   homeassistant: {}
@@ -64,6 +71,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/5af4a3a117c693914f063f9e87cd28de.png
 '0x54ef441000585ebc':
   friendly_name: Bathroom Presence
   disabled: false
@@ -89,6 +97,7 @@
         "zones": [{"x": 2, "y": 2}]
       }
     }
+  icon: device_icons/152f6228e7918a779c968eed05e46693.png
 '0x00158d0000b4836d':
   friendly_name: Freezer Door
   homeassistant: {}
@@ -97,6 +106,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/8c5d282ee4cde09137d50dd2d3fc8c39.png
 '0x00158d0001d735a5':
   friendly_name: Fridge Meteo
   disabled: false
@@ -106,6 +116,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/8da97afa2d57d9d2e86756a4aa2a6072.png
 '0x00158d000589044e':
   friendly_name: Freezer Meteo
   homeassistant: {}
@@ -114,6 +125,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/8da97afa2d57d9d2e86756a4aa2a6072.png
 '0x00158d0003cb4382':
   friendly_name: Bathroom Motion
   homeassistant: {}
@@ -122,6 +134,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/4858000fa9561bbf20da88e96154ed3f.png
 '0x00158d000392f2f4':
   friendly_name: Dishwasher Door
   homeassistant: {}
@@ -130,6 +143,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/5af4a3a117c693914f063f9e87cd28de.png
 '0x00158d00045683bc':
   friendly_name: Kitchen Water Leak
   homeassistant: {}
@@ -138,6 +152,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/2d19c1b8e82d9b72921bbd1fcbde4541.png
 '0x00158d00054da4c0':
   friendly_name: Kitchen Curtains Motor
   homeassistant: {}
@@ -146,6 +161,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/cc69377915a3830598dd400ff027ad38.png
 '0xa4c1388ef2d5a611':
   friendly_name: Bathroom Cold Water Valve
   homeassistant: {}
@@ -154,6 +170,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/53bb2a9b13189fa922f665f466b6a532.png
 '0xa4c138fbe16d53b0':
   friendly_name: Bathroom Hot Water Valve
   disabled: false
@@ -163,6 +180,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/53bb2a9b13189fa922f665f466b6a532.png
 '0x00124b002342ba2b':
   friendly_name: Front Door Vacation Lock
   homeassistant: {}
@@ -171,6 +189,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/226e331663924b0408096afd5efa4c99.png
 '0xcc86ecfffeb622f0':
   friendly_name: Bedroom Shades Motor
   homeassistant: {}
@@ -179,6 +198,7 @@
   optimistic: false
   retain: true
   temperature_precision: 1
+  icon: device_icons/1b207aa49030115625a437e32f945d49.png
 '0x00158d000460badf':
   friendly_name: Hallway Motion
   occupancy_timeout: 7
@@ -189,6 +209,7 @@
   optimistic: true
   temperature_precision: 1
   retain: true
+  icon: device_icons/2e7485d54446698ed62425812fe12303.png
 '0x04cf8cdf3c7cc6cd':
   friendly_name: Illuminance South Side
   homeassistant: {}
@@ -197,6 +218,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/956bdca587d0b5a2cd6200ffdcb3e3d1.png
 '0xa4c138a1f1b581e6':
   friendly_name: Kitchen Hot Water Valve
   homeassistant: {}
@@ -205,6 +227,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/53bb2a9b13189fa922f665f466b6a532.png
 '0xa4c138ea693a2814':
   friendly_name: Kitchen Cold Water Valve
   homeassistant: {}
@@ -213,6 +236,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/53bb2a9b13189fa922f665f466b6a532.png
 '0x00158d0003e701ed':
   friendly_name: Kitchen Motion
   homeassistant: {}
@@ -221,6 +245,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/4858000fa9561bbf20da88e96154ed3f.png
 '0x00158d0003cb436e':
   friendly_name: Bedroom Motion
   homeassistant: {}
@@ -231,6 +256,7 @@
   temperature_precision: 1
   occupancy_timeout: 20
   no_occupancy_since: []
+  icon: device_icons/4858000fa9561bbf20da88e96154ed3f.png
 '0x00158d0003cf7beb':
   friendly_name: Entrance Motion
   homeassistant: {}
@@ -239,6 +265,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/4858000fa9561bbf20da88e96154ed3f.png
 '0x00158d00039b6f7c':
   friendly_name: Wardrobe Door
   homeassistant: {}
@@ -247,6 +274,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/5af4a3a117c693914f063f9e87cd28de.png
 '0x00158d00039820ed':
   friendly_name: Workshop Door
   homeassistant: {}
@@ -255,6 +283,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/5af4a3a117c693914f063f9e87cd28de.png
 '0x00158d0003fa81fe':
   friendly_name: Front Door
   homeassistant: {}
@@ -263,6 +292,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/5af4a3a117c693914f063f9e87cd28de.png
 '0x00158d0006e9f7c0':
   friendly_name: Bathroom Washing Machine Water Leak
   homeassistant: {}
@@ -271,6 +301,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/2d19c1b8e82d9b72921bbd1fcbde4541.png
 '0x00158d0007110231':
   friendly_name: Bathroom Sink Water Leak
   homeassistant: {}
@@ -279,6 +310,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/2d19c1b8e82d9b72921bbd1fcbde4541.png
 '0x00158d00039723b6':
   friendly_name: Bedroom Bed Button
   homeassistant: {}
@@ -287,6 +319,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/c7706a8b7bac2de2a6d18635d4047f81.png
 '0x00158d0003cb48af':
   friendly_name: Bathroom Mirror Button
   homeassistant: {}
@@ -295,6 +328,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/c7706a8b7bac2de2a6d18635d4047f81.png
 '0x00158d0003cfe908':
   friendly_name: Living Room Dinner Table Button
   homeassistant: {}
@@ -303,6 +337,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/c7706a8b7bac2de2a6d18635d4047f81.png
 '0x54ef4410000ec68a':
   friendly_name: Illuminance North Side
   homeassistant: {}
@@ -311,6 +346,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/956bdca587d0b5a2cd6200ffdcb3e3d1.png
 '0x00158d0001e53cc5':
   friendly_name: Porch Motion
   homeassistant: {}
@@ -319,6 +355,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/2e7485d54446698ed62425812fe12303.png
 '0x00158d00045e53c5':
   friendly_name: Kitchen Meteo
   homeassistant: {}
@@ -327,6 +364,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/f5833cbbcb99d97a0c8b715687c43d80.png
 '0x84fd27fffe3b745a':
   friendly_name: Living Room Heater Button
   homeassistant: {}
@@ -335,6 +373,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/7146bc3333829dd31b1a37b1f83f6e01.png
 '0x00158d0003972602':
   friendly_name: Bathroom Bathtub Button
   homeassistant: {}
@@ -343,6 +382,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/c7706a8b7bac2de2a6d18635d4047f81.png
 '0x000d6f001329b0b4':
   friendly_name: Hallway Smoke
   homeassistant: {}
@@ -351,8 +391,10 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/8ff07e9c0bcf76c61da371ef919227d1.png
 '0x000d6f001206122e':
   friendly_name: Kitchen Smoke
+  icon: device_icons/8ff07e9c0bcf76c61da371ef919227d1.png
 '0x00158d000910738f':
   friendly_name: Closet Water Leak
   homeassistant: {}
@@ -361,6 +403,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/2d19c1b8e82d9b72921bbd1fcbde4541.png
 '0x00124b002342cf9a':
   friendly_name: Front Door Lock
   homeassistant: {}
@@ -369,14 +412,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
-'0x84fd27fffe9c0fbd':
-  friendly_name: Workshop Desk Button
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
+  icon: device_icons/226e331663924b0408096afd5efa4c99.png
 '0x00158d00044b1211':
   friendly_name: Living Room Motion
   homeassistant: {}
@@ -385,6 +421,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/2e7485d54446698ed62425812fe12303.png
 '0x00158d000792773c':
   friendly_name: Wardrobe Motion
   homeassistant: {}
@@ -394,6 +431,7 @@
   retain: true
   temperature_precision: 1
   occupancy_timeout: 8
+  icon: device_icons/4858000fa9561bbf20da88e96154ed3f.png
 '0xa4c13845111a6874':
   friendly_name: Dryer Socket
   homeassistant: {}
@@ -402,6 +440,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/08a9016bbc0657cf5f581ae9c19c31a5.png
 '0x847127fffe1aa61b':
   friendly_name: Workshop Shades Motor
   homeassistant: {}
@@ -410,6 +449,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/1b207aa49030115625a437e32f945d49.png
 '0x00158d0002b18458':
   friendly_name: Living Room Balcony Door
   homeassistant: {}
@@ -418,6 +458,7 @@
   optimistic: true
   temperature_precision: 1
   retain: true
+  icon: device_icons/5816cec5864b2553c5c835aefa557722.png
 '0x00158d0002b18350':
   friendly_name: Workshop Window
   homeassistant: {}
@@ -426,6 +467,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/5816cec5864b2553c5c835aefa557722.png
 '0x00158d00075fa58e':
   friendly_name: Workshop Motion
   homeassistant: {}
@@ -434,6 +476,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/2e7485d54446698ed62425812fe12303.png
 '0x00158d000775a0d4':
   friendly_name: Closet Motion
   homeassistant: {}
@@ -442,6 +485,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/2e7485d54446698ed62425812fe12303.png
 '0x00158d0002b18420':
   friendly_name: Fridge Door
   homeassistant: {}
@@ -450,6 +494,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/5816cec5864b2553c5c835aefa557722.png
 '0x588e81fffe43ce4f':
   friendly_name: Porch Door Lock
   homeassistant: {}
@@ -458,6 +503,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/f9edd10ffbe83265affdd72393f886b8.png
 '0x84fd27fffe60916f':
   friendly_name: Xmas Hallway Wall Light
   disabled: false
@@ -467,6 +513,7 @@
   optimistic: true
   temperature_precision: 1
   retain: true
+  icon: device_icons/91669ab20a4107a52faebc6385c4b0f6.png
 '0x84fd27fffe60958f':
   friendly_name: Xmas Living Room Curtains Light
   homeassistant:
@@ -476,6 +523,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/91669ab20a4107a52faebc6385c4b0f6.png
 '0x003c84fffe90658e':
   friendly_name: Xmas Kitchen Light
   homeassistant:
@@ -485,6 +533,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/cd0867522f9b9c860b0038476af088f4.png
 '0xa4c138edaeb5d672':
   friendly_name: Workshop Presence
   homeassistant: {}
@@ -496,6 +545,7 @@
   description: >-
     sensitivity: 6, min range: 0.15, max range: 3.4, detection delay: 0.5,
     fading time: 45
+  icon: device_icons/6cd3dca250fd519d5d2a825e5ec08247.png
 '0x00158d0007050d79':
   friendly_name: Dryer Door
   homeassistant: {}
@@ -504,6 +554,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/5af4a3a117c693914f063f9e87cd28de.png
 '0xa4c138ce97b152c2':
   friendly_name: Scooter Charger Socket
   homeassistant: {}
@@ -512,6 +563,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/08a9016bbc0657cf5f581ae9c19c31a5.png
 '0x00158d0006c8b148':
   friendly_name: Kitchen Pills Button
   homeassistant: {}
@@ -520,6 +572,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/c7706a8b7bac2de2a6d18635d4047f81.png
 '0x00158d0002aef0e9':
   friendly_name: Porch Door
   homeassistant: {}
@@ -528,6 +581,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/5816cec5864b2553c5c835aefa557722.png
 '0x00158d0000b483bd':
   friendly_name: Closet Door
   homeassistant: {}
@@ -536,6 +590,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/8c5d282ee4cde09137d50dd2d3fc8c39.png
 '0x00158d00019942ec':
   friendly_name: Bedroom Window
   homeassistant: {}
@@ -544,6 +599,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/5816cec5864b2553c5c835aefa557722.png
 '0x54ef44100071abb6':
   friendly_name: Bathroom Hot Water Meter Leak
   homeassistant: {}
@@ -552,6 +608,7 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/2d19c1b8e82d9b72921bbd1fcbde4541.png
 '0x54ef441000aa7b88':
   friendly_name: Bathroom Cold Water Meter Leak
   homeassistant: {}
@@ -560,18 +617,28 @@
   optimistic: true
   retain: true
   temperature_precision: 1
+  icon: device_icons/2d19c1b8e82d9b72921bbd1fcbde4541.png
 '0x54ef441000a6843a':
   friendly_name: Bathroom Toilet Water Leak
   homeassistant: {}
   optimistic: true
   retain: true
+  icon: device_icons/2d19c1b8e82d9b72921bbd1fcbde4541.png
 '0x54ef441000a68ada':
   friendly_name: Living Room Humidifier Water Leak
   homeassistant: {}
   optimistic: true
   retain: true
+  icon: device_icons/2d19c1b8e82d9b72921bbd1fcbde4541.png
 '0xd0cf5efffe423c9d':
   friendly_name: Kitchen Worktop Button
   homeassistant: {}
   optimistic: true
   retain: true
+  icon: device_icons/0bb605a453f07b8806fb5bd0288dd434.png
+'0x84fd27fffe9c0fbd':
+  friendly_name: Workshop Desk Button
+  homeassistant: {}
+  optimistic: true
+  retain: true
+  icon: device_icons/7146bc3333829dd31b1a37b1f83f6e01.png

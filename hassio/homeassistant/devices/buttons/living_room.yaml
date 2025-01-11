@@ -97,7 +97,7 @@ automation:
                 entity_id: light.living_room_backlight
                 data:
                   brightness_pct: 100
-                  kelvin: 2700
+                  color_temp_kelvin: 2700
         default:
           - if:
               - condition: state
@@ -119,7 +119,7 @@ automation:
                     {% else %}
                       100
                     {% endif %}
-                  kelvin: 4200
+                  color_temp_kelvin: 4200
 
   - id: living_room_light_switch_double_right
     alias: 'Living Room Light Switch: Double right'

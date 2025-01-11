@@ -49,7 +49,7 @@ automation:
         entity_id: light.living_room_backlight
         data:
           brightness_pct: 23
-          kelvin: 3400
+          color_temp_kelvin: 3400
 
       - if:
           - condition: state
@@ -157,7 +157,7 @@ script:
         entity_id: light.living_room_backlight
         data:
           brightness_pct: 23
-          kelvin: 3400
+          color_temp_kelvin: 3400
 
       - service: light.turn_off
         entity_id: light.living_room_main

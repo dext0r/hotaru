@@ -171,7 +171,7 @@ automation:
             entity_id: light.living_room_backlight
             data:
               brightness_pct: 23
-              kelvin: 3400
+              color_temp_kelvin: 3400
               transition: 5
 
       - service: script.yandex_station_command

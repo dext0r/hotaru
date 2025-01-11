@@ -82,7 +82,7 @@ automation:
                 entity_id: light.living_room_backlight
                 data:
                   brightness_pct: 23
-                  kelvin: 3400
+                  color_temp_kelvin: 3400
                   transition: 2
 
       - delay:
@@ -149,5 +149,5 @@ automation:
           - service: light.turn_on
             entity_id: light.bedroom_cat
             data:
-              kelvin: 2700
+              color_temp_kelvin: 2700
               brightness_pct: 100

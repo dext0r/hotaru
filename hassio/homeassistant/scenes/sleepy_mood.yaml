@@ -47,7 +47,7 @@ automation:
           - light.bedroom_cat
           - light.bedroom_string
         data:
-          kelvin: 2700
+          color_temp_kelvin: 2700
           brightness_pct: 12
 
       - delay:

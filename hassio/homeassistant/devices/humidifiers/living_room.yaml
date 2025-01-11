@@ -55,7 +55,7 @@ template:
         {% set outdoor_temperature = states('sensor.outside_temperature')|float(0) %}
 
         {% if outdoor_temperature < 13 and indoor_humidity > 0 %}
-          {% if indoor_humidity < target_humidity - 4 %}
+          {% if indoor_humidity <= target_humidity - 2 %}
             {% set speed = 84 %}
           {% elif indoor_humidity < target_humidity %}
             {% set speed = 60 %}

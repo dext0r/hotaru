@@ -21,6 +21,11 @@ automation:
       - condition: state
         entity_id: binary_sensor.anyone_home
         state: 'on'
+
+      # тайминг из scene_welcome_home_on
+      - condition: template
+        value_template: >
+          {{ (now() - states.binary_sensor.anyone_home.last_changed).total_seconds() > 5 * 60 }}
     action:
       - service: input_datetime.set_datetime
         entity_id: input_datetime.anyone_home_last_seen

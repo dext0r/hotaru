@@ -144,6 +144,7 @@ automation:
 
   - id: ironing_board_turn_off_overload
     alias: 'Ironing Board: Turn off (overload)'
+    mode: restart
     trigger:
       - platform: numeric_state
         entity_id: sensor.ironing_board_socket_power
@@ -159,6 +160,13 @@ automation:
     action:
       - action: switch.turn_off
         entity_id: switch.ironing_board_socket
+
+      - service: script.turn_on
+        entity_id: script.yandex_station_tts
+        data:
+          variables:
+            target: media_player.{{ states('input_select.ironing_board_room')|lower|replace(' ', '_') }}_station
+            text: Выключи утюг
 
   - id: ironing_board_alarm
     alias: 'Ironing Board: Alarm'

@@ -163,3 +163,21 @@ automation:
                 'Пойдём пить чай',
                 'Давай заварим чай!'
               ]|random }}
+
+  # https://github.com/esphome/issues/issues/5375
+  - id: kettle_stuck
+    alias: Kettle Stuck
+    trigger:
+      - trigger: time_pattern
+        minutes: 3
+    condition:
+      - condition: state
+        entity_id: switch.kettle_power
+        state: 'off'
+
+      - condition: template
+        value_template: >
+          {{ (now() - states.sensor.kettle_uptime.last_changed).total_seconds() > 3 * 60 }}
+    action:
+      - action: button.press
+        entity_id: button.kettle_restart

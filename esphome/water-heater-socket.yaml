@@ -1,7 +1,6 @@
 packages:
   base: !include generic/cbe_socket.yaml
   wifi_signal: !include common/wifi_signal.yaml
-  uptime: !include common/uptime.yaml
 
 substitutions:
   device_name: Water Heater Socket

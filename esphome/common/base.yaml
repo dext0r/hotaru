@@ -29,3 +29,9 @@ wifi:
   ap:
     password: !secret password
     ap_timeout: 1min
+
+sensor:
+  - platform: uptime
+    name: $device_name Uptime
+    update_interval: 120s
+    disabled_by_default: true

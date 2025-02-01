@@ -75,15 +75,15 @@ binary_sensor:
   - name: Misaka Hallway Presence
     platform: ble_presence
     irk: !secret misaka_irk
-    timeout: 30s
-    min_rssi: -90dB
+    timeout: 28s
+    min_rssi: -88dB
     device_class: presence
 
   - name: Layma iPhone Hallway Presence
     platform: ble_presence
     irk: !secret layma_iphone_irk
-    timeout: 30s
-    min_rssi: -90dB
+    timeout: 28s
+    min_rssi: -88dB
     device_class: presence
 
 linptech_g6l:

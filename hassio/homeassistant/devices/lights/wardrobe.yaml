@@ -39,7 +39,7 @@ automation:
         entity_id: binary_sensor.wardrobe_door
         to: 'off'
         for:
-          seconds: 2
+          milliseconds: 500
 
       - id: no_motion
         platform: state

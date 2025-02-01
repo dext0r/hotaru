@@ -1652,6 +1652,22 @@ views:
                   --mdc-icon-size: 20px;
                   --mdc-icon-size: 20px;
                 }
+          - type: custom:mini-graph-card
+            name: Living Room
+            align_icon: state
+            font_size: 65
+            font_size_header: 10
+            hours_to_show: 6
+            points_per_hour: 8
+            entities:
+              - entity: sensor.living_room_pm_2_5
+                color: '#a1c40f'
+            card_mod:
+              style: |
+                ha-card {
+                  --mdc-icon-size: 20px;
+                  --mdc-icon-size: 20px;
+                }
         view_layout:
           show:
             mediaquery: '(min-width: 800px)'
@@ -2362,6 +2378,22 @@ views:
             entities:
               - entity: sensor.workshop_pm_2_5
                 color: '#b1c40f'
+            card_mod:
+              style: |
+                ha-card {
+                  --mdc-icon-size: 20px;
+                  --mdc-icon-size: 20px;
+                }
+          - type: custom:mini-graph-card
+            name: Living Room
+            align_icon: state
+            font_size: 65
+            font_size_header: 10
+            hours_to_show: 6
+            points_per_hour: 8
+            entities:
+              - entity: sensor.living_room_pm_2_5
+                color: '#a1c40f'
             card_mod:
               style: |
                 ha-card {
@@ -3405,6 +3437,31 @@ views:
             stroke_width: 2
           - entity: sensor.wardrobe_humidity
             name: Wardrobe
+            stroke_width: 2
+  - theme: Backend-selected
+    icon: mdi:blur
+    title: PM (graphs)
+    path: pm-graphs
+    type: panel
+    badges: []
+    cards:
+      - type: custom:apexcharts-card
+        graph_span: 48h
+        header:
+          show: true
+          title: PM
+        series:
+          - entity: sensor.workshop_pm_2_5
+            name: Workshop PM 2.5
+            stroke_width: 2
+          - entity: sensor.living_room_pm_2_5
+            name: Living Room PM 2.5
+            stroke_width: 2
+          - entity: sensor.living_room_pm_1_0
+            name: Living Room PM 1.0
+            stroke_width: 2
+          - entity: sensor.living_room_pm_10_0
+            name: Living Room PM 10.0
             stroke_width: 2
   - theme: Mushroom
     icon: mdi:radar

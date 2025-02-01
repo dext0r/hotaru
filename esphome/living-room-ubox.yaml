@@ -34,19 +34,17 @@ uart:
     parity: NONE
     stop_bits: 1
 
+  - id: pmsx003_uart
+    tx_pin: 26
+    rx_pin: 27
+    baud_rate: 9600
+
 ld2410:
   uart_id: ld2410_uart
-  # timeout: 90
-  # max gate: 6
-  # g0: 100 100
-  # g1: 100 100
-  # g2: 45 30
-  # g3: 100 9
-  # g4: 100 9
-  # g5: 100 25
-  # g6: 100 100
-  # g7: 100 100
-  # g8: 100 100
+  # duration: 45
+  # range: 4.5m
+  # motion: 100 100 90 100 100 100 100
+  # static: 100 100 30 010 010 025 100
 
 binary_sensor:
   - platform: ld2410
@@ -71,16 +69,16 @@ light:
     platform: partition
     segments:
       - id: status_led_strip
-        from: 4
-        to: 7
+        from: 0
+        to: 3
     gamma_correct: 1
 
   - name: Living Room TV Status Light Right
     platform: partition
     segments:
       - id: status_led_strip
-        from: 0
-        to: 3
+        from: 4
+        to: 7
     gamma_correct: 1
 
   - id: status_led_strip
@@ -92,6 +90,17 @@ light:
     rgb_order: GRB
 
 sensor:
+  - platform: pmsx003
+    type: PMSX003
+    uart_id: pmsx003_uart
+    update_interval: 3min
+    pm_1_0:
+      name: Living Room PM 1.0
+    pm_2_5:
+      name: Living Room PM 2.5
+    pm_10_0:
+      name: Living Room PM 10.0
+
   - platform: pvvx_mithermometer
     mac_address: A4:C1:38:42:B7:5D
     temperature:

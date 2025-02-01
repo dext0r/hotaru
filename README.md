@@ -137,14 +137,15 @@
 
 ## Датчики DIY
 * 3x CO2 **[SenseAir S8](https://aliexpress.ru/item/32844884313.html)**
-* 3x Присутствие **[LD2410C](https://aliexpress.ru/item/1005004351593073.html)**. Собраны в совместным корпусах с S8 ([фото](images/ubox.jpg)), подключение по UART.
+* 1x PM 1/2.5/10 **[PMS5003](https://aliexpress.ru/item/32944660534.html)**
+* 3x Присутствие **[LD2410C](https://aliexpress.ru/item/1005004351593073.html)**. Собраны в совместным корпусах с S8 ([фото 1](images/ubox.jpg), [фото 2](images/ubox-lr-1.jpg)), подключение по UART.
 * 2x Потребление воды на осмосе (Гейзер Престиж): [крутилка](https://aliexpress.ru/item/1005002080608743.html) + esphome ([фото](images/water-filter.jpg))
 * 1x выделенный ESP32 для ловли присутствия телефона у подъезда. Стоит на балконе, пробивает на 4 этажа.
 
 ## Странный DIY
 * Датчик присутствия в кровати: две [ленты SF15-600](https://aliexpress.ru/item/1005004918766636.html) + модуль [ADS1115](https://aliexpress.ru/item/32817162654.html) + ESP. Гайд: https://dannytsang.com/bed-sensor-with-home-assistant/
 * Чайник Redmond **SkyKettle G240S** с контролем уровня воды на весах HX711: esphome + патченный компонент [ESPHome-Ready4Sky](https://github.com/KomX/ESPHome-Ready4Sky). Подробнее о реализации - https://t.me/yandex_smart_home/48400 (для владельцев 3D принтеров - https://github.com/malinovsku/device-esphome/tree/master/kyxna-kettle)
-* [Диодная полоска](https://www.ozon.ru/product/modul-iz-8-rgb-svetodiodov-ws2812b-297834581/) для индикации всякого в гостиной, подключена к "универсальной коробке"
+* [Диодная полоска](https://www.ozon.ru/product/modul-iz-8-rgb-svetodiodov-ws2812b-297834581/) для индикации всякого в гостиной, подключена к "универсальной коробке" ([фото](images/ubox-lr-2.jpg))
 * ESP8266 управлялка ресивером Yamaha RX-V371 через HDMI-CEC и IR. Родилась из-за ленивых программистов компании LG, которые не могут обработать 6 байт по шине CEC для получения актуальной громкости ресивера (весь Reddit тоже стонет). По CEC получаем громкость и питание ресивера, по IR управляем громкостью (IR сильно быстрее HDMI, когда нужно послать много команд).
 * Доливалка воды для увлажнителя Tion Iris: бак 30 литров + esphome + насос + клапан + датчик протечки (смотри ниже подробности).
 

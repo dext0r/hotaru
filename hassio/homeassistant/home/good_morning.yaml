@@ -118,13 +118,13 @@ automation:
       - if:
           - condition: template
             value_template: |
-              {{ now().replace(tzinfo=None) <= strptime('2024-05-16', "%Y-%m-%d") }}
+              {{ (states('input_datetime.next_trip') | as_datetime | as_local - now()).days < 30 }}
         then:
           - service: script.yandex_station_tts
             data:
               target: >
                 {{ trigger.event.data.get('entity_id', 'last') }}
-              text: До поездки осталось {{ (strptime('2024-05-16', "%Y-%m-%d") - now().replace(tzinfo=None)).days + 1 }} дн.
+              text: До поездки осталось {{ (states('input_datetime.next_trip') | as_datetime | as_local - now()).days }} дн.
 
       - service: script.yandex_station_command
         data:

@@ -45,3 +45,9 @@ automation:
       - service: notify.dextor
         data:
           message: 😟 Дом возвращён из режима отпуска
+
+input_datetime:
+  next_trip:
+    name: 'Next Trip'
+    has_date: true
+    icon: mdi:plane-train

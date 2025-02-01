@@ -3215,6 +3215,7 @@ views:
       - type: entities
         entities:
           - input_datetime.pills_takes
+          - input_datetime.next_trip
       - type: custom:layout-break
       - square: false
         columns: 2

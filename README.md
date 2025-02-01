@@ -89,7 +89,7 @@
 ## Розетки
 * 3x Zigbee **[Aubess 16A](https://aliexpress.ru/item/1005004857105081.html)**: после обновления через OTA начинают работать отлично, потребление прилетает практически мгновенно. Стоят на посудомойке, сушилке и зарядке самоката (лол, я параноик).
 * 1x Zigbee **[Tuya Kojima](https://www.ozon.ru/product/1409568683/)**: стиральная машина
-* 1x WiFi **[Tuya CBE 16A](https://aliexpress.ru/item/1005002378544572.html)** с **перепаянным модулем** [ESP-02S](https://aliexpress.ru/item/1005003949251076.html): водонагреватель ([конфиг](esphome/generic/cbe_socket.yaml))
+* 1x WiFi **[Tuya CBE 16A](https://aliexpress.ru/item/1005002378544572.html)** с **перепаянным модулем** [ESP-02S](https://aliexpress.ru/item/1005006309822540.html): водонагреватель ([конфиг](esphome/generic/cbe_socket.yaml))
 * 1x WiFi **[Athom](https://aliexpress.ru/item/1005004568724538.html)** встроенная: монитор для переносного нагревателя в гостиной.
 * 1x Matter/WiFi **Yandex YNDX-00540**: гладильная доска, 250 рублей на распродаже на ЯМе
 
@@ -131,18 +131,18 @@
 * PS5 (через [аддон](https://github.com/FunkeyFlo/ps5-mqtt))
 
 ## Разное
-* 4x Приводы на краны Zigbee **[Tuya ZN231392](https://aliexpress.ru/item/1005003766950419.html)**
+* 4x Приводы на краны Zigbee **[Tuya ZN231392](https://aliexpress.ru/item/1005005837381838.html)**
 * **Nelma5** управлялка домофоном на ESP32 от SCratORS (https://github.com/SCratORS/SmartIntercom): [конфиг](esphome/nelma5.yaml) полностью свой.
 * 3x **[PZEM-004](https://aliexpress.ru/item/33043137964.html)** для мониторинга энергопотребления + [аналоговые клещи](https://aliexpress.ru/item/32708887594.html): подключено к управлялке домфоном :) Никогда не используйте аналоговые клещи, только PZEM! (гуглить о power factor)
 
 ## Датчики DIY
-* 3x CO2 **[SenseAir S8](https://aliexpress.ru/item/32863793412.html)**
+* 3x CO2 **[SenseAir S8](https://aliexpress.ru/item/32844884313.html)**
 * 3x Присутствие **[LD2410C](https://aliexpress.ru/item/1005004351593073.html)**. Собраны в совместным корпусах с S8 ([фото](images/ubox.jpg)), подключение по UART.
 * 2x Потребление воды на осмосе (Гейзер Престиж): [крутилка](https://aliexpress.ru/item/1005002080608743.html) + esphome ([фото](images/water-filter.jpg))
 * 1x выделенный ESP32 для ловли присутствия телефона у подъезда. Стоит на балконе, пробивает на 4 этажа.
 
 ## Странный DIY
-* Датчик присутствия в кровати: две [ленты](https://aliexpress.ru/item/1005001572817402.html) + модуль [ADS1115](https://aliexpress.ru/item/32817162654.html) + ESP. Гайд: https://dannytsang.co.uk/bed-sensor-with-home-assistant/
+* Датчик присутствия в кровати: две [ленты SF15-600](https://aliexpress.ru/item/1005004918766636.html) + модуль [ADS1115](https://aliexpress.ru/item/32817162654.html) + ESP. Гайд: https://dannytsang.com/bed-sensor-with-home-assistant/
 * Чайник Redmond **SkyKettle G240S** с контролем уровня воды на весах HX711: esphome + патченный компонент [ESPHome-Ready4Sky](https://github.com/KomX/ESPHome-Ready4Sky). Подробнее о реализации - https://t.me/yandex_smart_home/48400 (для владельцев 3D принтеров - https://github.com/malinovsku/device-esphome/tree/master/kyxna-kettle)
 * [Диодная полоска](https://www.ozon.ru/product/modul-iz-8-rgb-svetodiodov-ws2812b-297834581/) для индикации всякого в гостиной, подключена к "универсальной коробке"
 * ESP8266 управлялка ресивером Yamaha RX-V371 через HDMI-CEC и IR. Родилась из-за ленивых программистов компании LG, которые не могут обработать 6 байт по шине CEC для получения актуальной громкости ресивера (весь Reddit тоже стонет). По CEC получаем громкость и питание ресивера, по IR управляем громкостью (IR сильно быстрее HDMI, когда нужно послать много команд).

@@ -30,6 +30,10 @@ automation:
         to: 'on'
         for:
           hours: 10
+
+      - platform: state
+        entity_id: binary_sensor.porch_smoke
+        to: 'on'
     action:
       - service: switch.turn_off
         entity_id: switch.scooter_charger_socket

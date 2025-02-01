@@ -5,8 +5,8 @@ automation:
       - platform: state
         entity_id:
           - binary_sensor.kitchen_smoke
-          - binary_sensor.balcony_smoke
           - binary_sensor.hallway_smoke
+          - binary_sensor.porch_smoke
         from: 'off'
         to: 'on'
 
@@ -14,8 +14,8 @@ automation:
         id: not_a_drill
         entity_id:
           - binary_sensor.kitchen_smoke
-          - binary_sensor.balcony_smoke
           - binary_sensor.hallway_smoke
+          - binary_sensor.porch_smoke
         from: 'off'
         to: 'on'
         for:
@@ -45,8 +45,8 @@ automation:
       - platform: state
         entity_id:
           - binary_sensor.kitchen_smoke
-          - binary_sensor.balcony_smoke
           - binary_sensor.hallway_smoke
+          - binary_sensor.porch_smoke
         from: 'on'
         to: 'off'
     action:
@@ -55,7 +55,6 @@ automation:
           message: >
             🎉 Устранено задымление {{ state_attr(trigger.from_state.entity_id, 'alert_text')|default('', True) }}
 
-
 binary_sensor:
   - platform: group
     unique_id: binary_sensor.smoke
@@ -63,5 +62,5 @@ binary_sensor:
     device_class: smoke
     entities:
       - binary_sensor.kitchen_smoke
-      - binary_sensor.balcony_smoke
       - binary_sensor.hallway_smoke
+      - binary_sensor.porch_smoke

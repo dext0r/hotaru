@@ -131,9 +131,11 @@ automation:
                               - 'off'
 
                           - or:
-                              - condition: numeric_state
-                                entity_id: sensor.living_room_humidifier_water_level
-                                below: 35
+                              - and:
+                                  - condition: numeric_state
+                                    entity_id: sensor.living_room_humidifier_water_level
+                                    below: 35
+                                    above: 0
 
                               - condition: numeric_state
                                 entity_id: sensor.living_room_humidifier_water_tank_level

@@ -165,7 +165,7 @@ template:
             {% set data.humidifiers = data.humidifiers + ['спальне'] %}
           {% endif %}
 
-          {% if is_state('input_boolean.living_room_humidifier_control', 'on') and states('sensor.living_room_humidifier_water_level')|int(100) < 30 %}
+          {% if is_state('input_boolean.living_room_humidifier_control', 'on') and 0 < states('sensor.living_room_humidifier_water_level')|int(100) < 30 %}
             {% set data.humidifiers = data.humidifiers + ['гостиной'] %}
           {% endif %}
 
@@ -195,7 +195,7 @@ template:
         icon: mdi:bulletin-board
         state: >
           {% set v = (now()|as_timestamp - state_attr('input_datetime.humidifiers_last_cleanup',
-                                              'timestamp')) > (60 * 60 * 24 * 5) %}
+                                              'timestamp')) > (60 * 60 * 24 * 6) %}
           {% if not is_state('person.dextor', 'home') %}
             {% set v = false %}
           {% elif now().hour >= 22 or now().hour < 15 %}

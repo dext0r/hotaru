@@ -234,7 +234,7 @@ script:
                   entity_id: lock.front_door_control
 
                 - delay:
-                    seconds: 15
+                    seconds: 25
 
       - if:
           - condition: state

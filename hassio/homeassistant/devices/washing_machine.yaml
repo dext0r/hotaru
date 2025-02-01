@@ -22,7 +22,7 @@ automation:
     trigger:
       platform: numeric_state
       entity_id: sensor.washing_machine_power
-      above: 0
+      above: 5
       for:
         seconds: 15
     condition:

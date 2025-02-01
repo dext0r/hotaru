@@ -1,6 +1,5 @@
 energy:
 config:
-camera:
 frontend:
   extra_module_url:
     - /hacsfiles/ha-yandex-icons/yandex-icons.js

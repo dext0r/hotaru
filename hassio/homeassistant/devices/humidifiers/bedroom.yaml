@@ -11,7 +11,7 @@ template:
       state: >
         {% set mode = 'Sleep' %}
 
-        {% if is_state('binary_sensor.bedroom_bed_any_occupancy', 'on') %}
+        {% if is_state('binary_sensor.bedroom_bed_occupancy', 'on') %}
           {% set mode = 'Strong' %}
         {% elif now().hour > 21 or now().hour < 7 %}
           {% set mode = 'Strong' %}

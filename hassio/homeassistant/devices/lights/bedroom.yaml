@@ -32,14 +32,9 @@ automation:
       - condition: state
         entity_id:
           - input_boolean.scene_sleepy_mood
-          - binary_sensor.bedroom_bed_any_occupancy
+          - binary_sensor.bedroom_bed_occupancy
           - group.bedroom_lights
         state: 'off'
-
-      # временный костыль для вороченья в кровати
-      - condition: template
-        value_template: >
-          {{ (now() - states.binary_sensor.bedroom_bed_any_occupancy.last_changed).total_seconds() > 30 }}
     action:
       - service: light.turn_on
         entity_id:

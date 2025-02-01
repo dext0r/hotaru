@@ -29,7 +29,7 @@ template:
         {% endif %}
 
         {% if is_state('input_select.home_mode', 'Day') %}
-          {% if is_state('binary_sensor.bedroom_desk_occupancy', 'on') and outdoor_temperature < 20 %}
+          {% if is_state('binary_sensor.bedroom_occupancy', 'on') and outdoor_temperature < 20 %}
             {% set v = 25 %}
           {% endif %}
         {% endif %}
@@ -79,7 +79,7 @@ template:
           {% endif %}
 
           {# очень холодно зимой #}
-          {% if outdoor_temperature < -10 and is_state('binary_sensor.bedroom_desk_occupancy', 'on') %}
+          {% if outdoor_temperature < -10 and is_state('binary_sensor.bedroom_occupancy', 'on') %}
             {% set v = max(v - 1, 1) %}
           {% endif %}
         {% endif %}
@@ -127,7 +127,7 @@ automation:
 
       - platform: state
         entity_id:
-          - binary_sensor.bedroom_desk_occupancy
+          - binary_sensor.bedroom_occupancy
           - input_select.home_mode
           - input_select.washing_machine_status
           - input_boolean.bedroom_intake_fan_control

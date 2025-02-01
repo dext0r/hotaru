@@ -164,7 +164,7 @@ views:
                 mode: horizontal
                 cards:
                   - type: custom:mushroom-entity-card
-                    entity: binary_sensor.bedroom_any_occupancy
+                    entity: binary_sensor.bedroom_occupancy
                     name: Bedroom
                     fill_container: false
                     secondary_info: last-changed
@@ -187,6 +187,22 @@ views:
                         :host {
                           position: absolute;
                           right: 0;
+                        }
+                  - type: custom:mushroom-entity-card
+                    entity: binary_sensor.bedroom_bed_occupancy
+                    icon: mdi:bed-double-outline
+                    primary_info: none
+                    secondary_info: none
+                    icon_color: accent
+                    card_mod:
+                      style: |
+                        ha-card {
+                          border: 0;
+                        }
+
+                        :host {
+                          position: absolute;
+                          right: 32px;
                         }
               - type: custom:stack-in-card
                 mode: horizontal
@@ -942,7 +958,7 @@ views:
                 mode: horizontal
                 cards:
                   - type: custom:mushroom-entity-card
-                    entity: binary_sensor.bedroom_any_occupancy
+                    entity: binary_sensor.bedroom_occupancy
                     name: Bedroom
                     fill_container: false
                     secondary_info: last-changed
@@ -965,6 +981,22 @@ views:
                         :host {
                           position: absolute;
                           right: 0;
+                        }
+                  - type: custom:mushroom-entity-card
+                    entity: binary_sensor.bedroom_bed_occupancy
+                    icon: mdi:bed-double-outline
+                    primary_info: none
+                    secondary_info: none
+                    icon_color: accent
+                    card_mod:
+                      style: |
+                        ha-card {
+                          border: 0;
+                        }
+
+                        :host {
+                          position: absolute;
+                          right: 48px;
                         }
               - type: custom:stack-in-card
                 mode: horizontal
@@ -3496,19 +3528,14 @@ views:
                 name: Motion
                 state_content: last-changed
               - type: tile
-                entity: binary_sensor.bedroom_desk_occupancy
+                entity: binary_sensor.bedroom_occupancy
                 vertical: true
-                name: Desk Occupancy
+                name: Occupancy
                 state_content: last-changed
               - type: tile
-                entity: binary_sensor.bed_presence_dextor
+                entity: binary_sensor.bedroom_bed_occupancy
                 vertical: true
-                name: Bed (Dextor)
-                state_content: last-changed
-              - type: tile
-                entity: binary_sensor.bed_presence_layma
-                vertical: true
-                name: Bed (Layma)
+                name: Bed Occupancy
                 state_content: last-changed
       - type: vertical-stack
         cards:

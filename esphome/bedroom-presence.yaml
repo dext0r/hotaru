@@ -24,22 +24,16 @@ uart:
     stop_bits: 1
 
 ld2410:
-# timeout: 15
-# max gate: 6
-# g0: 100 100
-# g1: 100 100
-# g2: 60 60
-# g3: 75 35
-# g4: 100 45
-# g5: 100 50
-# g6: 100 100
-# g7: 100 100
-# g8: 100 100
+  # duration: 30
+  # range: 4.5m
+  # motion: 100 100 90 50 50 50 25
+  # static: 100 100 15 50 20 20 20
 
 binary_sensor:
   - platform: ld2410
     has_target:
-      name: Bedroom Desk Occupancy
+      name: Bedroom Occupancy
+      icon: ''
 
 switch:
   - platform: ld2410

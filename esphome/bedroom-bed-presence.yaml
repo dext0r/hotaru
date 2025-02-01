@@ -8,13 +8,17 @@ esphome:
   name: bedroom-bed-presence
   model: NodeMCU
   name_add_mac_suffix: false
+  on_boot:
+    - binary_sensor.template.publish:
+        id: bedroom_bed_occupancy
+        state: off
 
 esp8266:
   board: esp01_1m
 
 logger:
   logs:
-    ads1115: INFO
+    ads1115.sensor: INFO
 
 i2c:
   scl: 5
@@ -30,43 +34,70 @@ sensor:
     platform: ads1115
     multiplexer: A0_GND
     gain: 6.144
-    update_interval: 500ms
+    update_interval: 250ms
+    unit_of_measurement: ''
     accuracy_decimals: 0
+    internal: true
     filters:
       - multiply: 10000
+      - offset: 50
       - exponential_moving_average:
           alpha: 0.3
-          send_every: 6
-          send_first_at: 3
+          send_every: 12
+          send_first_at: 6
       - lambda: return int(x);
+    on_value:
+      - if:
+          condition:
+            lambda: return x >= 110;
+          then:
+            - script.execute: reset_bed_occupancy
+            - binary_sensor.template.publish:
+                id: bedroom_bed_occupancy
+                state: on
 
   - id: bed_a1
     name: 'Bed: A1'
     platform: ads1115
     multiplexer: A1_GND
     gain: 6.144
-    update_interval: 500ms
+    update_interval: 250ms
+    unit_of_measurement: ''
     accuracy_decimals: 0
+    internal: true
     filters:
       - multiply: 10000
+      - offset: 50
       - exponential_moving_average:
           alpha: 0.3
-          send_every: 6
-          send_first_at: 3
+          send_every: 12
+          send_first_at: 6
       - lambda: return int(x);
+    on_value:
+      - if:
+          condition:
+            lambda: return x >= 110;
+          then:
+            - script.execute: reset_bed_occupancy
+            - binary_sensor.template.publish:
+                id: bedroom_bed_occupancy
+                state: on
 
 binary_sensor:
-  - name: 'Bed Presence: dextor'
+  - id: bedroom_bed_occupancy
+    name: 'Bedroom Bed Occupancy'
     platform: template
-    device_class: presence
-    lambda: |-
-      return id(bed_a0).state > 165;
+    device_class: occupancy
+    lambda: return {};
 
-  - name: 'Bed Presence: layma'
-    platform: template
-    device_class: presence
-    lambda: |-
-      return id(bed_a1).state > 165;
+script:
+  - id: reset_bed_occupancy
+    mode: restart
+    then:
+      - delay: 60s
+      - binary_sensor.template.publish:
+          id: bedroom_bed_occupancy
+          state: off
 
 light:
   - name: Hallway Path Light

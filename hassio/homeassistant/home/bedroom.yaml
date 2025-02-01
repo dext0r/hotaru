@@ -5,22 +5,5 @@ binary_sensor:
     device_class: occupancy
     entities:
       - binary_sensor.bedroom_motion
-      - binary_sensor.bedroom_desk_occupancy
-      - binary_sensor.bedroom_bed_any_occupancy
-
-  - platform: group
-    unique_id: binary_sensor.bedroom_bed_any_occupancy
-    name: Bedroom Bed Any Occupancy
-    device_class: occupancy
-    entities:
-      - binary_sensor.bed_presence_layma
-      - binary_sensor.bed_presence_dextor
-
-  - platform: group
-    unique_id: binary_sensor.bedroom_bed_full_occupancy
-    name: Bedroom Bed Full Occupancy
-    device_class: occupancy
-    all: true
-    entities:
-      - binary_sensor.bed_presence_layma
-      - binary_sensor.bed_presence_dextor
+      - binary_sensor.bedroom_occupancy
+      - binary_sensor.bedroom_bed_occupancy

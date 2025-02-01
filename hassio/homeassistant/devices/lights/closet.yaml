@@ -1,6 +1,7 @@
 automation:
   - id: closet_light_turn_on
     alias: 'Closet Light: Turn on'
+    mode: queued  # иногда подтормаживают репорты
     trigger:
       - platform: state
         entity_id: binary_sensor.closet_door
@@ -13,8 +14,14 @@ automation:
         to: 'on'
     condition:
       - condition: state
-        entity_id: input_boolean.light_control
+        entity_id:
+          - input_boolean.light_control
+          - input_boolean.closet_light_control
         state: 'on'
+
+      - condition: state
+        entity_id: light.closet
+        state: 'off'
 
       - condition: state
         entity_id: input_select.home_mode

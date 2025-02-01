@@ -3309,6 +3309,13 @@ views:
         entities:
           - select.intercom_mode
           - select.doorbell_mode
+      - type: custom:auto-entities
+        card:
+          type: entities
+        filter:
+          include:
+            - state: unavailable
+          exclude: []
   - theme: Mushroom
     title: Media
     path: media

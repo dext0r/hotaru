@@ -664,6 +664,9 @@ views:
                 entity: light.bedroom_bed
                 name: Bed
               - type: tile
+                entity: light.bedroom_desk
+                name: Desk
+              - type: tile
                 entity: light.bedroom_cat
                 name: Cat
               - type: tile

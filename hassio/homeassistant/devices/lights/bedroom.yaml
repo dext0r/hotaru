@@ -253,4 +253,5 @@ group:
       - light.bedroom_bed
       - light.bedroom_moon
       - light.bedroom_cat
+      - light.bedroom_desk
       - light.bedroom_string

@@ -45,15 +45,6 @@
   current_precision: 1
   power_precision: 1
   icon: device_icons/08a9016bbc0657cf5f581ae9c19c31a5.png
-'0x00124b0023a8b622':
-  friendly_name: Closet Light Switch
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/879e82a63045555a205e2e473785d39c.png
 '0x00124b0023add1f3':
   friendly_name: Porch Light Switch
   homeassistant: {}
@@ -126,15 +117,6 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/8da97afa2d57d9d2e86756a4aa2a6072.png
-'0x00158d0003cb4382':
-  friendly_name: Bathroom Motion
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/4858000fa9561bbf20da88e96154ed3f.png
 '0x00158d000392f2f4':
   friendly_name: Dishwasher Door
   homeassistant: {}
@@ -164,16 +146,6 @@
   icon: device_icons/cc69377915a3830598dd400ff027ad38.png
 '0xa4c1388ef2d5a611':
   friendly_name: Bathroom Cold Water Valve
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/53bb2a9b13189fa922f665f466b6a532.png
-'0xa4c138fbe16d53b0':
-  friendly_name: Bathroom Hot Water Valve
-  disabled: false
   homeassistant: {}
   humidity_precision: 1
   legacy: false
@@ -219,15 +191,6 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/956bdca587d0b5a2cd6200ffdcb3e3d1.png
-'0xa4c138a1f1b581e6':
-  friendly_name: Kitchen Hot Water Valve
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/53bb2a9b13189fa922f665f466b6a532.png
 '0xa4c138ea693a2814':
   friendly_name: Kitchen Cold Water Valve
   homeassistant: {}
@@ -266,15 +229,6 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/4858000fa9561bbf20da88e96154ed3f.png
-'0x00158d00039b6f7c':
-  friendly_name: Wardrobe Door
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/5af4a3a117c693914f063f9e87cd28de.png
 '0x00158d00039820ed':
   friendly_name: Workshop Door
   homeassistant: {}
@@ -395,15 +349,6 @@
 '0x000d6f001206122e':
   friendly_name: Kitchen Smoke
   icon: device_icons/8ff07e9c0bcf76c61da371ef919227d1.png
-'0x00158d000910738f':
-  friendly_name: Closet Water Leak
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/2d19c1b8e82d9b72921bbd1fcbde4541.png
 '0x00124b002342cf9a':
   friendly_name: Front Door Lock
   homeassistant: {}
@@ -477,15 +422,6 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/2e7485d54446698ed62425812fe12303.png
-'0x00158d000775a0d4':
-  friendly_name: Closet Motion
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/2e7485d54446698ed62425812fe12303.png
 '0x00158d0002b18420':
   friendly_name: Fridge Door
   homeassistant: {}
@@ -504,16 +440,6 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/f9edd10ffbe83265affdd72393f886b8.png
-'0x84fd27fffe60916f':
-  friendly_name: Xmas Hallway Wall Light
-  disabled: false
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  temperature_precision: 1
-  retain: true
-  icon: device_icons/91669ab20a4107a52faebc6385c4b0f6.png
 '0x84fd27fffe60958f':
   friendly_name: Xmas Living Room Curtains Light
   homeassistant:
@@ -524,16 +450,6 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/91669ab20a4107a52faebc6385c4b0f6.png
-'0x003c84fffe90658e':
-  friendly_name: Xmas Kitchen Light
-  homeassistant:
-    name: Xmas Kitchen Light
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/cd0867522f9b9c860b0038476af088f4.png
 '0xa4c138edaeb5d672':
   friendly_name: Workshop Presence
   homeassistant: {}
@@ -582,15 +498,6 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/5816cec5864b2553c5c835aefa557722.png
-'0x00158d0000b483bd':
-  friendly_name: Closet Door
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/8c5d282ee4cde09137d50dd2d3fc8c39.png
 '0x00158d00019942ec':
   friendly_name: Bedroom Window
   homeassistant: {}

@@ -43,7 +43,8 @@
 * Debian 12 c Proxmox
 * ИБП Ippon Back Basic 650S Euro
 * Основной роутер: Mikrotik hAP ax3
-* Zigbee: Sonoff Zigbee 3.0 USB Dongle Plus
+* Zigbee (Z2M): Sonoff Zigbee Dongle Plus-P
+* Zigbee (ZHA): Sonoff Zigbee Dongle Plus-E
 * HA OS в виртуальной машине
 * Аддоны HA: supervisor, chrony, let's encrypt, mosquitto broker, nginx home assistant ssl proxy, timescale db, ttlock, zigbee2mqtt, advanced ssh & web terminal, ps5 mqtt, matter server
 * Интеграции HA: Glances (сбор метрик с физического хоста), Nut (состояние ИБП), Yandex Smart Home (облачное подключение) и другие

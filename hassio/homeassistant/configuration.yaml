@@ -219,3 +219,4 @@ system_log:
 wake_on_lan:
 yandex_smart_home: !include yandex_smart_home.yaml
 yandex_station_intents: !include yandex_station_intents.yaml
+zha: !include zha.yaml

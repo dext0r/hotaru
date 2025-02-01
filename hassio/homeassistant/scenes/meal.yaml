@@ -28,12 +28,6 @@ automation:
           brightness_pct: 100
           color_temp_kelvin: 4500
 
-      - service: light.turn_off
-        entity_id:
-          - group.aux_lights
-          - group.bedroom_lights
-          - light.living_room_main
-
       - service: script.yandex_station_tts
         data:
           target: all
@@ -57,6 +51,12 @@ automation:
             entity_id:
               - media_player.tv
               - media_player.atv
+
+      - service: light.turn_off
+        entity_id:
+          - light.living_room_main
+          - group.aux_lights
+          - group.bedroom_lights
 
       # эксперимент провалился :(
       # - if:

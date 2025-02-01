@@ -14,6 +14,7 @@ hassio/homeassistant/www
 hassio/homeassistant/ps5-mqtt
 hassio/homeassistant/zigbee2mqtt/*
 !hassio/homeassistant/zigbee2mqtt/devices.yaml
+hassio/homeassistant/zigbee.db*
 hassio/homeassistant/www
 hassio/homeassistant/secrets.yaml
 hassio/homeassistant/scripts.yaml

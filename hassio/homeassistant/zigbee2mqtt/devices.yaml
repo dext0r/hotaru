@@ -89,15 +89,6 @@
       }
     }
   icon: device_icons/152f6228e7918a779c968eed05e46693.png
-'0x00158d0000b4836d':
-  friendly_name: Freezer Door
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/8c5d282ee4cde09137d50dd2d3fc8c39.png
 '0x00158d0001d735a5':
   friendly_name: Fridge Meteo
   disabled: false
@@ -462,15 +453,6 @@
     sensitivity: 6, min range: 0.15, max range: 3.4, detection delay: 0.5,
     fading time: 45
   icon: device_icons/6cd3dca250fd519d5d2a825e5ec08247.png
-'0x00158d0007050d79':
-  friendly_name: Dryer Door
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/5af4a3a117c693914f063f9e87cd28de.png
 '0xa4c138ce97b152c2':
   friendly_name: Scooter Charger Socket
   homeassistant: {}
@@ -537,12 +519,6 @@
   optimistic: true
   retain: true
   icon: device_icons/2d19c1b8e82d9b72921bbd1fcbde4541.png
-'0xd0cf5efffe423c9d':
-  friendly_name: Kitchen Worktop Button
-  homeassistant: {}
-  optimistic: true
-  retain: true
-  icon: device_icons/0bb605a453f07b8806fb5bd0288dd434.png
 '0x84fd27fffe9c0fbd':
   friendly_name: Workshop Desk Button
   homeassistant: {}

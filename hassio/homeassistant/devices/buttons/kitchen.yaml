@@ -1,12 +1,12 @@
 automation:
-  - id: kitchen_worktop_button_toggle
-    alias: 'Kitchen Worktop Button: Toggle'
+  - id: kitchen_worktop_button_turn_on
+    alias: 'Kitchen Worktop Button: Turn on'
     triggers:
       - trigger: device
-        domain: mqtt
-        device_id: 0ce6ac11002d2638d6f9d4e22f925168
-        type: action
-        subtype: toggle
+        domain: zha
+        device_id: 7abc62119d4a89a29846de67a65da2f8
+        type: remote_button_short_press
+        subtype: turn_on
     actions:
       - if:
           - condition: state
@@ -21,14 +21,14 @@ automation:
           - action: light.turn_off
             entity_id: light.kitchen_worktop
 
-  - id: kitchen_worktop_button_brightness_down_click (Day)
-    alias: 'Kitchen Worktop Button: Brightness down click (Day)'
+  - id: kitchen_worktop_button_dim_down_short_press_day
+    alias: 'Kitchen Worktop Button: Dim down short press (Day)'
     triggers:
       - trigger: device
-        domain: mqtt
-        device_id: 0ce6ac11002d2638d6f9d4e22f925168
-        type: action
-        subtype: brightness_down_click
+        domain: zha
+        device_id: 7abc62119d4a89a29846de67a65da2f8
+        type: remote_button_short_press
+        subtype: dim_down
     conditions:
       - condition: state
         entity_id: input_select.home_mode
@@ -52,14 +52,14 @@ automation:
                 ]|random
             }}
 
-  - id: kitchen_worktop_button_brightness_down_click (Night)
-    alias: 'Kitchen Worktop Button: Brightness down click (Night)'
+  - id: kitchen_worktop_button_dim_down_short_press_night
+    alias: 'Kitchen Worktop Button: Dim down short press (Night)'
     triggers:
       - trigger: device
-        domain: mqtt
-        device_id: 0ce6ac11002d2638d6f9d4e22f925168
-        type: action
-        subtype: brightness_down_click
+        domain: zha
+        device_id: 7abc62119d4a89a29846de67a65da2f8
+        type: remote_button_short_press
+        subtype: dim_down
     conditions:
       - condition: state
         entity_id: input_select.home_mode
@@ -70,14 +70,14 @@ automation:
         data:
           brightness_pct: 20
 
-  - id: kitchen_worktop_button_brightness_up_click
-    alias: 'Kitchen Worktop Button: Brightness up click'
+  - id: kitchen_worktop_button_dim_up_short_press
+    alias: 'Kitchen Worktop Button: Dim up short press'
     triggers:
       - trigger: device
-        domain: mqtt
-        device_id: 0ce6ac11002d2638d6f9d4e22f925168
-        type: action
-        subtype: brightness_up_click
+        domain: zha
+        device_id: 7abc62119d4a89a29846de67a65da2f8
+        type: remote_button_short_press
+        subtype: dim_up
     conditions:
       - condition: state
         entity_id: input_select.home_mode
@@ -101,14 +101,14 @@ automation:
                 ]|random
             }}
 
-  - id: kitchen_worktop_button_brightness_up_hold
-    alias: 'Kitchen Worktop Button: Brightness up hold'
+  - id: kitchen_worktop_button_dim_up_long_press
+    alias: 'Kitchen Worktop Button: Dim up long press'
     triggers:
       - trigger: device
-        domain: mqtt
-        device_id: 0ce6ac11002d2638d6f9d4e22f925168
-        type: action
-        subtype: brightness_up_hold
+        domain: zha
+        device_id: 7abc62119d4a89a29846de67a65da2f8
+        type: remote_button_long_press
+        subtype: dim_up
     conditions:
       - condition: state
         entity_id: input_select.home_mode
@@ -119,16 +119,16 @@ automation:
 
       - event: kitchen_worktop_button_brightness_up_hold
 
-  - id: kitchen_worktop_button_arrow_left_click
-    alias: 'Kitchen Worktop Button: Arrow left click'
+  - id: kitchen_worktop_button_left_short_press
+    alias: 'Kitchen Worktop Button: Left short press'
     mode: single
     max_exceeded: silent
     triggers:
       - trigger: device
-        domain: mqtt
-        device_id: 0ce6ac11002d2638d6f9d4e22f925168
-        type: action
-        subtype: arrow_left_click
+        domain: zha
+        device_id: 7abc62119d4a89a29846de67a65da2f8
+        type: remote_button_short_press
+        subtype: left
     conditions:
       - condition: state
         entity_id: person.dextor
@@ -143,14 +143,28 @@ automation:
       - delay:
           seconds: 10
 
-  - id: kitchen_worktop_button_arrow_right_click
-    alias: 'Kitchen Worktop Button: Arrow right click'
+  - id: kitchen_worktop_button_left_long_press
+    alias: 'Kitchen Worktop Button: Left long press'
+    mode: single
+    max_exceeded: silent
     triggers:
       - trigger: device
-        domain: mqtt
-        device_id: 0ce6ac11002d2638d6f9d4e22f925168
-        type: action
-        subtype: arrow_right_click
+        domain: zha
+        device_id: 7abc62119d4a89a29846de67a65da2f8
+        type: remote_button_long_press
+        subtype: left
+    actions:
+      - action: input_select.select_next
+        entity_id: input_select.dishwasher_status
+
+  - id: kitchen_worktop_button_right_short_press
+    alias: 'Kitchen Worktop Button: Right short press'
+    triggers:
+      - trigger: device
+        domain: zha
+        device_id: 7abc62119d4a89a29846de67a65da2f8
+        type: remote_button_short_press
+        subtype: right
     conditions:
       - condition: state
         entity_id: input_select.home_mode
@@ -181,14 +195,14 @@ automation:
           - action: script.turn_on
             entity_id: script.kitchen_worktop_right_light_ack_flash
 
-  - id: kitchen_worktop_button_arrow_right_hold
-    alias: 'Kitchen Worktop Button: Arrow right hold'
+  - id: kitchen_worktop_button_right_long_press
+    alias: 'Kitchen Worktop Button: Right long press'
     triggers:
       - trigger: device
-        domain: mqtt
-        device_id: 0ce6ac11002d2638d6f9d4e22f925168
-        type: action
-        subtype: arrow_right_hold
+        domain: zha
+        device_id: 7abc62119d4a89a29846de67a65da2f8
+        type: remote_button_long_press
+        subtype: right
     actions:
       - action: timer.cancel
         entity_id: timer.rice_cooking

@@ -13,9 +13,11 @@ automation:
         event_data:
           text: Время ужинать
 
-      - id: event
-        trigger: event
+      - trigger: event
         event_type: kitchen_worktop_button_brightness_up_hold
+
+      - trigger: event
+        event_type: living_room_dinner_table_button_hold
     action:
       - service: light.turn_on
         entity_id: light.living_room_tv

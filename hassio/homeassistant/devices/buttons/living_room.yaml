@@ -50,6 +50,17 @@ automation:
         data:
           button: enter
 
+  - id: living_room_dinner_table_button_hold
+    alias: 'Living Room Dinner Table Button: Hold'
+    trigger:
+      - trigger: device
+        domain: mqtt
+        device_id: 9c3b7479025f7d66f4dd23a779acfd86
+        type: action
+        subtype: hold
+    action:
+      - event: living_room_dinner_table_button_hold
+
   - id: living_room_light_switch_single_right
     alias: 'Living Room Light Switch: Single right'
     trigger:

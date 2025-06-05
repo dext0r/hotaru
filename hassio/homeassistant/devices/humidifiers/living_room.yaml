@@ -54,7 +54,7 @@ template:
         {% set target_humidity = states('input_number.home_target_humidity')|int(0) %}
         {% set outdoor_temperature = states('sensor.outside_temperature')|float(0) %}
 
-        {% if outdoor_temperature < 13 and indoor_humidity > 0 %}
+        {% if outdoor_temperature < 20 and indoor_humidity > 0 %}
           {% if indoor_humidity <= target_humidity - 2 %}
             {% set speed = 84 %}
           {% elif indoor_humidity < target_humidity %}
@@ -66,11 +66,11 @@ template:
           {% endif %}
 
           {% if is_state('media_player.tv', 'on') %}
-            {% set speed = min(80, speed) %}
+            {% set speed = min(82, speed) %}
           {% endif %}
 
           {% if is_state('input_boolean.scene_meal', 'on') %}
-            {% set speed = min(70, speed) %}
+            {% set speed = min(72, speed) %}
           {% endif %}
 
           {% if is_state('input_boolean.scene_movie', 'on') %}

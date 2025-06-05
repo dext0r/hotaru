@@ -31,27 +31,21 @@ media_player:
     is_volume_muted: switch.avr_volume_muted
 
 automation:
-  - id: tv_fix_sound
-    alias: 'TV: Fix sound'
+  - id: tv_warming_up
+    alias: 'TV: Warming up'
     trigger:
-      - platform: event
-        event_type: yandex_intent
-        event_data:
-          text: Почини звук
+      - trigger: state
+        entity_id: media_player.tv
+        from: 'off'
+        to: 'on'
     action:
-      - action: switch.toggle
-        entity_id: switch.avr_power
-
-      - delay:
-          seconds: 3
-
-      - action: switch.toggle
-        entity_id: switch.avr_power
+      - action: timer.start
+        entity_id: timer.tv_warming_up
 
   - id: tv_switch_to_atv
     alias: 'TV: Switch to ATV'
     trigger:
-      - platform: state
+      - trigger: state
         entity_id: switch.ps5_power
         from: 'on'
         to: 'off'
@@ -65,10 +59,78 @@ automation:
         attribute: source
         state: PS5
     action:
+      - action: media_player.select_source
+        entity_id: media_player.tv
+        data:
+          source: ATV
+
+      - delay:
+          seconds: 2
+
+      - action: remote.send_command
+        entity_id: remote.atv
+        data:
+          command: wakeup
+
+      - delay:
+          seconds: 5
+
+      # TODO: Это вызывает ошибку в логах
+      # https://github.com/postlund/pyatv/issues/2139
+      - action: remote.send_command
+        entity_id: remote.atv
+        data:
+          command: screensaver
+
+  - id: tv_switch_to_ps5
+    alias: 'TV: Switch to PS5'
+    max_exceeded: silent
+    trigger:
+      - trigger: state
+        entity_id: media_player.tv
+        from: 'off'
+        to: 'on'
+        for:
+          seconds: 1
+
+      - trigger: state
+        entity_id: switch.ps5_power
+        from: 'off'
+        to: 'on'
+        for:
+          seconds: 20
+
+      - trigger: event
+        event_type: call_service
+        event_data:
+          domain: switch
+          service: turn_on
+          service_data:
+            entity_id: switch.ps5_power
+    action:
+      - if:
+          - condition: state
+            entity_id: timer.tv_warming_up
+            state: active
+        then:
+          - wait_for_trigger:
+              - platform: state
+                entity_id: timer.tv_warming_up
+                to: idle
+            timeout:
+              seconds: 25
+            continue_on_timeout: true
+
+      - condition: state
+        entity_id:
+          - media_player.tv
+          - switch.ps5_power
+        state: 'on'
+
       - service: media_player.select_source
         entity_id: media_player.living_room_tv_base
         data:
-          source: ATV
+          source: PS5
 
   - id: tv_set_volume_ps5
     alias: 'TV: Set volume (PS5)'
@@ -77,13 +139,29 @@ automation:
         entity_id: media_player.tv
         attribute: source
         to: PS5
+        for:
+          seconds: 8
     condition:
       - condition: template
         value_template: >
           {{ state_attr('media_player.tv', 'volume_level')|float(0) >= 0.41 }}
     action:
-      - delay:
-          seconds: 3
+      - if:
+          - condition: state
+            entity_id: timer.tv_warming_up
+            state: active
+        then:
+          - wait_for_trigger:
+              - trigger: state
+                entity_id: timer.tv_warming_up
+                to: idle
+            timeout:
+              minutes: 1
+            continue_on_timeout: false
+
+      - condition: state
+        entity_id: switch.avr_power
+        state: 'on'
 
       - service: media_player.volume_set
         entity_id: media_player.tv
@@ -96,26 +174,26 @@ script:
     sequence:
       - if:
           - condition: state
-            entity_id: media_player.living_room_tv_base
+            entity_id: media_player.tv
             state: 'on'
 
           - condition: state
-            entity_id: media_player.living_room_tv_base
+            entity_id: media_player.tv
             attribute: source
             state: PS5
         then:
           - service: media_player.select_source
-            entity_id: media_player.living_room_tv_base
+            entity_id: media_player.tv
             data:
               source: ATV
 
           - wait_for_trigger:
               - platform: state
-                entity_id: media_player.living_room_tv_base
+                entity_id: media_player.tv
                 attribute: source
                 to: ATV
             timeout:
-              seconds: 20
+              seconds: 25
             continue_on_timeout: true
 
       - service: media_player.turn_off
@@ -133,3 +211,9 @@ script:
         data:
           entity_id: media_player.living_room_tv_base
           button: '{{ button | upper }}'
+
+timer:
+  tv_warming_up:
+    name: 'TV: Warming up'
+    duration:
+      seconds: 12

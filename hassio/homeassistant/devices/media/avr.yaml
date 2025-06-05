@@ -1,4 +1,29 @@
 automation:
+  - id: avr_turn_on
+    alias: 'AVR: Turn on'
+    mode: restart
+    trigger:
+      - trigger: state
+        entity_id: media_layer.tv
+        from: 'off'
+        to: 'on'
+        for:
+          seconds: 20
+
+      - trigger: state
+        entity_id: media_layer.tv
+        from: 'off'
+        to: 'on'
+        for:
+          seconds: 45
+    condition:
+      - condition: state
+        entity_id: switch.avr_power
+        state: 'off'
+    action:
+      - action: switch.turn_on
+        entity_id: switch.avr_power
+
   - id: avr_turn_off_no_tv
     alias: 'AVR: Turn off (no TV)'
     mode: restart
@@ -20,3 +45,28 @@ automation:
 
       - action: switch.turn_off
         entity_id: switch.avr_power
+
+  - id: avr_fix_sound
+    alias: 'AVR: Fix sound'
+    trigger:
+      - trigger: event
+        event_type: yandex_intent
+        event_data:
+          text: Почини звук
+    action:
+      - if:
+          - condition: state
+            entity_id: switch.avr_power
+            state: 'off'
+        then:
+          - action: switch.turn_on
+            entity_id: switch.avr_power
+        else:
+          - action: switch.toggle
+            entity_id: switch.avr_power
+
+          - delay:
+              seconds: 5
+
+          - action: switch.toggle
+            entity_id: switch.avr_power

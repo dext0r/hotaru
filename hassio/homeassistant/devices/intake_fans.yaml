@@ -1,0 +1,68 @@
+script:
+  intake_fan_update:
+    alias: 'Intake Fan: Update'
+    mode: parallel
+    fields:
+      area:
+        name: Area
+        selector:
+          area:
+    sequence:
+      - action: climate.set_fan_mode
+        target:
+          entity_id: climate.{{ area }}_intake_fan
+        data:
+          fan_mode: >
+            {{ max(1, states('sensor.%s_intake_fan_target_fan_speed' % area)|int(0)) }}
+
+      - delay:
+          seconds: 1
+
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.{{ area }}_intake_fan
+        data:
+          temperature: >
+            {{ states('sensor.%s_intake_fan_target_temperature' % area)|float(20) }}
+
+      - delay:
+          seconds: 1
+
+      - if:
+          - condition: template
+            value_template: >
+              {{ is_state('sensor.%s_intake_fan_target_fan_speed' % area, '0') }}
+
+          - condition: template
+            value_template: >
+              {{ states('climate.%s_intake_fan' % area) in ['heat', 'fan_only'] }}
+
+          - condition: template
+            value_template: >
+              {{ is_state('timer.%s_intake_fan_restart' % area, 'idle') }}
+        then:
+          - action: climate.set_hvac_mode
+            target:
+              entity_id: climate.{{ area }}_intake_fan
+            data:
+              hvac_mode: 'off'
+
+      - if:
+          - condition: template
+            value_template: >
+              {{ not is_state('sensor.%s_intake_fan_target_fan_speed' % area, '0') }}
+        then:
+          - if:
+              - condition: template
+                value_template: >
+                  {{ is_state('climate.%s_intake_fan' % area, 'off') }}
+            then:
+              - action: timer.start
+                target:
+                  entity_id: timer.{{ area }}_intake_fan_restart
+
+          - action: climate.set_hvac_mode
+            target:
+              entity_id: climate.{{ area }}_intake_fan
+            data:
+              hvac_mode: heat

@@ -11,6 +11,12 @@ input_boolean:
     name: Bedroom Intake Fan Control
     icon: mdi:refresh-auto
 
+timer:
+  bedroom_intake_fan_restart:
+    name: 'Bedroom Intake Fan: Restart'
+    duration:
+      minutes: 60
+
 template:
   sensor:
     - unique_id: sensor.bedroom_intake_fan_target_temperature
@@ -38,10 +44,6 @@ template:
           {% if indoor_temperature < 21 and outdoor_temperature < 10 %}
             {% set v = 15 %}
           {% endif %}
-        {% endif %}
-
-        {% if is_state('input_select.home_mode', 'Vacation') %}
-          {% set v = 7 %}
         {% endif %}
 
         {% if is_state('input_boolean.bedroom_airing_warm', 'on') %}
@@ -98,10 +100,6 @@ template:
           {% endif %}
         {% endif %}
 
-        {% if is_state('input_select.home_mode', 'Vacation') %}
-          {% set v = 1 %}
-        {% endif %}
-
         {% if is_state('switch.bedroom_intake_fan_recirculation', 'on') %}
           {% set v = 1 %}
         {% endif %}
@@ -112,6 +110,10 @@ template:
 
         {% if outdoor_temperature < -12 and is_state('input_select.washing_machine_status', 'Running') %}
           {% set v = 1 %}
+        {% endif %}
+
+        {% if is_state('input_select.home_mode', 'Vacation') %}
+          {% set v = 0 %}
         {% endif %}
 
         {{ min(v, 6) }}
@@ -178,21 +180,9 @@ automation:
           - delay:
               seconds: 1
 
-      - service: climate.set_fan_mode
-        entity_id: climate.bedroom_intake_fan
+      - action: script.intake_fan_update
         data:
-          fan_mode: >
-            {{ states('sensor.bedroom_intake_fan_target_fan_speed') }}
-
-      - delay:
-          seconds: 2
-
-      - service: climate.set_temperature
-        entity_id: climate.bedroom_intake_fan
-        data:
-          temperature: >
-            {{ states('sensor.bedroom_intake_fan_target_temperature')|float(20) }}
-          hvac_mode: heat
+          area: bedroom
 
   - id: bedroom_airing_swap_modes
     alias: 'Bedroom Airing: Swap modes'

@@ -58,10 +58,6 @@ template:
           {% endif %}
         {% endif %}
 
-        {% if is_state('input_select.home_mode', 'Vacation') %}
-          {% set v = 7 %}
-        {% endif %}
-
         {% if is_state('input_boolean.living_room_airing_warm', 'on') %}
           {% set v = 20 %}
         {% elif is_state('input_boolean.living_room_airing_cold', 'on') %}
@@ -105,10 +101,6 @@ template:
           {% endif %}
         {% endif %}
 
-        {% if is_state('input_select.home_mode', 'Vacation') %}
-          {% set v = 1 %}
-        {% endif %}
-
         {% if is_state('input_boolean.living_room_airing_warm', 'on') or is_state('input_boolean.living_room_airing_cold', 'on') %}
           {% set v = 6 %}
         {% endif %}
@@ -125,6 +117,10 @@ template:
           {% if is_state('input_select.home_mode', 'Night') or is_state('input_boolean.scene_sleepy_mood', 'on') %}
             {% set v = 1 %}
           {% endif %}
+        {% endif %}
+
+        {% if is_state('input_select.home_mode', 'Vacation') %}
+          {% set v = 0 %}
         {% endif %}
 
         {{ v }}
@@ -237,64 +233,9 @@ automation:
           - delay:
               seconds: 1
 
-      - service: climate.set_fan_mode
-        entity_id: climate.living_room_intake_fan
+      - action: script.intake_fan_update
         data:
-          fan_mode: >
-            {{ max(1, states('sensor.living_room_intake_fan_target_fan_speed')|int(0)) }}
-
-      - delay:
-          seconds: 1
-
-      - service: climate.set_temperature
-        entity_id: climate.living_room_intake_fan
-        data:
-          temperature: >
-            {{ states('sensor.living_room_intake_fan_target_temperature')|float(20) }}
-
-      - if:
-          - condition: state
-            entity_id: sensor.living_room_intake_fan_target_fan_speed
-            state: '0'
-
-          - condition: state
-            entity_id: climate.living_room_intake_fan
-            state:
-              - heat
-              - fan_only
-
-          - condition: state
-            entity_id: timer.living_room_intake_fan_restart
-            state: idle
-        then:
-          - delay:
-              seconds: 1
-
-          - service: climate.set_hvac_mode
-            entity_id: climate.living_room_intake_fan
-            data:
-              hvac_mode: 'off'
-
-      - if:
-          - not:
-              - condition: state
-                entity_id: sensor.living_room_intake_fan_target_fan_speed
-                state: '0'
-
-          - condition: state
-            entity_id: climate.living_room_intake_fan
-            state: 'off'
-        then:
-          - delay:
-              seconds: 1
-
-          - service: timer.start
-            entity_id: timer.living_room_intake_fan_restart
-
-          - service: climate.set_hvac_mode
-            entity_id: climate.living_room_intake_fan
-            data:
-              hvac_mode: 'heat'
+          area: living_room
 
   - id: living_room_airing_swap_modes
     alias: 'Living Room Airing: Swap modes'

@@ -72,9 +72,12 @@ automation:
                 state: 'Night'
         then:
           - service: light.turn_on
-            entity_id: light.workshop_main
+            entity_id:
+              - light.workshop_main_2_1
+              - light.workshop_main_2_2
             data:
-              brightness_pct: 15
+              brightness_pct: 1
+              transition: 0
         else:
           - service: light.turn_on
             entity_id: light.workshop_main
@@ -132,10 +135,21 @@ automation:
         entity_id: light.workshop_main
         state: 'on'
     action:
-      - service: light.turn_off
-        entity_id: light.workshop_main
-        data:
-          transition: 4
+      - if:
+          - condition: numeric_state
+            entity_id: light.workshop_main
+            attribute: brightness
+            below: 40
+        then:
+          - service: light.turn_off
+            entity_id: light.workshop_main
+            data:
+              transition: 0
+        else:
+          - service: light.turn_off
+            entity_id: light.workshop_main
+            data:
+              transition: 4
 
   - id: workshop_light_control_turn_on
     alias: 'Workshop Light Control: Turn on'

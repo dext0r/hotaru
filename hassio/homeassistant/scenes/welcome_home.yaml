@@ -39,13 +39,23 @@ automation:
             entity_id: input_select.home_mode
             state: Vacation
         then:
-          - wait_for_trigger:
-              - platform: state
+          - if:
+              - condition: state
                 entity_id: binary_sensor.anyone_home
-                to: 'on'
-            timeout:
-              minutes: 7
-            continue_on_timeout: false
+                state: 'off'
+            then:
+              - wait_for_trigger:
+                  - platform: state
+                    entity_id: binary_sensor.anyone_home
+                    to: 'on'
+                timeout:
+                  minutes: 7
+                continue_on_timeout: false
+
+          - service: input_select.select_option
+            entity_id: input_select.home_mode
+            data:
+              option: Day
 
           - service: script.yandex_station_tts
             data:
@@ -58,11 +68,6 @@ automation:
                   'Добро пожаловать домой, я вас заждалась!',
                 ] %}
                 {{ v|random }}
-
-          - service: input_select.select_option
-            entity_id: input_select.home_mode
-            data:
-              option: Day
         else:
           - service: script.yandex_station_tts
             data:

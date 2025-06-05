@@ -234,7 +234,7 @@ template:
       - name: Evening time
         unique_id: binary_sensor.evening_time
         state: >
-          {{ state_attr('sun.sun', 'elevation') < 7 and
+          {{ state_attr('sun.sun', 'elevation') < 15 and
              states('sensor.illuminance_north_side')|int(0) <= 80 and
              states('sensor.illuminance_south_side')|int(0) <= 120 and
              (now().hour > 12 or now().hour < 5) }}

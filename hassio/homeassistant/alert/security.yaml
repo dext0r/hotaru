@@ -59,6 +59,10 @@ automation:
       - condition: state
         entity_id: binary_sensor.anyone_home
         state: 'on'
+
+      - condition: state
+        entity_id: lock.front_door
+        state: unlocked
     action:
       - service: script.yandex_station_tts
         data:

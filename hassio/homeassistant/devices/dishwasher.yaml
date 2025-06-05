@@ -4,9 +4,9 @@ input_select:
     icon: mdi:dishwasher
     options:
       - Dirty
+      - Done
       - Idle
       - Running
-      - Done
     initial: Idle
 
 automation:

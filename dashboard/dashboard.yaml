@@ -2903,8 +2903,8 @@ views:
                 name: Total
               - type: custom:mushroom-template-card
                 primary: >-
-                  {{ (states('sensor.humidifiers_water_consumption_9d')|float /
-                  9)|round(2) }} L
+                  {{ (states('sensor.humidifiers_water_consumption_9d')|float(0)
+                  / 9)|round(2) }} L
                 secondary: Daily average
                 icon: mdi:water-opacity
                 icon_color: cyan

@@ -213,7 +213,10 @@ hdmi_cec:
         - globals.set:
             id: avr_power
             value: 'true'
-        - script.execute: avr_cec_give_audio_status_delayed
+        # TODO: вернуть получение аудио статуса
+        # на данный момент возникают фантомные перезагрузки
+        # или может это вообще не надо, потому что TV/PS5 сами неплохо запрашивают статус
+        # https://github.com/Palakis/esphome-native-hdmi-cec/issues/12
 
     - data: [0x72, 0x00]  # Set System Audio Mode: Off
       then:

@@ -118,7 +118,7 @@ automation:
       - if:
           - condition: template
             value_template: |
-              {{ (states('input_datetime.next_trip') | as_datetime | as_local - now()).days < 30 }}
+              {{ 0 <= (states('input_datetime.next_trip') | as_datetime | as_local - now()).days < 30 }}
         then:
           - service: script.yandex_station_tts
             data:

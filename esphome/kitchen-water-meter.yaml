@@ -16,6 +16,14 @@ esp8266:
 preferences:
   flash_write_interval: 10min
 
+button:
+  - name: Kitchen Filter Reset Water Consumption
+    platform: template
+    entity_category: diagnostic
+    on_press:
+      - sensor.integration.reset: kitchen_filter_feed_water_total
+      - sensor.integration.reset: kitchen_filter_drink_water_total
+
 sensor:
   # YF-S402B: (38xQ) л/мин ±3% (2280 импульсов = 1 литр)
   - id: kitchen_filter_feed_water_lm
@@ -28,7 +36,8 @@ sensor:
       - lambda: |-
           return x / 2280;
 
-  - name: Kitchen Filter Feed Water
+  - id: kitchen_filter_feed_water_total
+    name: Kitchen Filter Feed Water
     platform: integration
     sensor: kitchen_filter_feed_water_lm
     time_unit: min
@@ -49,7 +58,8 @@ sensor:
       - lambda: |-
           return x / 2280;
 
-  - name: Kitchen Filter Drink Water
+  - id: kitchen_filter_drink_water_total
+    name: Kitchen Filter Drink Water
     platform: integration
     sensor: kitchen_filter_drink_water_lm
     time_unit: min

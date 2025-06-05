@@ -119,6 +119,12 @@ automation:
             true
           {%- endif -%}
           {%- endfor -%}
+
+      - condition: state
+        entity_id: input_select.home_mode
+        state:
+          - Day
+          - Night
     actions:
       - action: notify.dextor
         data:

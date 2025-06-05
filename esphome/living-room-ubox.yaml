@@ -86,7 +86,6 @@ light:
     chipset: ws2812
     pin: 32
     num_leds: 8
-    rmt_channel: 2
     rgb_order: GRB
 
 sensor:

@@ -96,7 +96,7 @@ automation:
       - condition: state
         entity_id:
           - input_boolean.climate_control
-          - input_boolean.bedroom_humidifier_control
+          - input_boolean.workshop_humidifier_control
         state: 'on'
     action:
       - if:
@@ -157,7 +157,7 @@ automation:
       - condition: state
         entity_id:
           - input_boolean.climate_control
-          - input_boolean.bedroom_humidifier_control
+          - input_boolean.workshop_humidifier_control
         state: 'on'
     action:
       - if:

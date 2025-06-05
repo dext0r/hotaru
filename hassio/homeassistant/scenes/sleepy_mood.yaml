@@ -150,7 +150,11 @@ automation:
 
           - condition: numeric_state
             entity_id: sensor.outside_temperature
-            above: 17
+            above: 10
+
+          - condition: numeric_state
+            entity_id: sensor.bedroom_temperature
+            above: 24
         then:
           - service: climate.set_temperature
             entity_id: climate.bedroom_ac

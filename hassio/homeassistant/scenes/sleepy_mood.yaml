@@ -160,7 +160,7 @@ automation:
             entity_id: climate.bedroom_ac
             data:
               hvac_mode: cool
-              temperature: 23.5
+              temperature: 22
       - if:
           - condition: state
             entity_id: lock.front_door

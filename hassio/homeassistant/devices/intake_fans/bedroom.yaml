@@ -96,7 +96,7 @@ template:
           {% endif %}
 
           {% if is_state('input_boolean.bedroom_humidifier_control', 'off') %}
-            {% set v = v + 1 %}  {# больше шума для жены :) #}
+            {% set v = max(v, 3) %}  {# больше шума для жены :) #}
           {% endif %}
         {% endif %}
 

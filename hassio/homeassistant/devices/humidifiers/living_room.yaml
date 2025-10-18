@@ -262,11 +262,9 @@ automation:
           - input_boolean.scene_waking_up
           - input_boolean.living_room_humidifier_control
     conditions:
-      - condition: state
-        entity_id: switch.living_room_humidifier_water_tank_auto_refill
-        state:
-          - 'on'
-          - 'off'
+      - condition: template
+        value_template: >
+          {{ states('switch.living_room_humidifier_water_tank_auto_refill') in ['on', 'off'] }}
     actions:
       - if:
           - or:

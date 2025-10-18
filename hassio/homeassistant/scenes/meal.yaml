@@ -60,15 +60,6 @@ automation:
           - group.aux_lights
           - group.bedroom_lights
 
-      # эксперимент провалился :(
-      # - if:
-      #     - condition: numeric_state
-      #       entity_id: sensor.illuminance_south_side
-      #       above: 6000
-      #   then:
-      #     - service: cover.close_cover
-      #       entity_id: cover.living_room
-
   - id: scene_meal_turn_off
     alias: 'Scene Meal: Turn off'
     trigger:

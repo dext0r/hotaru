@@ -283,3 +283,9 @@ entity_config:
           REMOTE_CONTROL_DISABLED
         {% endif %}
       {% endif %}
+  fan.portable:
+    modes:
+      program:
+        eco: Sleep Mode
+        turbo: Direct Mode
+        smart: Natural Mode

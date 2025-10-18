@@ -185,9 +185,8 @@ automation:
       - action: script.yandex_station_tts
         data:
           target: all
-          type: alert
+          type: attention
           text: Гладильная доска долго включена, вряд ли так должно быть
-
 
 sensor:
   - platform: integration

@@ -67,7 +67,7 @@ automation:
       - service: script.yandex_station_tts
         data:
           target: all
-          type: alert
+          type: attention
           text: >
             {{ states.sensor.alert_greeting.state }}
             {{ [

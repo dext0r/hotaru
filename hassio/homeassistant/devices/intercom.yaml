@@ -189,7 +189,7 @@ automation:
               - service: script.yandex_station_tts
                 data:
                   target: all
-                  type: alert
+                  type: attention
                   text: >
                     {{ [
                         'Гости уже почти на пороге',
@@ -206,7 +206,7 @@ automation:
               - service: script.yandex_station_tts
                 data:
                   target: all
-                  type: alert
+                  type: attention
                   text: >
                     {{ [
                         'Курьер проник в подьезд, срочно надевай труселя и накрывай стол',
@@ -224,7 +224,7 @@ automation:
               - service: script.yandex_station_tts
                 data:
                   target: all
-                  type: alert
+                  type: attention
                   text: >
                     Открыла дверь курьеру для плановой доставки, готовься встречать
                     {% if is_state('person.dextor', 'Near Home') %}
@@ -239,7 +239,7 @@ automation:
               - service: script.yandex_station_tts
                 data:
                   target: all
-                  type: alert
+                  type: attention
                   text: >
                     {{ [
                         'Кажется Тёмушка поднимается, скорее беги встречать',
@@ -256,13 +256,13 @@ automation:
               - service: script.yandex_station_tts
                 data:
                   target: all
-                  type: alert
+                  type: attention
                   text: Жёнушка на пороге, готовься встречать
         default:
           - service: script.yandex_station_tts
             data:
               target: all
-              type: alert
+              type: attention
               text: >
                 {{ [
                     'Незванные гости на пороге, готовься!',

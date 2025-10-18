@@ -186,7 +186,7 @@ script:
                         {{ states[repeat.item] and not is_state(repeat.item, 'unavailable') }}
                   then:
                     - service: script.turn_on
-                      entity_id: script.yandex_station_play_dialog
+                      entity_id: script.yandex_station_play_text
                       data:
                         variables:
                           entity_id: '{{ repeat.item }}'
@@ -194,7 +194,7 @@ script:
                           volume_level: '{{ _volume_level }}'
         else:
           # если будем запускать асинхронно - последовательность не будет работать (см. сказку про белого бычка)
-          - service: script.yandex_station_play_dialog
+          - service: script.yandex_station_play_text
             data:
               entity_id: '{{ _target }}'
               text: '{{ _text }}'
@@ -202,33 +202,22 @@ script:
 
   # Известная особенность: может запуститься несколько экземпляров по одной колонке одновременно
   # Можно реализовать механизм блокировок, но мне лень
-  yandex_station_play_dialog:
-    alias: 'Yandex Station: Play dialog'
+  yandex_station_play_text:
+    alias: 'Yandex Station: Play text'
     mode: parallel
     sequence:
       - service: media_player.play_media
         data:
           entity_id: '{{ entity_id }}'
           media_content_id: '{{ text }}'
-          media_content_type: dialog
+          media_content_type: text
           extra:
             volume_level: '{{ volume_level or None }}'
 
       - wait_template: >
-          {{ state_attr(entity_id, 'alice_state') == 'LISTENING' }}
+          {{ state_attr(entity_id, 'alice_state') == 'SPEAKING' }}
         timeout:
-          seconds: 45
-
-      - condition: template
-        value_template: >
-          {{ is_state(entity_id, 'paused') or is_state(entity_id, 'idle') }}
-
-      - service: script.turn_on
-        entity_id: script.yandex_station_command
-        data:
-          variables:
-            target: '{{ entity_id }}'
-            command: стоп
+          seconds: 5
 
       - wait_template: >
           {{ state_attr(entity_id, 'alice_state') == 'IDLE' }}

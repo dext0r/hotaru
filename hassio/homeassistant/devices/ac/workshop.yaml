@@ -27,6 +27,10 @@ automation:
           - dry
         for:
           hours: 12
+
+      - platform: numeric_state
+        entity_id: sensor.cb_power_supply_power
+        above: 3600
     condition:
       - condition: state
         entity_id: climate.workshop_ac

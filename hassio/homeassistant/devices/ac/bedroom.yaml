@@ -57,6 +57,10 @@ automation:
         from: Night
         for:
           minutes: 5
+
+      - platform: numeric_state
+        entity_id: sensor.cb_power_supply_power
+        above: 3600
     condition:
       - condition: state
         entity_id: climate.bedroom_ac

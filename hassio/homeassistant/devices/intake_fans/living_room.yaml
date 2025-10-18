@@ -109,7 +109,7 @@ template:
           {% set v = 1 %}
         {% endif %}
 
-        {% if is_state('switch.ironing_board_socket', 'on') %}
+        {% if is_state('switch.ironing_board_socket', 'on') and outdoor_temperature < 10 %}
           {% set v = 1 %}
         {% endif %}
 

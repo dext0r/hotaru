@@ -65,7 +65,7 @@ sensor:
       filters:
         - throttle_average: ${update_interval}
         - lambda: |-
-            if (x < 2.0) return 0;
+            if (x < 3.0) return 0;
             return x;
 
   - platform: total_daily_energy

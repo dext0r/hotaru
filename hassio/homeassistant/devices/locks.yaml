@@ -70,10 +70,6 @@ automation:
         entity_id: sensor.intercom_status
         to: Door opened
     condition:
-      - condition: state
-        entity_id: lock.porch_door
-        state: locked
-
       - condition: or
         conditions:
           - condition: state

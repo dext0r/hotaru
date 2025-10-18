@@ -173,10 +173,6 @@ automation:
           - condition: state
             entity_id: binary_sensor.porch_door
             state: 'off'
-
-          - condition: state
-            entity_id: lock.porch_door
-            state: unlocked
         then:
           - service: lock.lock
             entity_id: lock.porch_door

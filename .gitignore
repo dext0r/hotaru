@@ -20,6 +20,7 @@ hassio/homeassistant/scripts.yaml
 esphome/secrets.yaml
 esphome/common/secrets.yaml
 esphome/test
+esphome/uv.lock
 etc/transmission
 etc/bin
 etc/crontab

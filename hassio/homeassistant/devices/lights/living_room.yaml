@@ -52,9 +52,19 @@ automation:
           color_temp_kelvin: 3400
 
       - if:
-          - condition: state
-            entity_id: binary_sensor.winter_bright_light
-            state: 'on'
+          - or:
+              - condition: state
+                entity_id: binary_sensor.winter_bright_light
+                state: 'on'
+
+              - and:
+                  - condition: numeric_state
+                    entity_id: sensor.illuminance_south_side
+                    below: 1700
+
+                  - condition: template
+                    value_template: >-
+                      {{ now().hour >= 9 and now().hour <= 15 }}
         then:
           - action: light.turn_on
             entity_id: light.living_room_main

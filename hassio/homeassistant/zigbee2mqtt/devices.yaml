@@ -182,15 +182,6 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/956bdca587d0b5a2cd6200ffdcb3e3d1.png
-'0xa4c138ea693a2814':
-  friendly_name: Kitchen Cold Water Valve
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/53bb2a9b13189fa922f665f466b6a532.png
 '0x00158d0003e701ed':
   friendly_name: Kitchen Motion
   homeassistant: {}

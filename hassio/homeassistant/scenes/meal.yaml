@@ -7,7 +7,7 @@ input_boolean:
 automation:
   - id: scene_meal_turn_on
     alias: 'Scene Meal: Turn on'
-    trigger:
+    triggers:
       - trigger: event
         event_type: yandex_intent
         event_data:
@@ -16,8 +16,22 @@ automation:
       - trigger: event
         event_type: kitchen_worktop_button_brightness_up_hold
 
-      - trigger: event
+      - id: table_button_hold
+        trigger: event
         event_type: living_room_dinner_table_button_hold
+    condition:
+      - or:
+          - and:
+              - condition: trigger
+                id: table_button_hold
+
+              - condition: state
+                entity_id: input_boolean.scene_meal
+                state: 'off'
+
+          - not:
+              - condition: trigger
+                id: table_button_hold
     action:
       - service: light.turn_on
         entity_id: light.living_room_tv
@@ -71,7 +85,10 @@ automation:
         entity_id: input_boolean.scene_meal
         to: 'on'
         for:
-          minutes: 52
+          minutes: 30
+
+      - trigger: event
+        event_type: scene_meal_turn_off
     condition:
       - condition: state
         entity_id: input_boolean.scene_meal
@@ -79,6 +96,37 @@ automation:
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.scene_meal
+
+      - if:
+          - condition: state
+            entity_id: cover.living_room
+            state: closed
+        then:
+          - action: script.living_room_cozy_light
+
+  - id: scene_meal_turn_off_with_airing
+    alias: 'Scene Meal: Turn off (with airing)'
+    triggers:
+      - trigger: event
+        event_type: living_room_dinner_table_button_hold
+    conditions:
+      - condition: state
+        entity_id: input_boolean.scene_meal
+        state: 'on'
+    actions:
+      - action: input_boolean.turn_on
+        entity_id: input_boolean.living_room_airing_cold
+
+      - service: script.yandex_station_tts
+        data:
+          target: media_player.living_room_station
+          text: >
+            <speaker audio="dialogs-upload/31d7ae1e-6af0-40a0-8721-759585b9c331/4e413dc0-8b7c-4604-b7c4-01019abc3814.opus">
+
+      - delay:
+          seconds: 1
+
+      - event: scene_meal_turn_off
 
   - id: rice_cooking_status
     alias: 'Rice Cooking: Status'

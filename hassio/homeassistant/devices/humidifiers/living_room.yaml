@@ -78,7 +78,9 @@ template:
           {% endif %}
 
           {% if speed >= 80 %}
-              {% if is_state('binary_sensor.living_room_occupancy', 'off') or is_state('input_boolean.scene_waking_up', 'on') %}
+              {% if is_state('binary_sensor.living_room_occupancy', 'off') or
+                    is_state('input_boolean.scene_waking_up', 'on') or
+                    not is_state('person.layma', 'home') %}
                 {% set speed = 100 %}
               {% endif %}
           {% endif %}

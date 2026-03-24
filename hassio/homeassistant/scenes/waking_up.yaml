@@ -16,9 +16,6 @@ automation:
         data:
           brightness_pct: 22
 
-      - service: light.turn_off
-        entity_id: group.bathroom_path_lights
-
   - id: scene_waking_up_turn_off
     alias: 'Scene Waking up: Turn off'
     trigger:

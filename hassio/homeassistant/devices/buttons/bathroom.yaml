@@ -96,9 +96,7 @@ automation:
             entity_id: light.bathroom_main
 
           - service: light.turn_on
-            entity_id:
-              - light.bathroom_sink_path
-              - light.bathroom_toilet_path
+            entity_id: group.bathroom_path_lights
             data:
               rgbw_color: [255, 0, 0, 0]
               brightness_pct: 100

@@ -1,13 +1,13 @@
 automation:
-  - id: bathroom_path_light_turn_on_night
-    alias: 'Bathroom Path Light: Turn on (night)'
-    trigger:
+  - id: bathroom_path_light_turn_on
+    alias: 'Bathroom Path Light: Turn on'
+    triggers:
       - platform: state
         entity_id:
           - binary_sensor.bathroom_motion
           - binary_sensor.hallway_motion
         to: 'on'
-    condition:
+    conditions:
       - condition: state
         entity_id: input_boolean.light_control
         state: 'on'
@@ -17,39 +17,66 @@ automation:
         state: Night
 
       - condition: state
-        entity_id:
-          - group.bathroom_path_lights
-          - input_boolean.scene_waking_up
+        entity_id: input_boolean.scene_waking_up
         state: 'off'
-    action:
-      - service: light.turn_on
-        entity_id:
-          - light.bathroom_sink_path
-          - light.bathroom_toilet_path
+    actions:
+      - action: light.turn_on
+        entity_id: group.bathroom_path_lights
         data:
           rgbw_color: [255, 0, 0, 0]
           brightness_pct: 100
 
-  - id: bathroom_path_light_turn_off
-    alias: 'Bathroom Path Light: Turn off'
-    trigger:
-      # за это время все точно улеглись и больше не ходят в спальне
-      - id: no_occupancy_10
-        platform: state
+  - id: bathroom_path_light_turn_on_dimmed
+    alias: 'Bathroom Path Light: Turn on (dimmed)'
+    triggers:
+      - platform: state
+        entity_id: input_select.home_mode
+        to: Night
+
+      - platform: state
         entity_id: binary_sensor.bathroom_any_occupancy
         from: 'on'
         to: 'off'
         for:
           minutes: 10
 
-      - id: no_motion
-        platform: state
-        entity_id: binary_sensor.bathroom_motion
-        from: 'on'
+      - platform: state
+        entity_id:
+          - binary_sensor.bathroom_motion
+          - binary_sensor.hallway_motion
         to: 'off'
         for:
-          hours: 1
-    condition:
+          minutes: 30
+    conditions:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+
+      - condition: state
+        entity_id: input_select.home_mode
+        state: Night
+
+      - condition: state
+        entity_id: input_boolean.scene_waking_up
+        state: 'off'
+    actions:
+      - action: light.turn_on
+        entity_id: group.bathroom_path_lights
+        data:
+          rgbw_color: [255, 0, 0, 0]
+          brightness_pct: 50
+
+  - id: bathroom_path_light_turn_off
+    alias: 'Bathroom Path Light: Turn off'
+    triggers:
+      - platform: state
+        entity_id: input_select.home_mode
+        from: Night
+
+      - platform: state
+        entity_id: group.bathroom_lights
+        to: 'on'
+    conditions:
       - condition: state
         entity_id: input_boolean.scene_sleepy_mood
         state: 'off'
@@ -60,20 +87,8 @@ automation:
           - input_boolean.bathroom_light_control
           - group.bathroom_path_lights
         state: 'on'
-
-      # при отвале датчика присутствия - отключение только по отсутствию движения
-      - condition: or
-        conditions:
-          - condition: trigger
-            id: no_motion
-
-          - condition: state
-            entity_id: binary_sensor.bathroom_occupancy
-            state:
-              - 'on'
-              - 'off'
-    action:
-      - service: light.turn_off
+    actions:
+      - action: light.turn_off
         entity_id: group.bathroom_path_lights
 
   - id: hallway_path_light_turn_on_day

@@ -66,9 +66,7 @@ automation:
           brightness_pct: 15
 
       - service: light.turn_on
-        entity_id:
-          - light.bathroom_sink_path
-          - light.bathroom_toilet_path
+        entity_id: group.bathroom_path_lights
         data:
           rgbw_color: >
             {{ (state_attr('light.bedroom_bed', 'rgb_color') or [10, 255, 243]) | list + [0] }}

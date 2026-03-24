@@ -86,13 +86,13 @@ automation:
         entity_id: binary_sensor.porch_door
         to: 'on'
         for:
-          hours: 6
+          hours: 12
 
       - platform: state
         entity_id: lock.porch_door
         to: 'unlocked'
         for:
-          hours: 6
+          hours: 12
     action:
       - action: notify.send_message
         data:

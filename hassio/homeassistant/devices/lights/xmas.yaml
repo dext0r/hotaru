@@ -15,14 +15,6 @@ group:
       - light.xmas_front_door
       - light.xmas_kitchen
 
-light:
-  - platform: group
-    unique_id: light.xmas_living_room_curtains
-    name: Xmas Living Room Curtains
-    entities:
-      - light.xmas_living_room_curtains_1
-      - light.xmas_living_room_curtains_2
-
 automation:
   - id: xmas_lights_turn_on
     alias: 'Xmas Lights: Turn on'
@@ -350,7 +342,7 @@ automation:
           - service: light.turn_on
             entity_id: light.xmas_living_room_curtains
             data:
-              brightness_pct: 30
+              brightness_pct: 18
 
   - id: xmas_living_room_curtains_light_turn_off
     alias: 'Xmas Living Room Curtains Light: Turn off'

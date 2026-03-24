@@ -96,6 +96,10 @@ template:
           {% elif co2_level > 540 %}
             {% set v = 2 %}
           {% endif %}
+
+          {% if outdoor_temperature < -15 %}
+            {% set v = max(v - 2, 1) %} {# не плохо поддувает через щели в стенах #}
+          {% endif %}
         {% endif %}
 
         {% if is_state('input_select.home_mode', 'Night') %}
@@ -118,9 +122,13 @@ template:
           {% set v = 1 %}
         {% endif %}
 
-        {% if outdoor_temperature < -12 %}
-          {% if is_state('input_select.home_mode', 'Night') or is_state('input_boolean.scene_sleepy_mood', 'on') %}
+        {% if is_state('input_select.home_mode', 'Night') or is_state('input_boolean.scene_sleepy_mood', 'on') %}
+          {% if outdoor_temperature < 0 %}
             {% set v = 1 %}
+          {% endif %}
+
+          {% if outdoor_temperature < -15 %}
+            {% set v = 0 %}
           {% endif %}
         {% endif %}
 

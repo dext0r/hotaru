@@ -162,6 +162,10 @@ automation:
         device_id: 624d122c903dda63a2c71e9d636f4a0c
         type: action
         subtype: 'on'
+    conditions:
+      - condition: state
+        entity_id: binary_sensor.anyone_home
+        state: 'on'
     action:
       - action: switch.turn_on
         entity_id: switch.living_room_heater
@@ -187,4 +191,9 @@ automation:
         type: action
         subtype: brightness_move_down
     actions:
-      - event: living_room_heater_button_hold_down
+      - if:
+          - condition: state
+            entity_id: input_select.home_mode
+            state: Day
+        then:
+          - event: living_room_heater_button_hold_down

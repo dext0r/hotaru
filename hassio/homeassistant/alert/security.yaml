@@ -31,6 +31,11 @@ automation:
           - binary_sensor.anyone_near_home
         state: 'off'
 
+      # дикая кошка постоянно вызывает сработки некоторых датчиков
+      - condition: state
+        entity_id: input_select.home_mode
+        state: Vacation
+
       - condition: template
         value_template: >
           {{ (now() - state_attr('automation.motion_alarm_no_one_home',

@@ -93,9 +93,7 @@ automation:
       - wait_for_trigger:
           - platform: state
             entity_id: media_player.atv
-            to:
-              - standby
-              - idle
+            to: idle
         timeout:
           seconds: 5
         continue_on_timeout: true
@@ -103,9 +101,7 @@ automation:
       - if:
           - condition: state
             entity_id: media_player.atv
-            state:
-              - standby
-              - idle
+            state: idle
         then:
           - service: media_player.select_source
             target:

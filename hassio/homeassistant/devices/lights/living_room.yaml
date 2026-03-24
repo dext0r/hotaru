@@ -7,7 +7,9 @@ automation:
         to: 'on'
     condition:
       - condition: state
-        entity_id: input_boolean.light_control
+        entity_id:
+          - input_boolean.light_control
+          - binary_sensor.anyone_home
         state: 'on'
 
       - condition: state

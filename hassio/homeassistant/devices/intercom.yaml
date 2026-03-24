@@ -272,3 +272,13 @@ automation:
                     'Я кого-то впустила в подъезд, скоро узнаем кого'
                   ]|random
                 }}
+
+          - delay:
+              seconds: 5
+
+          - action: rest_command.entrance_camera_doorbell_ring
+
+rest_command:
+  entrance_camera_doorbell_ring:
+    url: !secret entrance_camera_doorbell_ring_url
+    timeout: 1

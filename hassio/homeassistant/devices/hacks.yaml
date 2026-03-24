@@ -1,0 +1,13 @@
+automation:
+  # вынужденный костыль из-за периодически недоходящих событий
+  - id: bathroom_presence_update
+    alias: 'Bathroom Presence: Update'
+    triggers:
+      - platform: time_pattern
+        minutes: /1
+    actions:
+      - action: mqtt.publish
+        data:
+          topic: zigbee2mqtt/Bathroom Presence/get
+          payload: >-
+            {"presence": ""}

@@ -57,12 +57,18 @@ template:
       icon: mdi:target-variant
       state: >
         {% set mode = 'Level3' %}
+        {% set target_humidity = states('input_number.home_target_humidity')|int(40) %}
+        {% set outdoor_temperature = states('sensor.outside_temperature')|float(0) %}
 
-        {% if states('sensor.workshop_humidity')|int(0) >= states('input_number.home_target_humidity')|int %}
+        {% if outdoor_temperature < -15 %}
+          {% set target_humidity = 42 %}
+        {% endif %}
+
+        {% if states('sensor.workshop_humidity')|int(0) >= target_humidity %}
           {% set mode = 'Level2' %}
         {% endif %}
 
-        {% if states('sensor.workshop_humidity')|int(0) >= states('input_number.home_target_humidity')|int + 2 %}
+        {% if states('sensor.workshop_humidity')|int(0) >= target_humidity + 2 %}
           {% set mode = 'off' %}
         {% elif states('sensor.workshop_humidifier_water_level')|int(0) <= 15 or states('sensor.workshop_humidifier_x_water_level')|int(0) <= 15 %}
           {% set mode = 'off' %}

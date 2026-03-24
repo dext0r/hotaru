@@ -331,6 +331,7 @@
 '0x000d6f001206122e':
   friendly_name: Kitchen Smoke
   icon: device_icons/8ff07e9c0bcf76c61da371ef919227d1.png
+  retain: true
 '0x00124b002342cf9a':
   friendly_name: Front Door Lock
   homeassistant: {}
@@ -368,6 +369,7 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/08a9016bbc0657cf5f581ae9c19c31a5.png
+  power_calibration: 0
 '0x847127fffe1aa61b':
   friendly_name: Workshop Shades Motor
   homeassistant: {}
@@ -422,16 +424,6 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/f9edd10ffbe83265affdd72393f886b8.png
-'0x84fd27fffe60958f':
-  friendly_name: Xmas Living Room Curtains Light
-  homeassistant:
-    name: Xmas Living Room Curtains Light
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/91669ab20a4107a52faebc6385c4b0f6.png
 '0xa4c138edaeb5d672':
   friendly_name: Workshop Presence
   homeassistant: {}

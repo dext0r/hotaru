@@ -59,6 +59,10 @@ automation:
       - condition: state
         entity_id: light.workshop_main
         state: 'off'
+
+      - condition: state
+        entity_id: timer.workshop_lights_skip_on
+        state: idle
     action:
       - if:
           - condition: or
@@ -176,6 +180,46 @@ automation:
       - service: input_boolean.turn_off
         entity_id: input_boolean.workshop_light_control
 
+  - id: workshop_lights_skip_on_timer_start
+    alias: 'Workshop Lights Skip On Timer: Start'
+    triggers:
+      - trigger: state
+        entity_id: input_select.home_mode
+        from: Night
+    conditions:
+      - condition: state
+        entity_id: binary_sensor.workshop_door
+        state: 'off'
+    actions:
+      - action: timer.start
+        entity_id: timer.workshop_lights_skip_on
+
+  - id: workshop_lights_skip_on_timer_stop
+    alias: 'Workshop Lights Skip On Timer: Stop'
+    mode: single
+    max_exceeded: silent
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.workshop_door
+        from: 'off'
+        to: 'on'
+        for:
+          seconds: 1
+
+      - trigger: state
+        entity_id: binary_sensor.workshop_motion
+        to: 'on'
+    conditions:
+      - condition: state
+        entity_id: timer.workshop_lights_skip_on
+        state: active
+    actions:
+      - delay:
+          seconds: 3
+
+      - action: timer.cancel
+        entity_id: timer.workshop_lights_skip_on
+
 input_boolean:
   workshop_light_control:
     name: 'Allow automatic light control (workshop)'
@@ -197,3 +241,9 @@ group:
     name: Workshop Lights
     entities:
       - light.workshop_main
+
+timer:
+  workshop_lights_skip_on:
+    name: 'Workshop Lights: Skip on'
+    duration:
+      hours: 60

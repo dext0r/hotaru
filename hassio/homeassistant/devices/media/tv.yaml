@@ -8,10 +8,8 @@ media_player:
   active_child_template: media_player.living_room_tv_base
   commands:
     turn_on:
-      service: wake_on_lan.send_magic_packet
-      data:
-        broadcast_address: 192.168.5.255
-        mac: 74:C1:7E:66:88:97
+      action: media_player.turn_on
+      entity_id: media_player.living_room_tv_base
 
     turn_off:
       service: script.tv_turn_off
@@ -31,6 +29,17 @@ media_player:
     is_volume_muted: switch.avr_volume_muted
 
 automation:
+  - id: tv_request_turn_on
+    alias: 'TV: Request turn on'
+    triggers:
+      - trigger: webostv.turn_on
+        entity_id: media_player.living_room_tv_base
+    actions:
+      - action: wake_on_lan.send_magic_packet
+        data:
+          broadcast_address: 192.168.5.255
+          mac: 74:C1:7E:66:88:97
+
   - id: tv_warming_up
     alias: 'TV: Warming up'
     trigger:

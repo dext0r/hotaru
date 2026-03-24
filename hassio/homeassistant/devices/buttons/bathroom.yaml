@@ -23,14 +23,48 @@ automation:
         - service: light.toggle
           entity_id: light.bathroom_mirror
 
-  - id: bathroom_mirror_button_double
-    alias: 'Bathroom Mirror Button: Double'
+  - id: bathroom_mirror_button_double_press
+    alias: 'Bathroom Mirror Button: Double press'
+    mode: single
+    max_exceeded: silent
     trigger:
       - trigger: device
         domain: mqtt
         device_id: 88c16946d5bfcee7dfce360e772ab881
         type: action
         subtype: double
+    action:
+      - if:
+          - condition: state
+            entity_id: light.bathroom_main
+            state: 'on'
+        then:
+          - action: script.turn_on
+            entity_id: script.flash_light
+            data:
+              variables:
+                entity_id: light.bathroom_main
+        else:
+          - action: light.toggle
+            entity_id: light.bathroom_bathtub
+
+          - delay:
+              seconds: 2
+
+          - action: light.toggle
+            entity_id: light.bathroom_bathtub
+
+      - action: switch.toggle
+        entity_id: switch.home_airing
+
+  - id: bathroom_mirror_button_many_press
+    alias: 'Bathroom Mirror Button: Many press'
+    trigger:
+      - trigger: device
+        domain: mqtt
+        device_id: 88c16946d5bfcee7dfce360e772ab881
+        type: action
+        subtype: many
     action:
       - choose:
           - conditions:

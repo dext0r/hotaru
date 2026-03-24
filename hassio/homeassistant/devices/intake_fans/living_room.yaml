@@ -21,6 +21,11 @@ timer:
     duration:
       minutes: 60
 
+  living_room_intake_fan_warming_up:
+    name: 'Living Room Intake Fan: Warming up'
+    duration:
+      minutes: 5
+
 template:
   sensor:
     - unique_id: sensor.living_room_intake_fan_target_temperature
@@ -265,6 +270,25 @@ automation:
       - action: script.intake_fan_update
         data:
           area: living_room
+
+  - id: living_room_intake_fan_warming_up
+    alias: 'Living Room Fan: Warming up'
+    triggers:
+      - trigger: state
+        entity_id: climate.living_room_intake_fan
+        from:
+          - 'off'
+          - unavailable
+        to:
+          - heat
+          - fan_only
+
+      - trigger: state
+        entity_id: switch.living_room_intake_fan_recirculation
+        from: 'on'
+    actions:
+      - action: timer.start
+        entity_id: timer.living_room_intake_fan_warming_up
 
   - id: living_room_airing_swap_modes
     alias: 'Living Room Airing: Swap modes'

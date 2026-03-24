@@ -17,6 +17,11 @@ timer:
     duration:
       minutes: 60
 
+  bedroom_intake_fan_warming_up:
+    name: 'Bedroom Intake Fan: Warming up'
+    duration:
+      minutes: 5
+
 template:
   sensor:
     - unique_id: sensor.bedroom_intake_fan_target_temperature
@@ -204,6 +209,25 @@ automation:
       - action: script.intake_fan_update
         data:
           area: bedroom
+
+  - id: bedroom_intake_fan_warming_up
+    alias: 'Bedroom Intake Fan: Warming up'
+    triggers:
+      - trigger: state
+        entity_id: climate.bedroom_intake_fan
+        from:
+          - 'off'
+          - unavailable
+        to:
+          - heat
+          - fan_only
+
+      - trigger: state
+        entity_id: switch.bedroom_intake_fan_recirculation
+        from: 'on'
+    actions:
+      - action: timer.start
+        entity_id: timer.bedroom_intake_fan_warming_up
 
   - id: bedroom_airing_swap_modes
     alias: 'Bedroom Airing: Swap modes'

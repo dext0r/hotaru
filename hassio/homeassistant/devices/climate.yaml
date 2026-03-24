@@ -128,18 +128,33 @@ template:
                 - input_boolean.workshop_airing_cold
                 - input_boolean.workshop_airing_warm
 
-template:
   - sensor:
       - name: Outside Temperature
+        unique_id: sensor.outside_temperature
         device_class: temperature
         unit_of_measurement: °C
         state: >
-          {% set temperature = states('sensor.weather_temperature') %}
-          {% if temperature in ['unavailable', 'unknown'] %}
-            {% if is_state('climate.bedroom_intake_fan', 'heat') or is_state('climate.bedroom_intake_fan', 'fan_only') %}
-              {% set temperature = states('sensor.bedroom_intake_fan_outdoor_temperature') %}
-            {% elif is_state('climate.living_room_intake_fan', 'heat') or is_state('climate.living_room_intake_fan', 'fan_only') %}
-              {% set temperature = states('sensor.living_room_intake_fan_outdoor_temperature') %}
+          {% set north_t, south_t = None, None %}
+          {% set online_t = state_attr('weather.home', 'temperature') | int(None) %}
+
+          {% if is_state('climate.bedroom_intake_fan', 'heat') or is_state('climate.bedroom_intake_fan', 'fan_only') %}
+            {% if is_state('timer.bedroom_intake_fan_warming_up', 'idle') %}
+              {% set north_t = states('sensor.bedroom_intake_fan_outdoor_temperature') | int(None) %}
             {% endif %}
           {% endif %}
-          {{ temperature }}
+          {% if is_state('climate.living_room_intake_fan', 'heat') or is_state('climate.living_room_intake_fan', 'fan_only') %}
+            {% if is_state('timer.living_room_intake_fan_warming_up', 'idle') %}
+              {% set south_t = states('sensor.living_room_intake_fan_outdoor_temperature') | int(None) %}
+            {% endif %}
+          {% endif %}
+
+          {% set t = [north_t, south_t] | reject('none') | min %}
+          {% if t is undefined %}
+            {% set t = online_t %}
+          {% endif %}
+
+          {% if t is none %}
+            unknown
+          {% else %}
+            {{ t }}
+          {% endif %}

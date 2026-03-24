@@ -1567,7 +1567,7 @@ views:
             hours_to_show: 6
             points_per_hour: 8
             entities:
-              - entity: sensor.weather_temperature
+              - entity: sensor.outside_temperature
                 color: '#34495e'
             card_mod:
               style: |
@@ -2299,7 +2299,7 @@ views:
             hours_to_show: 6
             points_per_hour: 8
             entities:
-              - entity: sensor.weather_temperature
+              - entity: sensor.outside_temperature
                 color: '#34495e'
             card_mod:
               style: |

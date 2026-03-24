@@ -91,7 +91,6 @@ homeassistant:
     stove: !include devices/stove.yaml
     washing_machine: !include devices/washing_machine.yaml
     water_heater: !include devices/water_heater.yaml
-    weather: !include integrations/weather.yaml
     workday: !include integrations/workday.yaml
   customize: !include customize.yaml
 http:

@@ -11,6 +11,12 @@ automation:
         event: shutdown
         id: shutdown
     condition:
+      - condition: state
+        entity_id: input_select.home_mode
+        state:
+          - Day
+          - Night
+
       - or:
           - condition: trigger
             id: shutdown

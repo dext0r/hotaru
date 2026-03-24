@@ -88,7 +88,6 @@ homeassistant:
     scene_welcome_home: !include scenes/welcome_home.yaml
     scooter: !include devices/scooter.yaml
     stove: !include devices/stove.yaml
-    tuya: !include integrations/tuya.yaml
     washing_machine: !include devices/washing_machine.yaml
     water_heater: !include devices/water_heater.yaml
     weather: !include integrations/weather.yaml

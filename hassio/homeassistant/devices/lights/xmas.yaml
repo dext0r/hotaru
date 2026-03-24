@@ -149,6 +149,11 @@ automation:
         state: 'on'
 
       - condition: state
+        entity_id: input_select.home_mode
+        state:
+          - Day
+
+      - condition: state
         entity_id:
           - light.xmas_hallway_wall
           - light.xmas_workshop_door

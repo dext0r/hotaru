@@ -133,6 +133,10 @@ automation:
             entity_id: cover.living_room
             state: closed
 
+          - condition: state
+            entity_id: input_boolean.xmas_lighting
+            state: 'on'
+
       - condition: state
         entity_id:
           - light.hallway_path
@@ -144,6 +148,10 @@ automation:
           - condition: template
             value_template: >
               {{ states('light.xmas_hallway_wall') not in ['unavailable', 'unknown'] }}
+
+          - condition: state
+            entity_id: input_boolean.xmas_lighting
+            state: 'on'
         then:
           - service: light.turn_on
             entity_id: light.hallway_path

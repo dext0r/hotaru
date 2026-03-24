@@ -177,8 +177,9 @@ automation:
         for:
           minutes: 50
     action:
-      - action: notify.dextor
+      - action: notify.send_message
         data:
+          entity_id: notify.dextor
           message: 🪠 Гладильная доска долго включена, вряд ли так должно быть
         continue_on_error: true
 

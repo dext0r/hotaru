@@ -205,12 +205,6 @@ panel_custom:
     sidebar_icon: mdi:math-log
     module_url: internal
 person:
-telegram_bot:
-  - platform: broadcast
-    parse_mode: html
-    api_key: !secret telegram_api_key
-    allowed_chat_ids:
-      - !secret telegram_chat_id
 stream:
 sun:
 system_health:

@@ -83,20 +83,19 @@ automation:
           - light.porch
           - light.porch_path_light
 
-light:
-  - platform: template
-    lights:
-      porch:
-        unique_id: porch_light
-        friendly_name: Porch Light
-        value_template: >
+template:
+  - light:
+      - unique_id: porch_light
+        default_entity_id: light.porch
+        name: Porch Light
+        icon: bha:ceiling-lamp
+        state: >
           {{ is_state('switch.porch_light_switch', 'on') }}
-        availability_template: >
+        availability: >
           {{ states('switch.porch_light_switch') in ['on', 'off'] }}
-        icon_template: bha:ceiling-lamp
         turn_on:
-          - service: switch.turn_on
+          - action: switch.turn_on
             entity_id: switch.porch_light_switch
         turn_off:
-          - service: switch.turn_off
+          - action: switch.turn_off
             entity_id: switch.porch_light_switch

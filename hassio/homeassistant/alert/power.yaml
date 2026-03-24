@@ -18,7 +18,8 @@ automation:
           {{ (now() - state_attr('automation.power_budget_alert',
                                   'last_triggered')|default(now() - timedelta(days=1), true)).total_seconds() > 600 }}
     action:
-      - service: notify.dextor
+      - action: notify.send_message
         data:
+          entity_id: notify.dextor
           message: >
             ⚡️ Превышена мощность по {{ trigger.to_state.entity_id }}: <b>{{ trigger.to_state.state }}</b> Вт.

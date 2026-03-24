@@ -56,8 +56,9 @@ automation:
           - condition: trigger
             id: 2m
         then:
-          - service: notify.dextor
+          - action: notify.send_message
             data:
+              entity_id: notify.dextor
               message: 🧊 Закрой холодильник!
         else:
           - service: script.yandex_station_tts
@@ -119,8 +120,9 @@ automation:
           - condition: trigger
             id: 2m
         then:
-          - service: notify.dextor
+          - action: notify.send_message
             data:
+              entity_id: notify.dextor
               message: 🧊 Закрой морозильник!
         else:
           - service: script.yandex_station_tts

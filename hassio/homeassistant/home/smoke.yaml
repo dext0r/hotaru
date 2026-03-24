@@ -33,8 +33,9 @@ automation:
                 volume: 1
         continue_on_error: true
 
-      - service: notify.dextor
+      - action: notify.send_message
         data:
+          entity_id: notify.dextor
           message: >
             🚨 Обнаружено задымление {{ state_attr(trigger.from_state.entity_id, 'alert_text')|default('', True) }}
         continue_on_error: true
@@ -50,8 +51,9 @@ automation:
         from: 'on'
         to: 'off'
     action:
-      - service: notify.dextor
+      - action: notify.send_message
         data:
+          entity_id: notify.dextor
           message: >
             🎉 Устранено задымление {{ state_attr(trigger.from_state.entity_id, 'alert_text')|default('', True) }}
 

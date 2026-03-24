@@ -222,22 +222,21 @@ automation:
       - service: switch.turn_off
         entity_id: switch.bedroom_moon_light_charger
 
-light:
-  - platform: template
-    lights:
-      bedroom_main:
-        unique_id: bedroom_main_light
-        friendly_name: Bedroom Main Light
-        value_template: >
+template:
+  - light:
+      - unique_id: light.bedroom_main
+        default_entity_id: light.bedroom_main
+        name: Bedroom Main Light
+        icon: bha:ceiling-lamp
+        state: >
           {{ is_state('switch.bedroom_light_switch_left', 'on') }}
-        availability_template: >
+        availability: >
           {{ states('switch.bedroom_light_switch_left') in ['on', 'off'] }}
-        icon_template: bha:ceiling-lamp
         turn_on:
-          - service: switch.turn_on
+          - action: switch.turn_on
             entity_id: switch.bedroom_light_switch_left
         turn_off:
-          - service: switch.turn_off
+          - action: switch.turn_off
             entity_id: switch.bedroom_light_switch_left
 
 group:

@@ -47,8 +47,9 @@ automation:
             {%- endif -%}
           {%- endfor %}
 
-      - service: notify.dextor
+      - action: notify.send_message
         data:
+          entity_id: notify.dextor
           message: >
             ⚠️ <b>Некоторые устройства недоступны:</b>{{ '\n' }}
             {%- for entity in states if entity.state == 'unavailable' and
@@ -73,8 +74,9 @@ automation:
           {%- endif -%}
           {%- endfor -%}
     action:
-      - service: notify.dextor
+      - action: notify.send_message
         data:
+          entity_id: notify.dextor
           message: >
             ⚠️ <b>Батарея подходит к концу:</b>{{ '\n' }}
             {%- for entity in states if entity.entity_id.endswith('_battery') %}

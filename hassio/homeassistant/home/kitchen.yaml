@@ -41,8 +41,9 @@ automation:
         for:
           minutes: 5
     action:
-      - service: notify.dextor
+      - action: notify.send_message
         data:
+          entity_id: notify.dextor
           message: >
             ⚡️ Похоже кто-то забыл выключить плиту или печку
 

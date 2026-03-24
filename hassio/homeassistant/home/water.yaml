@@ -77,8 +77,9 @@ automation:
                 volume: 1
         continue_on_error: true
 
-      - service: notify.dextor
+      - action: notify.send_message
         data:
+          entity_id: notify.dextor
           message: >
             🚨 Обнаружена протечка {{ state_attr(trigger.from_state.entity_id, 'alert_text')|default('', True) }}
         continue_on_error: true
@@ -115,8 +116,9 @@ automation:
         from: 'on'
         to: 'off'
     action:
-      - service: notify.dextor
+      - action: notify.send_message
         data:
+          entity_id: notify.dextor
           message: >
             🎉 Устранена протечка {{ state_attr(trigger.from_state.entity_id, 'alert_text')|default('', True) }}
 
@@ -141,20 +143,18 @@ input_boolean:
     name: Hot Water Supply
     icon: mdi:water-boiler
 
-switch:
-  - platform: template
-    switches:
-      water_supply:
-        unique_id: switch.water_supply
-        friendly_name: Water Supply
-        value_template: >
+template:
+  - switch:
+      - unique_id: switch.water_supply
+        name: Water Supply
+        state: >
           {{
             is_state('switch.kitchen_hot_water_valve', 'on') or
             is_state('switch.kitchen_cold_water_valve', 'on') or
             is_state('switch.bathroom_hot_water_valve', 'on') or
             is_state('switch.bathroom_cold_water_valve', 'on')
           }}
-        availability_template: >
+        availability: >
           {{
             states('switch.kitchen_hot_water_valve') in ['on', 'off'] and
             states('switch.kitchen_cold_water_valve') in ['on', 'off'] and
@@ -170,7 +170,7 @@ switch:
                 - switch.bathroom_cold_water_valve
             continue_on_error: True
 
-          - service: switch.turn_on
+          - action: switch.turn_on
             entity_id:
               - switch.dishwasher_socket
               - switch.washing_machine_socket
@@ -181,11 +181,10 @@ switch:
                 entity_id: input_boolean.hot_water_supply
                 state: 'on'
             then:
-              - service: switch.turn_on
-                target:
-                  entity_id: switch.bathroom_hot_water_valve
+              - action: switch.turn_on
+                entity_id: switch.bathroom_hot_water_valve
         turn_off:
-          - service: switch.not_supported
+          - action: switch.not_supported
 
 utility_meter:
   kitchen_filter_drink_water_daily:

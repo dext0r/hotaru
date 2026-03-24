@@ -51,8 +51,9 @@ automation:
           - sensor.workshop_temperature
         above: 29
     action:
-      - service: notify.dextor
+      - action: notify.send_message
         data:
+          entity_id: notify.dextor
           message: 🤨 Подозрительная температура в доме
 
   - id: living_room_hot
@@ -64,7 +65,7 @@ automation:
           text: Очень жарко
           room: Гостиная
     action:
-      - service: climate.set_temperature
+      - action: climate.set_temperature
         entity_id:
           - climate.bedroom_ac
           - climate.workshop_ac
@@ -98,28 +99,26 @@ automation:
             {{ trigger.event.data.get('entity_id', 'last') }}
           text: Ну и ладно
 
-switch:
-  - platform: template
-    switches:
-      home_airing:
-        unique_id: switch.home_airing
-        friendly_name: Home Airing
-        icon_template: mdi:hair-dryer-outline
-        value_template: >
+template:
+  - switch:
+      - unique_id: switch.home_airing
+        name: Home Airing
+        icon: mdi:hair-dryer-outline
+        state: >
           {{
             is_state('input_boolean.bedroom_airing_cold', 'on') and
             is_state('input_boolean.living_room_airing_cold', 'on') and
             is_state('input_boolean.workshop_airing_cold', 'on')
           }}
         turn_on:
-          - service: input_boolean.turn_on
+          - action: input_boolean.turn_on
             target:
               entity_id:
                 - input_boolean.bedroom_airing_cold
                 - input_boolean.living_room_airing_cold
                 - input_boolean.workshop_airing_cold
         turn_off:
-          - service: input_boolean.turn_off
+          - action: input_boolean.turn_off
             target:
               entity_id:
                 - input_boolean.bedroom_airing_cold

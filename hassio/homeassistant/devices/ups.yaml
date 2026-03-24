@@ -19,7 +19,8 @@ automation:
             value_template: >
               {{ 'Online' in trigger.from_state.state and 'Online' in trigger.to_state.state }}
     action:
-      - service: notify.dextor
+      - action: notify.send_message
         data:
+          entity_id: notify.dextor
           message: >
             ⚡️ Изменён режим работы ИБП: {{ trigger.to_state.state }}

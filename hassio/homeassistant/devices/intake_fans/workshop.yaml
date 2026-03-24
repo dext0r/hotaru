@@ -116,6 +116,32 @@ template:
 
         {{ v }}
 
+  switch:
+    - unique_id: switch.workshop_airing
+      name: Workshop Airing
+      icon: mdi:hair-dryer-outline
+      state: >
+        {{
+          is_state('input_boolean.workshop_airing_cold', 'on') or
+          is_state('input_boolean.workshop_airing_warm', 'on')
+        }}
+      turn_on:
+        - if:
+            - condition: numeric_state
+              entity_id: sensor.workshop_temperature
+              above: 25.5
+          then:
+            - action: input_boolean.turn_on
+              entity_id: input_boolean.workshop_airing_cold
+          else:
+            - action: input_boolean.turn_on
+              entity_id: input_boolean.workshop_airing_warm
+      turn_off:
+        - action: input_boolean.turn_off
+          entity_id:
+            - input_boolean.workshop_airing_cold
+            - input_boolean.workshop_airing_warm
+
 automation:
   - id: workshop_intake_fan_update
     alias: 'Workshop Intake Fan: Update'
@@ -216,35 +242,3 @@ automation:
         data_template:
           entity_id: >
             {{ trigger.from_state.entity_id }}
-
-switch:
-  - platform: template
-    switches:
-      workshop_airing:
-        unique_id: switch.workshop_airing
-        friendly_name: Workshop Airing
-        icon_template: mdi:hair-dryer-outline
-        value_template: >
-          {{
-            is_state('input_boolean.workshop_airing_cold', 'on') or
-            is_state('input_boolean.workshop_airing_warm', 'on')
-          }}
-        turn_on:
-          - if:
-              - condition: numeric_state
-                entity_id: sensor.workshop_temperature
-                above: 25.5
-            then:
-              - service: input_boolean.turn_on
-                target:
-                  entity_id: input_boolean.workshop_airing_cold
-            else:
-              - service: input_boolean.turn_on
-                target:
-                  entity_id: input_boolean.workshop_airing_warm
-        turn_off:
-          - service: input_boolean.turn_off
-            target:
-              entity_id:
-                - input_boolean.workshop_airing_cold
-                - input_boolean.workshop_airing_warm

@@ -138,21 +138,21 @@ light:
       - light.living_room_backlight_5
       - light.living_room_backlight_6
 
-  - platform: template
-    lights:
-      living_room_main:
-        unique_id: living_room_main_light
-        friendly_name: Living Room Main Light
-        value_template: >
+template:
+  - light:
+      - unique_id: living_room_main_light
+        default_entity_id: light.living_room_main
+        name: Living Room Main Light
+        icon: bha:ceiling-lamp-round
+        state: >
           {{ is_state('switch.living_room_light_switch_left', 'on') }}
-        availability_template: >
+        availability: >
           {{ states('switch.living_room_light_switch_left') in ['on', 'off'] }}
-        icon_template: bha:ceiling-lamp-round
         turn_on:
-          - service: switch.turn_on
+          - action: switch.turn_on
             entity_id: switch.living_room_light_switch_left
         turn_off:
-          - service: switch.turn_off
+          - action: switch.turn_off
             entity_id: switch.living_room_light_switch_left
 
 script:

@@ -48,17 +48,16 @@ automation:
         data:
           position: 20
 
-cover:
-  - platform: template
-    covers:
-      workshop:
-        unique_id: workshop_shades
-        friendly_name: Workshop Shades
+template:
+  - cover:
+      - unique_id: workshop_shades
+        default_entity_id: cover.workshop
+        name: Workshop Shades
         device_class: shade
         optimistic: false
-        position_template: >
+        position: >
           {{ state_attr('cover.workshop_shades_motor', 'current_position') }}
-        availability_template: >
+        availability: >
           {{ states('cover.workshop_shades_motor') not in ['unknown', 'unavailable'] }}
         set_cover_position:
           if:
@@ -66,10 +65,10 @@ cover:
               entity_id: binary_sensor.workshop_window
               state: 'off'
           then:
-            - service: cover.set_cover_position
+            - action: cover.set_cover_position
               entity_id: cover.workshop_shades_motor
               data:
                 position: '{{ position }}'
         stop_cover:
-          service: cover.stop_cover
+          action: cover.stop_cover
           entity_id: cover.workshop_shades_motor

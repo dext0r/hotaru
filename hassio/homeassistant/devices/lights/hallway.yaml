@@ -48,35 +48,34 @@ automation:
       - service: light.turn_off
         entity_id: light.entrance
 
-light:
-  - platform: template
-    lights:
-      entrance:
-        unique_id: entrance_light
-        friendly_name: Entrance Light
-        value_template: >
+template:
+  - light:
+      - unique_id: light.entrance
+        default_entity_id: light.entrance
+        name: Entrance Light
+        icon: bha:ceiling-lamp
+        state: >
           {{ is_state('switch.hallway_light_switch_left', 'on') }}
-        availability_template: >
+        availability: >
           {{ states('switch.hallway_light_switch_left') in ['on', 'off'] }}
-        icon_template: bha:ceiling-lamp
         turn_on:
-          - service: switch.turn_on
+          - action: switch.turn_on
             entity_id: switch.hallway_light_switch_left
         turn_off:
-          - service: switch.turn_off
+          - action: switch.turn_off
             entity_id: switch.hallway_light_switch_left
 
-      hallway:
-        unique_id: hallway_light
-        friendly_name: Hallway Light
-        value_template: >
+      - unique_id: light.hallway
+        default_entity_id: light.hallway
+        name: Hallway Light
+        icon: bha:ceiling-lamp
+        state: >
           {{ is_state('switch.hallway_light_switch_right', 'on') }}
-        availability_template: >
+        availability: >
           {{ states('switch.hallway_light_switch_right') in ['on', 'off'] }}
-        icon_template: bha:ceiling-lamp
         turn_on:
-          - service: switch.turn_on
+          - action: switch.turn_on
             entity_id: switch.hallway_light_switch_right
         turn_off:
-          - service: switch.turn_off
+          - action: switch.turn_off
             entity_id: switch.hallway_light_switch_right

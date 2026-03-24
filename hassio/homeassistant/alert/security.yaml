@@ -12,7 +12,8 @@ automation:
         entity_id: lock.front_door
         state: unlocked
     action:
-      - service: notify.dextor
+      - action: notify.send_message
+        entity_id: notify.dextor
         data:
           message: 🔑 Никого нет дома, а дверь не закрыта. Страшно?
 
@@ -35,9 +36,10 @@ automation:
           {{ (now() - state_attr('automation.motion_alarm_no_one_home',
                                   'last_triggered')|default(now() - timedelta(days=1), true)).total_seconds() > 600 }}
     action:
-      - service: notify.dextor
+      - action: notify.send_message
         data:
-          message: 👮 Движение дома, хотя там никого нет? Нас грабют! Ну или кормят котиков.
+          entity_id: notify.dextor
+          message: 👮 Движение дома, хотя там никого нет? Нас грабют!
 
   - id: front_door_opened_alert
     alias: 'Front Door: Opened alert'
@@ -92,6 +94,7 @@ automation:
         for:
           hours: 6
     action:
-      - service: notify.dextor
+      - action: notify.send_message
         data:
+          entity_id: notify.dextor
           message: 🔑 Дверь на крыльцо долго открыта. Это вообще нормально?!

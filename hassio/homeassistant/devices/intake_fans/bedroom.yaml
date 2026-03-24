@@ -118,6 +118,27 @@ template:
 
         {{ min(v, 6) }}
 
+  switch:
+    - unique_id: switch.bedroom_airing
+      name: Bedroom Airing
+      icon: mdi:hair-dryer-outline
+      state: >
+        {{
+          is_state('input_boolean.bedroom_airing_cold', 'on') or
+          is_state('input_boolean.bedroom_airing_warm', 'on')
+        }}
+      turn_on:
+        - service: input_boolean.turn_on
+          target:
+            entity_id: input_boolean.bedroom_airing_cold
+      turn_off:
+        - service: input_boolean.turn_off
+          target:
+            entity_id:
+              - input_boolean.bedroom_airing_cold
+              - input_boolean.bedroom_airing_warm
+
+
 automation:
   - id: bedroom_intake_fan_update
     alias: 'Bedroom Intake Fan: Update'
@@ -217,26 +238,3 @@ automation:
         data_template:
           entity_id: >
             {{ trigger.from_state.entity_id }}
-
-switch:
-  - platform: template
-    switches:
-      bedroom_airing:
-        unique_id: switch.bedroom_airing
-        friendly_name: Bedroom Airing
-        icon_template: mdi:hair-dryer-outline
-        value_template: >
-          {{
-            is_state('input_boolean.bedroom_airing_cold', 'on') or
-            is_state('input_boolean.bedroom_airing_warm', 'on')
-          }}
-        turn_on:
-          - service: input_boolean.turn_on
-            target:
-              entity_id: input_boolean.bedroom_airing_cold
-        turn_off:
-          - service: input_boolean.turn_off
-            target:
-              entity_id:
-                - input_boolean.bedroom_airing_cold
-                - input_boolean.bedroom_airing_warm

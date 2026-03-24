@@ -14,7 +14,8 @@ automation:
              trigger.event.data.new_state.state and
              trigger.event.data.new_state.state not in ['unavailable', 'unknown'] }}
     action:
-      - service: notify.dextor
+      - action: notify.send_message
         data:
+          entity_id: notify.dextor
           message: >
             😨 Ошибки в бризере {{ trigger.event.data.new_state.entity_id }}: <b>{{ trigger.event.data.new_state.state }}</b>

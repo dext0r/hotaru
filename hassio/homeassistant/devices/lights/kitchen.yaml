@@ -145,39 +145,39 @@ automation:
       - service: light.turn_off
         entity_id: group.kitchen_lights
 
-light:
-  - platform: template
-    lights:
-      kitchen_main:
-        unique_id: kitchen_main_light
-        friendly_name: Kitchen Main Light
-        value_template: >
+template:
+  - light:
+      - unique_id: kitchen_main_light
+        default_entity_id: light.kitchen_main
+        name: Kitchen Main Light
+        icon: bha:ceiling-lamp
+        state: >
           {{ is_state('switch.kitchen_light_switch_right', 'on') }}
-        availability_template: >
+        availability: >
           {{ states('switch.kitchen_light_switch_right') in ['on', 'off'] }}
-        icon_template: bha:ceiling-lamp
         turn_on:
-          - service: switch.turn_on
+          - action: switch.turn_on
             entity_id: switch.kitchen_light_switch_right
         turn_off:
-          - service: switch.turn_off
+          - action: switch.turn_off
             entity_id: switch.kitchen_light_switch_right
 
-      kitchen_mood:
-        unique_id: kitchen_mood_light
-        friendly_name: Kitchen Mood Light
-        value_template: >
+      - unique_id: kitchen_mood_light
+        default_entity_id: light.kitchen_mood
+        name: Kitchen Mood Light
+        icon: bha:dome-light
+        state: >
           {{ is_state('switch.kitchen_light_switch_left', 'on') }}
-        availability_template: >
+        availability: >
           {{ states('switch.kitchen_light_switch_left') in ['on', 'off'] }}
-        icon_template: bha:dome-light
         turn_on:
-          - service: switch.turn_on
+          - action: switch.turn_on
             entity_id: switch.kitchen_light_switch_left
         turn_off:
-          - service: switch.turn_off
+          - action: switch.turn_off
             entity_id: switch.kitchen_light_switch_left
 
+light:
   - platform: group
     unique_id: light.kitchen_worktop
     name: Kitchen Worktop Light

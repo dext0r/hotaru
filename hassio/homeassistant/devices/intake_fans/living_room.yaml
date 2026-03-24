@@ -125,6 +125,35 @@ template:
 
         {{ v }}
 
+  switch:
+    - unique_id: switch.living_room_airing
+      name: Living Room Airing
+      icon: mdi:hair-dryer-outline
+      state: >
+        {{
+          is_state('input_boolean.living_room_airing_cold', 'on') or
+          is_state('input_boolean.living_room_airing_warm', 'on')
+        }}
+      turn_on:
+        - if:
+            - condition: numeric_state
+              entity_id: sensor.living_room_temperature
+              above: 24.7
+          then:
+            - action: input_boolean.turn_on
+              target:
+                entity_id: input_boolean.living_room_airing_cold
+          else:
+            - action: input_boolean.turn_on
+              target:
+                entity_id: input_boolean.living_room_airing_warm
+      turn_off:
+        - action: input_boolean.turn_off
+          target:
+            entity_id:
+              - input_boolean.living_room_airing_cold
+              - input_boolean.living_room_airing_warm
+
 automation:
   - id: living_room_intake_fan_restore_circulation
     alias: 'Living Room Intake Fan: Restore circulation'
@@ -270,35 +299,3 @@ automation:
         data_template:
           entity_id: >
             {{ trigger.from_state.entity_id }}
-
-switch:
-  - platform: template
-    switches:
-      living_room_airing:
-        unique_id: switch.living_room_airing
-        friendly_name: Living Room Airing
-        icon_template: mdi:hair-dryer-outline
-        value_template: >
-          {{
-            is_state('input_boolean.living_room_airing_cold', 'on') or
-            is_state('input_boolean.living_room_airing_warm', 'on')
-          }}
-        turn_on:
-          - if:
-              - condition: numeric_state
-                entity_id: sensor.living_room_temperature
-                above: 24.7
-            then:
-              - service: input_boolean.turn_on
-                target:
-                  entity_id: input_boolean.living_room_airing_cold
-            else:
-              - service: input_boolean.turn_on
-                target:
-                  entity_id: input_boolean.living_room_airing_warm
-        turn_off:
-          - service: input_boolean.turn_off
-            target:
-              entity_id:
-                - input_boolean.living_room_airing_cold
-                - input_boolean.living_room_airing_warm

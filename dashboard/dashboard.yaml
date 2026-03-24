@@ -40,7 +40,10 @@ views:
               {% elif state == 'Vacation' %}
               mdi:airplane
               {% endif %}
-            icon_color: |-
+            entity: input_select.home_mode
+            tap_action:
+              action: more-info
+            color: |-
               {% set state = states('input_select.home_mode') %}
 
               {% if state == 'Day' %}
@@ -50,11 +53,8 @@ views:
               {% elif state == 'Vacation' %}
               blue-grey
               {% endif %}
-            entity: input_select.home_mode
-            layout: horizontal
-            tap_action:
-              action: more-info
-          - type: custom:mushroom-template-card
+            features_position: bottom
+          - type: custom:mushroom-legacy-template-card
             primary: Door
             secondary: ''
             icon: |
@@ -89,7 +89,7 @@ views:
               var(--rgb-state-cover-closed)
               {% endif %}
             layout: horizontal
-          - type: custom:mushroom-template-card
+          - type: custom:mushroom-legacy-template-card
             primary: Porch
             secondary: ''
             icon: |
@@ -812,7 +812,7 @@ views:
               - type: tile
                 entity: light.hallway_path
                 name: Hallway Path
-              - type: custom:mushroom-template-card
+              - type: custom:mushroom-legacy-template-card
                 primary: Porch
                 secondary: ''
                 icon: |
@@ -1714,7 +1714,7 @@ views:
           - type: custom:stack-in-card
             mode: horizontal
             cards:
-              - type: custom:mushroom-template-card
+              - type: custom:mushroom-legacy-template-card
                 primary: LR Heater
                 secondary: >-
                   {{ states('switch.living_room_heater')|capitalize }}
@@ -3049,7 +3049,7 @@ views:
             columns: 2
             type: grid
             cards:
-              - type: custom:mushroom-template-card
+              - type: custom:mushroom-legacy-template-card
                 primary: Dishwasher
                 secondary: >-
                   {{ states('switch.dishwasher_socket')|capitalize }}
@@ -3070,29 +3070,7 @@ views:
                   {% endif %}
                 tap_action:
                   action: more-info
-              - type: custom:mushroom-template-card
-                primary: Living Room Heater
-                secondary: >-
-                  {{ states('switch.living_room_heater_socket')|capitalize }}
-
-                  {% if not is_state('sensor.living_room_heater_socket_power',
-                  'unavailable') %}
-                    | {{ states('sensor.living_room_heater_socket_power') }} W
-                  {% endif %}
-                icon: mdi:radiator
-                entity: switch.living_room_heater_socket
-                icon_color: >-
-                  {% if is_state('switch.living_room_heater_socket',
-                  'unavailable') %}
-                    var(--rgb-disabled)
-                  {% elif is_state('switch.living_room_heater_socket', 'on') %}
-                    var(--rgb-state-entity)
-                  {% else %}
-                    var(--rgb-grey)
-                  {% endif %}
-                tap_action:
-                  action: more-info
-              - type: custom:mushroom-template-card
+              - type: custom:mushroom-legacy-template-card
                 primary: Washing Machine
                 secondary: >-
                   {{ states('switch.washing_machine_socket')|capitalize }}
@@ -3114,7 +3092,7 @@ views:
                   {% endif %}
                 tap_action:
                   action: more-info
-              - type: custom:mushroom-template-card
+              - type: custom:mushroom-legacy-template-card
                 primary: Dryer
                 secondary: |-
                   {{ states('switch.dryer_socket')|capitalize }}
@@ -3133,7 +3111,7 @@ views:
                   {% endif %}
                 tap_action:
                   action: more-info
-              - type: custom:mushroom-template-card
+              - type: custom:mushroom-legacy-template-card
                 primary: Ironing Board
                 secondary: >-
                   {{ states('switch.ironing_board_socket')|capitalize }}
@@ -3155,7 +3133,7 @@ views:
                   {% endif %}
                 tap_action:
                   action: more-info
-              - type: custom:mushroom-template-card
+              - type: custom:mushroom-legacy-template-card
                 primary: Water Heater
                 secondary: >-
                   {{ states('switch.water_heater_socket')|capitalize }}
@@ -3176,7 +3154,7 @@ views:
                   {% endif %}
                 tap_action:
                   action: more-info
-              - type: custom:mushroom-template-card
+              - type: custom:mushroom-legacy-template-card
                 primary: Scooter Charger
                 secondary: >-
                   {{ states('switch.scooter_charger_socket')|capitalize }}

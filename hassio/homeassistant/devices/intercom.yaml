@@ -10,8 +10,9 @@ automation:
         entity_id: input_select.home_mode
         state: Night
     action:
-      - service: notify.dextor
+      - action: notify.send_message
         data:
+          entity_id: notify.dextor
           message: 🐷 Кто-то ломится в дверь когда все спят. Может курьер?
 
   - id: intercom_unexpected_ring
@@ -33,8 +34,9 @@ automation:
           - binary_sensor.anyone_near_home
         state: 'off'
     action:
-      - service: notify.dextor
+      - action: notify.send_message
         data:
+          entity_id: notify.dextor
           message: 🐷 Кто-то ломится в дверь когда никого нет дома
 
   - id: intercom_mode_update

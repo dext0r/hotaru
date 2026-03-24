@@ -6,8 +6,9 @@ automation:
         entity_id: binary_sensor.doorbell_ringing
         to: 'on'
     action:
-      - service: notify.dextor
+      - action: notify.send_message
         data:
+          entity_id: notify.dextor
           message: 🔔 Динг-донг, кто-то звонит в дверь
 
   - id: doorbell_mode_update

@@ -134,30 +134,31 @@ automation:
           - service: lock.lock
             entity_id: lock.porch_door
 
-lock:
-  - platform: template
-    unique_id: lock.front_door_vacation
-    name: Front Door Vacation
-    value_template: >
-      {{ is_state('binary_sensor.front_door_vacation_lock_contact', 'off') }}
-    availability_template: >
-      {{ states('binary_sensor.front_door_vacation_lock_contact') in ['on', 'off'] }}
-    lock:
-      service: none.none
-    unlock:
-      service: none.none
+template:
+  - lock:
+      - unique_id: lock.front_door_vacation
+        default_entity_id: lock.front_door_vacation
+        name: Front Door Vacation
+        state: >
+          {{ is_state('binary_sensor.front_door_vacation_lock_contact', 'off') }}
+        availability: >
+          {{ states('binary_sensor.front_door_vacation_lock_contact') in ['on', 'off'] }}
+        lock:
+          action: none.none
+        unlock:
+          action: none.none
 
-  - platform: template
-    unique_id: lock.front_door
-    name: Front Door
-    value_template: >
-      {{ is_state('binary_sensor.front_door_lock_contact', 'off') }}
-    availability_template: >
-      {{ states('binary_sensor.front_door_lock_contact') in ['on', 'off'] }}
-    lock:
-      service: script.front_door_lock
-    unlock:
-      service: script.front_door_unlock
+      - unique_id: lock.front_door
+        default_entity_id: lock.front_door
+        name: Front Door
+        state: >
+          {{ is_state('binary_sensor.front_door_lock_contact', 'off') }}
+        availability: >
+          {{ states('binary_sensor.front_door_lock_contact') in ['on', 'off'] }}
+        lock:
+          action: script.front_door_lock
+        unlock:
+          action: script.front_door_unlock
 
 script:
   porch_lock_light_flash:
@@ -210,8 +211,9 @@ script:
             entity_id: lock.front_door
             state: locked
         then:
-          - service: notify.dextor
+          - action: notify.send_message
             data:
+              entity_id: notify.dextor
               message: 🪚 Замок не смог открыться :(
 
   front_door_lock:
@@ -237,8 +239,9 @@ script:
             entity_id: lock.front_door
             state: unlocked
         then:
-          - service: notify.dextor
+          - action: notify.send_message
             data:
+              entity_id: notify.dextor
               message: 🪚 Замок не смог закрыться :(
 
 timer:

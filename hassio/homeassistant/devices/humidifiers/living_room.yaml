@@ -242,8 +242,9 @@ automation:
                 Обнаружена протечка {{ state_attr(trigger.from_state.entity_id, 'alert_text')|default('', True) }}.
                 Повторяю. Обнаружена протечка!
 
-      - service: notify.dextor
+      - action: notify.send_message
         data:
+          entity_id: notify.dextor
           message: >
             🚨 Обнаружена протечка {{ state_attr(trigger.from_state.entity_id, 'alert_text')|default('', True) }}
         continue_on_error: true
@@ -313,7 +314,8 @@ automation:
       - delay:
           seconds: 1
 
-      - service: notify.dextor
+      - action: notify.send_message
         data:
+          entity_id: notify.dextor
           message: >
             🌊 Что-то не так с доливом в увлажнитель: {{ states('sensor.living_room_humidifier_water_tank_state') }}

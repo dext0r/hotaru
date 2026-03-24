@@ -185,15 +185,12 @@ sensor:
     round: 2
     method: left
 
-switch:
-  - platform: template
-    switches:
-      bedroom_ac_display:
-        unique_id: switch.bedroom_ac_display
-        friendly_name: 'Bedroom AC: Display'
-        value_template: >
+  - switch:
+      - unique_id: switch.bedroom_ac_display
+        name: 'Bedroom AC: Display'
+        icon: mdi:camera-control
+        state: >
           {{ is_state('input_boolean.bedroom_ac_display', 'on') }}
-        icon_template: mdi:camera-control
         turn_on:
           - if:
               - condition: state
@@ -204,17 +201,17 @@ switch:
                   - heat
                   - dry
             then:
-              - service: input_boolean.turn_on
+              - action: input_boolean.turn_on
                 entity_id: input_boolean.bedroom_ac_display
 
-              - service: button.press
+              - action: button.press
                 entity_id: button.bedroom_ac_display_toggle
         turn_off:
           parallel:
-            - service: input_boolean.turn_off
+            - action: input_boolean.turn_off
               entity_id: input_boolean.bedroom_ac_display
 
-            - service: button.press
+            - action: button.press
               entity_id: button.bedroom_ac_display_toggle
 
 input_boolean:

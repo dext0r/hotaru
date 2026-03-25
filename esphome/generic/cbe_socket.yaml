@@ -1,5 +1,6 @@
 packages:
   base: !include ../common/esp8266.yaml
+  energy: !include ../common/energy.yaml
 
 substitutions:
   relay_restore_mode: ALWAYS_OFF
@@ -57,15 +58,12 @@ sensor:
         - lambda: |-
             if (x < 1.5) return 0;
             return x - 1.5;
-
-  - platform: total_daily_energy
-    name: $device_name Energy
-    device_class: energy
-    unit_of_measurement: kWh
-    accuracy_decimals: 2
-    power_id: power
-    filters:
-      - multiply: 0.001
+        - round: 0
+        - timeout: 15s
+      on_value:
+        - sensor.template.publish:
+            id: power_adj
+            state: !lambda return x;
 
 status_led:
   pin:

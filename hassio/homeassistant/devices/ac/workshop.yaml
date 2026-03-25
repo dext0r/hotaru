@@ -106,7 +106,7 @@ template:
             {% set power = 0 %}
           {% endif %}
 
-          {{ [0, power]|max }}
+          {{ [0, power]|max|round }}
         availability: >
           {{ states('climate.workshop_ac') not in ['unknown', 'unavailable'] }}
         state_class: measurement
@@ -120,4 +120,6 @@ sensor:
     source: sensor.workshop_ac_power
     unit_prefix: k
     round: 2
-    method: left
+    method: trapezoidal
+    max_sub_interval:
+      seconds: 10

@@ -296,77 +296,50 @@ sensor:
   - platform: total_daily_energy
     name: Stove Power Supply Energy
     unit_of_measurement: kWh
-    accuracy_decimals: 2
+    accuracy_decimals: 1
     power_id: input1_power
     filters:
       - multiply: 0.001
+      - throttle: 10min
 
   # Розетки кухня
   - platform: pzemac
     address: 5
-    current:
-      name: Kitchen Power Supply Current
-      internal: true
-    voltage:
-      id: home_power_supply_voltage
-      name: Kitchen Power Supply Voltage
-      internal: true
-    energy:
+    update_interval: 5s
+    energy: &pzem_energy
       name: Kitchen Power Supply Energy
-    power:
+      accuracy_decimals: 1
+      filters:
+        - throttle: 10min
+
+    power: &pzem_power
       name: Kitchen Power Supply Power
       accuracy_decimals: 0
-    power_factor:
-      name: Kitchen Power Supply Power Factor
-      internal: true
-    frequency:
-      name: Kitchen Power Supply Frequency
-      internal: true
-    update_interval: 5s
+      filters:
+        - round: 0
+        - timeout: 15s
 
   # Розетки ванная / Климат Спальня-Мастерская
   - platform: pzemac
     address: 6
-    current:
-      name: CB Power Supply Current
-      internal: true
-    voltage:
-      name: CB Power Supply Voltage
-      internal: true
+    update_interval: 5s
     energy:
       name: CB Power Supply Energy
+      <<: *pzem_energy
     power:
       name: CB Power Supply Power
-      accuracy_decimals: 0
-    power_factor:
-      name: CB Power Supply Power Factor
-      internal: true
-    frequency:
-      name: CB Power Supply Frequency
-      internal: true
-    update_interval: 5s
+      <<: *pzem_power
 
   # Розетки комнаты
   - platform: pzemac
     address: 7
-    current:
-      name: Sockets Power Supply Current
-      internal: true
-    voltage:
-      name: Sockets Power Supply Voltage
-      internal: true
+    update_interval: 5s
     energy:
       name: Sockets Power Supply Energy
+      <<: *pzem_energy
     power:
       name: Sockets Power Supply Power
-      accuracy_decimals: 0
-    power_factor:
-      name: Sockets Power Supply Power Factor
-      internal: true
-    frequency:
-      name: Sockets Power Supply Frequency
-      internal: true
-    update_interval: 5s
+      <<: *pzem_power
 
 binary_sensor:
   - id: intercom_ring

@@ -1,0 +1,38 @@
+# Костыль для доставки нулевой мощности в total_daily_energy при отвале (NaN) датчика мощности.
+# Без костыля TDE может неправильно насчитать потребление, если мощность держалась в NaN какое-то время,
+# а потом снова стала нормальной.
+#
+# Проблема кроется тут: https://github.com/esphome/esphome/blob/5a984b54cfce79fbd6ad93365cf8ccc148942d6f/esphome/components/total_daily_energy/total_daily_energy.cpp#L52
+# Пример: 11:59:00/100W 12:00:00/NaN 18:00:00/200W
+# В этом примере будет посчитано 150W*6 часов=900Wh (для метода trapezoid).
+# По-хорошему нужно отправить баг репорт в esphome, но мне пока лень :)
+
+sensor:
+  - id: power_adj
+    name: Power Adjusted
+    platform: template
+    internal: true
+    update_interval: never
+    unit_of_measurement: W
+    accuracy_decimals: 0
+    filters:
+      - clamp:
+          min_value: 0
+
+  - platform: total_daily_energy
+    name: Energy
+    unit_of_measurement: kWh
+    accuracy_decimals: 2
+    power_id: power_adj
+    method: trapezoid
+    filters:
+      - multiply: 0.001
+      - throttle: 10min
+
+interval:
+  - interval: 10s
+    then:
+      - lambda: |-
+            if (std::isnan(id(power).state)) {
+                id(power_adj).publish_state(0);
+            }

@@ -1,3 +1,4 @@
+# TODO: подкрутить после переход на PZEM
 automation:
   - id: stove_status_update
     alias: Stove Status Update
@@ -44,7 +45,9 @@ sensor:
     source: sensor.kitchen_stove_power
     unit_prefix: k
     round: 2
-    method: left
+    method: trapezoidal
+    max_sub_interval:
+      seconds: 5
 
 timer:
   stove_running:

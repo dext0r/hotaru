@@ -90,16 +90,22 @@ template:
       - name: Living Room Heater Power
         unique_id: sensor.living_room_heater_power
         state: >
-          {% set power = 0 %}
-          {% if is_state('switch.living_room_heater_socket', 'on') %}
-            {% set power = states('sensor.living_room_heater_socket_power')|int(0) %}
-          {% else %} {# fallback #}
-            {% if is_state('switch.living_room_heater', 'on') %}
-              {% if states('sensor.sockets_power_supply_power')|int(0) -
-                    states('sensor.living_room_intake_fan_heater_power')|int(0) > 1000 %}
-                {% set power = 1500 + range(1, 9)|random %}
+          {% set power = None %}
+          {% if is_state('switch.living_room_heater', 'on') %}
+            {% if is_state('switch.living_room_heater_socket', 'on') %}
+              {% set power = states('sensor.living_room_heater_socket_power') | int(None) %}
+            {% endif %}
+
+            {% if power is none %}
+              {# очень условный подсчёт, если не удалось получить данные с розетки #}
+              {% set power = 0 %}
+              {% if states('sensor.sockets_power_supply_power') | int(0) -
+                    states('sensor.living_room_intake_fan_heater_power') | int(0) > 1000 %}
+                {% set power = 1400 %}
               {% endif %}
             {% endif %}
+          {% else %}
+            {% set power = 0 %}
           {% endif %}
 
           {{ power }}
@@ -114,4 +120,6 @@ sensor:
     source: sensor.living_room_heater_power
     unit_prefix: k
     round: 2
-    method: left
+    method: trapezoidal
+    max_sub_interval:
+      seconds: 10

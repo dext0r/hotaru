@@ -169,21 +169,12 @@ template:
             {% set power = 0 %}
           {% endif %}
 
-          {{ [0, power]|max }}
+          {{ [0, power]|max|round }}
         availability: >
           {{ states('climate.bedroom_ac') not in ['unknown', 'unavailable'] }}
         state_class: measurement
         unit_of_measurement: W
         device_class: power
-
-sensor:
-  - platform: integration
-    unique_id: sensor.bedroom_ac_energy
-    name: Bedroom AC Energy
-    source: sensor.bedroom_ac_power
-    unit_prefix: k
-    round: 2
-    method: left
 
   - switch:
       - unique_id: switch.bedroom_ac_display
@@ -213,6 +204,17 @@ sensor:
 
             - action: button.press
               entity_id: button.bedroom_ac_display_toggle
+
+sensor:
+  - platform: integration
+    unique_id: sensor.bedroom_ac_energy
+    name: Bedroom AC Energy
+    source: sensor.bedroom_ac_power
+    unit_prefix: k
+    round: 2
+    method: trapezoidal
+    max_sub_interval:
+      seconds: 10
 
 input_boolean:
   bedroom_ac_display:

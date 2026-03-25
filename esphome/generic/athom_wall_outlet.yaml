@@ -1,10 +1,12 @@
 # https://github.com/athom-tech/athom-configs/blob/main/athom-wall-outlet.yaml
 packages:
   base: !include ../common/esp8266.yaml
+  energy: !include ../common/energy.yaml
 
 substitutions:
   relay_restore_mode: ALWAYS_OFF
-  update_interval: 10s
+  update_interval: 5s
+  nan_timeout: 15s
 
 esphome:
   name: athom-wall-outlet
@@ -56,18 +58,16 @@ sensor:
       name: Power
       accuracy_decimals: 0
       filters:
-        - throttle_average: ${update_interval}
         - lambda: |-
             if (x < 3.0) return 0;
             return x;
-
-  - platform: total_daily_energy
-    name: $device_name Energy
-    unit_of_measurement: kWh
-    accuracy_decimals: 2
-    power_id: power
-    filters:
-      - multiply: 0.001
+        - throttle_average: ${update_interval}
+        - round: 0
+        - timeout: ${nan_timeout}
+      on_value:
+        - sensor.template.publish:
+            id: power_adj
+            state: !lambda return x;
 
 light:
   - id: button_led

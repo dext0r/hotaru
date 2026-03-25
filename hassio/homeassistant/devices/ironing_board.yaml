@@ -196,3 +196,6 @@ sensor:
     source: sensor.ironing_board_socket_power
     unit_prefix: k
     round: 2
+    method: trapezoidal
+    max_sub_interval:
+      seconds: 5

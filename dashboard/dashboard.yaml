@@ -1791,6 +1791,7 @@ views:
                   power:
                     icon: mdi:flash
                     unit: W
+                    round: 0
                     tap_action:
                       action: more-info
                     source:
@@ -1869,6 +1870,7 @@ views:
                   power:
                     icon: mdi:flash
                     unit: W
+                    round: 0
                     tap_action:
                       action: more-info
                     source:
@@ -1947,6 +1949,7 @@ views:
                   power:
                     icon: mdi:flash
                     unit: W
+                    round: 0
                     tap_action:
                       action: more-info
                     source:
@@ -3098,7 +3101,7 @@ views:
 
                   {% if not is_state('sensor.washing_machine_power',
                   'unavailable') %}
-                    | {{ states('sensor.washing_machine_power') }} W
+                    | {{ states('sensor.washing_machine_power') | int }} W
                   {% endif %}
                 icon: mdi:washing-machine
                 entity: switch.washing_machine_socket
@@ -3121,7 +3124,7 @@ views:
                     | {{ states('sensor.dryer_power') }} W
                   {% endif %}
                 icon: mdi:tumble-dryer
-                entity: Dryer Socker
+                entity: switch.dryer_socket
                 icon_color: |-
                   {% if is_state('switch.dryer_socket', 'unavailable') %}
                     var(--rgb-disabled)
@@ -3139,7 +3142,7 @@ views:
 
                   {% if not is_state('sensor.ironing_board_socket',
                   'unavailable') %}
-                    | {{ states('sensor.ironing_board_socket_power') }} W
+                    | {{ states('sensor.ironing_board_socket_power') | int }} W
                   {% endif %}
                 icon: mdi:iron-board
                 entity: switch.ironing_board_socket
@@ -3161,7 +3164,7 @@ views:
 
                   {% if not is_state('sensor.water_heater_power', 'unavailable')
                   %}
-                    | {{ states('sensor.water_heater_power') }} W
+                    | {{ states('sensor.water_heater_power') | int }} W
                   {% endif %}
                 icon: mdi:water-boiler
                 entity: switch.water_heater_socket

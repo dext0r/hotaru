@@ -1,0 +1,113 @@
+automation:
+  - id: sensor_unknown_alert
+    alias: Sensor unknown alert
+    mode: single
+    max_exceeded: silent
+    trigger:
+      - platform: event
+        event_type: state_changed
+    condition:
+      - condition: state
+        entity_id: input_select.home_mode
+        state:
+          - Day
+          - Night
+
+      - and:
+          - condition: template
+            value_template: >
+              {{ trigger.event.data.new_state and
+                 trigger.event.data.new_state.state == 'unknown' and
+                 trigger.event.data.new_state.attributes.get('state_class') == 'measurement' }}
+
+          - condition: template
+            value_template: >
+              {{ (now() - state_attr('automation.sensor_unknown_alert',
+                                      'last_triggered')|default(now() - timedelta(days=1), true)).total_seconds() > 1800 }}
+    action:
+      - delay:
+          minutes: 10
+
+      - condition: template
+        value_template: >
+          {% set ns = namespace(break = false) %}
+          {%- for entity in states if entity.state == 'unknown' and
+                                      entity.attributes.get('state_class') == 'measurement' and
+                                      entity.entity_id and ns.break == false -%}
+            {%- if (now() - entity.last_changed).total_seconds() > 180 and
+                    not is_state_attr(entity.entity_id, 'volatile', true) and
+                    not is_state_attr(entity.entity_id, 'restored', true) -%}
+              {%- set ns.break = true -%}
+              true
+            {%- endif -%}
+          {%- endfor %}
+
+      - action: notify.send_message
+        data:
+          entity_id: notify.dextor
+          message: >
+            ⚠️ <b>Некоторые датчики недоступны:</b>{{ '\n' }}
+            {%- for entity in states if entity.state == 'unknown' and
+                                        entity.attributes.get('state_class') == 'measurement' and
+                                        not is_state_attr(entity.entity_id, 'volatile', true) and
+                                        not is_state_attr(entity.entity_id, 'restored', true) -%}
+            * {{ entity.name }}: {{ entity.last_changed|relative_time }}{{ '\n' }}
+            {%- endfor -%}
+
+  - id: sensor_unknown_log
+    alias: Sensor unknown log
+    mode: parallel
+    max_exceeded: silent
+    trigger:
+      - platform: event
+        event_type: state_changed
+    condition:
+      - condition: template
+        value_template: >
+          {{ trigger.event.data.new_state and
+             trigger.event.data.new_state.state == 'unknown' and
+             trigger.event.data.new_state.attributes.get('state_class') == 'measurement' }}
+    action:
+      - service: notify.send_message
+        data:
+          entity_id: notify.debug
+          message: 'Sensor unknown: {{ trigger.event.data.new_state.entity_id }}'
+
+  - id: frozen_sensor_alert
+    alias: Frozen sensor alert
+    triggers:
+      - trigger: time
+        at: '12:00'
+      - trigger: time
+        at: '21:00'
+    conditions:
+      - condition: template
+        value_template: >
+          {%- set ns = namespace(break = false) -%}
+          {%- for entity in states if entity.attributes.get('device_class') in ('temperature', 'humidity', 'carbon_dioxide', 'power') and ns.break == false -%}
+          {%- if (now() - entity.last_updated).total_seconds() > 6 * 60 * 60 and
+                  not set(entity.entity_id.split('_')).intersection(['target']) and
+                  not is_state_attr(entity.entity_id, 'sporadic', true) -%}
+            {%- set ns.break = true -%}
+            true
+          {%- endif -%}
+          {%- endfor -%}
+
+      - condition: state
+        entity_id: input_select.home_mode
+        state:
+          - Day
+          - Night
+    actions:
+      - action: notify.send_message
+        data:
+          entity_id: notify.dextor
+          message: >
+            📉 <b>Давно не обновлялись датчики:</b>{{ '\n' }}
+            {%- for entity in states if entity.attributes.get('device_class') in ('temperature', 'humidity', 'carbon_dioxide', 'power') -%}
+            {%- if (now() - entity.last_updated).total_seconds() > 6 * 60 * 60 and
+                    not set(entity.entity_id.split('_')).intersection(['target']) and
+                    not is_state_attr(entity.entity_id, 'sporadic', true) -%}
+            * {{ entity.name }}: {{ entity.last_updated.strftime('%d.%m.%Y %H:%M') }} {{ '\n' }}
+            {%- endif -%}
+            {%- endfor -%}

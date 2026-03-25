@@ -1,0 +1,67 @@
+diff --git a/components/api/api_connection.cpp b/components/api/api_connection.cpp
+index b388bf5..eaf937d 100644
+--- a/components/api/api_connection.cpp
++++ b/components/api/api_connection.cpp
+@@ -1581,12 +1581,20 @@ bool APIConnection::send_device_info_response_() {
+ #undef ESPHOME_MANUFACTURER
+ 
+ #ifdef USE_ESP8266
++  #ifdef ESPHOME_DEVICE_MODEL
++  static const char MODEL_PROGMEM[] PROGMEM = ESPHOME_DEVICE_MODEL;
++  #else
+   static const char MODEL_PROGMEM[] PROGMEM = ESPHOME_BOARD;
++  #endif
+   char model_buf[sizeof(MODEL_PROGMEM)];
+   memcpy_P(model_buf, MODEL_PROGMEM, sizeof(MODEL_PROGMEM));
+   resp.model = StringRef(model_buf, sizeof(MODEL_PROGMEM) - 1);
++#else
++#ifdef ESPHOME_DEVICE_MODEL
++  static constexpr auto MODEL = StringRef::from_lit(ESPHOME_DEVICE_MODEL);
+ #else
+   static constexpr auto MODEL = StringRef::from_lit(ESPHOME_BOARD);
++#endif
+   resp.model = MODEL;
+ #endif
+ #ifdef USE_DEEP_SLEEP
+diff --git a/core/config.py b/core/config.py
+index 21ed8ce..95801b4 100644
+--- a/core/config.py
++++ b/core/config.py
+@@ -24,6 +24,7 @@ from esphome.const import (
+     CONF_INCLUDES,
+     CONF_INCLUDES_C,
+     CONF_LIBRARIES,
++    CONF_MODEL,
+     CONF_MIN_VERSION,
+     CONF_NAME,
+     CONF_NAME_ADD_MAC_SUFFIX,
+@@ -269,6 +270,7 @@ CONFIG_SCHEMA = cv.All(
+                     ),
+                 }
+             ),
++            cv.Optional(CONF_MODEL): cv.string,
+             cv.Optional(CONF_MIN_VERSION, default=ESPHOME_VERSION): cv.All(
+                 cv.version_number, cv.validate_esphome_version
+             ),
+@@ -586,6 +588,9 @@ async def to_code(config: ConfigType) -> None:
+                 trigger, [(cg.std_string, "version")], conf
+             )
+ 
++    if CONF_MODEL in config:
++        cg.add_define("ESPHOME_DEVICE_MODEL", config[CONF_MODEL])
++
+     if config[CONF_PLATFORMIO_OPTIONS]:
+         CORE.add_job(_add_platformio_options, config[CONF_PLATFORMIO_OPTIONS])
+ 
+diff --git a/core/defines.h b/core/defines.h
+index e7d5caf..674280d 100644
+--- a/core/defines.h
++++ b/core/defines.h
+@@ -9,6 +9,7 @@
+ 
+ // Informative flags
+ #define ESPHOME_BOARD "dummy_board"
++#define ESPHOME_DEVICE_MODEL "dummy model"
+ #define ESPHOME_PROJECT_NAME "dummy project"
+ #define ESPHOME_PROJECT_VERSION "v2"
+ #define ESPHOME_PROJECT_VERSION_30 "v2"

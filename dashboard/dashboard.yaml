@@ -1799,6 +1799,7 @@ views:
                   filter:
                     icon: mdi:filter-menu-outline
                     unit: d
+                    round: 0
                     source:
                       entity: sensor.bedroom_intake_fan_filter_time_left
                   no_response:
@@ -1878,6 +1879,7 @@ views:
                   filter:
                     icon: mdi:filter-menu-outline
                     unit: d
+                    round: 0
                     source:
                       entity: sensor.living_room_intake_fan_filter_time_left
                   no_response:
@@ -1957,6 +1959,7 @@ views:
                   filter:
                     icon: mdi:filter-menu-outline
                     unit: d
+                    round: 0
                     source:
                       entity: sensor.workshop_intake_fan_filter_time_left
                   no_response:

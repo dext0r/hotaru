@@ -28,16 +28,12 @@ esphome:
   model: Nelma5 / SmartIntercom / ESP32
   name_add_mac_suffix: false
   libraries:
-    - SPI
-    - FS
-    - WiFi
-    - WiFiClientSecure
-    - ESP8266Audio
-  includes:
-    - lib/intercom/ESPAudio.h
-    - lib/intercom/delivery.mp3.h
-    - lib/intercom/reject.mp3.h
-    - lib/intercom/guests.mp3.h
+    # Форк https://github.com/earlephilhower/ESP8266Audio#2.4.1
+    # Удалена часть файлов для минимизации зависимостей и ускорения сборки:
+    # AudioOutputSPIFFSWAV.cpp AudioFileSourceSPIFFS.h AudioFileSourceFS.cpp
+    # AudioFileSourceICYStream.cpp AudioFileSourceHTTPStream.cpp AudioFileSourceHTTPStream.h
+    # AudioFileSourceICYStream.h AudioFileSourceSD.cpp AudioFileSourceSD.h
+    - ESP8266Audio=file://../../../lib/ESP8266Audio
   on_boot:
     priority: -100
     then:
@@ -54,9 +50,16 @@ uart:
   tx_pin: 10
   baud_rate: 9600
 
-custom_component:
-  - id: audio_player
-    lambda: 'return {new ESPAudio()};'
+audio:
+  id: player
+
+file:
+  - id: delivery_mp3
+    file: lib/intercom/delivery.mp3
+  - id: guests_mp3
+    file: lib/intercom/guests.mp3
+  - id: reject_mp3
+    file: lib/intercom/reject.mp3
 
 modbus:
 
@@ -191,14 +194,15 @@ script:
             - lambda: |-
                 switch (id(intercom_mode)) {
                   case 3:
-                    playData(audio_player, delivery_mp3);
+                    id(player).play_mp3_data(id(delivery_mp3), sizeof(id(delivery_mp3)));
                     break;
                   case 4:
-                    playData(audio_player, guests_mp3);
+                    id(player).play_mp3_data(id(guests_mp3), sizeof(id(guests_mp3)));
                     break;
                 }
             - wait_until:
-                lambda: 'return !isPlaying(audio_player);'
+                lambda: |-
+                  return !id(player).is_playing();
           else:
             - delay: $delay_before_open_door
       - output.turn_on: open_door
@@ -216,9 +220,11 @@ script:
       - lambda: 'id(intercom_status).publish_state("${intercom_status_call_rejected}");'
       - output.turn_off: phone_hanging
       - delay: $delay_before_voice
-      - lambda: 'playData(audio_player, reject_mp3);'
+      - lambda: |-
+          id(player).play_mp3_data(id(reject_mp3), sizeof(id(reject_mp3)));
       - wait_until:
-          lambda: 'return !isPlaying(audio_player);'
+          lambda: |-
+            return !id(player).is_playing();
       - output.turn_on: phone_hanging
 
 sensor:

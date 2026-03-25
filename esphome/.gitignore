@@ -2,3 +2,4 @@
 .esphome
 poetry.lock
 common/ld2410_debug*.yaml
+lib/ESP8266Audio

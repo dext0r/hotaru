@@ -3352,8 +3352,15 @@ views:
           type: entities
         filter:
           include:
-            - state: unavailable
-          exclude: []
+            - options: {}
+              state: unavailable
+            - options: {}
+              and:
+                - state: unknown
+                - not:
+                    domain: button
+                - not:
+                    domain: conversation
   - theme: Mushroom
     title: Media
     path: media

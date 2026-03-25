@@ -1,47 +1,21 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
-from esphome.components import(
-  ready4sky,
-  light,
-  number,
-  sensor,
-  switch,
-  text_sensor,
-)
-from esphome.const import (
-  CONF_ACCURACY_DECIMALS,
-  CONF_BEEPER,
-  CONF_DEFAULT_TRANSITION_LENGTH,
-  CONF_ENERGY,
-  CONF_ENTITY_CATEGORY,
-  CONF_GAMMA_CORRECT,
-  CONF_ICON,
-  CONF_ID,
-  CONF_MAC_ADDRESS,
-  CONF_MODE,
-  CONF_MODEL,
-  CONF_OUTPUT_ID,
-  CONF_POWER,
-  CONF_SIGNAL_STRENGTH,
-  CONF_TEMPERATURE,
-  CONF_UNIT_OF_MEASUREMENT,
-  DEVICE_CLASS_EMPTY,
-  DEVICE_CLASS_ENERGY,
-  DEVICE_CLASS_POWER,
-  DEVICE_CLASS_SIGNAL_STRENGTH,
-  DEVICE_CLASS_TEMPERATURE,
-  ENTITY_CATEGORY_CONFIG,
-  ENTITY_CATEGORY_DIAGNOSTIC,
-  ICON_BLUETOOTH,
-  ICON_COUNTER,
-  ICON_NEW_BOX,
-  STATE_CLASS_MEASUREMENT,
-  STATE_CLASS_TOTAL_INCREASING,
-  UNIT_CELSIUS,
-  UNIT_DECIBEL_MILLIWATT,
-  UNIT_EMPTY,
-  UNIT_KILOWATT_HOURS,
-)
+from esphome.components import (light, number, ready4sky, sensor, switch,
+                                text_sensor)
+from esphome.const import (CONF_ACCURACY_DECIMALS, CONF_BEEPER,
+                           CONF_DEFAULT_TRANSITION_LENGTH, CONF_ENERGY,
+                           CONF_ENTITY_CATEGORY, CONF_GAMMA_CORRECT, CONF_ICON,
+                           CONF_ID, CONF_MAC_ADDRESS, CONF_MODE, CONF_MODEL,
+                           CONF_OUTPUT_ID, CONF_POWER, CONF_SIGNAL_STRENGTH,
+                           CONF_TEMPERATURE, CONF_UNIT_OF_MEASUREMENT,
+                           DEVICE_CLASS_EMPTY, DEVICE_CLASS_ENERGY,
+                           DEVICE_CLASS_POWER, DEVICE_CLASS_SIGNAL_STRENGTH,
+                           DEVICE_CLASS_TEMPERATURE, ENTITY_CATEGORY_CONFIG,
+                           ENTITY_CATEGORY_DIAGNOSTIC, ICON_BLUETOOTH,
+                           ICON_COUNTER, ICON_NEW_BOX, STATE_CLASS_MEASUREMENT,
+                           STATE_CLASS_TOTAL_INCREASING, UNIT_CELSIUS,
+                           UNIT_DECIBEL_MILLIWATT, UNIT_EMPTY,
+                           UNIT_KILOWATT_HOURS)
 
 CODEOWNERS = ["@KomX"]
 DEPENDENCIES = ["ready4sky"]
@@ -169,7 +143,7 @@ CONFIG_SCHEMA = (
                 state_class=STATE_CLASS_MEASUREMENT,
                 unit_of_measurement="ml",
             ),
-            cv.Optional(CONF_STATUS_INDICATOR): text_sensor.TEXT_SENSOR_SCHEMA.extend(
+            cv.Optional(CONF_STATUS_INDICATOR): text_sensor.text_sensor_schema().extend(
               {
                 cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
                 cv.Optional(CONF_ICON, default=ICON_NEW_BOX): cv.icon,
@@ -194,9 +168,8 @@ CONFIG_SCHEMA = (
               SkyKettleBeeperSwitch,
               icon = "mdi:volume-high",
             ),
-            cv.Optional(CONF_TARGET_TEMP): number.NUMBER_SCHEMA.extend(
+            cv.Optional(CONF_TARGET_TEMP): number.number_schema(SkyKettleTargetNumber).extend(
               {
-                cv.GenerateID(): cv.declare_id(SkyKettleTargetNumber),
                 cv.Optional(CONF_ICON, default="mdi:thermometer-lines"): cv.icon,
                 cv.Optional(CONF_ACCURACY_DECIMALS, default='0'): cv.int_range(min=0, max=2),
                 cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_CELSIUS): cv.string_strict,
@@ -204,9 +177,8 @@ CONFIG_SCHEMA = (
                 cv.Optional(CONF_ENTITY_CATEGORY, default=ENTITY_CATEGORY_CONFIG): cv.entity_category,
               }
             ),
-            cv.Optional(CONF_BOIL_TIME_ADJ): number.NUMBER_SCHEMA.extend(
+            cv.Optional(CONF_BOIL_TIME_ADJ): number.number_schema(SkyKettleBoilTimeAdjNumber).extend(
               {
-                cv.GenerateID(): cv.declare_id(SkyKettleBoilTimeAdjNumber),
                 cv.Optional(CONF_ICON, default="mdi:timeline-clock"): cv.icon,
                 cv.Optional(CONF_ACCURACY_DECIMALS, default='0'): cv.int_range(min=0, max=2),
                 cv.Optional(CONF_UNIT_OF_MEASUREMENT, default=UNIT_EMPTY): cv.string_strict,
@@ -266,7 +238,7 @@ async def to_code(config):
     sens = cg.new_Pvariable(conf[CONF_ID])
     await text_sensor.register_text_sensor(sens, conf)
     cg.add(var.set_status_indicator(sens))
-  
+
   params = config[CONF_CONTROL]
   conf = params[CONF_POWER]
   swtch = cg.new_Pvariable(conf[CONF_ID], var)
@@ -291,7 +263,7 @@ async def to_code(config):
     await light.register_light(lght, params[CONF_BACK_LIGHT])
     cg.add(lght.set_parent(var))
     cg.add(var.set_back_light(lght))
-    
+
   if (cv.enum(MODEL_TYPE)(config[CONF_MODEL]) > '7'):
     if CONF_BOIL_TIME_ADJ in params:
       numb = await number.new_number(params[CONF_BOIL_TIME_ADJ], min_value=-5, max_value=5, step=1)

@@ -131,11 +131,12 @@ light:
     restore_mode: ALWAYS_OFF
 
   - id: led
-    platform: neopixelbus
+    platform: esp32_rmt_led_strip
+    chipset: SK6812
     pin: 27
-    type: GRBW
-    variant: SK6812
     num_leds: 23
+    rgb_order: GRB
+    is_rgbw: true
 
 select:
   - id: intercom_mode_select

@@ -2,6 +2,9 @@ esphome:
   name_add_mac_suffix: true
   min_version: 2026.2.0
 
+external_components:
+  - source: lib
+
 api:
   reboot_timeout: 60min
 

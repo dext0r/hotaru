@@ -1,9 +1,6 @@
 packages:
   base: !include common/base.yaml
 
-external_components:
-  - source: lib
-
 substitutions:
   device_name: AVR
 

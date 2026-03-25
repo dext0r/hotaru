@@ -36,37 +36,24 @@ sensor:
       inverted: True
     cf_pin: 4
     cf1_pin: 5
-    initial_mode: CURRENT
+    current_resistor: 0.0022
+    voltage_divider: 805
+    initial_mode: VOLTAGE
     change_mode_every: 4294967295
     update_interval: 5s
 
     voltage:
-      unit_of_measurement: V
       name: Voltage
       disabled_by_default: true
+      accuracy_decimals: 0
       filters:
-        - calibrate_linear:
-            - 0 -> 0
-            - 710.6 -> 240
-        - lambda: |-
-            return round(x);
+        - round: 0
 
     power:
       id: power
-      device_class: power
-      unit_of_measurement: W
       name: Power
       accuracy_decimals: 0
       filters:
-        - calibrate_linear:
-            - 0 -> 1.5
-            - 72.4 -> 12.2
-            - 496.5 -> 76.65
-            - 1614 -> 247
-            - 3114 -> 478
-            - 4160 -> 638
-            - 6640 -> 1015
-            - 13148 -> 2015
         - lambda: |-
             if (x < 1.5) return 0;
             return x - 1.5;

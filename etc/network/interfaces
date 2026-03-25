@@ -15,4 +15,4 @@ iface vmbr0 inet static
 	bridge-stp off
 	bridge-fd 0
 	bridge-vlan-aware yes
-	bridge-vids 2-4094
+	bridge-vids 2-15

@@ -4,6 +4,8 @@ packages:
   esp32_ble_tracker: !include common/esp32_ble_tracker.yaml
 
 esphome:
+  friendly_name: Doorbell
+  area: Hallway
   name: doorbell
   model: Linptech G6LW-E
   name_add_mac_suffix: false
@@ -62,7 +64,7 @@ binary_sensor:
       number: 39
       inverted: true
 
-  - name: Doorbell Ringing
+  - name: Ringing
     platform: remote_receiver
     icon: mdi:alarm-bell
     linptech_g6l:
@@ -99,7 +101,7 @@ status_led:
 select:
   - id: doorbell_mode_select
     platform: template
-    name: Doorbell Mode
+    name: Mode
     icon: mdi:bell-cog-outline
     optimistic: true
     options:

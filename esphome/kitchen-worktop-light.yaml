@@ -1,10 +1,10 @@
 packages:
   base: !include common/base.yaml
 
-substitutions:
-  device_name: Kitchen Worktop Light
 
 esphome:
+  friendly_name: Kitchen Worktop Light
+  area: Kitchen
   name: kitchen-worktop-light
   model: H801 LED Dimmer
   name_add_mac_suffix: false
@@ -18,13 +18,13 @@ esp8266:
 light:
   - id: light_w1
     platform: monochromatic
-    name: $device_name Right
+    name: Right
     output: pwm_w1
     default_transition_length: 700ms
 
   - id: light_w2
     platform: monochromatic
-    name: $device_name Left
+    name: Left
     output: pwm_w2
     default_transition_length: 700ms
 

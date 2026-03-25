@@ -3,10 +3,9 @@ packages:
   esp_idf: !include common/idf.yaml
   esp32_ble_tracker: !include common/esp32_ble_tracker.yaml
 
-substitutions:
-  device_name: Kitchen Balcony Tracker
-
 esphome:
+  friendly_name: Kitchen Balcony Tracker
+  area: Kitchen
   name: kitchen-balcony-tracker
   name_add_mac_suffix: false
 
@@ -27,7 +26,7 @@ binary_sensor:
     device_class: presence
 
 switch:
-  - name: $device_name LED
+  - name: LED
     platform: gpio
     pin: 2
     entity_category: diagnostic

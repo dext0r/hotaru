@@ -1,10 +1,10 @@
 packages:
   base: !include common/base.yaml
 
-substitutions:
-  device_name: Living Room Humidifier Water Tank
 
 esphome:
+  friendly_name: Living Room Humidifier Water Tank
+  area: Living Room
   name: living-room-humidifer-wtank
   name_add_mac_suffix: false
   on_boot:
@@ -41,7 +41,7 @@ globals:
     type: float
 
 button:
-  - name: $device_name Clear Problem
+  - name: Clear Problem
     platform: template
     entity_category: diagnostic
     on_press:
@@ -50,13 +50,13 @@ button:
           id(problem).publish_state(false);
           id(set_idle).execute();
 
-  - name: $device_name Refill
+  - name: Refill
     platform: template
     icon: mdi:basket-fill
     on_press:
       - script.execute: refill
 
-  - name: $device_name Test Pump
+  - name: Test Pump
     platform: template
     icon: mdi:pump
     on_press:
@@ -93,7 +93,7 @@ binary_sensor:
 
   - id: leak
     platform: gpio
-    name: $device_name Leak
+    name: Leak
     device_class: moisture
     pin:
       number: D1
@@ -108,7 +108,7 @@ binary_sensor:
 
   - id: problem
     platform: template
-    name: $device_name Problem
+    name: Problem
     device_class: problem
     entity_category: diagnostic
 
@@ -161,7 +161,7 @@ sensor:
           min_value: 0
           max_value: 110
 
-  - name: $device_name Level
+  - name: Level
     platform: template
     unit_of_measurement: '%'
     icon: mdi:water-percent
@@ -177,7 +177,7 @@ sensor:
   # время, которое заняло изменить уровень воды при наливе (один шаг)
   - id: refill_step_time
     platform: duty_time
-    name: $device_name Refill Step Time
+    name: Refill Step Time
     state_class: measurement
     accuracy_decimals: 0
     update_interval: never
@@ -185,7 +185,7 @@ sensor:
 switch:
   - id: pump_relay
     platform: gpio
-    name: $device_name Pump
+    name: Pump
     pin:
       number: D2
       inverted: true
@@ -193,14 +193,14 @@ switch:
 
   - id: valve_relay
     platform: gpio
-    name: $device_name Valve
+    name: Valve
     pin:
       number: D5
       inverted: true
     internal: true
 
   - id: maintenance
-    name: $device_name Maintenance
+    name: Maintenance
     platform: template
     icon: mdi:wrench-cog-outline
     optimistic: true
@@ -218,7 +218,7 @@ switch:
       - script.execute: set_idle
 
   - id: auto_refill
-    name: $device_name Auto Refill
+    name: Auto Refill
     platform: template
     icon: mdi:basket-fill
     optimistic: true
@@ -382,5 +382,5 @@ output:
 text_sensor:
   - id: diagnostic
     platform: template
-    name: $device_name State
+    name: State
     entity_category: diagnostic

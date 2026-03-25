@@ -2,9 +2,10 @@ packages:
   base: !include generic/hiper_iot_c1_rgb.yaml
 
 substitutions:
-  device_name: Bedroom Cat Light
   icon: mdi:lamp
 
 esphome:
+  friendly_name: Bedroom Cat Light
+  area: bedroom
   name: bedroom-cat-light
   name_add_mac_suffix: false

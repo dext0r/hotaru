@@ -23,17 +23,17 @@ remote_transmitter:
 
 climate:
   - platform: midea
-    name: $device_name
+    name: ''
     autoconf: true
     beeper: false
     supported_swing_modes:
       - VERTICAL
     outdoor_temperature:
-      name: $device_name Outdoor Temperature
+      name: Outdoor Temperature
 
 button:
   - platform: template
-    name: $device_name Display Toggle
+    name: Display Toggle
     on_press:
       - midea_ac.display_toggle:
 

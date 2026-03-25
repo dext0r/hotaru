@@ -2,10 +2,11 @@ packages:
   base: !include generic/midea_ac.yaml
 
 substitutions:
-  device_name: Workshop AC
   temperature_sensor: sensor.workshop_temperature
 
 esphome:
+  friendly_name: Workshop AC
+  area: Workshop
   name: workshop-ac
   model: MSAG1-09N8C2 / ESP8266
   name_add_mac_suffix: false

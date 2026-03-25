@@ -1,9 +1,8 @@
 packages:
   base: !include generic/sonoff_basic_r3.yaml
 
-substitutions:
-  device_name: Living Room Heater
-
 esphome:
+  friendly_name: Living Room Heater
+  area: Living Room
   name: living-room-heater
   name_add_mac_suffix: false

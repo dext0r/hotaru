@@ -1,10 +1,10 @@
 packages:
   base: !include common/base.yaml
 
-substitutions:
-  device_name: Wardbrobe Light
 
 esphome:
+  friendly_name: Wardrobe Light
+  area: Wardrobe
   name: wardrobe-light
   model: MagicHome LED Dimmer (+SW)
   name_add_mac_suffix: false
@@ -47,7 +47,7 @@ binary_sensor:
 light:
   - id: light_w
     platform: monochromatic
-    name: Light
+    name: ''
     output: pwm
     default_transition_length: 700ms
     gamma_correct: 1.7

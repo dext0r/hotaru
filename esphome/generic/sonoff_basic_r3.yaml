@@ -30,7 +30,7 @@ switch:
   - id: relay
     platform: gpio
     pin: 12
-    name: $device_name
+    name: ''
 
 output:
   - id: status_led

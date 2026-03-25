@@ -48,8 +48,8 @@ sensor:
     update_interval: 5s
 
     voltage:
-      name: $device_name Voltage
       unit_of_measurement: V
+      name: Voltage
       disabled_by_default: true
       filters:
         - calibrate_linear:
@@ -60,9 +60,9 @@ sensor:
 
     power:
       id: power
-      name: $device_name Power
       device_class: power
       unit_of_measurement: W
+      name: Power
       accuracy_decimals: 0
       filters:
         - calibrate_linear:
@@ -94,7 +94,7 @@ status_led:
 switch:
   - id: relay
     platform: gpio
-    name: $device_name
+    name: Socket
     device_class: outlet
     pin: 14
     restore_mode: $relay_restore_mode

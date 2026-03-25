@@ -8,7 +8,6 @@ packages:
   esp_idf: !include common/idf.yaml
 
 substitutions:
-  device_name: Workshop UBox
   tion_mac_address: E1:73:74:77:82:1C
   tion_device_name: Workshop Intake Fan
   senseair_s8_sensor_name: Workshop CO2
@@ -16,6 +15,8 @@ substitutions:
   senseair_s8_rx_pin: '16'
 
 esphome:
+  friendly_name: Workshop UBox
+  area: Workshop
   name: workshop-ubox
   model: Universal Box (ESP32)
   name_add_mac_suffix: false

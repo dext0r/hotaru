@@ -7,10 +7,9 @@ packages:
 external_components:
   - source: lib/r4s
 
-substitutions:
-  device_name: Kettle
-
 esphome:
+  friendly_name: Kettle
+  area: Kitchen
   name: kettle
   model: REDMOND SkyKettle G240S / ESP32 / HX711
   name_add_mac_suffix: false
@@ -33,32 +32,32 @@ skykettle:
     cup_correction: 1.0
     informing:
       temperature:
-        name: $device_name Water Temperature
+        name: Water Temperature
       energy:
-        name: $device_name Energy
+        name: Energy
       work_cycles:
-        name: $device_name Work Cycles
+        name: Work Cycles
       status_indicator:
         id: status
-        name: $device_name Status
+        name: Status
         disabled_by_default: true
     controlling:
       power:
-        name: $device_name Power
+        name: Power
       target_temperature:
-        name: $device_name Target Temperature
+        name: Target Temperature
       state_led:
-        name: $device_name Status LED
+        name: Status LED
         disabled_by_default: true
       background_light:
-        name: $device_name Light
+        name: Light
       beeper:
-        name: $device_name Beeper
+        name: Beeper
         disabled_by_default: true
 
 binary_sensor:
   - platform: template
-    name: $device_name Online
+    name: Online
     device_class: connectivity
     lambda: |-
       return id(status).state != "Off Line";
@@ -66,7 +65,7 @@ binary_sensor:
 sensor:
   - id: water_level_ml
     platform: hx711
-    name: $device_name Water Level mL
+    name: Water Level mL
     unit_of_measurement: 'mL'
     icon: mdi:water
     update_interval: 7s
@@ -90,7 +89,7 @@ sensor:
 
   - id: water_level_percent
     platform: template
-    name: $device_name Water Level
+    name: Water Level
     unit_of_measurement: '%'
     accuracy_decimals: 0
     icon: mdi:water-percent

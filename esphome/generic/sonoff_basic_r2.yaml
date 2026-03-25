@@ -33,7 +33,7 @@ switch:
   - id: relay
     platform: gpio
     pin: 12
-    name: $device_name
+    name: ''
     restore_mode: $relay_restore_mode
 
 output:

@@ -2,10 +2,10 @@
 packages:
   base: !include common/base.yaml
 
-substitutions:
-  device_name: Bedroom Moon Light
 
 esphome:
+  friendly_name: Bedroom Moon Light
+  area: Bedroom
   name: bedroom-moon-light
   model: Hiper IOT HI-IR1 / Relay
   name_add_mac_suffix: false
@@ -33,7 +33,7 @@ remote_transmitter:
 light:
   - id: light_rgb
     platform: rgb
-    name: $device_name
+    name: ''
     icon: mdi:lightbulb-night-outline
     red: dummy_pmw
     green: dummy_pmw
@@ -154,14 +154,14 @@ light:
 switch:
   - id: led
     platform: gpio
-    name: $device_name Status LED
+    name: Status LED
     internal: true
     pin:
       number: 4
 
   - id: charger_relay
     platform: gpio
-    name: $device_name Charger
+    name: Charger
     icon: mdi:battery-charging-wireless-outline
     pin:
       number: 0

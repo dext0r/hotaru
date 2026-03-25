@@ -1,9 +1,8 @@
 packages:
   base: !include generic/shelly_dimmer.yaml
 
-substitutions:
-  device_name: Bathroom Main Light
-
 esphome:
+  friendly_name: Bathroom Main Light
+  area: Bathroom
   name: bathroom-main-light
   name_add_mac_suffix: false

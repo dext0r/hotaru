@@ -52,7 +52,7 @@ binary_sensor:
 
 sensor:
   - platform: ntc
-    name: $device_name Temperature
+    name: Temperature
     internal: true
     device_class: temperature
     sensor: temperature_resistance_reading
@@ -88,7 +88,7 @@ sensor:
 light:
   - id: light_w
     platform: shelly_dimmer
-    name: $device_name
+    name: ''
     firmware:
       version: '51.5'
       update: true

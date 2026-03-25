@@ -1,10 +1,10 @@
 packages:
   base: !include common/base.yaml
 
-substitutions:
-  device_name: Bedroom Presence
 
 esphome:
+  friendly_name: Bedroom Presence
+  area: Bedroom
   name: bedroom-presence
   model: Bedroom Presence
   name_add_mac_suffix: false

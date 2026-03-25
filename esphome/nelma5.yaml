@@ -3,9 +3,8 @@ packages:
   time: !include common/time.yaml
   restart: !include common/restart.yaml
 
-substitutions:
-  device_name: Nelma5
 
+substitutions:
   intercom_mode_passthrough: Passthrough  # (0) переключено на трубку
   intercom_mode_always_reject: Always reject # (1)
   intercom_mode_always_accept: Always accept # (2)
@@ -24,8 +23,11 @@ substitutions:
   delay_after_close_door: 1000ms
 
 esphome:
+  friendly_name: Nelma5
+  area: Porch
   name: nelma5
   model: Nelma5 / SmartIntercom / ESP32
+  name_add_mac_suffix: false
   libraries:
     - SPI
     - FS

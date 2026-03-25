@@ -1,10 +1,10 @@
 packages:
   base: !include common/base.yaml
 
-substitutions:
-  device_name: Bathroom Path Light
 
 esphome:
+  friendly_name: Bathroom Path Light
+  area: Bathroom
   name: bathroom-path-light
   model: Wemos
   name_add_mac_suffix: false

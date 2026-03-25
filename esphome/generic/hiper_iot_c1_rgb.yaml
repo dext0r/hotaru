@@ -43,7 +43,7 @@ output:
 
 light:
   - platform: rgbww
-    name: $device_name
+    name: ''
     icon: $icon
     red: light_r
     green: light_g

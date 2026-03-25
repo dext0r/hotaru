@@ -1,10 +1,10 @@
 packages:
   base: !include common/base.yaml
 
-substitutions:
-  device_name: AVR
 
 esphome:
+  friendly_name: AVR
+  area: Living Room
   name: avr
   model: Yamaha RX-V371 / ESP8266
   name_add_mac_suffix: false
@@ -48,7 +48,7 @@ globals:
 number:
   - id: avr_volume_level_number
     platform: template
-    name: AVR Volume Level
+    name: Volume Level
     icon: mdi:volume-source
     lambda: |-
       return id(avr_volume_level);
@@ -159,7 +159,7 @@ script:
 
 select:
   - platform: template
-    name: AVR Display Brightness
+    name: Display Brightness
     icon: mdi:brightness-percent
     optimistic: true
     options:
@@ -174,7 +174,7 @@ select:
 
 switch:
   - platform: template
-    name: AVR Power
+    name: Power
     lambda: return id(avr_power);
     turn_on_action:
       - remote_transmitter.transmit_nec: # power
@@ -186,7 +186,7 @@ switch:
           command: 0xD52A
 
   - platform: template
-    name: AVR Volume Muted
+    name: Volume Muted
     icon: mdi:volume-off
     lambda: return id(avr_volume_muted);
     turn_on_action:

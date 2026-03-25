@@ -1,9 +1,8 @@
 packages:
   base: !include generic/sonoff_basic_r2_light.yaml
 
-substitutions:
-  device_name: Bathroom Bathtub Light
-
 esphome:
+  friendly_name: Bathroom Bathtub Light
+  area: Bathroom
   name: bathroom-bathtub-light
   name_add_mac_suffix: false

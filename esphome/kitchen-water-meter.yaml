@@ -1,10 +1,10 @@
 packages:
   base: !include common/base.yaml
 
-substitutions:
-  device_name: Kitchen Water Meter
 
 esphome:
+  friendly_name: Kitchen Water Meter
+  area: Kitchen
   name: kitchen-water-meter
   model: NodeMCU
   name_add_mac_suffix: false

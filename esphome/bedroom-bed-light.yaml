@@ -2,10 +2,10 @@
 packages:
   base: !include common/base.yaml
 
-substitutions:
-  device_name: Bedroom Bed Light
 
 esphome:
+  friendly_name: Bedroom Bed Light
+  area: Bedroom
   name: bedroom-bed-light
   model: Sonoff L1
   name_add_mac_suffix: false

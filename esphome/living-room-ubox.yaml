@@ -8,7 +8,6 @@ packages:
   # debug: !include common/ld2410_debug.yaml
 
 substitutions:
-  device_name: Living Room UBox
   tion_mac_address: F2:71:3F:8E:FC:38
   tion_device_name: Living Room Intake Fan
   senseair_s8_sensor_name: Living Room CO2
@@ -16,6 +15,8 @@ substitutions:
   senseair_s8_rx_pin: '3'
 
 esphome:
+  friendly_name: Living Room UBox
+  area: Living Room
   name: living-room-ubox
   model: Universal Box (ESP32)
   name_add_mac_suffix: false

@@ -53,14 +53,14 @@ binary_sensor:
 sensor:
   - platform: cse7766
     voltage:
-      name: $device_name Voltage
+      name: Voltage
       accuracy_decimals: 0
       disabled_by_default: true
       filters:
         - throttle_average: ${update_interval}
     power:
       id: power
-      name: $device_name Power
+      name: Power
       accuracy_decimals: 0
       filters:
         - throttle_average: ${update_interval}
@@ -87,7 +87,7 @@ light:
 switch:
   - id: relay
     platform: gpio
-    name: $device_name
+    name: ''
     device_class: outlet
     pin: 12
     restore_mode: $relay_restore_mode

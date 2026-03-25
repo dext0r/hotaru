@@ -29,7 +29,7 @@ binary_sensor:
 light:
   - id: light_w
     platform: binary
-    name: $device_name
+    name: ''
     output: light_relay
 
 output:

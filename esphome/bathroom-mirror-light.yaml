@@ -1,9 +1,8 @@
 packages:
   base: !include generic/sonoff_mini_light.yaml
 
-substitutions:
-  device_name: Bathroom Mirror Light
-
 esphome:
+  friendly_name: Bathroom Mirror Light
+  area: Bathroom
   name: bathroom-mirror-light
   name_add_mac_suffix: false

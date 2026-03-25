@@ -22,33 +22,51 @@ esphome:
 sensor:
   - platform: pvvx_mithermometer
     mac_address: A4:C1:38:FC:04:50
-    temperature:
+    temperature: &temperature
       name: Bedroom Temperature
       accuracy_decimals: 1
-    humidity:
+      filters:
+        - round: 1
+        - or:
+          - throttle: 30min
+          - delta: 0.2
+        - timeout: 35min
+
+    humidity: &humidity
       name: Bedroom Humidity
       accuracy_decimals: 0
-    battery_level:
+      filters:
+        - round: 0
+        - or:
+          - throttle: 30min
+          - delta: 2
+        - timeout: 35min
+
+    battery_level: &battery_level
       name: Bedroom Meteo Battery
+      filters:
+        - delta: 5
 
   - platform: pvvx_mithermometer
     mac_address: A4:C1:38:A1:F8:D7
     temperature:
       name: Wardrobe Temperature
-      accuracy_decimals: 1
+      <<: *temperature
     humidity:
       name: Wardrobe Humidity
-      accuracy_decimals: 0
+      <<: *humidity
     battery_level:
       name: Wardrobe Meteo Battery
+      <<: *battery_level
 
   - platform: pvvx_mithermometer
     mac_address: A4:C1:38:8A:62:0B
     temperature:
       name: Bathroom Temperature
-      accuracy_decimals: 1
+      <<: *temperature
     humidity:
       name: Bathroom Humidity
-      accuracy_decimals: 0
+      <<: *humidity
     battery_level:
       name: Bathroom Meteo Battery
+      <<: *battery_level

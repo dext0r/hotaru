@@ -398,7 +398,7 @@ views:
             icon: mdi:lightning-bolt
           - type: template
             icon: mdi:kettle-outline
-            content: '{{ states(''sensor.kettle_water_level_ml'') }} mL'
+            content: '{{ states(''sensor.kettle_water_level_ml'') | int }} mL'
             entity: climate.kettle
             tap_action:
               action: more-info
@@ -531,6 +531,7 @@ views:
                 font_size_header: 10
                 hours_to_show: 6
                 points_per_hour: 8
+                decimals: 0
                 entities:
                   - entity: sensor.bedroom_humidity
                     color: '#1498db'
@@ -573,6 +574,7 @@ views:
                 font_size_header: 10
                 hours_to_show: 6
                 points_per_hour: 8
+                decimals: 0
                 entities:
                   - entity: sensor.workshop_humidity
                     color: '#6f52b0'
@@ -615,6 +617,7 @@ views:
                 font_size_header: 10
                 hours_to_show: 6
                 points_per_hour: 8
+                decimals: 0
                 entities:
                   - entity: sensor.living_room_humidity
                     color: '#e1c40f'
@@ -1184,6 +1187,7 @@ views:
             font_size_header: 10
             hours_to_show: 6
             points_per_hour: 8
+            decimals: 1
             entities:
               - entity: sensor.bedroom_temperature
                 color: '#3498db'
@@ -1200,6 +1204,7 @@ views:
             font_size_header: 10
             hours_to_show: 6
             points_per_hour: 8
+            decimals: 0
             entities:
               - entity: sensor.bedroom_humidity
                 color: '#1498db'
@@ -1226,6 +1231,7 @@ views:
             font_size_header: 10
             hours_to_show: 6
             points_per_hour: 8
+            decimals: 1
             entities:
               - entity: sensor.workshop_temperature
                 color: '#af52b0'
@@ -1242,6 +1248,7 @@ views:
             font_size_header: 10
             hours_to_show: 6
             points_per_hour: 8
+            decimals: 0
             entities:
               - entity: sensor.workshop_humidity
                 color: '#6f52b0'
@@ -1268,6 +1275,7 @@ views:
             font_size_header: 10
             hours_to_show: 6
             points_per_hour: 8
+            decimals: 1
             entities:
               - entity: sensor.living_room_temperature
                 color: '#f1c40f'
@@ -1284,6 +1292,7 @@ views:
             font_size_header: 10
             hours_to_show: 6
             points_per_hour: 8
+            decimals: 0
             entities:
               - entity: sensor.living_room_humidity
                 color: '#e1c40f'
@@ -1774,6 +1783,7 @@ views:
                   humidity:
                     icon: mdi:home-thermometer-outline
                     unit: °C
+                    round: 0
                     tap_action:
                       action: more-info
                     source:
@@ -1851,6 +1861,7 @@ views:
                   humidity:
                     icon: mdi:home-thermometer-outline
                     unit: °C
+                    round: 0
                     tap_action:
                       action: more-info
                     source:
@@ -1928,6 +1939,7 @@ views:
                   humidity:
                     icon: mdi:home-thermometer-outline
                     unit: °C
+                    round: 0
                     tap_action:
                       action: more-info
                     source:
@@ -2024,6 +2036,7 @@ views:
                     tap_action: more-info
                     icon: mdi:car-coolant-level
                     unit: '%'
+                    round: 0
                     source:
                       entity: sensor.living_room_humidifier_water_tank_level
                   problem:
@@ -2362,6 +2375,7 @@ views:
             font_size_header: 10
             hours_to_show: 6
             points_per_hour: 6
+            decimals: 0
             entities:
               - entity: sensor.kitchen_humidity
                 color: '#af52b0'
@@ -2394,6 +2408,7 @@ views:
             font_size_header: 10
             hours_to_show: 6
             points_per_hour: 8
+            decimals: 0
             entities:
               - entity: sensor.bathroom_humidity
                 color: '#e1c40f'
@@ -2768,21 +2783,27 @@ views:
             icon: mdi:cup-water
             name: Drink water
             state_header: Today
+            format: precision1
             entities:
               - entity: sensor.kitchen_filter_drink_water
                 name: Total
+                format: precision1
               - entity: sensor.kitchen_filter_drink_water_monthly
                 name: Month
+                format: precision1
           - entity: sensor.kitchen_filter_feed_water_daily
             type: custom:multiple-entity-row
             icon: mdi:water-pump
             name: Feed water
             state_header: Today
+            format: precision1
             entities:
               - entity: sensor.kitchen_filter_feed_water
                 name: Total
+                format: precision1
               - entity: sensor.kitchen_filter_feed_water_monthly
                 name: Month
+                format: precision1
       - square: false
         columns: 2
         type: grid

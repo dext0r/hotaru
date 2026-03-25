@@ -103,25 +103,42 @@ sensor:
 
   - platform: pvvx_mithermometer
     mac_address: A4:C1:38:42:B7:5D
-    temperature:
+    temperature: &temperature
       name: Living Room Temperature
       accuracy_decimals: 1
-    humidity:
+      filters:
+        - round: 1
+        - or:
+          - throttle: 30min
+          - delta: 0.2
+        - timeout: 35min
+
+    humidity: &humidity
       name: Living Room Humidity
       accuracy_decimals: 0
-    battery_level:
+      filters:
+        - round: 0
+        - or:
+          - throttle: 30min
+          - delta: 2
+        - timeout: 35min
+
+    battery_level: &battery_level
       name: Living Room Meteo Battery
+      filters:
+        - delta: 5
 
   - platform: pvvx_mithermometer
     mac_address: A4:C1:38:B2:CD:CC
     temperature:
       name: Server Room Temperature
-      accuracy_decimals: 1
+      <<: *temperature
     humidity:
       name: Server Room Humidity
-      accuracy_decimals: 0
+      <<: *humidity
     battery_level:
       name: Server Room Meteo Battery
+      <<: *battery_level
 
 switch:
   - platform: ld2410

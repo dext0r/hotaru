@@ -15,7 +15,13 @@ sensor:
     uart_id: senseair_s8_uart
     co2:
       name: $senseair_s8_sensor_name
-    update_interval: 20s
+      filters:
+        - round_to_multiple_of: 5
+        - or:
+            - throttle: 5min
+            - delta: 15
+        - timeout: 5min
+    update_interval: 30s
 
 button:
   - platform: template

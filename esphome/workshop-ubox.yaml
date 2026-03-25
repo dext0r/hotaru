@@ -35,15 +35,32 @@ sensor:
     temperature:
       name: Workshop Temperature
       accuracy_decimals: 1
+      filters:
+        - round: 1
+        - or:
+          - throttle: 30min
+          - delta: 0.2
+        - timeout: 35min
+
     humidity:
       name: Workshop Humidity
       accuracy_decimals: 0
+      filters:
+        - round: 0
+        - or:
+          - throttle: 30min
+          - delta: 2
+        - timeout: 35min
+
     battery_level:
       name: Workshop Meteo Battery
+      filters:
+        - delta: 5
 
   - platform: pm1006
     uart_id: pm1006_uart
     pm_2_5:
       name: Workshop PM 2.5
       filters:
-        - throttle: 20s
+        - throttle_average: 5min
+        - round: 0

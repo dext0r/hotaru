@@ -42,6 +42,8 @@ sensor:
     device_class: water
     unit_of_measurement: L
     accuracy_decimals: 2
+    filters:
+      - round: 2
 
   - id: kitchen_filter_drink_water_lm
     platform: pulse_counter
@@ -64,6 +66,8 @@ sensor:
     device_class: water
     unit_of_measurement: L
     accuracy_decimals: 2
+    filters:
+      - round: 2
 
 light:
   - name: Dishwasher Status Light

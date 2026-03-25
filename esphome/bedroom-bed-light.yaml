@@ -1,4 +1,3 @@
-# https://gist.github.com/emorydunn/db410db8bf68c8a335f3362d69624aaa
 packages:
   base: !include common/esp8266.yaml
 
@@ -8,8 +7,6 @@ esphome:
   name: bedroom-bed-light
   model: Sonoff L1
   name_add_mac_suffix: false
-  includes:
-    - lib/sonoff_l1.h
 
 esp8266:
   board: esp8285
@@ -17,50 +14,13 @@ esp8266:
 logger:
   baud_rate: 0
 
-light:
-  - platform: custom
-    lambda: |-
-      auto light_out = new SonoffL1();
-      App.register_component(light_out);
-      return {light_out};
-    lights:
-      - name: $device_name
-        icon: bha:led-strip
-        gamma_correct: 0
+uart:
+  tx_pin: 1
+  rx_pin: 3
+  baud_rate: 19200
 
-        # effects:
-        #   - lambda:
-        #       name: Colorful Gradient (Smooth)
-        #       lambda: |-
-        #         auto light_out = new SonoffL1();
-        #         light_out->setModeGradient();
-        #   - lambda:
-        #       name: Colorful Breath (Fade)
-        #       lambda: |-
-        #         auto light_out = new SonoffL1();
-        #         light_out->setModeBreath();
-        #   - lambda:
-        #       name: RGB Gradient
-        #       lambda: |-
-        #         auto light_out = new SonoffL1();
-        #         light_out->setModeRGBGradient();
-        #   - lambda:
-        #       name: RGB Pulse (Strobe)
-        #       lambda: |-
-        #         auto light_out = new SonoffL1();
-        #         light_out->setModeRGBPulse();
-        #   - lambda:
-        #       name: RGB Breath
-        #       lambda: |-
-        #         auto light_out = new SonoffL1();
-        #         light_out->setModeRGBBreath();
-        #   - lambda:
-        #       name: RGB Strobe (Flash)
-        #       lambda: |-
-        #         auto light_out = new SonoffL1();
-        #         light_out->setModeRGBStrobe();
-        #   - lambda:
-        #       name: Sound Reactive
-        #       lambda: |-
-        #         auto light_out = new SonoffL1();
-        #         light_out->setModeSync();
+light:
+  - platform: sonoff_l1
+    name: ''
+    icon: bha:led-strip
+    gamma_correct: 0

@@ -1,4 +1,0 @@
-sensor:
-  - platform: wifi_signal
-    name: $device_name RSSI
-    update_interval: 30s

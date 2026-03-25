@@ -3340,10 +3340,8 @@ views:
               - entity: sensor.hotaru_exhaust_fan_speed
       - type: history-graph
         entities:
-          - entity: binary_sensor.bed_presence_dextor
+          - entity: binary_sensor.bedroom_bed_occupancy
             name: D
-          - entity: binary_sensor.bed_presence_layma
-            name: L
         hours_to_show: 8
       - type: entities
         entities:
@@ -3612,13 +3610,3 @@ views:
                 state_content: last-changed
                 entity: binary_sensor.workshop_occupancy
                 name: Occupancy
-  - icon: mdi:camera
-    path: stream
-    type: custom:grid-layout
-    badges: []
-    cards:
-      - show_state: true
-        show_name: true
-        camera_view: auto
-        type: picture-entity
-        entity: camera.192_168_5_58

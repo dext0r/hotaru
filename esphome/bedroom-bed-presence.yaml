@@ -1,6 +1,5 @@
 packages:
-  base: !include common/base.yaml
-
+  base: !include common/esp8266.yaml
 
 esphome:
   friendly_name: Bedroom Bed Presence
@@ -12,9 +11,6 @@ esphome:
     - binary_sensor.template.publish:
         id: bedroom_bed_occupancy
         state: off
-
-esp8266:
-  board: esp01_1m
 
 logger:
   logs:

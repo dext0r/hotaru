@@ -1,10 +1,9 @@
 packages:
-  base: !include common/base.yaml
+  base: !include common/esp32.yaml
+  esp32_ble_tracker: !include common/esp32_ble_tracker.yaml
   tion_4s: !include common/tion_4s.yaml
   senseair_s8: !include common/senseair_s8.yaml
-  esp32_ble_tracker: !include common/esp32_ble_tracker.yaml
   restart: !include common/restart.yaml
-  esp_idf: !include common/idf.yaml
 
 substitutions:
   tion_mac_address: C2:EE:5F:88:7C:75
@@ -19,12 +18,6 @@ esphome:
   name: bedroom-ubox
   model: Universal Box (ESP32)
   name_add_mac_suffix: false
-
-esp32:
-  board: esp32dev
-
-logger:
-  level: INFO
 
 sensor:
   - platform: pvvx_mithermometer

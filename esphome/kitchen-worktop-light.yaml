@@ -1,6 +1,5 @@
 packages:
-  base: !include common/base.yaml
-
+  base: !include common/esp8266.yaml
 
 esphome:
   friendly_name: Kitchen Worktop Light
@@ -10,10 +9,6 @@ esphome:
   name_add_mac_suffix: false
   on_boot:
     - switch.turn_off: led_green
-
-esp8266:
-  board: esp01_1m
-  restore_from_flash: true
 
 light:
   - id: light_w1

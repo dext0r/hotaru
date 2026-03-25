@@ -1,13 +1,9 @@
 packages:
-  base: !include ../common/base.yaml
+  base: !include ../common/esp8266.yaml
 
 esphome:
   name: shelly-dimmer
   model: Shelly Dimmer 2
-
-esp8266:
-  board: esp01_1m
-  restore_from_flash: true
 
 logger:
   baud_rate: 0

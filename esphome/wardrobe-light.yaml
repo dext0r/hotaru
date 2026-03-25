@@ -1,6 +1,5 @@
 packages:
-  base: !include common/base.yaml
-
+  base: !include common/esp8266.yaml
 
 esphome:
   friendly_name: Wardrobe Light
@@ -8,10 +7,6 @@ esphome:
   name: wardrobe-light
   model: MagicHome LED Dimmer (+SW)
   name_add_mac_suffix: false
-
-esp8266:
-  board: esp01_1m
-  restore_from_flash: true
 
 logger:
   baud_rate: 0

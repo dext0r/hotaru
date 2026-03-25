@@ -1,0 +1,12 @@
+packages:
+  base: !include ../common/base.yaml
+
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+    advanced:
+      minimum_chip_revision: '3.0'
+
+wifi:
+  min_auth_mode: WPA2

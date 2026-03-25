@@ -1,6 +1,5 @@
 packages:
-  base: !include common/base.yaml
-  esp_idf: !include common/idf.yaml
+  base: !include common/esp32.yaml
   restart: !include common/restart.yaml
 
 external_components:
@@ -12,9 +11,6 @@ esphome:
   name: kettle
   model: REDMOND SkyKettle G240S / ESP32 / HX711
   name_add_mac_suffix: false
-
-esp32:
-  board: esp32dev
 
 ready4sky:
   scan_parameters:

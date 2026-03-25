@@ -1,6 +1,5 @@
 packages:
-  base: !include common/base.yaml
-
+  base: !include common/esp8266.yaml
 
 esphome:
   friendly_name: Living Room TV Light
@@ -8,10 +7,6 @@ esphome:
   name: living-room-tv-light
   model: MagicHome LED Dimmer
   name_add_mac_suffix: false
-
-esp8266:
-  board: esp01_1m
-  restore_from_flash: true
 
 light:
   - id: light_w

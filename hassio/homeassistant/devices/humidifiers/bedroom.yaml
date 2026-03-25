@@ -193,3 +193,30 @@ automation:
             entity_id: number.bedroom_humidifier_screen_brightness
             data:
               value: '0'
+
+  # Если увлажнитель долго стоит в выключенном состоянии, ему сносит крышу и он включает помпу
+  # Попробуем превентивно его перезагружать, чтобы это обойти
+  - id: bedroom_humidifer_power_cycle
+    alias: 'Bedroom Humidifier: Power cycle'
+    triggers:
+      - trigger: time
+        at: '16:00:00'
+        weekday:
+          - sat
+    conditions:
+      - condition: state
+        entity_id: humidifier.bedroom_humidifier
+        state: 'off'
+
+      - condition: state
+        entity_id: switch.bedroom_humidifier_socket
+        state: 'on'
+    actions:
+      - action: switch.turn_off
+        entity_id: switch.bedroom_humidifier_socket
+
+      - delay:
+          seconds: 5
+
+      - action: switch.turn_on
+        entity_id: switch.bedroom_humidifier_socket

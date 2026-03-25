@@ -3255,6 +3255,36 @@ views:
                   {% endif %}
                 tap_action:
                   action: more-info
+          - type: custom:mushroom-title-card
+            title: ''
+            subtitle: Sockets Bedroom
+            alignment: center
+          - square: false
+            columns: 2
+            type: grid
+            cards:
+              - type: custom:mushroom-legacy-template-card
+                primary: Humidifer
+                secondary: >-
+                  {{ states('switch.bedroom_humidifier_socket')|capitalize }}
+
+                  {% if not is_state('sensor.bedroom_humidifier_power',
+                  'unavailable') %}
+                    | {{ states('sensor.bedroom_humidifier_power') | int }} W
+                  {% endif %}
+                icon: mdi:air-humidifier
+                entity: switch.bedroom_humidifier_socket
+                icon_color: >-
+                  {% if is_state('switch.bedroom_humidifier_socket',
+                  'unavailable') %}
+                    var(--rgb-disabled)
+                  {% elif is_state('switch.bedroom_humidifier_socket', 'on') %}
+                    var(--rgb-state-entity)
+                  {% else %}
+                    var(--rgb-grey)
+                  {% endif %}
+                tap_action:
+                  action: more-info
   - theme: Mushroom
     icon: mdi:wrench
     type: custom:vertical-layout

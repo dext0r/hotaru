@@ -15,13 +15,6 @@ esp8266:
 preferences:
   flash_write_interval: 10min
 
-time:
-  - platform: homeassistant
-    timezone: Europe/Moscow
-    on_time_sync:
-      then:
-        - logger.log: Synchronized system clock
-
 binary_sensor:
   - id: button
     platform: gpio

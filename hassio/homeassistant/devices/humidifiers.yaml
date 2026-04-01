@@ -51,13 +51,24 @@ automation:
                 state: 'on'
 
           - and:
-              - condition: numeric_state
-                entity_id: sensor.workshop_humidifier_water_level
-                below: 25
+              - or:
+                  - and:
+                      - condition: numeric_state
+                        entity_id: sensor.workshop_humidifier_water_level
+                        below: 25
 
-              - condition: state
-                entity_id: binary_sensor.workshop_humidifier_water_tank
-                state: 'on'
+                      - condition: state
+                        entity_id: binary_sensor.workshop_humidifier_water_tank
+                        state: 'on'
+
+                  - and:
+                      - condition: numeric_state
+                        entity_id: sensor.workshop_humidifier_x_water_level
+                        below: 25
+
+                      - condition: state
+                        entity_id: binary_sensor.workshop_humidifier_x_water_tank
+                        state: 'on'
 
               - condition: state
                 entity_id: input_boolean.workshop_humidifier_control
@@ -172,7 +183,9 @@ template:
             {% set data.humidifiers = data.humidifiers + ['злой бочке'] %}
           {% endif %}
 
-          {% if is_state('input_boolean.workshop_humidifier_control', 'on') and states('sensor.workshop_humidifier_water_level')|int(100) < 30 %}
+          {% if is_state('input_boolean.workshop_humidifier_control', 'on') and
+                (states('sensor.workshop_humidifier_water_level')|int(100) < 30 or
+                 states('sensor.workshop_humidifier_x_water_level')|int(100) < 30) %}
             {% set data.humidifiers = data.humidifiers + ['мастерской'] %}
           {% endif %}
 

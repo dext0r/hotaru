@@ -168,7 +168,8 @@ template:
           {% endif %}
 
           {% if is_state('input_boolean.workshop_humidifier_control', 'on') and
-                states('sensor.workshop_humidifier_water_level')|int(100) <= 50 %}
+                (states('sensor.workshop_humidifier_water_level')|int(100) <= 50 or
+                 states('sensor.workshop_humidifier_x_water_level')|int(100) <= 50) %}
             {% set data.chores = data.chores + ['долить воды в мастерской'] %}
           {% endif %}
 

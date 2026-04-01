@@ -11,7 +11,6 @@ esphome:
 
 esp8266:
   board: esp8285
-  restore_from_flash: yes
 
 preferences:
   flash_write_interval: 10min

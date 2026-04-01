@@ -12,7 +12,6 @@ esphome:
 
 esp8266:
   board: d1_mini
-  restore_from_flash: true
 
 ota:
   - id: !extend ota_esphome

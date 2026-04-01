@@ -27,7 +27,7 @@ sensor:
     method: trapezoid
     filters:
       - multiply: 0.001
-      - throttle: 10min
+      - throttle: 5min
 
 interval:
   - interval: 10s

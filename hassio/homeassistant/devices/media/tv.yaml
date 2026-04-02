@@ -175,7 +175,7 @@ automation:
       - service: media_player.volume_set
         entity_id: media_player.tv
         data:
-          volume_level: 0.39
+          volume_level: 0.37
 
 script:
   tv_turn_off:

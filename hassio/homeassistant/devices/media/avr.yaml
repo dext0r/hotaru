@@ -4,14 +4,14 @@ automation:
     mode: restart
     trigger:
       - trigger: state
-        entity_id: media_layer.tv
+        entity_id: media_player.tv
         from: 'off'
         to: 'on'
         for:
           seconds: 20
 
       - trigger: state
-        entity_id: media_layer.tv
+        entity_id: media_player.tv
         from: 'off'
         to: 'on'
         for:

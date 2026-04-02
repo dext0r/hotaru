@@ -9,7 +9,7 @@ esphome:
   name_add_mac_suffix: false
 
 light:
-  - name: Bathroom Toilet Path Light
+  - name: Toilet
     platform: neopixelbus
     pin: 14
     type: GRBW
@@ -18,7 +18,7 @@ light:
     gamma_correct: 1
     restore_mode: ALWAYS_OFF
 
-  - name: Bathroom Sink Path Light
+  - name: Sink
     platform: neopixelbus
     pin: 12
     type: GRBW

@@ -31,11 +31,11 @@ ld2410:
 binary_sensor:
   - platform: ld2410
     has_target:
-      name: Bedroom Occupancy
+      name: ''
       icon: ''
 
 switch:
   - platform: ld2410
     bluetooth:
-      name: Bedroom Presence LD2410 Bluetooth
+      name: LD2410 Bluetooth
       disabled_by_default: true

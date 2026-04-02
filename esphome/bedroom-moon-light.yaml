@@ -4,12 +4,19 @@ packages:
 
 esphome:
   friendly_name: Bedroom Moon Light
-  area: Bedroom
+  area:
+    id: bedroom
+    name: Bedroom
   name: bedroom-moon-light
   model: Hiper IOT HI-IR1 / Relay
   name_add_mac_suffix: false
   includes:
     - lib/rgb.h
+
+  devices:
+    - id: string_light
+      name: Bedroom String Light
+      area_id: bedroom
 
 logger:
   baud_rate: 0
@@ -142,7 +149,8 @@ light:
 
   - id: string_light_w
     platform: binary
-    name: Bedroom String Light
+    device_id: string_light
+    name: ''
     icon: mdi:string-lights
     output: string_light_relay
 

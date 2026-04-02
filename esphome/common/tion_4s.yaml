@@ -38,28 +38,32 @@ vport:
 tion:
   type: 4s
   vport_id: tion_ble_vport
-  update_interval: 20s
-  state_timeout: 10s
+  update_interval: 5s
+  state_timeout: 3s
   force_update: true
 
 climate:
   - platform: tion
-    name: $tion_device_name
+    name: ''
+    device_id: $tion_device_id
 
 binary_sensor:
   - platform: tion
-    name: $tion_device_name No Response
+    name: No Response
     type: state
+    device_id: $tion_device_id
 
 button:
   - platform: tion
-    name: $tion_device_name Reset filter
+    name: Reset filter
     type: reset_filter
+    device_id: $tion_device_id
 
 sensor:
   - platform: tion
-    name: $tion_device_name Outdoor Temperature
+    name: Outdoor Temperature
     type: outdoor_temperature
+    device_id: $tion_device_id
     filters:
       - or:
           - throttle: 30min
@@ -67,20 +71,30 @@ sensor:
       - timeout: 35min
 
   - platform: tion
-    name: $tion_device_name Filter Time Left
+    name: Filter Time Left
     type: filter_time_left_days
+    device_id: $tion_device_id
 
-  - id: tion_heater_power
+  - id: tion_power
+    name: Power
     platform: tion
-    name: $tion_device_name Heater Power
-    type: heater_power
+    type: power
+    device_id: $tion_device_id
+    unit_of_measurement: W
+    accuracy_decimals: 0
     filters:
-      - timeout: 1min
+      - multiply: 1000
+      - round: 0
+      - timeout: 20s
+    on_value:
+      - sensor.template.publish:
+          id: tion_power_adj
+          state: !lambda return x;
 
-  # см. energy.yaml
-  - id: tion_heater_power_adj
-    name: $tion_device_name Power Adjusted
+  - id: tion_power_adj
+    name: Power Adjusted
     platform: template
+    device_id: $tion_device_id
     internal: true
     update_interval: never
     unit_of_measurement: W
@@ -89,35 +103,40 @@ sensor:
       - clamp:
           min_value: 0
 
-  - platform: total_daily_energy
-    name: $tion_device_name Energy
+  - name: Energy
+    platform: total_daily_energy
+    device_id: $tion_device_id
     unit_of_measurement: kWh
     accuracy_decimals: 2
-    power_id: tion_heater_power_adj
+    power_id: tion_power_adj
     method: trapezoid
     filters:
       - multiply: 0.001
-      - throttle: 10min
+      - throttle: 5min
 
 interval:
   - interval: 10s
     then:
       - lambda: |-
-            if (std::isnan(id(tion_heater_power).state)) {
-                id(tion_heater_power_adj).publish_state(0);
+            if (std::isnan(id(tion_power).state)) {
+                id(tion_power_adj).publish_state(0);
             }
 
 switch:
   - platform: tion
-    name: $tion_device_name LED
+    name: LED
     type: led
+    device_id: $tion_device_id
+
 
   - platform: tion
-    name: $tion_device_name Recirculation
+    name: Recirculation
     type: recirculation
+    device_id: $tion_device_id
 
 text_sensor:
   - platform: tion
-    name: $tion_device_name Errors
+    name: Errors
     type: errors
+    device_id: $tion_device_id
     icon: mdi:alert-circle-outline

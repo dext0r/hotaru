@@ -1795,7 +1795,7 @@ views:
                     tap_action:
                       action: more-info
                     source:
-                      entity: sensor.bedroom_intake_fan_heater_power
+                      entity: sensor.bedroom_intake_fan_power
                   filter:
                     icon: mdi:filter-menu-outline
                     unit: d
@@ -1875,7 +1875,7 @@ views:
                     tap_action:
                       action: more-info
                     source:
-                      entity: sensor.living_room_intake_fan_heater_power
+                      entity: sensor.living_room_intake_fan_power
                   filter:
                     icon: mdi:filter-menu-outline
                     unit: d
@@ -1955,7 +1955,7 @@ views:
                     tap_action:
                       action: more-info
                     source:
-                      entity: sensor.workshop_intake_fan_heater_power
+                      entity: sensor.workshop_intake_fan_power
                   filter:
                     icon: mdi:filter-menu-outline
                     unit: d

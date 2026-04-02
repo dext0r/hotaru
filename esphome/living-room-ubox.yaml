@@ -6,18 +6,25 @@ packages:
   restart: !include common/restart.yaml
 
 substitutions:
+  tion_device_id: intake_fan
   tion_mac_address: F2:71:3F:8E:FC:38
-  tion_device_name: Living Room Intake Fan
   senseair_s8_sensor_name: Living Room CO2
   senseair_s8_tx_pin: '1'
   senseair_s8_rx_pin: '3'
 
 esphome:
   friendly_name: Living Room UBox
-  area: Living Room
+  area:
+    id: living_room
+    name: Living Room
   name: living-room-ubox
   model: Universal Box (ESP32)
   name_add_mac_suffix: false
+
+  devices:
+    - id: intake_fan
+      name: Living Room Intake Fan
+      area_id: living_room
 
 esp32:
   framework:

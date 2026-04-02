@@ -6,18 +6,25 @@ packages:
   restart: !include common/restart.yaml
 
 substitutions:
+  tion_device_id: intake_fan
   tion_mac_address: C2:EE:5F:88:7C:75
-  tion_device_name: Bedroom Intake Fan
   senseair_s8_sensor_name: Bedroom CO2
   senseair_s8_tx_pin: '27'
   senseair_s8_rx_pin: '26'
 
 esphome:
   friendly_name: Bedroom UBox
-  area: Bedroom
+  area:
+    id: bedroom
+    name: Bedroom
   name: bedroom-ubox
   model: Universal Box (ESP32)
   name_add_mac_suffix: false
+
+  devices:
+    - id: intake_fan
+      name: Bedroom Intake Fan
+      area_id: bedroom
 
 sensor:
   - platform: pvvx_mithermometer

@@ -26,6 +26,10 @@ esphome:
       name: Living Room Intake Fan
       area_id: living_room
 
+    - id: presence
+      name: Living Room Presence
+      area_id: living_room
+
 esp32:
   framework:
     advanced:
@@ -60,20 +64,21 @@ binary_sensor:
       name: Living Room Occupancy
       icon: ''
 
-  - name: Misaka Living Room Presence
+  - name: Misaka
     platform: ble_presence
+    device_id: presence
     irk: !secret misaka_irk
     timeout: 30s
     device_class: presence
 
-  - name: Layma iPhone Living Room Presence
+  - name: Layma iPhone
     platform: ble_presence
+    device_id: presence
     irk: !secret layma_iphone_irk
     timeout: 30s
     device_class: presence
 
 light:
-  - name: Living Room TV Status Light Left
     platform: partition
     segments:
       - id: status_led_strip

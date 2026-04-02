@@ -3,19 +3,19 @@ packages:
   esp32_ble_tracker: !include common/esp32_ble_tracker.yaml
 
 esphome:
-  friendly_name: Kitchen Balcony Tracker
-  area: Kitchen
-  name: kitchen-balcony-tracker
+  friendly_name: North Balcony Presence
+  area: North Balcony
+  name: north-balcony-presence
   name_add_mac_suffix: false
 
 binary_sensor:
-  - name: Misaka Kitchen Balcony Presence
+  - name: Misaka
     platform: ble_presence
     irk: !secret misaka_irk
     timeout: 30s
     device_class: presence
 
-  - name: Layma iPhone Kitchen Balcony Presence
+  - name: Layma iPhone
     platform: ble_presence
     irk: !secret layma_iphone_irk
     timeout: 30s

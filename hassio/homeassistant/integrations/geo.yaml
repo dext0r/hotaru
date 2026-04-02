@@ -43,8 +43,8 @@ automation:
       - action: timer.start
         entity_id: timer.anyone_near_home_recently
 
-  - id: kitchen_balcony_tracker_led_update
-    alias: 'Kitchen Balcony Tracker: LED Update'
+  - id: north_balcony_presence_led_update
+    alias: 'North Balcony Presence: LED Update'
     mode: queued
     triggers:
       - trigger: state
@@ -54,35 +54,35 @@ automation:
           - 'off'
     actions:
       - action: switch.turn_{{ trigger.to_state.state }}
-        entity_id: switch.kitchen_balcony_tracker_led
+        entity_id: switch.north_balcony_presence_led
 
 device_tracker_template:
   - unique_id: device_tracker.misaka_near_home
     name: Misaka Near Home
     icon: mdi:home-floor-negative-1
     location: >
-      {{ 'Near Home' if is_state('binary_sensor.misaka_kitchen_balcony_presence', 'on') else False }}
+      {{ 'Near Home' if is_state('binary_sensor.north_balcony_presence_misaka', 'on') else False }}
     source_type: gps
 
   - unique_id: device_tracker.layma_iphone_near_home
     name: Layma iPhone Near Home
     icon: mdi:home-floor-negative-1
     location: >
-      {{ 'Near Home' if is_state('binary_sensor.layma_iphone_kitchen_balcony_presence', 'on') else False }}
+      {{ 'Near Home' if is_state('binary_sensor.north_balcony_presence_layma_iphone', 'on') else False }}
     source_type: gps
 
   - unique_id: device_tracker.misaka_ble
     name: Misaka BLE
     icon: mdi:bluetooth-connect
     location: >
-      {{ is_state('binary_sensor.misaka_hallway_presence', 'on') or is_state('binary_sensor.misaka_living_room_presence', 'on') }}
+      {{ is_state('binary_sensor.hallway_presence_misaka', 'on') or is_state('binary_sensor.living_room_presence_misaka', 'on') }}
     source_type: bluetooth_le
 
   - unique_id: device_tracker.layma_iphone_ble
     name: Layma iPhone BLE
     icon: mdi:bluetooth-connect
     location: >
-      {{ is_state('binary_sensor.layma_iphone_hallway_presence', 'on') or is_state('binary_sensor.layma_iphone_living_room_presence', 'on')  }}
+      {{ is_state('binary_sensor.hallway_presence_layma_iphone', 'on') or is_state('binary_sensor.living_room_presence_layma_iphone', 'on')  }}
     source_type: bluetooth_le
 
 input_datetime:

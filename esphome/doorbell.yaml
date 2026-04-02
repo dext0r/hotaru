@@ -4,10 +4,17 @@ packages:
 
 esphome:
   friendly_name: Doorbell
-  area: Hallway
+  area:
+    id: hallway
+    name: Hallway
   name: doorbell
   model: Linptech G6LW-E
   name_add_mac_suffix: false
+
+  devices:
+    - id: hallway_presence
+      name: Hallway Presence
+      area_id: hallway
 
 esp32:
   board: esp32doit-devkit-v1
@@ -74,15 +81,17 @@ binary_sensor:
     on_press:
       - script.execute: ring
 
-  - name: Misaka Hallway Presence
+  - name: Misaka
     platform: ble_presence
+    device_id: hallway_presence
     irk: !secret misaka_irk
     timeout: 28s
     min_rssi: -88dB
     device_class: presence
 
-  - name: Layma iPhone Hallway Presence
+  - name: Layma iPhone
     platform: ble_presence
+    device_id: hallway_presence
     irk: !secret layma_iphone_irk
     timeout: 28s
     min_rssi: -88dB

@@ -39,6 +39,7 @@ homeassistant:
     hacks: !include devices/hacks.yaml
     home_bathroom: !include home/bathroom.yaml
     home_common: !include home/common.yaml
+    home_energy: !include home/energy.yaml
     home_good_morning: !include home/good_morning.yaml
     home_good_night: !include home/good_night.yaml
     home_kitchen: !include home/kitchen.yaml
@@ -178,12 +179,14 @@ recorder:
       - binary_sensor.*presence*misaka*
       - binary_sensor.*workday*
       - binary_sensor.workday*
+      - binary_sensor.*_running
       - input_datetime.*_last_seen
       - light.workshop_main_*
       - sensor.*_intake_fan_target_*
       - sensor.*_humidifier_target_*
       - sensor.*_raw
       - sensor.person_pronoun_*
+      - sensor.cb_branch_circuit_power_for_ac
       - switch.*_light*
 panel_custom:
   - name: config/automation

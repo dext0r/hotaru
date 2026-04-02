@@ -85,41 +85,11 @@ automation:
         entity_id: climate.workshop_ac
 
 template:
-  - trigger:
-      - platform: time_pattern
-        seconds: /5
-    sensor:
-      - name: Workshop AC Power
-        unique_id: sensor.workshop_ac_power
+  - binary_sensor:
+      - unique_id: binary_sensor.workshop_ac_running
+        name: 'Workshop AC Running'
+        icon: mdi:play
         state: >
-          {% set power = states('sensor.cb_power_supply_power')|int(0) %}
-          {% set power = power - states('sensor.washing_machine_power')|int(0) %}
-          {% set power = power - states('sensor.water_heater_power')|int(0) %}
-          {% set power = power - states('sensor.bedroom_intake_fan_heater_power')|int(0) %}
-          {% set power = power - states('sensor.workshop_intake_fan_heater_power')|int(0) %}
-
-          {% if states('climate.bedroom_ac') not in ['off', 'unavailable', 'unknown'] %}
-            {% set power = power / 2 %}
-          {% endif %}
-
-          {% if states('climate.workshop_ac') in ['off', 'unavailable', 'unknown'] %}
-            {% set power = 0 %}
-          {% endif %}
-
-          {{ [0, power]|max|round }}
+          {{ not is_state('climate.workshop_ac', 'off') }}
         availability: >
-          {{ states('climate.workshop_ac') not in ['unknown', 'unavailable'] }}
-        state_class: measurement
-        unit_of_measurement: W
-        device_class: power
-
-sensor:
-  - platform: integration
-    unique_id: sensor.workshop_ac_energy
-    name: Workshop AC Energy
-    source: sensor.workshop_ac_power
-    unit_prefix: k
-    round: 2
-    method: trapezoidal
-    max_sub_interval:
-      seconds: 10
+          {{ is_state('climate.workshop_ac', ['heat_cool', 'cool', 'heat', 'fan_only', 'dry', 'off']) }}

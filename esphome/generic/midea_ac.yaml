@@ -18,10 +18,17 @@ remote_transmitter:
   carrier_duty_percent: 50%
 
 climate:
-  - platform: midea
+  - id: ac
+    platform: midea
     name: ''
     autoconf: true
     beeper: false
+    supported_modes:
+      - FAN_ONLY
+      - HEAT_COOL
+      - COOL
+      - HEAT
+      - DRY
     supported_swing_modes:
       - VERTICAL
     outdoor_temperature:
@@ -37,7 +44,6 @@ sensor:
   - id: temperature
     platform: homeassistant
     entity_id: $temperature_sensor
-    internal: true
     filters:
       - throttle: 10s
       - heartbeat: 30s

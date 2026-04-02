@@ -1,5 +1,6 @@
 packages:
   base: !include generic/midea_ac.yaml
+  energy: !include common/energy.yaml
 
 substitutions:
   temperature_sensor: sensor.bedroom_temperature
@@ -10,3 +11,48 @@ esphome:
   name: bedroom-ac
   model: MSAG1-09N8C2 / ESP8266
   name_add_mac_suffix: false
+
+binary_sensor:
+  - id: workshop_ac_running
+    platform: homeassistant
+    entity_id: binary_sensor.workshop_ac_running
+
+sensor:
+  - id: circuit_power
+    platform: homeassistant
+    entity_id: sensor.cb_branch_circuit_power_for_ac
+
+  - id: power
+    name: Power
+    platform: template
+    update_interval: 5s
+    device_class: power
+    state_class: measurement
+    unit_of_measurement: W
+    accuracy_decimals: 0
+    lambda: |-
+      auto power = 2.0; // мощность в standby
+
+      if (id(ac).mode == CLIMATE_MODE_OFF) {
+        return power;
+      }
+
+      // Сломается в 2026.3+
+      if (!global_api_server->is_connected(true)) {
+        ESP_LOGW("power_meter", "No API connection with power state");
+        return power;
+      }
+
+      if (id(workshop_ac_running).state) {
+        power += id(circuit_power).state / 2;
+      } else {
+        power += id(circuit_power).state;
+      }
+
+      return power;
+    filters:
+      - round: 0
+    on_value:
+      - sensor.template.publish:
+          id: power_adj
+          state: !lambda return x;

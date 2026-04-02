@@ -8,7 +8,7 @@ packages:
 substitutions:
   tion_device_id: intake_fan
   tion_mac_address: F2:71:3F:8E:FC:38
-  senseair_s8_sensor_name: Living Room CO2
+  senseair_s8_device_id: living_room_meteo
   senseair_s8_tx_pin: '1'
   senseair_s8_rx_pin: '3'
 
@@ -21,9 +21,25 @@ esphome:
   model: Universal Box (ESP32)
   name_add_mac_suffix: false
 
+  areas:
+    - id: comms
+      name: Comms
+
   devices:
     - id: intake_fan
       name: Living Room Intake Fan
+      area_id: living_room
+
+    - id: living_room_meteo
+      name: Living Room Meteo
+      area_id: living_room
+
+    - id: comms_meteo
+      name: Comms Meteo
+      area_id: comms
+
+    - id: tv_status_light
+      name: Living Room TV Status Light
       area_id: living_room
 
     - id: presence
@@ -61,7 +77,8 @@ ld2410:
 binary_sensor:
   - platform: ld2410
     has_target:
-      name: Living Room Occupancy
+      name: Occupancy
+      device_id: presence
       icon: ''
 
   - name: Misaka
@@ -79,15 +96,18 @@ binary_sensor:
     device_class: presence
 
 light:
+  - name: Left
     platform: partition
+    device_id: tv_status_light
     segments:
       - id: status_led_strip
         from: 0
         to: 3
     gamma_correct: 1
 
-  - name: Living Room TV Status Light Right
+  - name: Right
     platform: partition
+    device_id: tv_status_light
     segments:
       - id: status_led_strip
         from: 4
@@ -107,16 +127,20 @@ sensor:
     uart_id: pmsx003_uart
     update_interval: 3min
     pm_1_0:
-      name: Living Room PM 1.0
+      name: PM 1.0
+      device_id: living_room_meteo
     pm_2_5:
-      name: Living Room PM 2.5
+      name: PM 2.5
+      device_id: living_room_meteo
     pm_10_0:
-      name: Living Room PM 10.0
+      name: PM 10.0
+      device_id: living_room_meteo
 
   - platform: pvvx_mithermometer
     mac_address: A4:C1:38:42:B7:5D
     temperature: &temperature
-      name: Living Room Temperature
+      name: Temperature
+      device_id: living_room_meteo
       accuracy_decimals: 1
       filters:
         - round: 1
@@ -126,7 +150,8 @@ sensor:
         - timeout: 35min
 
     humidity: &humidity
-      name: Living Room Humidity
+      name: Humidity
+      device_id: living_room_meteo
       accuracy_decimals: 0
       filters:
         - round: 0
@@ -136,24 +161,26 @@ sensor:
         - timeout: 35min
 
     battery_level: &battery_level
-      name: Living Room Meteo Battery
+      name: Battery
+      device_id: living_room_meteo
       filters:
         - delta: 5
 
   - platform: pvvx_mithermometer
     mac_address: A4:C1:38:B2:CD:CC
     temperature:
-      name: Server Room Temperature
+      device_id: comms_meteo
       <<: *temperature
     humidity:
-      name: Server Room Humidity
+      device_id: comms_meteo
       <<: *humidity
     battery_level:
-      name: Server Room Meteo Battery
+      device_id: comms_meteo
       <<: *battery_level
 
 switch:
   - platform: ld2410
     bluetooth:
-      name: Living Room LD2410 Bluetooth
+      name: LD2410 Bluetooth
+      device_id: presence
       disabled_by_default: true

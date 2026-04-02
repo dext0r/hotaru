@@ -1601,14 +1601,14 @@ views:
                   --mdc-icon-size: 20px;
                 }
           - type: custom:mini-graph-card
-            name: Server room
+            name: Comms
             align_icon: state
             font_size: 65
             font_size_header: 10
             hours_to_show: 6
             points_per_hour: 6
             entities:
-              - entity: sensor.server_room_temperature
+              - entity: sensor.comms_temperature
                 color: '#1928db'
             card_mod:
               style: |
@@ -2343,14 +2343,14 @@ views:
                   --mdc-icon-size: 20px;
                 }
           - type: custom:mini-graph-card
-            name: Server room
+            name: Comms
             align_icon: state
             font_size: 65
             font_size_header: 10
             hours_to_show: 6
             points_per_hour: 6
             entities:
-              - entity: sensor.server_room_temperature
+              - entity: sensor.comms_temperature
                 color: '#1928db'
             card_mod:
               style: |

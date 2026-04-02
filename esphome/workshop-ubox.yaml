@@ -8,7 +8,7 @@ packages:
 substitutions:
   tion_device_id: intake_fan
   tion_mac_address: E1:73:74:77:82:1C
-  senseair_s8_sensor_name: Workshop CO2
+  senseair_s8_device_id: meteo
   senseair_s8_tx_pin: '17'
   senseair_s8_rx_pin: '16'
 
@@ -26,6 +26,10 @@ esphome:
       name: Workshop Intake Fan
       area_id: workshop
 
+    - id: meteo
+      name: Workshop Meteo
+      area_id: workshop
+
 esp32:
   framework:
     advanced:
@@ -40,7 +44,8 @@ sensor:
   - platform: pvvx_mithermometer
     mac_address: A4:C1:38:7D:60:67
     temperature:
-      name: Workshop Temperature
+      name: Temperature
+      device_id: meteo
       accuracy_decimals: 1
       filters:
         - round: 1
@@ -50,7 +55,8 @@ sensor:
         - timeout: 35min
 
     humidity:
-      name: Workshop Humidity
+      name: Humidity
+      device_id: meteo
       accuracy_decimals: 0
       filters:
         - round: 0
@@ -60,14 +66,16 @@ sensor:
         - timeout: 35min
 
     battery_level:
-      name: Workshop Meteo Battery
+      name: Battery
+      device_id: meteo
       filters:
         - delta: 5
 
   - platform: pm1006
     uart_id: pm1006_uart
     pm_2_5:
-      name: Workshop PM 2.5
+      name: PM 2.5
+      device_id: meteo
       filters:
         - throttle_average: 5min
         - round: 0

@@ -10,22 +10,24 @@ uart:
     baud_rate: 9600
 
 sensor:
-  - platform: senseair
-    id: senseair_s8
+  - id: senseair_s8
+    platform: senseair
     uart_id: senseair_s8_uart
+    update_interval: 30s
     co2:
-      name: $senseair_s8_sensor_name
+      name: CO2
+      device_id: $senseair_s8_device_id
       filters:
         - round_to_multiple_of: 5
         - or:
             - throttle: 5min
             - delta: 15
         - timeout: 5min
-    update_interval: 30s
 
 button:
-  - platform: template
-    name: $senseair_s8_sensor_name Calibrate
+  - name: CO2 Calibrate
+    platform: template
+    device_id: $senseair_s8_device_id
     disabled_by_default: true
     on_press:
       - senseair.background_calibration: senseair_s8

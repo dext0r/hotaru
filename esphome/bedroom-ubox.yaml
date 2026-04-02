@@ -8,7 +8,7 @@ packages:
 substitutions:
   tion_device_id: intake_fan
   tion_mac_address: C2:EE:5F:88:7C:75
-  senseair_s8_sensor_name: Bedroom CO2
+  senseair_s8_device_id: bedroom_meteo
   senseair_s8_tx_pin: '27'
   senseair_s8_rx_pin: '26'
 
@@ -21,16 +21,36 @@ esphome:
   model: Universal Box (ESP32)
   name_add_mac_suffix: false
 
+  areas:
+    - id: bathroom
+      name: Bathroom
+
+    - id: wardrobe
+      name: Wardrobe
+
   devices:
     - id: intake_fan
       name: Bedroom Intake Fan
       area_id: bedroom
 
+    - id: bedroom_meteo
+      name: Bedroom Meteo
+      area_id: bedroom
+
+    - id: bathroom_meteo
+      name: Bathroom Meteo
+      area_id: bathroom
+
+    - id: wardrobe_meteo
+      name: Wardrobe Meteo
+      area_id: wardrobe
+
 sensor:
   - platform: pvvx_mithermometer
     mac_address: A4:C1:38:FC:04:50
     temperature: &temperature
-      name: Bedroom Temperature
+      name: Temperature
+      device_id: bedroom_meteo
       accuracy_decimals: 1
       filters:
         - round: 1
@@ -40,7 +60,8 @@ sensor:
         - timeout: 35min
 
     humidity: &humidity
-      name: Bedroom Humidity
+      name: Humidity
+      device_id: bedroom_meteo
       accuracy_decimals: 0
       filters:
         - round: 0
@@ -50,30 +71,33 @@ sensor:
         - timeout: 35min
 
     battery_level: &battery_level
-      name: Bedroom Meteo Battery
+      name: Battery
+      device_id: bedroom_meteo
       filters:
         - delta: 5
 
+  # гардероб
   - platform: pvvx_mithermometer
     mac_address: A4:C1:38:A1:F8:D7
     temperature:
-      name: Wardrobe Temperature
+      device_id: wardrobe_meteo
       <<: *temperature
     humidity:
-      name: Wardrobe Humidity
+      device_id: wardrobe_meteo
       <<: *humidity
     battery_level:
-      name: Wardrobe Meteo Battery
+      device_id: wardrobe_meteo
       <<: *battery_level
 
+  # ванная
   - platform: pvvx_mithermometer
     mac_address: A4:C1:38:8A:62:0B
     temperature:
-      name: Bathroom Temperature
+      device_id: bathroom_meteo
       <<: *temperature
     humidity:
-      name: Bathroom Humidity
+      device_id: bathroom_meteo
       <<: *humidity
     battery_level:
-      name: Bathroom Meteo Battery
+      device_id: bathroom_meteo
       <<: *battery_level

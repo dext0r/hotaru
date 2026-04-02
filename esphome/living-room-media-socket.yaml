@@ -21,8 +21,8 @@ logger:
 binary_sensor:
   - id: button
     platform: gpio
-    internal: true
     pin: 3
+    internal: true
     on_press:
       then:
         switch.toggle: relay
@@ -68,7 +68,7 @@ status_led:
 switch:
   - id: relay
     platform: gpio
+    pin: 5
     name: ''
     device_class: outlet
-    pin: 5
     restore_mode: RESTORE_DEFAULT_OFF

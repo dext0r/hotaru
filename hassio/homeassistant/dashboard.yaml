@@ -2943,42 +2943,6 @@ views:
                   action: none
                 double_tap_action:
                   action: none
-  - icon: mdi:candycane
-    badges: []
-    cards:
-      - type: tile
-        entity: input_boolean.xmas_lighting
-      - square: false
-        type: grid
-        cards:
-          - type: custom:mushroom-light-card
-            entity: light.elka
-            show_brightness_control: true
-          - type: custom:mushroom-light-card
-            entity: light.xmas_hallway_wall
-            show_brightness_control: true
-            name: Hallway Wall
-          - type: custom:mushroom-light-card
-            entity: light.xmas_living_room_curtains
-            show_brightness_control: true
-            name: Living Room Curtains
-        columns: 2
-      - square: false
-        type: grid
-        cards:
-          - type: custom:mushroom-light-card
-            entity: light.xmas_hallway_tree
-            name: Hallway Tree
-          - type: custom:mushroom-light-card
-            entity: light.xmas_workshop_door
-            name: Workshop Door
-          - type: custom:mushroom-light-card
-            entity: light.xmas_front_door
-            name: Front Door
-          - type: custom:mushroom-light-card
-            entity: light.xmas_kitchen
-            name: Kitchen
-        columns: 2
   - theme: Mushroom
     icon: mdi:lightning-bolt-outline
     type: custom:vertical-layout
@@ -3286,6 +3250,35 @@ views:
                 tap_action:
                   action: more-info
   - theme: Mushroom
+    title: Media
+    path: media
+    icon: mdi:music-circle-outline
+    badges: []
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: media-control
+            entity: media_player.tv
+          - type: media-control
+            entity: media_player.living_room_station
+          - type: media-control
+            entity: media_player.atv
+          - type: media-control
+            entity: media_player.living_room_yandex_module
+      - type: custom:layout-break
+      - type: vertical-stack
+        cards:
+          - type: media-control
+            entity: media_player.bedroom_station
+          - type: media-control
+            entity: media_player.workshop_station
+          - type: media-control
+            entity: media_player.kitchen_station
+          - type: entity
+            entity: switch.ps5_power
+            name: PS5
+    type: custom:vertical-layout
+  - theme: Mushroom
     icon: mdi:wrench
     type: custom:vertical-layout
     layout:
@@ -3443,33 +3436,42 @@ views:
                     domain: button
                 - not:
                     domain: conversation
-  - theme: Mushroom
-    title: Media
-    path: media
-    icon: mdi:music-circle-outline
+  - icon: mdi:candycane
     badges: []
     cards:
-      - type: vertical-stack
+      - type: tile
+        entity: input_boolean.xmas_lighting
+      - square: false
+        type: grid
         cards:
-          - type: media-control
-            entity: media_player.tv
-          - type: media-control
-            entity: media_player.living_room_station
-          - type: media-control
-            entity: media_player.atv
-          - type: media-control
-            entity: media_player.living_room_yandex_module
-      - type: vertical-stack
+          - type: custom:mushroom-light-card
+            entity: light.elka
+            show_brightness_control: true
+          - type: custom:mushroom-light-card
+            entity: light.xmas_hallway_wall
+            show_brightness_control: true
+            name: Hallway Wall
+          - type: custom:mushroom-light-card
+            entity: light.xmas_living_room_curtains
+            show_brightness_control: true
+            name: Living Room Curtains
+        columns: 2
+      - square: false
+        type: grid
         cards:
-          - type: media-control
-            entity: media_player.bedroom_station
-          - type: media-control
-            entity: media_player.workshop_station
-          - type: media-control
-            entity: media_player.kitchen_station
-          - type: entity
-            entity: switch.ps5_power
-            name: PS5
+          - type: custom:mushroom-light-card
+            entity: light.xmas_hallway_tree
+            name: Hallway Tree
+          - type: custom:mushroom-light-card
+            entity: light.xmas_workshop_door
+            name: Workshop Door
+          - type: custom:mushroom-light-card
+            entity: light.xmas_front_door
+            name: Front Door
+          - type: custom:mushroom-light-card
+            entity: light.xmas_kitchen
+            name: Kitchen
+        columns: 2
   - theme: Backend-selected
     title: CO2
     icon: mdi:molecule-co2

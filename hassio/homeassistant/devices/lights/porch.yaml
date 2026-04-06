@@ -13,7 +13,7 @@ automation:
       - condition: state
         entity_id:
           - light.porch
-          - light.porch_path_light
+          - light.porch_path
         state: 'off'
     action:
       - if:
@@ -22,7 +22,7 @@ automation:
             state: Night
         then:
           - service: light.turn_on
-            entity_id: light.porch_path_light
+            entity_id: light.porch_path
             data:
               rgbw_color: [255, 0, 0, 0]
               brightness_pct: 45
@@ -46,7 +46,7 @@ automation:
       - condition: state
         entity_id:
           - light.porch
-          - light.porch_path_light
+          - light.porch_path
         state: 'off'
     action:
       - service: light.turn_on
@@ -74,14 +74,14 @@ automation:
       - condition: state
         entity_id:
           - light.porch
-          - light.porch_path_light
+          - light.porch_path
         match: any
         state: 'on'
     action:
       - service: light.turn_off
         entity_id:
           - light.porch
-          - light.porch_path_light
+          - light.porch_path
 
 template:
   - light:

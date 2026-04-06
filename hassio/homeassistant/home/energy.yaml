@@ -7,7 +7,7 @@ template:
       - unique_id: sensor.cb_branch_circuit_power_for_ac
         name: CB Branch Circuit Power For AC
         state: >
-          {% set power = states('sensor.cb_power_supply_power') | int(0) %} {# TODO: поменять #}
+          {% set power = states('sensor.cb_branch_circuit_power') | int(0) %}
           {% set power = power - states('sensor.washing_machine_power') | int(0) %}
           {% set power = power - states('sensor.water_heater_power') | int(0) %}
           {% set power = power - states('sensor.bedroom_intake_fan_power') | int(0) %}

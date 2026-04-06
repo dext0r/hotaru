@@ -390,10 +390,10 @@ views:
           - type: template
             content: |
               {{
-                states('sensor.cb_power_supply_power')|int(0) +
-                states('sensor.kitchen_power_supply_power')|int(0) +
-                states('sensor.sockets_power_supply_power')|int(0) +
-                states('sensor.stove_power_supply_power')|int(0)
+                states('sensor.cb_branch_circuit_power')|int(0) +
+                states('sensor.kitchen_branch_circuit_power')|int(0) +
+                states('sensor.sockets_branch_circuit_power')|int(0) +
+                states('sensor.stove_branch_circuit_power')|int(0)
               }} W
             icon: mdi:lightning-bolt
           - type: template
@@ -2953,10 +2953,10 @@ views:
           - type: template
             content: |
               {{
-                states('sensor.cb_power_supply_power')|int(0) +
-                states('sensor.kitchen_power_supply_power')|int(0) +
-                states('sensor.sockets_power_supply_power')|int(0) +
-                states('sensor.stove_power_supply_power')|int(0)
+                states('sensor.cb_branch_circuit_power')|int(0) +
+                states('sensor.kitchen_branch_circuit_power')|int(0) +
+                states('sensor.sockets_branch_circuit_power')|int(0) +
+                states('sensor.stove_branch_circuit_power')|int(0)
               }} W
         alignment: center
       - square: false
@@ -2971,7 +2971,7 @@ views:
             hours_to_show: 6
             points_per_hour: 8
             entities:
-              - entity: sensor.cb_power_supply_power
+              - entity: sensor.cb_branch_circuit_power
                 color: '#f1c40f'
           - type: custom:mini-graph-card
             name: Kitchen Sockets
@@ -2981,7 +2981,7 @@ views:
             hours_to_show: 6
             points_per_hour: 8
             entities:
-              - entity: sensor.kitchen_power_supply_power
+              - entity: sensor.kitchen_branch_circuit_power
                 color: '#2ecc71'
           - type: custom:mini-graph-card
             name: Rooms Sockets
@@ -2991,7 +2991,7 @@ views:
             hours_to_show: 6
             points_per_hour: 8
             entities:
-              - entity: sensor.sockets_power_supply_power
+              - entity: sensor.sockets_branch_circuit_power
                 color: '#e67e22'
           - type: custom:mini-graph-card
             name: Stove Power Supply
@@ -3001,7 +3001,7 @@ views:
             hours_to_show: 6
             points_per_hour: 8
             entities:
-              - entity: sensor.stove_power_supply_power
+              - entity: sensor.stove_branch_circuit_power
                 color: '#2980b9'
       - square: false
         columns: 2

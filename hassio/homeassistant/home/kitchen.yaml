@@ -3,7 +3,7 @@ automation:
     alias: Kichen Applicances Status Update
     trigger:
       - platform: state
-        entity_id: sensor.kitchen_power_supply_power
+        entity_id: sensor.kitchen_branch_circuit_power
     condition:
       - condition: template
         value_template: >

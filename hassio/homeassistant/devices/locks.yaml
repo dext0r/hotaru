@@ -166,7 +166,7 @@ script:
     max_exceeded: silent
     sequence:
       - service: light.turn_on
-        entity_id: light.porch_lock_light
+        entity_id: light.porch_lock
         data:
           brightness_pct: 100
           rgbw_color: [128, 0, 255, 0]
@@ -176,7 +176,7 @@ script:
           seconds: 1
 
       - service: light.turn_on
-        entity_id: light.porch_lock_light
+        entity_id: light.porch_lock
         data:
           effect: pulse
 
@@ -184,7 +184,7 @@ script:
           minutes: 1  # из scene_departure_sequence
 
       - service: light.turn_off
-        entity_id: light.porch_lock_light
+        entity_id: light.porch_lock
 
   # замок не всегда управляется с первого раза :(
   # универсальный скрипт писать лень

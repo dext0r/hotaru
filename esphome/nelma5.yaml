@@ -2,7 +2,6 @@ packages:
   base: !include common/esp32.yaml
   restart: !include common/restart.yaml
 
-
 substitutions:
   intercom_mode_passthrough: Passthrough  # (0) переключено на трубку
   intercom_mode_always_reject: Always reject # (1)
@@ -23,7 +22,9 @@ substitutions:
 
 esphome:
   friendly_name: Nelma5
-  area: Porch
+  area:
+    id: service
+    name: Service
   name: nelma5
   model: Nelma5 / SmartIntercom / ESP32
   name_add_mac_suffix: false
@@ -34,12 +35,34 @@ esphome:
     # AudioFileSourceICYStream.cpp AudioFileSourceHTTPStream.cpp AudioFileSourceHTTPStream.h
     # AudioFileSourceICYStream.h AudioFileSourceSD.cpp AudioFileSourceSD.h
     - ESP8266Audio=file://../../../lib/ESP8266Audio
+
   on_boot:
     priority: -100
     then:
       - select.set:
           id: intercom_mode_select
           option: intercom_mode_passthrough
+
+  areas:
+    - id: porch
+      name: Porch
+
+  devices:
+    - id: intercom
+      name: Intercom
+      area_id: service
+
+    - id: power_meter
+      name: Branch Circuit Meter
+      area_id: service
+
+    - id: porch_path_light
+      name: Porch Path Light
+      area_id: porch
+
+    - id: porch_lock_light
+      name: Porch Lock Light
+      area_id: porch
 
 esp32:
   framework:
@@ -75,7 +98,6 @@ globals:
 light:
   - id: red_led
     platform: status_led
-    internal: true
     pin:
       number: 16
       inverted: false
@@ -83,7 +105,6 @@ light:
   - id: green_led
     platform: monochromatic
     output: green_led_output
-    internal: true
     restore_mode: ALWAYS_OFF
     default_transition_length: 0s
     effects:
@@ -107,8 +128,9 @@ light:
             - state: false
               duration: 50ms
 
-  - name: Porch Lock Light
+  - name: ''
     platform: partition
+    device_id: porch_lock_light
     segments:
       - id: led
         from: 0
@@ -121,8 +143,9 @@ light:
           update_interval: 1s
           transition_length: 1s
 
-  - name: Porch Path Light
+  - name: ''
     platform: partition
+    device_id: porch_path_light
     segments:
       - id: led
         from: 1
@@ -140,8 +163,9 @@ light:
 
 select:
   - id: intercom_mode_select
+    name: Mode
     platform: template
-    name: Intercom Mode
+    device_id: intercom
     icon: 'mdi:deskphone'
     optimistic: true
     options:
@@ -229,117 +253,81 @@ script:
       - output.turn_on: phone_hanging
 
 sensor:
-  - id: input1_connection
-    platform: template
-    internal: true
-    lambda: |-
-      if (id(input1_voltage).state > 0.2) {
-        return true;
-      } else {
-        return false;
-      }
-
-  - id: input1_voltage
-    platform: adc
-    pin: 33
-    attenuation: 11db
-    internal: true
-    update_interval: 5s
-
-  # - id: input2_voltage
-  #   platform: adc
-  #   pin: 32
-  #   attenuation: 11db
-  #   internal: true
-  #   update_interval: 5s
-
-  # 50A
-  - id: input1_current
-    platform: ct_clamp
-    name: Stove Power Supply Current
-    sensor: input1_voltage
-    internal: true
-    update_interval: 5s
-    filters:
-      - calibrate_linear:
-        - 0.0 -> 0.0
-        - 0.184 -> 9.25
-      - lambda: |-
-          if (x <= 1) return 0;
-          return x;
-
-  - id: input1_power
-    platform: template
-    name: Stove Power Supply Power
-    device_class: power
-    unit_of_measurement: W
-    accuracy_decimals: 0
-    update_interval: 1s
-    lambda: |-
-      // if (!id(input1_connection).state) {
-      //   return 0;
-      // }
-
-      return id(home_power_supply_voltage).state * id(input1_current).state;
-    filters:
-      - lambda: |-
-          if (std::isnan(x)) {
-            return 0;
-          }
-
-          return x;
-      - median:
-          window_size: 5
-          send_every: 5
-          send_first_at: 3
-
-  - platform: total_daily_energy
-    name: Stove Power Supply Energy
-    unit_of_measurement: kWh
-    accuracy_decimals: 1
-    power_id: input1_power
-    filters:
-      - multiply: 0.001
-      - throttle: 10min
-
-  # Розетки кухня
-  - platform: pzemac
+  # Розетки: Кухня
+  - id: pzem5
+    platform: pzemac
     address: 5
-    update_interval: 5s
-    energy: &pzem_energy
-      name: Kitchen Power Supply Energy
-      accuracy_decimals: 1
-      filters:
-        - throttle: 10min
+    update_interval: never
 
     power: &pzem_power
-      name: Kitchen Power Supply Power
+      id: pzem5_power
+      name: Kitchen Power
+      device_id: power_meter
       accuracy_decimals: 0
       filters:
         - round: 0
         - timeout: 15s
 
-  # Розетки ванная / Климат Спальня-Мастерская
-  - platform: pzemac
+    energy: &pzem_energy
+      name: Kitchen Energy
+      device_id: power_meter
+      accuracy_decimals: 2
+      filters:
+        - throttle: 2.5min
+
+  # Розетки: Ванная / Климат Спальня-Мастерская
+  - id: pzem6
+    platform: pzemac
     address: 6
-    update_interval: 5s
-    energy:
-      name: CB Power Supply Energy
-      <<: *pzem_energy
+    update_interval: never
+
     power:
-      name: CB Power Supply Power
+      id: pzem6_power
+      name: CB Power
       <<: *pzem_power
 
-  # Розетки комнаты
-  - platform: pzemac
-    address: 7
-    update_interval: 5s
     energy:
-      name: Sockets Power Supply Energy
+      name: CB Energy
       <<: *pzem_energy
+
+  # Розетки: Комнаты
+  - id: pzem7
+    platform: pzemac
+    address: 7
+    update_interval: never
+
     power:
-      name: Sockets Power Supply Power
+      id: pzem7_power
+      name: Sockets Power
       <<: *pzem_power
+
+    energy:
+      name: Sockets Energy
+      <<: *pzem_energy
+
+interval:
+  - interval: 5s
+    then:
+      - delay: 150ms
+      - component.update: pzem5
+      - delay: 150ms
+      - component.update: pzem6
+      - delay: 150ms
+      - component.update: pzem7
+      - delay: 150ms
+      - lambda: |-
+          static int nan_count = 0;
+
+          if (isnan(id(pzem5_power).state) || isnan(id(pzem6_power).state) || isnan(id(pzem7_power).state)) {
+            nan_count++;
+            ESP_LOGE("power_meter", "Some PZEM missing data, count: %d", nan_count);
+            if (nan_count > 3) {
+              ESP_LOGE("power_meter", "Missing PZEM data for too long, reboot");
+              App.reboot();
+            }
+          } else {
+            nan_count = 0;
+          }
 
 binary_sensor:
   - id: intercom_ring
@@ -383,10 +371,12 @@ binary_sensor:
 
 text_sensor:
   - id: intercom_status
+    name: Status
     platform: template
-    name: Intercom Status
+    device_id: intercom
     icon: 'mdi:bell'
-    lambda: 'return {"${intercom_status_standby}"};'
+    lambda: |-
+      return {"${intercom_status_standby}"};
 
 output:
   - id: green_led_output

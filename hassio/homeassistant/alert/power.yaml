@@ -6,8 +6,8 @@ automation:
     trigger:
       - platform: state
         entity_id:
-          - sensor.cb_power_supply_power
-          - sensor.sockets_power_supply_power
+          - sensor.cb_branch_circuit_power
+          - sensor.sockets_branch_circuit_power
     condition:
       - condition: template
         value_template: >

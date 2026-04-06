@@ -32,7 +32,7 @@ automation:
         to: 'on'
 
       - platform: numeric_state
-        entity_id: sensor.sockets_power_supply_power
+        entity_id: sensor.sockets_branch_circuit_power
         above: 3600
     condition:
       - condition: state

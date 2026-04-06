@@ -33,5 +33,5 @@ automation:
 
       - service: light.turn_off
         entity_id:
-          - light.porch_path_light
-          - light.porch_lock_light
+          - light.porch_path
+          - light.porch_lock

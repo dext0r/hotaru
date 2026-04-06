@@ -59,7 +59,7 @@ automation:
           minutes: 5
 
       - platform: numeric_state
-        entity_id: sensor.cb_power_supply_power
+        entity_id: sensor.cb_branch_circuit_power
         above: 3600
     condition:
       - condition: state

@@ -103,13 +103,18 @@ sensor:
       - clamp:
           min_value: 0
 
-  - name: Energy
-    platform: total_daily_energy
+  - id: energy
+    name: Energy
+    platform: integration
     device_id: $tion_device_id
+    sensor: tion_power_adj
+    time_unit: h
+    integration_method: trapezoid
+    restore: true
+    state_class: total_increasing
+    device_class: energy
     unit_of_measurement: kWh
     accuracy_decimals: 2
-    power_id: tion_power_adj
-    method: trapezoid
     filters:
       - multiply: 0.001
       - throttle: 5min
@@ -118,16 +123,15 @@ interval:
   - interval: 10s
     then:
       - lambda: |-
-            if (std::isnan(id(tion_power).state)) {
-                id(tion_power_adj).publish_state(0);
-            }
+          if (std::isnan(id(tion_power).state)) {
+              id(tion_power_adj).publish_state(0);
+          }
 
 switch:
   - platform: tion
     name: LED
     type: led
     device_id: $tion_device_id
-
 
   - platform: tion
     name: Recirculation

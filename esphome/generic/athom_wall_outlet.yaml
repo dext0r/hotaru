@@ -5,8 +5,6 @@ packages:
 
 substitutions:
   relay_restore_mode: ALWAYS_OFF
-  update_interval: 5s
-  nan_timeout: 15s
 
 esphome:
   name: athom-wall-outlet
@@ -22,9 +20,6 @@ esphome:
 
 esp8266:
   board: esp8285
-
-preferences:
-  flash_write_interval: 10min
 
 logger:
   baud_rate: 0
@@ -48,26 +43,22 @@ sensor:
   - platform: cse7766
     voltage:
       name: Voltage
-      accuracy_decimals: 0
+      internal: true
       disabled_by_default: true
+      accuracy_decimals: 0
       filters:
-        - throttle_average: ${update_interval}
+        - throttle_average: 5s
 
     power:
-      id: power
-      name: Power
-      accuracy_decimals: 0
+      id: power_raw
+      internal: true
       filters:
-        - lambda: |-
-            if (x < 3.0) return 0;
-            return x;
-        - throttle_average: ${update_interval}
-        - round: 0
-        - timeout: ${nan_timeout}
+        - throttle_average: 1s
+        - timeout: 15s
       on_value:
-        - sensor.template.publish:
-            id: power_adj
-            state: !lambda return x;
+        - lambda: |-
+            id(power_avg).publish_state(x);
+            id(power_adj).publish_state(x);
 
 light:
   - id: button_led
@@ -79,10 +70,10 @@ light:
 
 switch:
   - id: relay
-    platform: gpio
     name: ''
-    device_class: outlet
+    platform: gpio
     pin: 12
+    device_class: outlet
     restore_mode: $relay_restore_mode
     on_turn_on:
       - light.turn_on: button_led

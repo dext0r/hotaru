@@ -12,7 +12,6 @@ esphome:
   model: MSAG1-09N8C2 / ESP8266
   name_add_mac_suffix: false
 
-
 binary_sensor:
   - id: bedroom_ac_running
     platform: homeassistant
@@ -23,14 +22,10 @@ sensor:
     platform: homeassistant
     entity_id: sensor.cb_branch_circuit_power_for_ac
 
-  - id: power
-    name: Power
+  - id: power_raw
     platform: template
-    update_interval: 5s
-    device_class: power
-    state_class: measurement
+    update_interval: 1s
     unit_of_measurement: W
-    accuracy_decimals: 0
     lambda: |-
       auto power = 2.0; // мощность в standby
 
@@ -51,9 +46,7 @@ sensor:
       }
 
       return power;
-    filters:
-      - round: 0
     on_value:
-      - sensor.template.publish:
-          id: power_adj
-          state: !lambda return x;
+      - lambda: |-
+          id(power_avg).publish_state(x);
+          id(power_adj).publish_state(x);

@@ -1,30 +1,52 @@
-# Костыль для доставки нулевой мощности в total_daily_energy при отвале (NaN) датчика мощности.
-# Без костыля TDE может неправильно насчитать потребление, если мощность держалась в NaN какое-то время,
-# а потом снова стала нормальной.
+# Костыль для доставки нулевой мощности в integration сенсор при отвале (NaN) датчика мощности.
+# Без костыля integration (да и total_daily_energy) может неправильно насчитать потребление,
+# если мощность держалась в NaN какое-то время, а потом снова стала нормальной.
 #
-# Проблема кроется тут: https://github.com/esphome/esphome/blob/5a984b54cfce79fbd6ad93365cf8ccc148942d6f/esphome/components/total_daily_energy/total_daily_energy.cpp#L52
+# Проблема кроется тут:
+# * https://github.com/esphome/esphome/blob/5a984b54cfce79fbd6ad93365cf8ccc148942d6f/esphome/components/total_daily_energy/total_daily_energy.cpp#L52
+# * https://github.com/esphome/esphome/blob/5a984b54cfce79fbd6ad93365cf8ccc148942d6f/esphome/components/integration/integration_sensor.cpp#L25
 # Пример: 11:59:00/100W 12:00:00/NaN 18:00:00/200W
 # В этом примере будет посчитано 150W*6 часов=900Wh (для метода trapezoid).
 # По-хорошему нужно отправить баг репорт в esphome, но мне пока лень :)
 
+preferences:
+  flash_write_interval: 20min
+
 sensor:
-  - id: power_adj
-    name: Power Adjusted
+  # улетает в HA
+  - id: power_avg
+    name: Power
     platform: template
-    internal: true
     update_interval: never
+    device_class: power
+    state_class: measurement
     unit_of_measurement: W
     accuracy_decimals: 0
+    filters:
+      - throttle_average: 5s
+      - round: 0
+      - timeout: 15s
+
+  # для подсчёта в integration, гарантированно регулярно обновляется
+  - id: power_adj
+    platform: template
+    update_interval: never
+    unit_of_measurement: W
     filters:
       - clamp:
           min_value: 0
 
-  - platform: total_daily_energy
+  - id: energy
     name: Energy
+    platform: integration
+    sensor: power_adj
+    time_unit: h
+    integration_method: trapezoid
+    restore: true
+    state_class: total_increasing
+    device_class: energy
     unit_of_measurement: kWh
     accuracy_decimals: 2
-    power_id: power_adj
-    method: trapezoid
     filters:
       - multiply: 0.001
       - throttle: 5min
@@ -33,6 +55,6 @@ interval:
   - interval: 10s
     then:
       - lambda: |-
-            if (std::isnan(id(power).state)) {
-                id(power_adj).publish_state(0);
-            }
+          if (std::isnan(id(power_raw).state)) {
+            id(power_adj).publish_state(0);
+          }

@@ -166,6 +166,12 @@ automation:
       - condition: state
         entity_id: binary_sensor.anyone_home
         state: 'on'
+
+      - condition: state
+        entity_id: binary_sensor.living_room_occupancy
+        state:
+          - 'on'
+          - unavailable
     action:
       - action: switch.turn_on
         entity_id: switch.living_room_heater
@@ -190,6 +196,16 @@ automation:
         device_id: 624d122c903dda63a2c71e9d636f4a0c
         type: action
         subtype: brightness_move_down
+    conditions:
+      - condition: state
+        entity_id: binary_sensor.anyone_home
+        state: 'on'
+
+      - condition: state
+        entity_id: binary_sensor.living_room_occupancy
+        state:
+          - 'on'
+          - unavailable
     actions:
       - if:
           - condition: state

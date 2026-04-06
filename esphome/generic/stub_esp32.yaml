@@ -1,0 +1,11 @@
+packages:
+  base: !include ../common/esp32.yaml
+
+esphome:
+  name: esp32
+
+esp32:
+  board: esp32dev
+  framework:
+    advanced:
+      minimum_chip_revision: '1.0'

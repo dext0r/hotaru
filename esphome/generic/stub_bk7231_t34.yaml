@@ -1,0 +1,8 @@
+packages:
+  base: !include ../common/base.yaml
+
+esphome:
+  name: bk7231-t34
+
+bk72xx:
+  board: generic-bk7231n-qfn32-tuya

@@ -3265,6 +3265,15 @@ views:
             entity: media_player.atv
           - type: media-control
             entity: media_player.living_room_yandex_module
+      - square: false
+        columns: 2
+        type: grid
+        cards:
+          - type: tile
+            entity: switch.avr_power
+            name: AVR
+          - type: tile
+            entity: switch.avr_sw
       - type: custom:layout-break
       - type: vertical-stack
         cards:

@@ -1,0 +1,11 @@
+packages:
+  base: !include generic/sonoff_mini.yaml
+
+substitutions:
+  relay_restore_mode: ALWAYS_ON
+
+esphome:
+  friendly_name: AVR SW
+  area: Living Room
+  name: avr-sw
+  name_add_mac_suffix: false

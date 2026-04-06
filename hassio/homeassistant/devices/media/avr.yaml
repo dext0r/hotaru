@@ -70,3 +70,25 @@ automation:
 
           - action: switch.toggle
             entity_id: switch.avr_power
+
+  - id: avr_sw_turn_on
+    alias: 'AVR SW: Turn on'
+    triggers:
+      - trigger: state
+        entity_id: switch.avr_power
+        to: 'on'
+    actions:
+      - action: switch.turn_on
+        entity_id: switch.avr_sw
+
+  - id: avr_sw_turn_off
+    alias: 'AVR SW: Turn off'
+    triggers:
+      - trigger: state
+        entity_id: switch.avr_power
+        to: 'off'
+        for:
+          seconds: 30
+    actions:
+      - action: switch.turn_off
+        entity_id: switch.avr_sw

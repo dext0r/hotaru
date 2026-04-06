@@ -1,6 +1,6 @@
 external_components:
-  - source: github://dentra/esphome-tion@18952225d15095a9340d390818557240f0ba62ce # next
-  - source: github://dentra/esphome-components@c3f324689a391eccdc82b7edef662e0aaf7aed99
+  - source: github://dentra/esphome-tion@00019c4346369ac8dc444bf1fb779002b0350fb6 # next
+  - source: github://dentra/esphome-components@43e6fd481f8cb228505120f93b997867bf39ccaf
     components:
       - crash_info
       - cgp
@@ -82,6 +82,7 @@ sensor:
     device_id: $tion_device_id
     unit_of_measurement: W
     accuracy_decimals: 0
+    entity_category: ''
     filters:
       - multiply: 1000
       - round: 0

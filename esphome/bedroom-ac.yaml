@@ -33,8 +33,7 @@ sensor:
         return power;
       }
 
-      // Сломается в 2026.3+
-      if (!global_api_server->is_connected(true)) {
+      if (!global_api_server->is_connected_with_state_subscription()) {
         ESP_LOGW("power_meter", "No API connection with power state");
         return power;
       }

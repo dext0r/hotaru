@@ -3,7 +3,7 @@ name = "hotaru-esphome"
 version = "0.0.0"
 requires-python = ">=3.13"
 dependencies = [
-    "esphome==2026.2.4",
+    "esphome==2026.3.2",
     "poethepoet>=0.36.0",
 ]
 

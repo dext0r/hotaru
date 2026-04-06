@@ -9,3 +9,12 @@ esphome:
   area: Living Room
   name: living-room-heater-socket
   name_add_mac_suffix: false
+
+packet_transport:
+  platform: udp
+  sensors:
+    - power_adj
+
+udp:
+  addresses:
+    - 192.168.5.17 # living-room-heater

@@ -1,8 +1,28 @@
 packages:
   base: !include generic/sonoff_basic_r3.yaml
+  energy: !include common/energy.yaml
 
 esphome:
   friendly_name: Living Room Heater
   area: Living Room
   name: living-room-heater
   name_add_mac_suffix: false
+
+udp:
+
+packet_transport:
+  platform: udp
+
+sensor:
+  - id: power_raw
+    platform: packet_transport
+    provider: living-room-heater-socket
+    remote_id: power_adj
+    unit_of_measurement: W
+    accuracy_decimals: 2
+    filters:
+      - timeout: 15s
+    on_value:
+      - lambda: |-
+          id(power_avg).publish_state(x);
+          id(power_adj).publish_state(x);

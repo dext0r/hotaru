@@ -1,0 +1,12 @@
+packages:
+  base: !include generic/bsd33_ln882h_plug.yaml
+
+substitutions:
+  relay_restore_mode: ALWAYS_ON
+  power_led: 'false'
+
+esphome:
+  friendly_name: Bedroom Mobile Charger
+  area: Bedroom
+  name: bedroom-mobile-charger
+  name_add_mac_suffix: false

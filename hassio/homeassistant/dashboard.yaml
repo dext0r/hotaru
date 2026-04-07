@@ -1854,6 +1854,9 @@ views:
                     :host .mc__bg {
                       display: none;
                     }
+                    :host {
+                      --ha-icon-button-size: auto;
+                    }
           - type: custom:stack-in-card
             cards:
               - type: custom:mini-climate
@@ -1934,6 +1937,9 @@ views:
                     :host .mc__bg {
                       display: none;
                     }
+                    :host {
+                      --ha-icon-button-size: auto;
+                    }
           - type: custom:stack-in-card
             cards:
               - type: custom:mini-climate
@@ -2013,6 +2019,9 @@ views:
                     }
                     :host .mc__bg {
                       display: none;
+                    }
+                    :host {
+                      --ha-icon-button-size: auto;
                     }
       - type: vertical-stack
         cards:
@@ -2118,6 +2127,9 @@ views:
                     }
                     :host .mh__bg {
                       display: none;
+                    }
+                    :host .mh-target_humidifier {
+                      padding-left: 50px;
                     }
               - type: custom:mushroom-chips-card
                 chips:
@@ -2488,7 +2500,7 @@ views:
                 }
 
                 :host {
-                  max-width: 50px;
+                  max-width: 20px;
                   border: 0;
                 }
           - type: custom:mushroom-entity-card
@@ -2527,7 +2539,7 @@ views:
                 }
 
                 :host {
-                  max-width: 50px;
+                  max-width: 20px;
                   border: 0;
                 }
           - type: custom:mushroom-entity-card
@@ -2572,7 +2584,7 @@ views:
                     }
 
                     :host {
-                      max-width: 50px;
+                      max-width: 20px;
                     }
               - type: custom:mushroom-entity-card
                 entity: binary_sensor.dishwasher_door
@@ -2598,7 +2610,7 @@ views:
                     }
 
                     :host {
-                      max-width: 50px;
+                      max-width: 20px;
                     }
               - type: custom:mushroom-entity-card
                 entity: switch.dishwasher_socket
@@ -2611,7 +2623,8 @@ views:
                     }
 
                     :host {
-                      max-width: 70px;
+                      max-width: 50px;
+                      padding-right: 10px
                     }
           - type: conditional
             conditions:

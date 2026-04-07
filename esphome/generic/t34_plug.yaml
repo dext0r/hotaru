@@ -1,0 +1,74 @@
+# https://www.elektroda.com/rtvforum/topic4099021.html
+# https://www.elektroda.com/news/news4112776.html
+# Обычная туевая розетка с маркетплейса (https://www.wildberries.ru/catalog/142695350/detail.aspx?size=241147262)
+# Версия без доступного UART, перешивал с выпаиванием феном
+
+packages:
+  base: !include ../common/base.yaml
+  energy: !include ../common/energy.yaml
+
+substitutions:
+  relay_restore_mode: RESTORE_DEFAULT_OFF
+
+esphome:
+  friendly_name: Tuya T34 Smart Plug
+  name: t34-plug
+  model: Tuya T34 Smart Plug
+
+bk72xx:
+  board: generic-bk7231n-qfn32-tuya
+
+binary_sensor:
+  - id: button
+    platform: gpio
+    pin: P26
+    internal: true
+    on_press:
+      then:
+        switch.toggle: relay
+
+status_led:
+  pin: P24
+
+sensor:
+  - platform: hlw8012
+    sel_pin:
+     number: P8
+     inverted: true
+    cf_pin:
+      number: P6
+      inverted: true
+    cf1_pin:
+      number: P7
+      inverted: true
+    model: BL0937
+    current_resistor: 0.00103
+    voltage_divider: 810
+    initial_mode: VOLTAGE
+    change_mode_every: never
+    update_interval: 1s
+
+    voltage:
+      name: Voltage
+      disabled_by_default: true
+      internal: true
+      accuracy_decimals: 0
+      filters:
+        - round: 0
+
+    power:
+      id: power_raw
+      filters:
+        - timeout: 15s
+      on_value:
+        - lambda: |-
+            id(power_avg).publish_state(x);
+            id(power_adj).publish_state(x);
+
+switch:
+  - id: relay
+    platform: gpio
+    pin: P14
+    name: ''
+    device_class: outlet
+    restore_mode: $relay_restore_mode

@@ -1,0 +1,11 @@
+packages:
+  base: !include generic/t34_plug.yaml
+
+substitutions:
+  relay_restore_mode: ALWAYS_ON
+
+esphome:
+  friendly_name: Station Duo Plug
+  area: Kitchen
+  name: station-duo-plug
+  name_add_mac_suffix: false

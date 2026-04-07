@@ -80,6 +80,33 @@ automation:
             data:
               value: 0.4
 
+  - id: yandex_station_duo_plug_turn_on
+    alias: 'Yandex Station Duo Plug: Turn on'
+    triggers:
+      - trigger: state
+        entity_id: input_select.home_mode
+        to: Day
+
+    actions:
+      - action: switch.turn_on
+        entity_id: switch.station_duo_plug
+
+  - id: yandex_station_duo_plug_turn_off
+    alias: 'Yandex Station Duo Plug: Turn off'
+    triggers:
+      - trigger: state
+        entity_id: input_select.home_mode
+        to:
+          - Night
+          - Vacation
+
+      - trigger: state
+        entity_id: input_boolean.scene_sleepy_mood
+        to: 'on'
+    actions:
+      - action: switch.turn_off
+        entity_id: switch.station_duo_plug
+
 script:
   yandex_station_tts:
     alias: 'Yandex Station: TTS'

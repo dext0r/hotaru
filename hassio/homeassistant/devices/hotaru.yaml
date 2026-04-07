@@ -19,3 +19,11 @@ template:
           {{ states('sensor.hotaru_exhaust_fan_speed_raw')|int|round(-2) }}
         availability: >
           {{ states('sensor.hotaru_exhaust_fan_speed_raw') not in ['unavailable', 'unknown'] }}
+
+sensor:
+  - name: Pingzen Heartbeat
+    unique_id: sensor.pingzen_heartbeat
+    platform: rest
+    resource: !secret pingzen_heartbeat_url
+    scan_interval:
+      seconds: 60

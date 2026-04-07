@@ -163,6 +163,7 @@ recorder:
       - sensor.chores
       - sensor.kettle_water_temperature
       - sensor.humidifier_need_refill
+      - sensor.pingzen_heartbeat
       - switch.kettle_power
     entity_globs:
       - '*.0x*'

@@ -1,0 +1,138 @@
+packages:
+  base: !include ../common/esp32.yaml
+
+substitutions:
+  relay_1_restore_mode: RESTORE_DEFAULT_OFF
+  relay_2_restore_mode: RESTORE_DEFAULT_OFF
+
+esphome:
+  friendly_name: sonoff-dual-r3
+  model: Sonoff Dual R3
+
+esp32:
+  framework:
+    advanced:
+      minimum_chip_revision: '1.0'
+
+preferences:
+  flash_write_interval: 20min
+
+uart:
+  tx_pin: 25
+  rx_pin: 26
+  baud_rate: 4800
+  stop_bits: 2
+
+globals:
+  - id: total_energy_1
+    type: float
+    restore_value: yes
+
+  - id: total_energy_2
+    type: float
+    restore_value: yes
+
+binary_sensor:
+  - id: button
+    platform: gpio
+    pin:
+      number: 0
+      mode:
+        input: true
+        pullup: true
+      inverted: true
+    internal: true
+    filters:
+      - delayed_on: 50ms
+    on_press:
+      - switch.toggle: relay_1
+
+light:
+  - id: led
+    platform: status_led
+    pin:
+      number: 13
+      inverted: true
+    internal: true
+
+sensor:
+  - platform: bl0939
+    update_interval: 5s
+    active_power_1:
+      name: Power
+      device_id: device_1
+      filters:
+        - round: 0
+        - timeout: 15s
+
+    active_power_2:
+      name: Power
+      device_id: device_2
+      filters:
+        - round: 0
+        - timeout: 15s
+
+    energy_1:
+      id: energy_1_raw
+      on_value:
+        then:
+          - lambda: |-
+              static float prev = 0.0;
+              float curr = id(energy_1_raw).state;
+              id(total_energy_1) += curr - prev;
+              prev = curr;
+              id(energy_1).update();
+
+    energy_2:
+      id: energy_2_raw
+      on_value:
+        then:
+          - lambda: |-
+              static float prev = 0.0;
+              float curr = id(energy_2_raw).state;
+              id(total_energy_2) += curr - prev;
+              prev = curr;
+              id(energy_2).update();
+
+  - id: energy_1
+    name: Energy
+    platform: template
+    device_id: device_1
+    state_class: total_increasing
+    device_class: energy
+    unit_of_measurement: kWh
+    accuracy_decimals: 2
+    lambda: |-
+      return id(total_energy_1);
+    filters:
+      - throttle: 5min
+
+  - id: energy_2
+    name: Energy
+    platform: template
+    device_id: device_2
+    state_class: total_increasing
+    device_class: energy
+    unit_of_measurement: kWh
+    accuracy_decimals: 2
+    lambda: |-
+      return id(total_energy_2);
+    filters:
+      - throttle: 5min
+
+switch:
+  - id: relay_1
+    name: ''
+    platform: gpio
+    device_id: device_1
+    pin: 27
+    device_class: outlet
+    restore_mode: $relay_1_restore_mode
+
+  - id: relay_2
+    name: ''
+    platform: gpio
+    device_id: device_2
+    pin: 14
+    device_class: outlet
+    restore_mode: $relay_2_restore_mode

@@ -1,5 +1,6 @@
 packages:
   base: !include common/esp8266.yaml
+  energy: !include common/energy.yaml
 
 esphome:
   friendly_name: Kitchen Worktop Light
@@ -51,6 +52,74 @@ switch:
     pin:
       number: 1
       inverted: true
+
+sensor:
+  - id: power_w1
+    platform: template
+    update_interval: 1s
+    unit_of_measurement: W
+    lambda: |-
+      if (!id(light_w1).remote_values.get_state()) {
+        return 0;
+      }
+
+      return id(light_w1).remote_values.get_brightness() * 100;
+    filters:
+      - calibrate_linear:
+          method: exact
+          datapoints:
+            - 0.0 -> 0
+            - 20.0 -> 0.34
+            - 30.0 -> 0.90
+            - 40.0 -> 2.00
+            - 50.0 -> 3.90
+            - 60.0 -> 6.22
+            - 70.0 -> 9.45
+            - 80.0 -> 14.0
+            - 90.0 -> 19.70
+            - 100.0 -> 26.50
+      - clamp:
+          min_value: 0
+
+  - id: power_w2
+    platform: template
+    update_interval: 1s
+    unit_of_measurement: W
+    lambda: |-
+      if (!id(light_w2).remote_values.get_state()) {
+        return 0;
+      }
+
+      return id(light_w2).remote_values.get_brightness() * 100;
+    filters:
+      - calibrate_linear:
+          method: exact
+          datapoints:
+            - 0.0 -> 0
+            - 20.0 -> 0.11
+            - 40.0 -> 0.65
+            - 50.0 -> 1.27
+            - 60.0 -> 2.05
+            - 70.0 -> 3.10
+            - 80.0 -> 4.55
+            - 90.0 -> 6.40
+            - 100.0 -> 8.55
+      - clamp:
+          min_value: 0
+
+  - id: power_raw
+    platform: combination
+    type: sum
+    sources:
+      - source: power_w1
+      - source: power_w2
+    unit_of_measurement: W
+    filters:
+      - offset: 1.2 # standby
+    on_value:
+      - lambda: |-
+          id(power_avg).publish_state(x);
+          id(power_adj).publish_state(x);
 
 status_led:
   pin:

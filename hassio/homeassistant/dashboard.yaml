@@ -2054,6 +2054,14 @@ views:
                     round: 0
                     source:
                       entity: sensor.living_room_humidifier_water_tank_level
+                  power:
+                    icon: mdi:flash
+                    unit: W
+                    round: 0
+                    tap_action:
+                      action: more-info
+                    source:
+                      entity: sensor.living_room_humidifier_power
                   problem:
                     tap_action: more-info
                     icon:
@@ -2199,6 +2207,14 @@ views:
                   default: 'on'
                   hide: 'on'
                 indicators:
+                  power:
+                    icon: mdi:flash
+                    unit: W
+                    round: 0
+                    tap_action:
+                      action: more-info
+                    source:
+                      entity: sensor.bedroom_humidifier_power
                   control:
                     tap_action: more-info
                     icon:
@@ -2315,9 +2331,8 @@ views:
                 entity: input_datetime.humidifiers_last_cleanup
                 name: Last Cleanup
                 color: brown
-              - type: tile
-                entity: switch.living_room_humidifier_socket
-                name: LR Humidifier Socket
+                vertical: false
+                features_position: bottom
       - square: false
         type: grid
         columns: 3

@@ -1,0 +1,11 @@
+packages:
+  base: !include generic/bsd33_ln882h_plug.yaml
+
+substitutions:
+  relay_restore_mode: ALWAYS_ON
+
+esphome:
+  friendly_name: Workshop Humidifiers Plug
+  area: Workshop
+  name: workshop-humidifiers-plug
+  name_add_mac_suffix: false

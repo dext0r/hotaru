@@ -8,9 +8,12 @@ template:
         name: CB Branch Circuit Power For AC
         state: >
           {% set power = states('sensor.cb_branch_circuit_power') | int(0) %}
+          {% set power = power - states('sensor.bedroom_desk_plug_power') | int(0) %}
+          {% set power = power - states('sensor.bedroom_intake_fan_power') | int(0) %}
+          {% set power = power - states('sensor.dryer_power') | int(0) %}
+          {% set power = power - states('sensor.vacuum_charger_power') | int(0) %}
           {% set power = power - states('sensor.washing_machine_power') | int(0) %}
           {% set power = power - states('sensor.water_heater_power') | int(0) %}
-          {% set power = power - states('sensor.bedroom_intake_fan_power') | int(0) %}
           {% set power = power - states('sensor.workshop_intake_fan_power') | int(0) %}
 
           {{ [power, 0] | max }}

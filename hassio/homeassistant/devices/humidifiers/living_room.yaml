@@ -222,7 +222,7 @@ automation:
               {{ trigger.entity_id == 'binary_sensor.living_room_humidifier_water_leak' }}
         then:
           - action: switch.turn_off
-            entity_id: switch.living_room_humidifier_socket
+            entity_id: switch.living_room_humidifier_plug
 
           - service: notify.mobile_app_misaka
             data:

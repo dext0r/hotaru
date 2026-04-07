@@ -1,22 +1,19 @@
 packages:
-  base: !include generic/sonoff_basic_r2.yaml
+  base: !include generic/bsd33_ln882h_plug.yaml
 
 substitutions:
-  relay_restore_mode: RESTORE_DEFAULT_OFF
+  relay_restore_mode: RESTORE_DEFAULT_ON
+  power_led: 'false'
 
 esphome:
-  friendly_name: Living Room Humidifier Socket
+  friendly_name: Living Room Humidifier Plug
   area: Living Room
-  name: living-room-humidifier-socket
+  name: living-room-humidifier-plug
   name_add_mac_suffix: false
 
 api:
   on_client_disconnected:
     - script.execute: relay_turn_off
-
-switch:
-  - id: !extend relay
-    device_class: outlet
 
 script:
   - id: relay_turn_off

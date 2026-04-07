@@ -1,0 +1,90 @@
+# https://www.elektroda.com/rtvforum/topic4091325.html
+packages:
+  base: !include ../common/ln882x.yaml
+  energy: !include ../common/energy.yaml
+
+substitutions:
+  relay_restore_mode: RESTORE_DEFAULT_OFF
+  power_led: 'true'
+
+esphome:
+  friendly_name: BSD33 Smart Plug
+  name: bsd33-plug
+  model: BSD33 Smart Plug (LN882H)
+
+  on_boot:
+    priority: -100.0
+    then:
+      - if:
+          condition:
+            - switch.is_on: relay
+            - lambda: return ${power_led};
+          then:
+            - light.turn_on: button_led
+
+logger:
+  baud_rate: 0 # иначе будет тускло светиться диодик
+
+binary_sensor:
+  - id: button
+    platform: gpio
+    pin: PA7
+    internal: true
+    on_press:
+      then:
+        switch.toggle: relay
+
+light:
+  - id: button_led
+    platform: status_led
+    pin:
+      number: PA6
+      inverted: true
+    internal: true
+
+sensor:
+  - platform: hlw8012
+    sel_pin:
+     number: PB6
+     inverted: true
+    cf_pin: PB4
+    cf1_pin: PB5
+    model: BL0937
+    current_resistor: 0.001
+    voltage_divider: 1526
+    initial_mode: VOLTAGE
+    change_mode_every: never
+    update_interval: 1s
+
+    voltage:
+      name: Voltage
+      disabled_by_default: true
+      internal: true
+      accuracy_decimals: 0
+      filters:
+        - round: 0
+
+    power:
+      id: power_raw
+      filters:
+        - timeout: 15s
+      on_value:
+        - lambda: |-
+            id(power_avg).publish_state(x);
+            id(power_adj).publish_state(x);
+
+switch:
+  - id: relay
+    platform: gpio
+    pin: PB3
+    name: ''
+    device_class: outlet
+    restore_mode: $relay_restore_mode
+    on_turn_on:
+      - if:
+          condition:
+            - lambda: return ${power_led};
+          then:
+            - light.turn_on: button_led
+    on_turn_off:
+      - light.turn_off: button_led

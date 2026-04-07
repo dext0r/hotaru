@@ -3041,164 +3041,17 @@ views:
           - type: tile
             entity: sensor.porch_door_lock_battery
             name: Porch Door Lock
-      - type: custom:layout-break
-      - type: vertical-stack
-        cards:
-          - type: custom:mushroom-entity-card
-            entity: sensor.ups_status
-            icon: mdi:home-battery
-            icon_color: teal
-            layout: horizontal
-            primary_info: name
-          - type: custom:mushroom-chips-card
-            chips:
-              - type: entity
-                entity: sensor.ups_battery_charge
-              - type: entity
-                entity: sensor.ups_battery_voltage
-              - type: entity
-                entity: sensor.ups_temperature
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
             title: ''
-            subtitle: Sockets
+            subtitle: Living Room Sockets
             alignment: center
-          - square: false
-            columns: 2
-            type: grid
-            cards:
-              - type: custom:mushroom-legacy-template-card
-                primary: Dishwasher
-                secondary: >-
-                  {{ states('switch.dishwasher_socket')|capitalize }}
-
-                  {% if not is_state('sensor.dishwasher_power', 'unavailable')
-                  %}
-                    | {{ states('sensor.dishwasher_power') }} W
-                  {% endif %}
-                icon: mdi:dishwasher
-                entity: switch.dishwasher_socket
-                icon_color: |-
-                  {% if is_state('switch.dishwasher_socket', 'unavailable') %}
-                    var(--rgb-disabled)
-                  {% elif is_state('switch.dishwasher_socket', 'on') %}
-                    var(--rgb-state-entity)
-                  {% else %}
-                    var(--rgb-grey)
-                  {% endif %}
-                tap_action:
-                  action: more-info
-              - type: custom:mushroom-legacy-template-card
-                primary: Washing Machine
-                secondary: >-
-                  {{ states('switch.washing_machine_socket')|capitalize }}
-
-                  {% if not is_state('sensor.washing_machine_power',
-                  'unavailable') %}
-                    | {{ states('sensor.washing_machine_power') | int }} W
-                  {% endif %}
-                icon: mdi:washing-machine
-                entity: switch.washing_machine_socket
-                icon_color: >-
-                  {% if is_state('switch.washing_machine_socket', 'unavailable')
-                  %}
-                    var(--rgb-disabled)
-                  {% elif is_state('switch.washing_machine_socket', 'on') %}
-                    var(--rgb-state-entity)
-                  {% else %}
-                    var(--rgb-grey)
-                  {% endif %}
-                tap_action:
-                  action: more-info
-              - type: custom:mushroom-legacy-template-card
-                primary: Dryer
-                secondary: |-
-                  {{ states('switch.dryer_socket')|capitalize }}
-                  {% if not is_state('sensor.dryer_power', 'unavailable') %}
-                    | {{ states('sensor.dryer_power') }} W
-                  {% endif %}
-                icon: mdi:tumble-dryer
-                entity: switch.dryer_socket
-                icon_color: |-
-                  {% if is_state('switch.dryer_socket', 'unavailable') %}
-                    var(--rgb-disabled)
-                  {% elif is_state('switch.dryer_socket', 'on') %}
-                    var(--rgb-state-entity)
-                  {% else %}
-                    var(--rgb-grey)
-                  {% endif %}
-                tap_action:
-                  action: more-info
-              - type: custom:mushroom-legacy-template-card
-                primary: Ironing Board
-                secondary: >-
-                  {{ states('switch.ironing_board_socket')|capitalize }}
-
-                  {% if not is_state('sensor.ironing_board_socket',
-                  'unavailable') %}
-                    | {{ states('sensor.ironing_board_socket_power') | int }} W
-                  {% endif %}
-                icon: mdi:iron-board
-                entity: switch.ironing_board_socket
-                icon_color: >-
-                  {% if is_state('switch.ironing_board_socket', 'unavailable')
-                  %}
-                    var(--rgb-disabled)
-                  {% elif is_state('switch.ironing_board_socket', 'on') %}
-                    var(--rgb-pink)
-                  {% else %}
-                    var(--rgb-grey)
-                  {% endif %}
-                tap_action:
-                  action: more-info
-              - type: custom:mushroom-legacy-template-card
-                primary: Water Heater
-                secondary: >-
-                  {{ states('switch.water_heater_socket')|capitalize }}
-
-                  {% if not is_state('sensor.water_heater_power', 'unavailable')
-                  %}
-                    | {{ states('sensor.water_heater_power') | int }} W
-                  {% endif %}
-                icon: mdi:water-boiler
-                entity: switch.water_heater_socket
-                icon_color: |-
-                  {% if is_state('switch.water_heater_socket', 'unavailable') %}
-                    var(--rgb-disabled)
-                  {% elif is_state('switch.water_heater_socket', 'on') %}
-                    var(--rgb-state-entity)
-                  {% else %}
-                    var(--rgb-grey)
-                  {% endif %}
-                tap_action:
-                  action: more-info
-              - type: custom:mushroom-legacy-template-card
-                primary: Scooter Charger
-                secondary: >-
-                  {{ states('switch.scooter_charger_socket')|capitalize }}
-
-                  {% if not is_state('sensor.scooter_charger_socket_power',
-                  'unavailable') %}
-                    | {{ states('sensor.scooter_charger_socket_power') }} W
-                  {% endif %}
-                icon: mdi:scooter
-                entity: switch.scooter_charger_socket
-                icon_color: >-
-                  {% if is_state('switch.scooter_charger_socket', 'unavailable')
-                  %}
-                    var(--rgb-disabled)
-                  {% elif is_state('switch.scooter_charger_socket', 'on') %}
-                    var(--rgb-state-entity)
-                  {% else %}
-                    var(--rgb-grey)
-                  {% endif %}
-                tap_action:
-                  action: more-info
-          - type: custom:mushroom-title-card
-            title: ''
-            subtitle: Sockets Living Room
-            alignment: center
+            card_mod:
+              style: |
+                :host ha-card {
+                  padding-top: 5px;
+                }
           - square: false
             columns: 2
             type: grid
@@ -3247,10 +3100,38 @@ views:
                   {% endif %}
                 tap_action:
                   action: more-info
+              - type: custom:mushroom-legacy-template-card
+                primary: Humidifier
+                secondary: >-
+                  {{ states('switch.living_room_humidifier_plug')|capitalize }}
+
+                  {% if not is_state('sensor.living_room_humidifier_power',
+                  'unavailable') %}
+                    | {{ states('sensor.living_room_humidifier_power') | int }} W
+                  {% endif %}
+                icon: mdi:air-humidifier
+                entity: switch.living_room_humidifier_plug
+                icon_color: >-
+                  {% if is_state('switch.living_room_humidifier_plug',
+                  'unavailable') %}
+                    var(--rgb-disabled)
+                  {% elif is_state('switch.living_room_humidifier_plug', 'on')
+                  %}
+                    var(--rgb-state-entity)
+                  {% else %}
+                    var(--rgb-grey)
+                  {% endif %}
+                tap_action:
+                  action: more-info
           - type: custom:mushroom-title-card
             title: ''
-            subtitle: Sockets Bedroom
+            subtitle: Bedroom Sockets
             alignment: center
+            card_mod:
+              style: |
+                :host ha-card {
+                  padding-top: 5px;
+                }
           - square: false
             columns: 2
             type: grid
@@ -3271,6 +3152,403 @@ views:
                   'unavailable') %}
                     var(--rgb-disabled)
                   {% elif is_state('switch.bedroom_humidifier_socket', 'on') %}
+                    var(--rgb-state-entity)
+                  {% else %}
+                    var(--rgb-grey)
+                  {% endif %}
+                tap_action:
+                  action: more-info
+              - type: custom:mushroom-legacy-template-card
+                primary: Desk
+                secondary: >-
+                  {{ states('switch.bedroom_desk_plug')|capitalize }}
+
+                  {% if not is_state('sensor.bedroom_desk_plug_power',
+                  'unavailable') %}
+                    | {{ states('sensor.bedroom_desk_plug_power') | int }} W
+                  {% endif %}
+                icon: mdi:desk
+                entity: switch.bedroom_desk_plug
+                icon_color: |-
+                  {% if is_state('switch.bedroom_desk_plug', 'unavailable') %}
+                    var(--rgb-disabled)
+                  {% elif is_state('switch.bedroom_desk_plug', 'on') %}
+                    var(--rgb-state-entity)
+                  {% else %}
+                    var(--rgb-grey)
+                  {% endif %}
+                tap_action:
+                  action: more-info
+              - type: custom:mushroom-legacy-template-card
+                primary: Mobile Charger
+                secondary: >-
+                  {{ states('switch.bedroom_mobile_charger')|capitalize }}
+
+                  {% if not is_state('sensor.bedroom_mobile_charger_power',
+                  'unavailable') %}
+                    | {{ states('sensor.bedroom_mobile_charger_power') | int }} W
+                  {% endif %}
+                icon: mdi:battery-charging-outline
+                entity: switch.bedroom_mobile_charger
+                icon_color: >-
+                  {% if is_state('switch.bedroom_mobile_charger', 'unavailable')
+                  %}
+                    var(--rgb-disabled)
+                  {% elif is_state('switch.bedroom_mobile_charger', 'on') %}
+                    var(--rgb-state-entity)
+                  {% else %}
+                    var(--rgb-grey)
+                  {% endif %}
+                tap_action:
+                  action: more-info
+      - type: custom:layout-break
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-entity-card
+            entity: sensor.ups_status
+            icon: mdi:home-battery
+            icon_color: teal
+            layout: horizontal
+            primary_info: name
+          - type: custom:mushroom-chips-card
+            chips:
+              - type: entity
+                entity: sensor.ups_battery_charge
+              - type: entity
+                entity: sensor.ups_battery_voltage
+              - type: entity
+                entity: sensor.ups_temperature
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-title-card
+            title: ''
+            subtitle: Bathroom Sockets
+            alignment: center
+            card_mod:
+              style: |
+                :host ha-card {
+                  padding-top: 0;
+                }
+          - square: false
+            columns: 2
+            type: grid
+            cards:
+              - type: custom:mushroom-legacy-template-card
+                primary: Washing Machine
+                secondary: >-
+                  {{ states('switch.washing_machine_socket')|capitalize }}
+
+                  {% if not is_state('sensor.washing_machine_power',
+                  'unavailable') %}
+                    | {{ states('sensor.washing_machine_power') | int }} W
+                  {% endif %}
+                icon: mdi:washing-machine
+                entity: switch.washing_machine_socket
+                icon_color: >-
+                  {% if is_state('switch.washing_machine_socket', 'unavailable')
+                  %}
+                    var(--rgb-disabled)
+                  {% elif is_state('switch.washing_machine_socket', 'on') %}
+                    var(--rgb-state-entity)
+                  {% else %}
+                    var(--rgb-grey)
+                  {% endif %}
+                tap_action:
+                  action: more-info
+              - type: custom:mushroom-legacy-template-card
+                primary: Dryer
+                secondary: |-
+                  {{ states('switch.dryer_socket')|capitalize }}
+                  {% if not is_state('sensor.dryer_power', 'unavailable') %}
+                    | {{ states('sensor.dryer_power') }} W
+                  {% endif %}
+                icon: mdi:tumble-dryer
+                entity: switch.dryer_socket
+                icon_color: |-
+                  {% if is_state('switch.dryer_socket', 'unavailable') %}
+                    var(--rgb-disabled)
+                  {% elif is_state('switch.dryer_socket', 'on') %}
+                    var(--rgb-state-entity)
+                  {% else %}
+                    var(--rgb-grey)
+                  {% endif %}
+                tap_action:
+                  action: more-info
+              - type: custom:mushroom-legacy-template-card
+                primary: Water Heater
+                secondary: >-
+                  {{ states('switch.water_heater_socket')|capitalize }}
+
+                  {% if not is_state('sensor.water_heater_power', 'unavailable')
+                  %}
+                    | {{ states('sensor.water_heater_power') | int }} W
+                  {% endif %}
+                icon: mdi:water-boiler
+                entity: switch.water_heater_socket
+                icon_color: |-
+                  {% if is_state('switch.water_heater_socket', 'unavailable') %}
+                    var(--rgb-disabled)
+                  {% elif is_state('switch.water_heater_socket', 'on') %}
+                    var(--rgb-state-entity)
+                  {% else %}
+                    var(--rgb-grey)
+                  {% endif %}
+                tap_action:
+                  action: more-info
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-title-card
+            title: ''
+            subtitle: Kitchen Sockets
+            alignment: center
+            card_mod:
+              style: |
+                :host ha-card {
+                  padding-top: 5px;
+                }
+          - square: false
+            columns: 2
+            type: grid
+            cards:
+              - type: custom:mushroom-legacy-template-card
+                primary: Dishwasher
+                secondary: >-
+                  {{ states('switch.dishwasher_socket')|capitalize }}
+
+                  {% if not is_state('sensor.dishwasher_power', 'unavailable')
+                  %}
+                    | {{ states('sensor.dishwasher_power') }} W
+                  {% endif %}
+                icon: mdi:dishwasher
+                entity: switch.dishwasher_socket
+                icon_color: |-
+                  {% if is_state('switch.dishwasher_socket', 'unavailable') %}
+                    var(--rgb-disabled)
+                  {% elif is_state('switch.dishwasher_socket', 'on') %}
+                    var(--rgb-state-entity)
+                  {% else %}
+                    var(--rgb-grey)
+                  {% endif %}
+                tap_action:
+                  action: more-info
+              - type: custom:mushroom-legacy-template-card
+                primary: Ovens
+                secondary: >-
+                  {{ states('switch.kitchen_ovens_socket')|capitalize }}
+
+                  {% if not is_state('sensor.kitchen_ovens_socket_power',
+                  'unavailable') %}
+                    | {{ states('sensor.kitchen_ovens_socket_power') | int }} W
+                  {% endif %}
+                icon: mdi:toaster-oven
+                entity: switch.kitchen_ovens_socket
+                icon_color: >-
+                  {% if is_state('switch.kitchen_ovens_socket', 'unavailable')
+                  %}
+                    var(--rgb-disabled)
+                  {% elif is_state('switch.kitchen_ovens_socket', 'on') %}
+                    var(--rgb-state-entity)
+                  {% else %}
+                    var(--rgb-grey)
+                  {% endif %}
+                tap_action:
+                  action: more-info
+              - type: custom:mushroom-legacy-template-card
+                primary: Station Duo
+                secondary: >-
+                  {{ states('switch.station_duo_plug')|capitalize }}
+
+                  {% if not is_state('sensor.station_duo_power', 'unavailable')
+                  %}
+                    | {{ states('sensor.station_duo_power') | int }} W
+                  {% endif %}
+                icon: yandex:station-duo-max
+                entity: switch.station_duo_plug
+                icon_color: |-
+                  {% if is_state('switch.station_duo_plug', 'unavailable') %}
+                    var(--rgb-disabled)
+                  {% elif is_state('switch.station_duo_plug', 'on') %}
+                    var(--rgb-state-entity)
+                  {% else %}
+                    var(--rgb-grey)
+                  {% endif %}
+                tap_action:
+                  action: more-info
+              - type: custom:mushroom-legacy-template-card
+                primary: Camera
+                secondary: >-
+                  {{ states('switch.kitchen_camera_socket')|capitalize }}
+
+                  {% if not is_state('sensor.kitchen_camera_socket_power',
+                  'unavailable') %}
+                    | {{ states('sensor.kitchen_camera_socket_power') | int }} W
+                  {% endif %}
+                icon: mdi:cctv
+                entity: switch.kitchen_camera_socket
+                icon_color: >-
+                  {% if is_state('switch.kitchen_camera_socket', 'unavailable')
+                  %}
+                    var(--rgb-disabled)
+                  {% elif is_state('switch.kitchen_camera_socket', 'on') %}
+                    var(--rgb-state-entity)
+                  {% else %}
+                    var(--rgb-grey)
+                  {% endif %}
+                tap_action:
+                  action: more-info
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-title-card
+            title: ''
+            subtitle: Workshop Sockets
+            alignment: center
+            card_mod:
+              style: |
+                :host ha-card {
+                  padding-top: 5px;
+                }
+          - square: false
+            columns: 2
+            type: grid
+            cards:
+              - type: custom:mushroom-legacy-template-card
+                primary: Humidifiers
+                secondary: >-
+                  {{ states('switch.workshop_humidifiers_plug')|capitalize }}
+
+                  {% if not is_state('sensor.workshop_humidifiers_power',
+                  'unavailable') %}
+                    | {{ states('sensor.workshop_humidifiers_power') | int }} W
+                  {% endif %}
+                icon: mdi:air-humidifier
+                entity: switch.workshop_humidifiers_plug
+                icon_color: >-
+                  {% if is_state('switch.workshop_humidifiers_plug',
+                  'unavailable') %}
+                    var(--rgb-disabled)
+                  {% elif is_state('switch.workshop_humidifiers_plug', 'on') %}
+                    var(--rgb-state-entity)
+                  {% else %}
+                    var(--rgb-grey)
+                  {% endif %}
+                tap_action:
+                  action: more-info
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-title-card
+            title: ''
+            subtitle: Sockets
+            alignment: center
+            card_mod:
+              style: |
+                :host ha-card {
+                  padding-top: 5px;
+                }
+          - square: false
+            columns: 2
+            type: grid
+            cards:
+              - type: custom:mushroom-legacy-template-card
+                primary: Ironing Board
+                secondary: >-
+                  {{ states('switch.ironing_board_socket')|capitalize }}
+
+                  {% if not is_state('sensor.ironing_board_socket',
+                  'unavailable') %}
+                    | {{ states('sensor.ironing_board_socket_power') | int }} W
+                  {% endif %}
+                icon: mdi:iron-board
+                entity: switch.ironing_board_socket
+                icon_color: >-
+                  {% if is_state('switch.ironing_board_socket', 'unavailable')
+                  %}
+                    var(--rgb-disabled)
+                  {% elif is_state('switch.ironing_board_socket', 'on') %}
+                    var(--rgb-pink)
+                  {% else %}
+                    var(--rgb-grey)
+                  {% endif %}
+                tap_action:
+                  action: more-info
+              - type: custom:mushroom-legacy-template-card
+                primary: Scooter Charger
+                secondary: >-
+                  {{ states('switch.scooter_charger_socket')|capitalize }}
+
+                  {% if not is_state('sensor.scooter_charger_socket_power',
+                  'unavailable') %}
+                    | {{ states('sensor.scooter_charger_socket_power') }} W
+                  {% endif %}
+                icon: mdi:scooter
+                entity: switch.scooter_charger_socket
+                icon_color: >-
+                  {% if is_state('switch.scooter_charger_socket', 'unavailable')
+                  %}
+                    var(--rgb-disabled)
+                  {% elif is_state('switch.scooter_charger_socket', 'on') %}
+                    var(--rgb-state-entity)
+                  {% else %}
+                    var(--rgb-grey)
+                  {% endif %}
+                tap_action:
+                  action: more-info
+              - type: custom:mushroom-legacy-template-card
+                primary: Vacuum Charger
+                secondary: >-
+                  {{ states('switch.vacuum_charger')|capitalize }}
+
+                  {% if not is_state('sensor.vacuum_charger_power',
+                  'unavailable') %}
+                    | {{ states('sensor.vacuum_charger_power') | int }} W
+                  {% endif %}
+                icon: mdi:vacuum
+                entity: switch.vacuum_charger
+                icon_color: |-
+                  {% if is_state('switch.vacuum_charger', 'unavailable') %}
+                    var(--rgb-disabled)
+                  {% elif is_state('switch.vacuum_charger', 'on') %}
+                    var(--rgb-state-entity)
+                  {% else %}
+                    var(--rgb-grey)
+                  {% endif %}
+                tap_action:
+                  action: more-info
+              - type: custom:mushroom-legacy-template-card
+                primary: S03
+                secondary: >-
+                  {{ states('switch.s03_socket')|capitalize }}
+
+                  {% if not is_state('sensor.s03_socket_power', 'unavailable')
+                  %}
+                    | {{ states('sensor.s03_socket_power') | int }} W
+                  {% endif %}
+                icon: mdi:server
+                entity: switch.s03_socket
+                icon_color: |-
+                  {% if is_state('switch.s03_socket', 'unavailable') %}
+                    var(--rgb-disabled)
+                  {% elif is_state('switch.s03_socket', 'on') %}
+                    var(--rgb-state-entity)
+                  {% else %}
+                    var(--rgb-grey)
+                  {% endif %}
+                tap_action:
+                  action: more-info
+              - type: custom:mushroom-legacy-template-card
+                primary: Ippon
+                secondary: >-
+                  {{ states('switch.ippon_socket')|capitalize }}
+
+                  {% if not is_state('sensor.ippon_socket_power', 'unavailable')
+                  %}
+                    | {{ states('sensor.ippon_socket_power') | int }} W
+                  {% endif %}
+                icon: mdi:server
+                entity: switch.ippon_socket
+                icon_color: |-
+                  {% if is_state('switch.ippon_socket', 'unavailable') %}
+                    var(--rgb-disabled)
+                  {% elif is_state('switch.ippon_socket', 'on') %}
                     var(--rgb-state-entity)
                   {% else %}
                     var(--rgb-grey)

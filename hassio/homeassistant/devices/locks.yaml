@@ -5,7 +5,9 @@ automation:
     trigger:
       - platform: state
         entity_id: lock.front_door
-        from: unlocked
+        from:
+          - unlocked
+          - locking
         to: locked
     action:
       - service: script.turn_on
@@ -37,7 +39,9 @@ automation:
     trigger:
       - platform: state
         entity_id: lock.front_door
-        from: locked
+        from:
+          - locked
+          - unlocking
         to: unlocked
     action:
       - service: timer.start
@@ -148,18 +152,6 @@ template:
         unlock:
           action: none.none
 
-      - unique_id: lock.front_door
-        default_entity_id: lock.front_door
-        name: Front Door
-        state: >
-          {{ is_state('binary_sensor.front_door_lock_contact', 'off') }}
-        availability: >
-          {{ states('binary_sensor.front_door_lock_contact') in ['on', 'off'] }}
-        lock:
-          action: script.front_door_lock
-        unlock:
-          action: script.front_door_unlock
-
 script:
   porch_lock_light_flash:
     alias: 'Porch Lock Light: Flash'
@@ -185,64 +177,6 @@ script:
 
       - service: light.turn_off
         entity_id: light.porch_lock
-
-  # замок не всегда управляется с первого раза :(
-  # универсальный скрипт писать лень
-  front_door_unlock:
-    alias: 'Front Door: Unlock'
-    max_exceeded: silent
-    sequence:
-      - repeat:
-          count: 3
-          sequence:
-            - if:
-                - condition: state
-                  entity_id: lock.front_door
-                  state: locked
-              then:
-                - service: lock.unlock
-                  entity_id: lock.front_door_control
-
-                - delay:
-                    seconds: 15
-
-      - if:
-          - condition: state
-            entity_id: lock.front_door
-            state: locked
-        then:
-          - action: notify.send_message
-            data:
-              entity_id: notify.dextor
-              message: 🪚 Замок не смог открыться :(
-
-  front_door_lock:
-    alias: 'Front Door: Lock'
-    max_exceeded: silent
-    sequence:
-      - repeat:
-          count: 3
-          sequence:
-            - if:
-                - condition: state
-                  entity_id: lock.front_door
-                  state: unlocked
-              then:
-                - service: lock.lock
-                  entity_id: lock.front_door_control
-
-                - delay:
-                    seconds: 25
-
-      - if:
-          - condition: state
-            entity_id: lock.front_door
-            state: unlocked
-        then:
-          - action: notify.send_message
-            data:
-              entity_id: notify.dextor
-              message: 🪚 Замок не смог закрыться :(
 
 timer:
   front_door_unlocked:

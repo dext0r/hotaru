@@ -162,6 +162,7 @@ automation:
             data:
               hvac_mode: cool
               temperature: 22
+
       - if:
           - condition: state
             entity_id: lock.front_door

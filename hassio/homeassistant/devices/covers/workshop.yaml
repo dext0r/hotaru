@@ -5,7 +5,9 @@ automation:
       - id: lock_unlocked
         platform: state
         entity_id: lock.front_door
-        from: locked
+        from:
+          - locked
+          - unlocking
         to: unlocked
 
       - platform: state

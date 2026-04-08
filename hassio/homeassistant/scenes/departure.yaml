@@ -5,7 +5,9 @@ automation:
     trigger:
       - platform: state
         entity_id: lock.front_door
-        from: unlocked
+        from:
+          - unlocked
+          - locking
         to: locked
     action:
       - wait_for_trigger:

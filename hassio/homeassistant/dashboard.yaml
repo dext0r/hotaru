@@ -62,13 +62,15 @@ views:
               mdi:lock
               {% elif is_state('lock.front_door', 'unlocked') %}
               mdi:lock-open
+              {% elif is_state('lock.front_door', ['locking', 'unlocking']) %}
+              mdi:lock-reset
               {% else %}
               mdi:help
               {% endif %}
             icon_color: |-
-              {% if is_state('lock.front_door', 'locked') %}
+              {% if is_state('lock.front_door', ['locked', 'locking']) %}
                 var(--rgb-state-lock-locked)
-              {% elif is_state('lock.front_door', 'unlocked') %}
+              {% elif is_state('lock.front_door', ['unlocked', 'unlocking']) %}
                 var(--rgb-state-lock-unlocked)
               {% endif %}
             entity: lock.front_door

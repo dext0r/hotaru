@@ -16,6 +16,10 @@ esphome:
       name: Hallway Presence
       area_id: hallway
 
+    - id: front_door_lock
+      name: Front Door Lock
+      area_id: hallway
+
 esp32:
   board: esp32doit-devkit-v1
   framework:
@@ -31,6 +35,14 @@ external_components:
     components:
       - linptech_g6l
 
+  - source:
+      type: git
+      url: https://github.com/bazuchan/esphome-ttlock
+      ref: cab83c3b4ba86b69f53c9b051976e3c78c264b90
+      path: esphome-ttlock/components
+    components:
+      - ttlock
+
 substitutions:
   doorbell_mode_day: Day # (0)
   doorbell_mode_night: Night # (1)
@@ -38,6 +50,11 @@ substitutions:
 globals:
   - id: doorbell_mode
     type: int
+    initial_value: '0'
+
+  - id: front_door_lock_battery
+    type: float
+    restore_value: yes
     initial_value: '0'
 
 api:
@@ -97,6 +114,10 @@ binary_sensor:
     min_rssi: -88dB
     device_class: presence
 
+  - id: front_door_lock_contact
+    platform: homeassistant
+    entity_id: binary_sensor.front_door_lock_contact
+
 linptech_g6l:
 
 output:
@@ -121,6 +142,17 @@ select:
       lambda: |-
         id(doorbell_mode) = i;
 
+sensor:
+  - name: Battery
+    platform: template
+    device_id: front_door_lock
+    state_class: measurement
+    device_class: battery
+    unit_of_measurement: '%'
+    accuracy_decimals: 0
+    lambda: |-
+      return id(front_door_lock_battery);
+
 script:
   - id: ring
     then:
@@ -142,3 +174,38 @@ remote_transmitter:
   pin: 15
   carrier_duty_percent: 100%
   non_blocking: true
+
+lock:
+  - name: ''
+    platform: template
+    device_id: front_door_lock
+    lambda: |-
+      auto state = id(lock_control).Lock::state; // TODO: временно
+      if (state == LOCK_STATE_LOCKING || state == LOCK_STATE_UNLOCKING) {
+        return state;
+      }
+
+      if (id(front_door_lock_contact).state) {
+        return LOCK_STATE_UNLOCKED;
+      } else {
+        return LOCK_STATE_LOCKED;
+      }
+    lock_action:
+      - lock.lock: lock_control
+    unlock_action:
+      - lock.unlock: lock_control
+
+  - id: lock_control
+    platform: ttlock
+    address: ED:B1:47:D6:8F:20
+    admin_ps: !secret front_door_lock_admin_ps
+    unlock_key: !secret front_door_lock_unlock_key
+    aes_key: !secret front_door_lock_aes_key
+    polling: false
+
+    battery_level:
+      id: lock_battery_level
+      on_value:
+        - globals.set:
+            id: front_door_lock_battery
+            value: !lambda return x;

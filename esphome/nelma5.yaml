@@ -308,6 +308,10 @@ sensor:
 interval:
   - interval: 5s
     then:
+      - logger.log:
+          format: Updating PZEMs
+          level: INFO
+          tag: power_meter
       - delay: 150ms
       - component.update: pzem5
       - delay: 150ms
@@ -315,6 +319,9 @@ interval:
       - delay: 150ms
       - component.update: pzem7
       - delay: 150ms
+
+  - interval: 5s
+    then:
       - lambda: |-
           static int nan_count = 0;
 

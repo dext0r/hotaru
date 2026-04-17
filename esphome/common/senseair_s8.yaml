@@ -22,7 +22,7 @@ sensor:
         - or:
             - throttle: 5min
             - delta: 15
-        - timeout: 5min
+        - timeout: 6min
 
 button:
   - name: CO2 Calibrate

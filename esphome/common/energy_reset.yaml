@@ -1,3 +1,0 @@
-esphome:
-  on_boot:
-    - sensor.integration.reset: energy

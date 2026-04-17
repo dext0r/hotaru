@@ -12,6 +12,16 @@
 preferences:
   flash_write_interval: 20min
 
+button:
+  - name: Reset Energy
+    platform: template
+    entity_category: diagnostic
+    disabled_by_default: True
+    on_press:
+      - sensor.integration.reset: energy
+      - lambda: |-
+          global_preferences->sync();
+
 sensor:
   # улетает в HA
   - id: power_avg

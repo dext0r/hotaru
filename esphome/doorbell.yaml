@@ -38,7 +38,7 @@ external_components:
   - source:
       type: git
       url: https://github.com/bazuchan/esphome-ttlock
-      ref: cab83c3b4ba86b69f53c9b051976e3c78c264b90
+      ref: b8b35231eb180aacabce773c8d64dd32961e977a
       path: esphome-ttlock/components
     components:
       - ttlock
@@ -175,6 +175,11 @@ remote_transmitter:
   carrier_duty_percent: 100%
   non_blocking: true
 
+ble_client:
+  - id: ttlock_ble_client
+    mac_address: ED:B1:47:D6:8F:20
+    auto_connect: false
+
 lock:
   - name: ''
     platform: template
@@ -197,11 +202,10 @@ lock:
 
   - id: lock_control
     platform: ttlock
-    address: ED:B1:47:D6:8F:20
+    ble_client_id: ttlock_ble_client
     admin_ps: !secret front_door_lock_admin_ps
     unlock_key: !secret front_door_lock_unlock_key
     aes_key: !secret front_door_lock_aes_key
-    polling: false
 
     battery_level:
       id: lock_battery_level

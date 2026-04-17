@@ -63,7 +63,6 @@ button:
 binary_sensor:
   - id: btn
     platform: gpio
-    internal: true
     pin:
       number: D7
       mode:

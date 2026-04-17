@@ -48,7 +48,6 @@ output:
 switch:
   - id: led_green
     platform: gpio
-    internal: true
     pin:
       number: 1
       inverted: true

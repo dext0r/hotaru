@@ -17,7 +17,6 @@ logger:
 binary_sensor:
   - id: button
     platform: gpio
-    internal: true
     pin:
       number: 4
       mode:
@@ -25,8 +24,7 @@ binary_sensor:
         pullup: true
       inverted: true
     on_press:
-      then:
-        switch.toggle: relay
+      switch.toggle: relay
 
 switch:
   - id: relay

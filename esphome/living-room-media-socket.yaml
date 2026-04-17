@@ -20,9 +20,6 @@ binary_sensor:
     platform: gpio
     pin: 3
     internal: true
-    on_press:
-      then:
-        switch.toggle: relay
 
 sensor:
   - platform: hlw8012

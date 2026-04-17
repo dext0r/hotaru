@@ -12,9 +12,8 @@ logger:
   baud_rate: 0
 
 binary_sensor:
-  - id: button
+  - id: push_button
     platform: gpio
-    internal: true
     pin:
       number: 0
       mode:
@@ -22,8 +21,7 @@ binary_sensor:
         pullup: true
       inverted: true
     on_press:
-      then:
-        switch.toggle: relay
+      switch.toggle: relay
 
 switch:
   - id: relay

@@ -41,7 +41,6 @@ binary_sensor:
         input: true
         pullup: true
       inverted: true
-    internal: true
     filters:
       - delayed_on: 50ms
     on_press:
@@ -53,11 +52,11 @@ light:
     pin:
       number: 13
       inverted: true
-    internal: true
 
 sensor:
   - platform: bl0939
     update_interval: 5s
+
     active_power_1:
       name: Power
       device_id: device_1
@@ -75,24 +74,22 @@ sensor:
     energy_1:
       id: energy_1_raw
       on_value:
-        then:
-          - lambda: |-
-              static float prev = 0.0;
-              float curr = id(energy_1_raw).state;
-              id(total_energy_1) += curr - prev;
-              prev = curr;
-              id(energy_1).update();
+        - lambda: |-
+            static float prev = 0.0;
+            float curr = id(energy_1_raw).state;
+            id(total_energy_1) += curr - prev;
+            prev = curr;
+            id(energy_1).update();
 
     energy_2:
       id: energy_2_raw
       on_value:
-        then:
-          - lambda: |-
-              static float prev = 0.0;
-              float curr = id(energy_2_raw).state;
-              id(total_energy_2) += curr - prev;
-              prev = curr;
-              id(energy_2).update();
+        - lambda: |-
+            static float prev = 0.0;
+            float curr = id(energy_2_raw).state;
+            id(total_energy_2) += curr - prev;
+            prev = curr;
+            id(energy_2).update();
 
   - id: energy_1
     name: Energy

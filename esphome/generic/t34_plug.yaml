@@ -19,13 +19,11 @@ bk72xx:
   board: generic-bk7231n-qfn32-tuya
 
 binary_sensor:
-  - id: button
+  - id: push_button
     platform: gpio
     pin: P26
-    internal: true
     on_press:
-      then:
-        switch.toggle: relay
+      switch.toggle: relay
 
 status_led:
   pin: P24
@@ -67,8 +65,8 @@ sensor:
 
 switch:
   - id: relay
+    name: ''
     platform: gpio
     pin: P14
-    name: ''
     device_class: outlet
     restore_mode: $relay_restore_mode

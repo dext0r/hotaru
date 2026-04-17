@@ -339,7 +339,6 @@ interval:
 binary_sensor:
   - id: intercom_ring
     platform: gpio
-    internal: true
     pin:
       number: 12
       inverted: true

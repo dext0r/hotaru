@@ -16,7 +16,7 @@ esphome:
           condition:
             - switch.is_on: relay
           then:
-            - light.turn_on: button_led
+            - light.turn_on: push_button_led
 
 esp8266:
   board: esp8285
@@ -30,14 +30,11 @@ uart:
   parity: EVEN
 
 binary_sensor:
-  - id: button
+  - id: push_button
     platform: gpio
-    internal: true
-    pin:
-      number: 5
+    pin: 5
     on_press:
-      then:
-        switch.toggle: relay
+      switch.toggle: relay
 
 sensor:
   - platform: cse7766
@@ -51,7 +48,6 @@ sensor:
 
     power:
       id: power_raw
-      internal: true
       filters:
         - throttle_average: 1s
         - timeout: 15s
@@ -61,9 +57,8 @@ sensor:
             id(power_adj).publish_state(x);
 
 light:
-  - id: button_led
+  - id: push_button_led
     platform: status_led
-    internal: true
     pin:
       number: 13
       inverted: true
@@ -76,6 +71,6 @@ switch:
     device_class: outlet
     restore_mode: $relay_restore_mode
     on_turn_on:
-      - light.turn_on: button_led
+      - light.turn_on: push_button_led
     on_turn_off:
-      - light.turn_off: button_led
+      - light.turn_off: push_button_led

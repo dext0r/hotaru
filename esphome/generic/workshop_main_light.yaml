@@ -13,7 +13,6 @@ logger:
 binary_sensor:
   - id: light_switch
     platform: gpio
-    internal: true
     pin:
       number: 2 # TX
       inverted: true
@@ -82,7 +81,6 @@ output:
 switch:
   - id: led_green
     platform: gpio
-    internal: true
     pin:
       number: 1
       inverted: true

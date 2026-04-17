@@ -18,7 +18,6 @@ uart:
 binary_sensor:
   - id: sw1
     platform: gpio
-    internal: true
     pin:
       number: 14
       mode:
@@ -38,7 +37,6 @@ binary_sensor:
 
   - id: sw2
     platform: gpio
-    internal: true
     pin:
       number: 12
       mode:
@@ -70,14 +68,12 @@ sensor:
 
   - id: temperature_resistance_reading
     platform: resistance
-    internal: true
     sensor: temperature_analog_reading
     configuration: DOWNSTREAM
     resistor: 32kOhm
 
   - id: temperature_analog_reading
     platform: adc
-    internal: true
     pin: A0
     update_interval: 30s
 

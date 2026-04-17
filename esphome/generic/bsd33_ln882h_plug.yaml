@@ -1,11 +1,15 @@
 # https://www.elektroda.com/rtvforum/topic4091325.html
 packages:
   base: !include ../common/ln882x.yaml
-  energy: !include ../common/energy.yaml
+  bl0937: !include ../common/bl0937.yaml
 
 substitutions:
   relay_restore_mode: RESTORE_DEFAULT_OFF
   power_led: 'true'
+  bl0937_sel_pin: PB6
+  bl0937_sel_pin_inverted: 'true'
+  bl0937_cf_pin: PB4
+  bl0937_cf1_pin: PB5
 
 esphome:
   friendly_name: BSD33 Smart Plug
@@ -38,37 +42,6 @@ light:
     pin:
       number: PA6
       inverted: true
-
-sensor:
-  - platform: hlw8012
-    sel_pin:
-     number: PB6
-     inverted: true
-    cf_pin: PB4
-    cf1_pin: PB5
-    model: BL0937
-    current_resistor: 0.001
-    voltage_divider: 1526
-    initial_mode: VOLTAGE
-    change_mode_every: never
-    update_interval: 1s
-
-    voltage:
-      name: Voltage
-      disabled_by_default: true
-      internal: true
-      accuracy_decimals: 0
-      filters:
-        - round: 0
-
-    power:
-      id: power_raw
-      filters:
-        - timeout: 15s
-      on_value:
-        - lambda: |-
-            id(power_avg).publish_state(x);
-            id(power_adj).publish_state(x);
 
 switch:
   - id: relay

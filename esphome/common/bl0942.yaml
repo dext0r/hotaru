@@ -1,0 +1,44 @@
+preferences:
+  flash_write_interval: 20min
+
+globals:
+  - id: total_energy
+    type: float
+    restore_value: yes
+
+sensor:
+  - platform: bl0942
+    current_reference: ${bl0942_current_reference}
+    voltage_reference: ${bl0942_voltage_reference}
+    update_interval: 5s
+
+    power:
+      name: Power
+      accuracy_decimals: 0
+      filters:
+        - clamp:
+            min_value: 0
+        - round: 0
+        - timeout: 15s
+
+    energy:
+      id: energy_raw
+      on_value:
+        - lambda: |-
+            static float prev = 0.0;
+            float curr = id(energy_raw).state;
+            id(total_energy) += curr - prev;
+            prev = curr;
+            id(energy).update();
+
+  - id: energy
+    name: Energy
+    platform: template
+    state_class: total_increasing
+    device_class: energy
+    unit_of_measurement: kWh
+    accuracy_decimals: 2
+    lambda: |-
+      return id(total_energy);
+    filters:
+      - throttle: 5min

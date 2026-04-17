@@ -1,0 +1,43 @@
+packages:
+  energy: !include energy.yaml
+
+substitutions:
+  bl0937_sel_pin_inverted: 'false'
+  bl0937_cf_pin_inverted: 'false'
+  bl0937_cf1_pin_inverted: 'false'
+  bl0937_update_interval: 500ms
+
+sensor:
+  - platform: hlw8012
+    sel_pin:
+      number: ${bl0937_sel_pin}
+      inverted: ${bl0937_sel_pin_inverted}
+    cf_pin:
+      number: ${bl0937_cf_pin}
+      inverted: ${bl0937_cf_pin_inverted}
+    cf1_pin:
+      number: ${bl0937_cf1_pin}
+      inverted: ${bl0937_cf1_pin_inverted}
+    model: BL0937
+    current_resistor: ${bl0937_current_resistor}
+    voltage_divider: ${bl0937_voltage_divider}
+    initial_mode: VOLTAGE
+    change_mode_every: never
+    update_interval: ${bl0937_update_interval}
+
+    voltage:
+      name: Voltage
+      disabled_by_default: true
+      internal: true
+      accuracy_decimals: 0
+      filters:
+        - round: 0
+
+    power:
+      id: power_raw
+      filters:
+        - timeout: 15s
+      on_value:
+        - lambda: |-
+            id(power_avg).publish_state(x);
+            id(power_adj).publish_state(x);

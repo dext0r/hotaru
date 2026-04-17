@@ -93,3 +93,20 @@ input_boolean:
     name: 'Allow automatic light control (closet)'
     initial: true
     icon: mdi:home-lightbulb-outline
+
+template:
+  - light:
+      - unique_id: light.closet
+        default_entity_id: light.closet
+        name: Closet Light
+        icon: bha:ceiling-lamp
+        state: >
+          {{ is_state('switch.closet_light', 'on') }}
+        availability: >
+          {{ states('switch.closet_light') in ['on', 'off'] }}
+        turn_on:
+          - action: switch.turn_on
+            entity_id: switch.closet_light
+        turn_off:
+          - action: switch.turn_off
+            entity_id: switch.closet_light

@@ -508,3 +508,8 @@
   optimistic: true
   retain: true
   icon: device_icons/7146bc3333829dd31b1a37b1f83f6e01.png
+'0x00124b0023a8b622':
+  friendly_name: Closet Light Switch
+  retain: true
+  homeassistant:
+    name: Closet Light Switch

@@ -2266,7 +2266,7 @@ views:
             cards:
               - type: custom:mini-humidifier
                 name: Workshop
-                entity: humidifier.workshop_humidifier
+                entity: humidifier.workshop_humidifier_1
                 model: zhimi.humidifier.ca1
                 indicators:
                   water_tank:
@@ -2276,7 +2276,7 @@ views:
                         (v, state) => state.state == 'on' ? 'mdi:cube' :
                         'mdi:cube-outline'
                     source:
-                      entity: binary_sensor.workshop_humidifier_water_tank
+                      entity: binary_sensor.workshop_humidifier_1_water_tank
                       mapper: () => ''
                   control:
                     tap_action: more-info
@@ -2297,8 +2297,8 @@ views:
                       display: none;
                     }
               - type: custom:mini-humidifier
-                name: Workshop X
-                entity: humidifier.workshop_humidifier_x
+                name: Workshop 2
+                entity: humidifier.workshop_humidifier_2
                 model: zhimi.humidifier.ca1
                 indicators:
                   water_tank:
@@ -2308,7 +2308,7 @@ views:
                         (v, state) => state.state == 'on' ? 'mdi:cube' :
                         'mdi:cube-outline'
                     source:
-                      entity: binary_sensor.workshop_humidifier_x_water_tank
+                      entity: binary_sensor.workshop_humidifier_2_water_tank
                       mapper: () => ''
                   control:
                     tap_action: more-info

@@ -54,20 +54,20 @@ automation:
               - or:
                   - and:
                       - condition: numeric_state
-                        entity_id: sensor.workshop_humidifier_water_level
-                        below: 25
+                        entity_id: sensor.workshop_humidifier_1_water_level
+                        below: 60
 
                       - condition: state
-                        entity_id: binary_sensor.workshop_humidifier_water_tank
+                        entity_id: binary_sensor.workshop_humidifier_1_water_tank
                         state: 'on'
 
                   - and:
                       - condition: numeric_state
-                        entity_id: sensor.workshop_humidifier_x_water_level
-                        below: 25
+                        entity_id: sensor.workshop_humidifier_2_water_level
+                        below: 60
 
                       - condition: state
-                        entity_id: binary_sensor.workshop_humidifier_x_water_tank
+                        entity_id: binary_sensor.workshop_humidifier_2_water_tank
                         state: 'on'
 
               - condition: state
@@ -144,7 +144,7 @@ automation:
     alias: 'Humidifiers: Cleanup'
     trigger:
       - platform: state
-        entity_id: binary_sensor.workshop_humidifier_water_tank
+        entity_id: binary_sensor.workshop_humidifier_1_water_tank
         from: 'on'
         to: 'off'
         for:
@@ -184,8 +184,8 @@ template:
           {% endif %}
 
           {% if is_state('input_boolean.workshop_humidifier_control', 'on') and
-                (states('sensor.workshop_humidifier_water_level')|int(100) < 30 or
-                 states('sensor.workshop_humidifier_x_water_level')|int(100) < 30) %}
+                (states('sensor.workshop_humidifier_1_water_level')|int(100) < 60 or
+                 states('sensor.workshop_humidifier_2_water_level')|int(100) < 60) %}
             {% set data.humidifiers = data.humidifiers + ['мастерской'] %}
           {% endif %}
 

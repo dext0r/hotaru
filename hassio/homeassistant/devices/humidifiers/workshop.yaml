@@ -1,3 +1,4 @@
+# Тут стрёмное дублирование, но мне так лень это как-то унифицировать
 input_boolean:
   workshop_humidifier_control:
     name: 'Workshop Humidifier: Control'
@@ -5,52 +6,52 @@ input_boolean:
 
 template:
   binary_sensor:
-    - unique_id: binary_sensor.workshop_humidifier_water_tank
-      name: 'Workshop Humidifier Water Tank'
+    - unique_id: binary_sensor.workshop_humidifier_1_water_tank
+      name: 'Workshop Humidifier 1 Water Tank'
       icon: mdi:car-coolant-level
       device_class: connectivity
       state: >
-        {{ states('sensor.workshop_humidifier_water_level_raw')|int(127) != 127 }}
+        {{ states('sensor.workshop_humidifier_1_water_level_raw')|int(127) != 127 }}
       availability: >
-        {{ states('humidifier.workshop_humidifier') not in ['unknown', 'unavailable'] }}
+        {{ states('humidifier.workshop_humidifier_1') not in ['unknown', 'unavailable'] }}
 
-    - unique_id: binary_sensor.workshop_humidifier_x_water_tank
-      name: 'Workshop Humidifier X Water Tank'
+    - unique_id: binary_sensor.workshop_humidifier_2_water_tank
+      name: 'Workshop Humidifier 2 Water Tank'
       icon: mdi:car-coolant-level
       device_class: connectivity
       state: >
-        {{ states('sensor.workshop_humidifier_x_water_level_raw')|int(127) != 127 }}
+        {{ states('sensor.workshop_humidifier_2_water_level_raw')|int(127) != 127 }}
       availability: >
-        {{ states('humidifier.workshop_humidifier_x') not in ['unknown', 'unavailable'] }}
+        {{ states('humidifier.workshop_humidifier_2') not in ['unknown', 'unavailable'] }}
 
   sensor:
-    - unique_id: binary_sensor.workshop_humidifier_water_level
-      name: 'Workshop Humidifier Water Level'
+    - unique_id: binary_sensor.workshop_humidifier_1_water_level
+      name: 'Workshop Humidifier 1 Water Level'
       icon: mdi:water-check
       unit_of_measurement: '%'
       state: >
-        {% set v = states('sensor.workshop_humidifier_water_level_raw')|int(0) %}
+        {% set v = states('sensor.workshop_humidifier_1_water_level_raw')|int(0) %}
         {% if v > 125 %}
           0
         {% else %}
           {{ int(min(v / 1.2, 100)) }}
         {% endif %}
       availability: >
-        {{ states('humidifier.workshop_humidifier') not in ['unknown', 'unavailable'] }}
+        {{ states('humidifier.workshop_humidifier_1') not in ['unknown', 'unavailable'] }}
 
-    - unique_id: binary_sensor.workshop_humidifier_x_water_level
-      name: 'Workshop Humidifier X Water Level'
+    - unique_id: binary_sensor.workshop_humidifier_2_water_level
+      name: 'Workshop Humidifier 2 Water Level'
       icon: mdi:water-check
       unit_of_measurement: '%'
       state: >
-        {% set v = states('sensor.workshop_humidifier_x_water_level_raw')|int(0) %}
+        {% set v = states('sensor.workshop_humidifier_2_water_level_raw')|int(0) %}
         {% if v > 125 %}
           0
         {% else %}
           {{ int(min(v / 1.2, 100)) }}
         {% endif %}
       availability: >
-        {{ states('humidifier.workshop_humidifier_x') not in ['unknown', 'unavailable'] }}
+        {{ states('humidifier.workshop_humidifier_2') not in ['unknown', 'unavailable'] }}
 
     - unique_id: sensor.workshop_humidifier_target_mode
       name: 'Workshop Humidifier: Target mode'
@@ -70,7 +71,8 @@ template:
 
         {% if states('sensor.workshop_humidity')|int(0) >= target_humidity + 2 %}
           {% set mode = 'off' %}
-        {% elif states('sensor.workshop_humidifier_water_level')|int(0) <= 15 or states('sensor.workshop_humidifier_x_water_level')|int(0) <= 15 %}
+        {% elif states('sensor.workshop_humidifier_1_water_level')|int(0) <= 50 or
+                states('sensor.workshop_humidifier_2_water_level')|int(0) <= 50 %}
           {% set mode = 'off' %}
         {% endif %}
 
@@ -81,8 +83,8 @@ template:
         {{ mode }}
 
 automation:
-  - id: workshop_humidifier_update
-    alias: 'Workshop Humidifier: Update'
+  - id: workshop_humidifier_1_update
+    alias: 'Workshop Humidifier 1: Update'
     mode: queued
     max: 4
     max_exceeded: silent
@@ -97,7 +99,7 @@ automation:
     condition:
       - condition: template
         value_template: >
-          {{ states('humidifier.workshop_humidifier') not in ['unavailable', 'unknown'] }}
+          {{ states('humidifier.workshop_humidifier_1') not in ['unavailable', 'unknown'] }}
 
       - condition: state
         entity_id:
@@ -112,22 +114,22 @@ automation:
         then:
           - if:
               - condition: state
-                entity_id: humidifier.workshop_humidifier
+                entity_id: humidifier.workshop_humidifier_1
                 state: 'on'
             then:
               - service: humidifier.turn_off
-                entity_id: humidifier.workshop_humidifier
+                entity_id: humidifier.workshop_humidifier_1
         else:
           - if:
               - condition: state
-                entity_id: humidifier.workshop_humidifier
+                entity_id: humidifier.workshop_humidifier_1
                 state: 'off'
             then:
               - service: humidifier.turn_on
-                entity_id: humidifier.workshop_humidifier
+                entity_id: humidifier.workshop_humidifier_1
 
               - wait_template: >
-                  {{ is_state('humidifier.workshop_humidifier', 'on') }}
+                  {{ is_state('humidifier.workshop_humidifier_1', 'on') }}
                 timeout:
                   seconds: 15
                 continue_on_timeout: false
@@ -135,15 +137,16 @@ automation:
           - if:
               - condition: template
                 value_template: >
-                  {{ state_attr('humidifier.workshop_humidifier', 'mode') != states("sensor.workshop_humidifier_target_mode") }}
+                  {{ state_attr('humidifier.workshop_humidifier_1', 'mode') != states('sensor.workshop_humidifier_target_mode') }}
             then:
               - service: humidifier.set_mode
-                entity_id: humidifier.workshop_humidifier
+                entity_id: humidifier.workshop_humidifier_1
                 data:
-                  mode: '{{ states("sensor.workshop_humidifier_target_mode") }}'
+                  mode: >-
+                    {{ states('sensor.workshop_humidifier_target_mode') }}
 
-  - id: workshop_humidifier_x_update
-    alias: 'Workshop Humidifier X: Update'
+  - id: workshop_humidifier_2_update
+    alias: 'Workshop Humidifier 2: Update'
     mode: queued
     max: 4
     max_exceeded: silent
@@ -158,7 +161,7 @@ automation:
     condition:
       - condition: template
         value_template: >
-          {{ states('humidifier.workshop_humidifier_x') not in ['unavailable', 'unknown'] }}
+          {{ states('humidifier.workshop_humidifier_2') not in ['unavailable', 'unknown'] }}
 
       - condition: state
         entity_id:
@@ -173,22 +176,22 @@ automation:
         then:
           - if:
               - condition: state
-                entity_id: humidifier.workshop_humidifier_x
+                entity_id: humidifier.workshop_humidifier_2
                 state: 'on'
             then:
               - service: humidifier.turn_off
-                entity_id: humidifier.workshop_humidifier_x
+                entity_id: humidifier.workshop_humidifier_2
         else:
           - if:
               - condition: state
-                entity_id: humidifier.workshop_humidifier_x
+                entity_id: humidifier.workshop_humidifier_2
                 state: 'off'
             then:
               - service: humidifier.turn_on
-                entity_id: humidifier.workshop_humidifier_x
+                entity_id: humidifier.workshop_humidifier_2
 
               - wait_template: >
-                  {{ is_state('humidifier.workshop_humidifier_x', 'on') }}
+                  {{ is_state('humidifier.workshop_humidifier_2', 'on') }}
                 timeout:
                   seconds: 15
                 continue_on_timeout: false
@@ -196,9 +199,10 @@ automation:
           - if:
               - condition: template
                 value_template: >
-                  {{ state_attr('humidifier.workshop_humidifier_x', 'mode') != states("sensor.workshop_humidifier_target_mode") }}
+                  {{ state_attr('humidifier.workshop_humidifier_2', 'mode') != states('sensor.workshop_humidifier_target_mode') }}
             then:
               - service: humidifier.set_mode
-                entity_id: humidifier.workshop_humidifier_x
+                entity_id: humidifier.workshop_humidifier_2
                 data:
-                  mode: '{{ states("sensor.workshop_humidifier_target_mode") }}'
+                  mode: >-
+                    {{ states('sensor.workshop_humidifier_target_mode') }}

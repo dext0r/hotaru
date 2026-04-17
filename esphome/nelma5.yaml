@@ -259,14 +259,17 @@ sensor:
     address: 5
     update_interval: never
 
-    power: &pzem_power
-      id: pzem5_power
-      name: Kitchen Power
-      device_id: power_meter
-      accuracy_decimals: 0
+    power: &pzem_power_raw
+      id: pzem5_power_raw
       filters:
-        - round: 0
-        - timeout: 15s
+        - clamp: # при старте может быть всплеск мощности
+            min_value: 0
+            max_value: 10000
+            ignore_out_of_range: true
+      on_value:
+        - sensor.template.publish:
+            id: pzem5_power_avg
+            state: !lambda return x;
 
     energy: &pzem_energy
       name: Kitchen Energy
@@ -275,6 +278,21 @@ sensor:
       filters:
         - throttle: 2.5min
 
+  - &pzem_power_avg
+    id: pzem5_power_avg
+    name: Kitchen Power
+    platform: template
+    device_id: power_meter
+    update_interval: never
+    device_class: power
+    state_class: measurement
+    unit_of_measurement: W
+    accuracy_decimals: 0
+    filters:
+      - throttle_average: 5s
+      - round: 0
+      - timeout: 15s
+
   # Розетки: Ванная / Климат Спальня-Мастерская
   - id: pzem6
     platform: pzemac
@@ -282,13 +300,20 @@ sensor:
     update_interval: never
 
     power:
-      id: pzem6_power
-      name: CB Power
-      <<: *pzem_power
+      id: pzem6_raw_power
+      on_value:
+        - sensor.template.publish:
+            id: pzem6_power_avg
+            state: !lambda return x;
+      <<: *pzem_power_raw
 
     energy:
       name: CB Energy
       <<: *pzem_energy
+
+  - <<: *pzem_power_avg
+    id: pzem6_power_avg
+    name: CB Power
 
   # Розетки: Комнаты
   - id: pzem7
@@ -297,44 +322,30 @@ sensor:
     update_interval: never
 
     power:
-      id: pzem7_power
-      name: Sockets Power
-      <<: *pzem_power
+      id: pzem7_raw_power
+      on_value:
+        - sensor.template.publish:
+            id: pzem7_power_avg
+            state: !lambda return x;
+      <<: *pzem_power_raw
 
     energy:
       name: Sockets Energy
       <<: *pzem_energy
 
+  - <<: *pzem_power_avg
+    id: pzem7_power_avg
+    name: Sockets Power
+
 interval:
-  - interval: 5s
+  - interval: 1s
     then:
-      - logger.log:
-          format: Updating PZEMs
-          level: INFO
-          tag: power_meter
       - delay: 150ms
       - component.update: pzem5
       - delay: 150ms
       - component.update: pzem6
       - delay: 150ms
       - component.update: pzem7
-      - delay: 150ms
-
-  - interval: 5s
-    then:
-      - lambda: |-
-          static int nan_count = 0;
-
-          if (isnan(id(pzem5_power).state) || isnan(id(pzem6_power).state) || isnan(id(pzem7_power).state)) {
-            nan_count++;
-            ESP_LOGE("power_meter", "Some PZEM missing data, count: %d", nan_count);
-            if (nan_count > 3) {
-              ESP_LOGE("power_meter", "Missing PZEM data for too long, reboot");
-              App.reboot();
-            }
-          } else {
-            nan_count = 0;
-          }
 
 binary_sensor:
   - id: intercom_ring

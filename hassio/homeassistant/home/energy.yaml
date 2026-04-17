@@ -1,3 +1,19 @@
+automation:
+  - id: nelma5_restart
+    alias: Nelma5 Restart
+    triggers:
+      - trigger: state
+        entity_id:
+          - sensor.cb_branch_circuit_power
+          - sensor.kitchen_branch_circuit_power
+          - sensor.sockets_branch_circuit_power
+        to: unknown
+        for:
+          minutes: 5
+    actions:
+      - action: button.press
+        entity_id: button.nelma5_restart
+
 template:
   - trigger:
       - platform: time_pattern

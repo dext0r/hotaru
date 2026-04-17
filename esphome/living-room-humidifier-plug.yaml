@@ -4,6 +4,8 @@ packages:
 substitutions:
   relay_restore_mode: RESTORE_DEFAULT_ON
   power_led: 'false'
+  bl0937_current_resistor: 0.00101
+  bl0937_voltage_divider: 1510.5
 
 esphome:
   friendly_name: Living Room Humidifier Plug

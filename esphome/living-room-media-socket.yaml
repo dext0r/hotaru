@@ -29,8 +29,8 @@ sensor:
     cf_pin: 12
     cf1_pin: 14
     model: BL0937
-    current_resistor: 0.001
-    voltage_divider: 1890
+    current_resistor: 0.00094
+    voltage_divider: 1757.7
     initial_mode: VOLTAGE
     change_mode_every: never
     update_interval: 1s

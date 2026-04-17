@@ -3,6 +3,8 @@ packages:
 
 substitutions:
   relay_restore_mode: ALWAYS_ON
+  bl0937_current_resistor: 0.00105
+  bl0937_voltage_divider: 803.68
 
 esphome:
   friendly_name: Station Duo Plug

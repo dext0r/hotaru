@@ -50,6 +50,13 @@ sensor:
       id: power_raw
       filters:
         - throttle_average: 1s
+        - calibrate_linear:
+            method: exact
+            datapoints:
+              - 0.0 -> 0.0
+              - 410.0 -> 424.0
+              - 1234.0 -> 1270.0
+              - 1725.0 -> 1776.0
         - timeout: 15s
       on_value:
         - lambda: |-

@@ -3,6 +3,8 @@ packages:
 
 substitutions:
   relay_restore_mode: ALWAYS_ON
+  bl0937_current_resistor: 0.00101
+  bl0937_voltage_divider: 1507.6
 
 esphome:
   friendly_name: Workshop Humidifiers Plug

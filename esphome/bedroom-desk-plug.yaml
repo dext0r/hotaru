@@ -4,6 +4,8 @@ packages:
 substitutions:
   relay_restore_mode: ALWAYS_ON
   power_led: 'false'
+  bl0937_current_resistor: 0.00102
+  bl0937_voltage_divider: 1502.5
 
 esphome:
   friendly_name: Bedroom Desk Plug

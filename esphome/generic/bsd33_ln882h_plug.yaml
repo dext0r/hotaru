@@ -10,6 +10,8 @@ substitutions:
   bl0937_sel_pin_inverted: 'true'
   bl0937_cf_pin: PB4
   bl0937_cf1_pin: PB5
+  bl0937_current_resistor: 0.00102
+  bl0937_voltage_divider: 1502.5
 
 esphome:
   friendly_name: BSD33 Smart Plug

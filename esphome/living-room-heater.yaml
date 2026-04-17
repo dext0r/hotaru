@@ -22,6 +22,7 @@ sensor:
     accuracy_decimals: 2
     filters:
       - timeout: 15s
+      - offset: 0.6 # standby
     on_value:
       - lambda: |-
           id(power_avg).publish_state(x);

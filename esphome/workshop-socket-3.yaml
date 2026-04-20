@@ -1,0 +1,13 @@
+packages:
+  base: !include generic/atmt_wb2s_plug.yaml
+
+substitutions:
+  relay_restore_mode: ALWAYS_ON
+  bl0937_current_resistor: 0.00104
+  bl0937_voltage_divider: 818.68
+
+esphome:
+  friendly_name: Workshop Socket 3
+  area: Workshop
+  name: workshop-socket-3
+  name_add_mac_suffix: false

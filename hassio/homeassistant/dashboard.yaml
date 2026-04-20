@@ -3414,6 +3414,48 @@ views:
             type: grid
             cards:
               - type: custom:mushroom-legacy-template-card
+                primary: Socket 2
+                secondary: >-
+                  {{ states('switch.workshop_socket_2')|capitalize }}
+
+                  {% if not is_state('sensor.workshop_socket_2_power',
+                  'unavailable') %}
+                    | {{ states('sensor.workshop_socket_2_power') | int }} W
+                  {% endif %}
+                icon: mdi:power-socket-de
+                entity: switch.workshop_socket_2
+                icon_color: |-
+                  {% if is_state('switch.workshop_socket_2', 'unavailable') %}
+                    var(--rgb-disabled)
+                  {% elif is_state('switch.workshop_socket_2', 'on') %}
+                    var(--rgb-state-entity)
+                  {% else %}
+                    var(--rgb-grey)
+                  {% endif %}
+                tap_action:
+                  action: more-info
+              - type: custom:mushroom-legacy-template-card
+                primary: Socket 3
+                secondary: >-
+                  {{ states('switch.workshop_socket_3')|capitalize }}
+
+                  {% if not is_state('sensor.workshop_socket_3_power',
+                  'unavailable') %}
+                    | {{ states('sensor.workshop_socket_3_power') | int }} W
+                  {% endif %}
+                icon: mdi:power-socket-de
+                entity: switch.workshop_socket_3
+                icon_color: |-
+                  {% if is_state('switch.workshop_socket_3', 'unavailable') %}
+                    var(--rgb-disabled)
+                  {% elif is_state('switch.workshop_socket_3', 'on') %}
+                    var(--rgb-state-entity)
+                  {% else %}
+                    var(--rgb-grey)
+                  {% endif %}
+                tap_action:
+                  action: more-info
+              - type: custom:mushroom-legacy-template-card
                 primary: Humidifiers
                 secondary: >-
                   {{ states('switch.workshop_humidifiers_plug')|capitalize }}

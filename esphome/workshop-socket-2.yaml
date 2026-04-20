@@ -1,0 +1,13 @@
+packages:
+  base: !include generic/t34_plug_green.yaml
+
+substitutions:
+  relay_restore_mode: ALWAYS_ON
+  bl0937_current_resistor: 0.00106
+  bl0937_voltage_divider: 793
+
+esphome:
+  friendly_name: Workshop Socket 2
+  area: Workshop
+  name: workshop-socket-2
+  name_add_mac_suffix: false

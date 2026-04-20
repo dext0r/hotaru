@@ -99,11 +99,37 @@ automation:
       - platform: event
         event_type: state_changed
     condition:
-      - condition: template
-        value_template: >
-          {{ trigger.event.data.new_state and trigger.event.data.new_state.state == 'unavailable' }}
+      - or:
+          - condition: template
+            value_template: >
+              {{ trigger.event.data.new_state and trigger.event.data.new_state.state == 'unavailable' }}
+
+          - condition: template
+            value_template: >
+              {{ trigger.event.data.new_state and
+                 'camera' in labels(trigger.event.data.new_state.entity_id) and
+                 trigger.event.data.new_state.state == 'off' }}
     action:
       - service: notify.send_message
         data:
           entity_id: notify.debug
           message: 'Device unavailable: {{ trigger.event.data.new_state.entity_id }}'
+
+  - id: camera_unavailable_alert
+    alias: Camera unavailable alert
+    triggers:
+      - trigger: time_pattern
+        minutes: '/1'
+    conditions:
+      - condition: template
+        value_template: >
+          {{ label_entities('camera') | select('is_state', 'off') | list | length > 0 }}
+    actions:
+      - action: notify.send_message
+        data:
+          entity_id: notify.dextor
+          message: >
+            ⚠️ <b>Камеры недоступны:</b>{{ '\n' }}
+            {%- for entity_id in label_entities('camera') | select('is_state', 'off') %}
+            * {{ entity_name(entity_id) or entity_id }}: {{ states(entity_id) }}{{ '\n' }}
+            {%- endfor -%}

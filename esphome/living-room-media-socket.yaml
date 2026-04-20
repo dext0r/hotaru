@@ -1,6 +1,14 @@
 packages:
   base: !include common/esp8266.yaml
-  energy: !include common/energy.yaml
+  bl0937: !include common/bl0937.yaml
+
+substitutions:
+  bl0937_sel_pin: 13
+  bl0937_sel_pin_inverted: 'true'
+  bl0937_cf_pin: 12
+  bl0937_cf1_pin: 14
+  bl0937_current_resistor: 0.00094
+  bl0937_voltage_divider: 1757.7
 
 esphome:
   friendly_name: Living Room Media Socket
@@ -16,41 +24,9 @@ logger:
   baud_rate: 0
 
 binary_sensor:
-  - id: button
+  - id: push_button
     platform: gpio
     pin: 3
-    internal: true
-
-sensor:
-  - platform: hlw8012
-    sel_pin:
-      number: 13
-      inverted: true
-    cf_pin: 12
-    cf1_pin: 14
-    model: BL0937
-    current_resistor: 0.00094
-    voltage_divider: 1757.7
-    initial_mode: VOLTAGE
-    change_mode_every: never
-    update_interval: 1s
-
-    voltage:
-      name: Voltage
-      disabled_by_default: true
-      internal: true
-      accuracy_decimals: 0
-      filters:
-        - round: 0
-
-    power:
-      id: power_raw
-      filters:
-        - timeout: 15s
-      on_value:
-        - lambda: |-
-            id(power_avg).publish_state(x);
-            id(power_adj).publish_state(x);
 
 status_led:
   pin:

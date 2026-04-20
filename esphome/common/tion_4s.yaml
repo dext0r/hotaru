@@ -75,59 +75,6 @@ sensor:
     type: filter_time_left_days
     device_id: $tion_device_id
 
-  - id: tion_power
-    name: Power
-    platform: tion
-    type: power
-    device_id: $tion_device_id
-    unit_of_measurement: W
-    accuracy_decimals: 0
-    entity_category: ''
-    filters:
-      - multiply: 1000
-      - round: 0
-      - timeout: 20s
-    on_value:
-      - sensor.template.publish:
-          id: tion_power_adj
-          state: !lambda return x;
-
-  - id: tion_power_adj
-    name: Power Adjusted
-    platform: template
-    device_id: $tion_device_id
-    internal: true
-    update_interval: never
-    unit_of_measurement: W
-    accuracy_decimals: 0
-    filters:
-      - clamp:
-          min_value: 0
-
-  - id: energy
-    name: Energy
-    platform: integration
-    device_id: $tion_device_id
-    sensor: tion_power_adj
-    time_unit: h
-    integration_method: trapezoid
-    restore: true
-    state_class: total_increasing
-    device_class: energy
-    unit_of_measurement: kWh
-    accuracy_decimals: 2
-    filters:
-      - multiply: 0.001
-      - throttle: 5min
-
-interval:
-  - interval: 10s
-    then:
-      - lambda: |-
-          if (std::isnan(id(tion_power).state)) {
-              id(tion_power_adj).publish_state(0);
-          }
-
 switch:
   - platform: tion
     name: LED

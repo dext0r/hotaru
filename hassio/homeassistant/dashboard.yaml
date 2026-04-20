@@ -3125,6 +3125,29 @@ views:
                   {% endif %}
                 tap_action:
                   action: more-info
+              - type: custom:mushroom-legacy-template-card
+                primary: Intake Fan
+                secondary: >-
+                  {{ states('switch.living_room_intake_fan_plug')|capitalize }}
+
+                  {% if not is_state('sensor.living_room_intake_fan_power',
+                  'unavailable') %}
+                    | {{ states('sensor.living_room_intake_fan_power') | int }} W
+                  {% endif %}
+                icon: mdi:air-filter
+                entity: switch.living_room_intake_fan
+                icon_color: >-
+                  {% if is_state('switch.living_room_intake_fan_plug',
+                  'unavailable') %}
+                    var(--rgb-disabled)
+                  {% elif is_state('switch.living_room_intake_fan_plug', 'on')
+                  %}
+                    var(--rgb-state-entity)
+                  {% else %}
+                    var(--rgb-grey)
+                  {% endif %}
+                tap_action:
+                  action: more-info
           - type: custom:mushroom-title-card
             title: ''
             subtitle: Bedroom Sockets
@@ -3203,23 +3226,28 @@ views:
                   {% endif %}
                 tap_action:
                   action: more-info
-      - type: custom:layout-break
-      - type: vertical-stack
-        cards:
-          - type: custom:mushroom-entity-card
-            entity: sensor.ups_status
-            icon: mdi:home-battery
-            icon_color: teal
-            layout: horizontal
-            primary_info: name
-          - type: custom:mushroom-chips-card
-            chips:
-              - type: entity
-                entity: sensor.ups_battery_charge
-              - type: entity
-                entity: sensor.ups_battery_voltage
-              - type: entity
-                entity: sensor.ups_temperature
+              - type: custom:mushroom-legacy-template-card
+                primary: Intake Fan
+                secondary: >-
+                  {{ states('switch.bedroom_intake_fan_plug')|capitalize }}
+
+                  {% if not is_state('sensor.bedroom_intake_fan_power',
+                  'unavailable') %}
+                    | {{ states('sensor.bedroom_intake_fan_power') | int }} W
+                  {% endif %}
+                icon: mdi:air-filter
+                entity: switch.bedroom_intake_fan_plug
+                icon_color: >-
+                  {% if is_state('switch.bedroom_intake_fan_plug',
+                  'unavailable') %}
+                    var(--rgb-disabled)
+                  {% elif is_state('switch.bedroom_intake_fan_plug', 'on') %}
+                    var(--rgb-state-entity)
+                  {% else %}
+                    var(--rgb-grey)
+                  {% endif %}
+                tap_action:
+                  action: more-info
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
@@ -3297,6 +3325,23 @@ views:
                   {% endif %}
                 tap_action:
                   action: more-info
+      - type: custom:layout-break
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-entity-card
+            entity: sensor.ups_status
+            icon: mdi:home-battery
+            icon_color: teal
+            layout: horizontal
+            primary_info: name
+          - type: custom:mushroom-chips-card
+            chips:
+              - type: entity
+                entity: sensor.ups_battery_charge
+              - type: entity
+                entity: sensor.ups_battery_voltage
+              - type: entity
+                entity: sensor.ups_temperature
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
@@ -3512,6 +3557,28 @@ views:
                   'unavailable') %}
                     var(--rgb-disabled)
                   {% elif is_state('switch.workshop_humidifiers_plug', 'on') %}
+                    var(--rgb-state-entity)
+                  {% else %}
+                    var(--rgb-grey)
+                  {% endif %}
+                tap_action:
+                  action: more-info
+              - type: custom:mushroom-legacy-template-card
+                primary: Intake Fan
+                secondary: >-
+                  {{ states('switch.workshop_intake_fan_relay')|capitalize }}
+
+                  {% if not is_state('sensor.workshop_intake_fan_power',
+                  'unavailable') %}
+                    | {{ states('sensor.workshop_intake_fan_power') | int }} W
+                  {% endif %}
+                icon: mdi:air-filter
+                entity: switch.workshop_intake_fan_relay
+                icon_color: >-
+                  {% if is_state('switch.workshop_intake_fan_relay',
+                  'unavailable') %}
+                    var(--rgb-disabled)
+                  {% elif is_state('switch.workshop_intake_fan_relay', 'on') %}
                     var(--rgb-state-entity)
                   {% else %}
                     var(--rgb-grey)

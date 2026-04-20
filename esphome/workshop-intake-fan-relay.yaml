@@ -1,0 +1,34 @@
+# Франкенштейн из умной розетки и esp8266 сбоку
+# Родной чип розетки умер во время экспериментов
+
+packages:
+  base: !include common/esp8266.yaml
+  bl0937: !include common/bl0937.yaml
+
+substitutions:
+  bl0937_sel_pin: 13
+  bl0937_sel_pin_inverted: 'true'
+  bl0937_cf_pin: 12
+  bl0937_cf_pin_inverted: 'true'
+  bl0937_cf1_pin: 14
+  bl0937_cf1_pin_inverted: 'true'
+  bl0937_current_resistor: 0.00104
+  bl0937_voltage_divider: 1619.05
+
+esphome:
+  friendly_name: Workshop Intake Fan Relay
+  area: Workshop
+  name: workshop-intake-fan-relay
+  model: DIY ESP8266
+  name_add_mac_suffix: false
+
+status_led:
+  pin: 4
+
+switch:
+  - id: relay
+    name: ''
+    platform: gpio
+    pin: 5
+    device_class: outlet
+    restore_mode: ALWAYS_ON

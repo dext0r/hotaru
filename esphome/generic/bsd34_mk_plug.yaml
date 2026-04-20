@@ -1,0 +1,73 @@
+# https://www.elektroda.com/rtvforum/topic4160387.html
+# https://ozon.ru/t/ueAr1bm
+
+packages:
+  base: !include ../common/ln882x.yaml
+  bl0937: !include ../common/bl0937.yaml
+
+substitutions:
+  relay_restore_mode: RESTORE_DEFAULT_OFF
+  power_led: 'true'
+  bl0937_sel_pin: 4
+  bl0937_sel_pin_inverted: 'true'
+  bl0937_cf_pin: 6
+  bl0937_cf_pin_inverted: 'true'
+  bl0937_cf1_pin: 7
+  bl0937_cf1_pin_inverted: 'true'
+  bl0937_current_resistor: 0.001018
+  bl0937_voltage_divider: 1536.5
+
+esphome:
+  friendly_name: BSD34-MK Smart Plug
+  name: bsd34-mk-plug
+  model: BSD34-MK Smart Plug
+
+  on_boot:
+    priority: -100.0
+    then:
+      - if:
+          condition:
+            - switch.is_on: relay
+            - lambda: return ${power_led};
+          then:
+            - output.turn_on: push_button_led_red
+
+logger:
+  baud_rate: 0
+
+binary_sensor:
+  - id: push_button
+    platform: gpio
+    pin:
+      number: 3
+      inverted: true
+    on_press:
+      switch.toggle: relay
+
+output:
+  - id: push_button_led_red
+    platform: gpio
+    pin:
+      number: 1
+      inverted: true
+
+status_led:
+  pin:
+    number: 10 # Blue LED
+    inverted: true
+
+switch:
+  - id: relay
+    name: ''
+    platform: gpio
+    pin: 5
+    device_class: outlet
+    restore_mode: $relay_restore_mode
+    on_turn_on:
+      - if:
+          condition:
+            - lambda: return ${power_led};
+          then:
+            - output.turn_on: push_button_led_red
+    on_turn_off:
+      - output.turn_off: push_button_led_red

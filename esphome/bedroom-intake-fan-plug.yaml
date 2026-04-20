@@ -1,0 +1,21 @@
+packages:
+  base: !include generic/bsd34_mk_plug.yaml
+
+substitutions:
+  relay_restore_mode: RESTORE_DEFAULT_ON
+  power_led: 'false'
+  bl0937_current_resistor: 0.001018
+  bl0937_voltage_divider: 1536.5
+
+esphome:
+  friendly_name: Bedroom Intake Fan Plug
+  area: Bedroom
+  name: bedroom-intake-fan-plug
+  name_add_mac_suffix: false
+  on_boot:
+    priority: 900
+    then:
+      # https://github.com/libretiny-eu/libretiny/issues/338
+      - lambda: |-
+          const uint8_t mac[] = {0x00, 0x50, 0xC2, 0x5E, 0x10, 0x90};
+          WiFi.setMacAddress(mac);

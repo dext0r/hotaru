@@ -28,8 +28,6 @@ skykettle:
     informing:
       temperature:
         name: Water Temperature
-      energy:
-        name: Energy
       work_cycles:
         name: Work Cycles
       status_indicator:

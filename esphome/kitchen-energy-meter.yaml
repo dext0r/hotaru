@@ -1,0 +1,136 @@
+# https://ozon.ru/t/zMitKk2
+
+packages:
+  base: !include common/base.yaml
+  wifi_e: !include common/wifi_e.yaml
+
+esphome:
+  friendly_name: Kitchen Energy Meter
+  area:
+    id: kitchen
+    name: Kitchen
+  name: kitchen-energy-meter
+  model: V-WIFI-DL02-ES
+  name_add_mac_suffix: false
+
+  devices:
+    - id: fridge_socket
+      name: Fridge Socket
+      area_id: kitchen
+
+    - id: kettle_socket
+      name: Kettle Socket
+      area_id: kitchen
+
+bk72xx:
+  board: cbu
+
+preferences:
+  flash_write_interval: 20min
+
+logger:
+  baud_rate: 0
+
+uart:
+  - id: uart_1
+    rx_pin: P10
+    tx_pin: P11
+    baud_rate: 4800
+
+  - id: uart_2
+    rx_pin: P1
+    tx_pin: P0
+    baud_rate: 4800
+
+globals:
+  - id: total_energy_1
+    type: float
+    restore_value: yes
+
+  - id: total_energy_2
+    type: float
+    restore_value: yes
+
+status_led:
+  pin: P9
+
+sensor:
+  - platform: bl0942
+    uart_id: uart_1
+    current_reference: 25092.29895
+    voltage_reference: 15881.32845
+    update_interval: 5s
+
+    power:
+      name: Power
+      device_id: kettle_socket
+      accuracy_decimals: 0
+      filters:
+        - clamp:
+            min_value: 0
+            ignore_out_of_range: true
+        - round: 0
+        - timeout: 15s
+
+    energy:
+      id: energy_1_raw
+      on_value:
+        - lambda: |-
+            static float prev = 0.0;
+            float curr = id(energy_1_raw).state;
+            id(total_energy_1) += curr - prev;
+            prev = curr;
+            id(energy_1).update();
+
+  - platform: bl0942
+    uart_id: uart_2
+    current_reference: 24825.93270
+    voltage_reference: 15896.40218
+    update_interval: 5s
+
+    power:
+      name: Power
+      device_id: fridge_socket
+      accuracy_decimals: 0
+      filters:
+        - multiply: -1
+        - clamp:
+            min_value: 0
+        - round: 0
+        - timeout: 15s
+
+    energy:
+      id: energy_2_raw
+      on_value:
+        - lambda: |-
+            static float prev = 0.0;
+            float curr = id(energy_2_raw).state;
+            id(total_energy_2) += curr - prev;
+            prev = curr;
+            id(energy_2).update();
+
+  - id: energy_1
+    name: Energy
+    platform: template
+    device_id: kettle_socket
+    state_class: total_increasing
+    device_class: energy
+    unit_of_measurement: kWh
+    accuracy_decimals: 2
+    lambda: |-
+      return id(total_energy_1);
+    filters:
+      - throttle: 5min
+
+  - id: energy_2
+    name: Energy
+    platform: template
+    device_id: fridge_socket
+    state_class: total_increasing
+    device_class: energy
+    unit_of_measurement: kWh
+    accuracy_decimals: 2
+    lambda: |-
+      return id(total_energy_2);
+    filters:
+      - throttle: 5min

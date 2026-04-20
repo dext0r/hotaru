@@ -3427,6 +3427,18 @@ views:
                 icon: mdi:led-strip
                 vertical: false
                 features_position: bottom
+              - type: tile
+                entity: sensor.fridge_power
+                name: Fridge
+                icon: mdi:fridge-industrial-outline
+                vertical: false
+                features_position: bottom
+              - type: tile
+                entity: sensor.kettle_power
+                name: Kettle
+                icon: mdi:kettle
+                vertical: false
+                features_position: bottom
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card

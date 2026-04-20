@@ -121,6 +121,10 @@
 * 1x **Sonoff Basic R2** (esphome): перезагружать сервер с HA удалённо при необходимости :)
 * 1x **[Tuya WBP-1G](https://www.ozon.ru/product/umnoe-rele-wi-fi-16a-s-izmereniem-moshchnosti-s-alisoy-tuya-smartlife-1-sht-1540285728/)**: розетки на кухонной поверхности
 
+## Электричество
+
+* 1x **Энергомонитор [V-WIFI-DL02-ES](https://ozon.ru/t/zMitKk2)**: мониторинг потребления холодильника и чайника
+
 ## Климат
 
 * 2x Инверторный **Midea MSAG1-09N8C2**: управляется по USB через esphome платой [ESP8266 ESP-12F](https://aliexpress.ru/item/32815395082.html) (там есть конвертер уровней) + диодик для управления подсветкой/follow me

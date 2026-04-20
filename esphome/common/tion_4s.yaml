@@ -38,20 +38,54 @@ vport:
 tion:
   type: 4s
   vport_id: tion_ble_vport
-  update_interval: 5s
-  state_timeout: 3s
+  update_interval: 10s
+  state_timeout: 1s
   force_update: true
 
 climate:
-  - platform: tion
-    name: ''
+  - id: tion_climate
+    platform: tion
     device_id: $tion_device_id
+    on_state:
+      - sensor.template.publish:
+          id: tion_current_temperature
+          state: !lambda return x.current_temperature;
+
+  - name: ''
+    platform: climate_template
+    device_id: $tion_device_id
+    icon: mdi:air-filter
+    optimistic: false
+    supported_modes: ['off', 'heat', 'fan_only']
+    custom_fan_modes: ['1', '2', '3', '4', '5', '6']
+    mode: !lambda return id(tion_climate).mode;
+    custom_fan_mode: !lambda return id(tion_climate).get_custom_fan_mode();
+    current_temperature: !lambda return id(tion_current_temperature).state;
+    target_temperature: !lambda return id(tion_climate).target_temperature;
+    set_target_temperature_action:
+      - climate.control:
+          id: tion_climate
+          target_temperature: !lambda return x;
+    set_mode_action:
+      - climate.control:
+          id: tion_climate
+          mode: !lambda return x;
+    set_custom_fan_mode_action:
+      - climate.control:
+          id: tion_climate
+          custom_fan_mode: !lambda return x;
+    visual:
+      min_temperature: 1
+      max_temperature: 25
+      temperature_step: 1
 
 binary_sensor:
   - platform: tion
     name: No Response
     type: state
     device_id: $tion_device_id
+    filters:
+      - delayed_on: 10s
 
 button:
   - platform: tion
@@ -60,13 +94,24 @@ button:
     device_id: $tion_device_id
 
 sensor:
+  - id: tion_current_temperature
+    platform: template
+    update_interval: never
+    unit_of_measurement: '°C'
+    accuracy_decimals: 0
+    filters:
+      - or:
+          - throttle: 15min
+          - delta: 2
+      - timeout: 35min
+
   - platform: tion
     name: Outdoor Temperature
     type: outdoor_temperature
     device_id: $tion_device_id
     filters:
       - or:
-          - throttle: 30min
+          - throttle: 15min
           - delta: 2
       - timeout: 35min
 

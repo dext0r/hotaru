@@ -2982,11 +2982,16 @@ views:
         chips:
           - type: template
             content: |
-              {{
+              Grid: {{
                 states('sensor.cb_branch_circuit_power')|int(0) +
                 states('sensor.kitchen_branch_circuit_power')|int(0) +
                 states('sensor.sockets_branch_circuit_power')|int(0) +
                 states('sensor.stove_branch_circuit_power')|int(0)
+              }} W
+          - type: template
+            content: |
+              IoT: {{
+                states('sensor.iot_power') | int
               }} W
         alignment: center
       - square: false

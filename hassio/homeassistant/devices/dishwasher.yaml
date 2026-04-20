@@ -56,6 +56,7 @@ automation:
     trigger:
       platform: state
       entity_id: binary_sensor.dishwasher_door
+      from: 'off'
       to: 'on'
       for:
         seconds: 10
@@ -82,6 +83,7 @@ automation:
     trigger:
       platform: state
       entity_id: binary_sensor.dishwasher_door
+      from: 'off'
       to: 'on'
       for:
         seconds: 30

@@ -1,45 +1,45 @@
 automation:
-  - id: kitchen_applicances_status_update
-    alias: Kichen Applicances Status Update
-    trigger:
-      - platform: state
-        entity_id: sensor.kitchen_branch_circuit_power
-    condition:
+  - id: kitchen_ovens_status_update
+    alias: Kichen Ovens Status Update
+    triggers:
+      - trigger: state
+        entity_id: sensor.kitchen_ovens_socket_power
+    conditions:
       - condition: template
         value_template: >
-          {{ trigger.to_state.state|int(0) >= 700 }}
-    action:
-      - service: timer.start
-        entity_id: timer.kitchen_appliances_running
+          {{ trigger.to_state.state | int(0) >= 100 }}
+    actions:
+      - action: timer.start
+        entity_id: timer.kitchen_ovens_running
 
-  - id: appliance_left_on_alert
-    alias: Appliance Left On Alert
-    trigger:
-      - platform: state
+  - id: kitchen_appliance_left_on_alert
+    alias: Kitchen Appliance Left On Alert
+    triggers:
+      - trigger: state
         entity_id: binary_sensor.kitchen_occupancy
         from: 'on'
         to: 'off'
         for:
-          minutes: 20
+          minutes: 10
 
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.anyone_home
         to: 'off'
 
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.scene_meal
         to: 'on'
         for:
-          minutes: 3
-    condition:
+          minutes: 5
+    conditions:
       - condition: state
         entity_id:
           - binary_sensor.stove
-          - binary_sensor.kitchen_appliances
+          - binary_sensor.kitchen_ovens
         match: any
         state: 'on'
-        for:
-          minutes: 5
+
+      # TODO: тут должно быть исключающее правило, если что-то долго готовится в духовке
     action:
       - action: notify.send_message
         data:
@@ -49,14 +49,14 @@ automation:
 
 template:
   - binary_sensor:
-      - name: Kitchen Appliances
-        unique_id: binary_sensor.kitchen_appliances
+      - name: Kitchen Ovens
+        unique_id: binary_sensor.kitchen_ovens
         state: >
-          {{ is_state('timer.kitchen_appliances_running', 'active') }}
+          {{ is_state('timer.kitchen_ovens_running', 'active') }}
         device_class: running
 
 timer:
-  kitchen_appliances_running:
-    name: 'Kitchen Appliances: Running'
+  kitchen_ovens_running:
+    name: 'Kitchen Ovens: Running'
     duration:
       minutes: 2

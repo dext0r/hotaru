@@ -2703,8 +2703,8 @@ views:
             entity: binary_sensor.stove
             name: Stove
           - type: custom:mushroom-entity-card
-            entity: binary_sensor.kitchen_appliances
-            name: Appliances
+            entity: binary_sensor.kitchen_ovens
+            name: Ovens
         columns: 2
       - type: horizontal-stack
         cards:
@@ -3024,7 +3024,7 @@ views:
               - entity: sensor.sockets_branch_circuit_power
                 color: '#e67e22'
           - type: custom:mini-graph-card
-            name: Stove Power Supply
+            name: Stove
             align_icon: state
             font_size: 65
             font_size_header: 10

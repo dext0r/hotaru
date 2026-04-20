@@ -1,32 +1,34 @@
-# TODO: подкрутить после переход на PZEM
 automation:
   - id: stove_status_update
     alias: Stove Status Update
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: sensor.kitchen_stove_power
-    condition:
+    conditions:
       - condition: template
         value_template: >
-          {{ trigger.to_state.state|int(0) >= 200 }}
-    action:
-      - service: timer.start
+          {{ trigger.to_state.state | int(0) >= 200 }}
+    actions:
+      - action: timer.start
         entity_id: timer.stove_running
 
 template:
   - trigger:
       - platform: time_pattern
-        seconds: /5
+        seconds: /2
     sensor:
       - name: Kitchen Stove Power
         unique_id: sensor.kitchen_stove_power
         state: >
-          {% set power = states('sensor.stove_power_supply_power')|int(0) %}
-          {% if is_state('input_select.dishwasher_status', 'Running') %}
+          {% set power = states('sensor.stove_branch_circuit_power') | int(0) - 30 %} {# 30 - всякая ерунда на этой линии #}
+
+          {% if is_state('input_select.dishwasher_status', 'Running') or is_state('sensor.dishwasher_power', ['unavailable', 'unknown']) %}
+            {# не совсем честно, но адекватно выделить мощность именно плиты не получится #}
+            {# и в целом запуск плиты вместе с посудомойкой маловероятен #}
             {% set power = 0 %}
           {% endif %}
 
-          {{ power }}
+          {{ [0, power] | max }}
         state_class: measurement
         unit_of_measurement: W
         device_class: power

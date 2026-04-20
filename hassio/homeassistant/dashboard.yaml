@@ -3356,6 +3356,28 @@ views:
                 tap_action:
                   action: more-info
               - type: custom:mushroom-legacy-template-card
+                primary: Worktop
+                secondary: >-
+                  {{ states('switch.kitchen_worktop_socket')|capitalize }}
+
+                  {% if not is_state('sensor.kitchen_worktop_socket_power',
+                  'unavailable') %}
+                    | {{ states('sensor.kitchen_worktop_socket_power') | int }} W
+                  {% endif %}
+                icon: mdi:countertop-outline
+                entity: switch.kitchen_worktop_socket
+                icon_color: >-
+                  {% if is_state('switch.kitchen_worktop_socket', 'unavailable')
+                  %}
+                    var(--rgb-disabled)
+                  {% elif is_state('switch.kitchen_worktop_socket', 'on') %}
+                    var(--rgb-state-entity)
+                  {% else %}
+                    var(--rgb-grey)
+                  {% endif %}
+                tap_action:
+                  action: more-info
+              - type: custom:mushroom-legacy-template-card
                 primary: Station Duo
                 secondary: >-
                   {{ states('switch.station_duo_plug')|capitalize }}

@@ -1,0 +1,43 @@
+# https://www.elektroda.com/rtvforum/topic3965530.html
+# https://www.ozon.ru/product/umnoe-rele-wi-fi-16a-s-izmereniem-moshchnosti-s-alisoy-tuya-smartlife-1-sht-1540285728/
+
+packages:
+  base: !include ../common/base.yaml
+  bl0942: !include ../common/bl0942.yaml
+
+substitutions:
+  relay_restore_mode: RESTORE_DEFAULT_OFF
+  bl0942_current_reference: 253350.24461
+  bl0942_voltage_reference: 15667.15787
+
+esphome:
+  friendly_name: WBP-1G Relay
+  name: wbp-1g
+  model: WBP-1G Relay
+
+bk72xx:
+  board: generic-bk7231n-qfn32-tuya
+
+logger:
+  baud_rate: 0
+
+uart:
+  - rx_pin: P10
+    tx_pin: P11
+    baud_rate: 4800
+
+binary_sensor:
+  - id: push_button
+    platform: gpio
+    pin: P23
+
+status_led:
+  pin: P26
+
+switch:
+  - id: relay
+    platform: gpio
+    pin: P7
+    name: ''
+    device_class: outlet
+    restore_mode: $relay_restore_mode

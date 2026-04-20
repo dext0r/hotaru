@@ -119,6 +119,7 @@
 * 1x **Sonoff Mini** (esphome): сабвуфер (жрёт 5 ватт ничего не делая)
 * 2x **Sonoff Dual R3** (esphome): мониторинг в "серверной", розетка на кухне для печек
 * 1x **Sonoff Basic R2** (esphome): перезагружать сервер с HA удалённо при необходимости :)
+* 1x **[Tuya WBP-1G](https://www.ozon.ru/product/umnoe-rele-wi-fi-16a-s-izmereniem-moshchnosti-s-alisoy-tuya-smartlife-1-sht-1540285728/)**: розетки на кухонной поверхности
 
 ## Климат
 

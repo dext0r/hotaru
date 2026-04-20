@@ -1,0 +1,14 @@
+packages:
+  base: !include generic/wbp_1g_relay.yaml
+  wifi_e: !include common/wifi_e.yaml
+
+substitutions:
+  relay_restore_mode: ALWAYS_ON
+  bl0942_current_reference: 253350.24461
+  bl0942_voltage_reference: 15667.15787
+
+esphome:
+  friendly_name: Kitchen Worktop Socket
+  area: Kitchen
+  name: kitchen-worktop-socket
+  name_add_mac_suffix: false

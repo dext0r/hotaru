@@ -47,6 +47,35 @@ automation:
       - service: timer.start
         entity_id: timer.front_door_unlocked
 
+  - id: front_door_lock_waking_up
+    alias: 'Front Door: Lock (waking up)'
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.scene_waking_up
+        to: 'off'
+    conditions:
+      - condition: state
+        entity_id: binary_sensor.front_door
+        state: 'on'
+    actions:
+      - wait_for_trigger:
+          - platform: state
+            entity_id: binary_sensor.front_door
+            to: 'off'
+        timeout:
+          minutes: 5
+        continue_on_timeout: false
+
+      - delay:
+          seconds: 5
+
+      - condition: state
+        entity_id: binary_sensor.front_door
+        state: 'off'
+
+      - action: lock.lock
+        entity_id: lock.front_door
+
   - id: front_door_unlock
     alias: 'Front Door: Unlock'
     max_exceeded: silent

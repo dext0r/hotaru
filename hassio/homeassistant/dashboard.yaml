@@ -3377,21 +3377,22 @@ views:
                 tap_action:
                   action: more-info
               - type: custom:mushroom-legacy-template-card
-                primary: Camera
+                primary: Overhead Power Line
                 secondary: >-
-                  {{ states('switch.kitchen_camera_socket')|capitalize }}
+                  {{ states('switch.kitchen_overhead_power_line')|capitalize }}
 
-                  {% if not is_state('sensor.kitchen_camera_socket_power',
+                  {% if not is_state('sensor.kitchen_overhead_power_line_power',
                   'unavailable') %}
-                    | {{ states('sensor.kitchen_camera_socket_power') | int }} W
+                    | {{ states('sensor.kitchen_overhead_power_line_power') | int }} W
                   {% endif %}
-                icon: mdi:cctv
-                entity: switch.kitchen_camera_socket
+                icon: mdi:transmission-tower
+                entity: switch.kitchen_overhead_power_line
                 icon_color: >-
-                  {% if is_state('switch.kitchen_camera_socket', 'unavailable')
-                  %}
+                  {% if is_state('switch.kitchen_overhead_power_line',
+                  'unavailable') %}
                     var(--rgb-disabled)
-                  {% elif is_state('switch.kitchen_camera_socket', 'on') %}
+                  {% elif is_state('switch.kitchen_overhead_power_line', 'on')
+                  %}
                     var(--rgb-state-entity)
                   {% else %}
                     var(--rgb-grey)

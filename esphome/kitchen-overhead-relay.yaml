@@ -19,5 +19,5 @@ esphome:
       area_id: kitchen
 
     - id: device_2
-      name: Kitchen Camera Socket
+      name: Kitchen Overhead Power Line
       area_id: kitchen

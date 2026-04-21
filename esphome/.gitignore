@@ -1,5 +1,4 @@
 .venv*
 .esphome
-poetry.lock
-common/ld2410_debug*.yaml
+.mise
 lib/ESP8266Audio

@@ -4,11 +4,4 @@ version = "0.0.0"
 requires-python = ">=3.13"
 dependencies = [
     "esphome==2026.3.2",
-    "poethepoet>=0.36.0",
 ]
-
-[tool.poe]
-executor.type = "uv"
-
-[tool.poe.tasks]
-patch = "bash -c 'patch -d .venv/lib/python*/site-packages/esphome -p 1 < patches/device-model-202602.patch'"

@@ -1,5 +1,16 @@
 [tools]
 python = "3.13"
 
-[env]
-_.python.venv = { path = ".venv" }
+[settings]
+python.uv_venv_auto = "create|source"
+
+[deps.uv]
+auto = true
+run = "uv sync --reinstall && rm -f .venv/patched"
+
+[deps.patch-esphome]
+auto = true
+depends = ["uv"]
+run = "patch -d .venv/lib/python*/site-packages/esphome -p 1 -f < patches/device-model-202602.patch && touch .venv/patched"
+sources = ["patches/device-model-202602.patch"]
+outputs = [".venv/patched"]

@@ -108,15 +108,15 @@ automation:
 
   - id: dryer_done_alert
     alias: 'Dryer: Done alert'
-    trigger:
-      - platform: time_pattern
+    triggers:
+      - trigger: time_pattern
         minutes: '/45'
 
-      - platform: state
+      - trigger: state
         entity_id: input_select.dryer_status
         from: Running
         to: Done
-    condition:
+    conditions:
       - condition: state
         entity_id: binary_sensor.anyone_home
         state: 'on'
@@ -126,6 +126,17 @@ automation:
         state:
           - Day
           - Vacation
+
+      - or:
+          - condition: state
+            entity_id:
+              - binary_sensor.living_room_light_alert_available
+              - binary_sensor.kitchen_light_alert_available
+            state: 'off'
+
+          - condition: template
+            value_template: >
+              {{ (now() - states.input_select.dryer_status.last_changed).total_seconds() > 7200 }}
 
       - condition: state
         entity_id: input_select.dryer_status
@@ -138,14 +149,14 @@ automation:
       - condition: template
         value_template: >
           {{ (now() - states.input_number.dryer_done_alert_count.last_changed).total_seconds() > 1200 }}
-    action:
+    actions:
       - wait_template: >
           {{ not is_state('media_player.atv', ['playing', 'pause']) }}
         timeout:
           minutes: 33
         continue_on_timeout: true
 
-      - service: script.yandex_station_tts
+      - action: script.yandex_station_tts
         data:
           target: all
           type: attention
@@ -164,7 +175,7 @@ automation:
               Это последнее предупреждение! Мятое белье останется там навсегда!
             {% endif %}
 
-      - service: input_number.increment
+      - action: input_number.increment
         entity_id: input_number.dryer_done_alert_count
 
   - id: dryer_status

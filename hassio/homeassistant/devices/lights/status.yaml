@@ -2,22 +2,39 @@ automation:
   - id: kitchen_status_light_update
     alias: 'Kitchen: Status light update'
     mode: queued
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id:
           - binary_sensor.anyone_home
+          - binary_sensor.humidifier_cleanup_notice
+          - binary_sensor.humidifiers_need_refill
           - binary_sensor.freezer_door
           - binary_sensor.fridge_door
           - binary_sensor.time_to_take_pills
+          - input_select.dryer_status
           - input_select.home_mode
-    action:
+          - input_select.washing_machine_status
+
+      - trigger: time_pattern
+        minutes: '/10'
+    actions:
+      - if:
+          - condition: state
+            entity_id: binary_sensor.anyone_home
+            state: 'off'
+        then:
+          - action: light.turn_off
+            entity_id: light.kitchen_status
+
+          - stop:
+
       - choose:
           - conditions:
               - condition: state
                 entity_id: binary_sensor.fridge_door
                 state: 'on'
             sequence:
-              - service: light.turn_on
+              - action: light.turn_on
                 entity_id: light.kitchen_status
                 data:
                   brightness_pct: 50
@@ -30,7 +47,7 @@ automation:
                 entity_id: binary_sensor.freezer_door
                 state: 'on'
             sequence:
-              - service: light.turn_on
+              - action: light.turn_on
                 entity_id: light.kitchen_status
                 data:
                   brightness_pct: 50
@@ -40,49 +57,79 @@ automation:
 
           - conditions:
               - condition: state
-                entity_id:
-                  - binary_sensor.time_to_take_pills
-                  - binary_sensor.anyone_home
+                entity_id: binary_sensor.time_to_take_pills
                 state: 'on'
 
               - condition: state
                 entity_id: input_select.home_mode
                 state: Day
             sequence:
-              - service: light.turn_on
+              - action: light.turn_on
                 entity_id: light.kitchen_status
                 data:
                   brightness_pct: 100
                   rgbw_color: [252, 0, 181, 0]  # сиреневый
                   effect: pulse
                   transition: 2
+
+          - conditions:
+              - condition: state
+                entity_id:
+                  - input_select.washing_machine_status
+                  - input_select.dryer_status
+                state: Done
+                match: any
+            sequence:
+              - action: light.turn_on
+                entity_id: light.kitchen_status
+                data:
+                  brightness_pct: 100
+                  rgbw_color: [0, 225, 255, 0]  # голубой
+                  effect: pulse
+                  transition: 2
+
+          - conditions:
+              - condition: state
+                entity_id: binary_sensor.humidifiers_need_refill
+                state: 'on'
+
+              - condition: state
+                entity_id: person.dextor
+                state: home
+            sequence:
+              - action: light.turn_on
+                entity_id: light.kitchen_status
+                data:
+                  brightness_pct: 100
+                  rgbw_color: [249, 76, 255, 0] # розовый
+                  effect: None
+                  transition: 0.5
+
         default:
-          - service: light.turn_off
+          - action: light.turn_off
             entity_id: light.kitchen_status
             data:
               transition: 0.5
 
-  - id: living_room_tv_status_light_update
-    alias: 'Living Room TV Status Light: Update'
+  - id: living_room_tv_status_left_light_update
+    alias: 'Living Room TV Status Left Light: Update'
     mode: queued
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id:
           - binary_sensor.anyone_home
           - binary_sensor.humidifier_cleanup_notice
+          - binary_sensor.humidifiers_need_refill
           - input_boolean.scene_movie
-          - input_select.dryer_status
+          - input_boolean.scene_meal
           - input_select.home_mode
-          - input_select.washing_machine_status
-          - sensor.living_room_humidifier_water_level
-          - sensor.living_room_humidifier_water_tank_level
 
-      - platform: time_pattern
+      - trigger: time_pattern
         minutes: '/10'
 
-      - platform: event
+      - trigger: event
         event_type: living_room_tv_status_light_ack_flash_done
-    action:
+    actions:
       - if:
           - condition: state
             entity_id: input_select.home_mode
@@ -93,7 +140,82 @@ automation:
             state: 'on'
 
           - condition: state
-            entity_id: input_boolean.scene_movie
+            entity_id:
+              - input_boolean.scene_movie
+              - input_boolean.scene_meal
+            state: 'off'
+        then:
+          - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: binary_sensor.humidifier_cleanup_notice
+                    state: 'on'
+                sequence:
+                  - action: light.turn_on
+                    entity_id: light.living_room_tv_status_left
+                    data:
+                      brightness_pct: 25
+                      rgb_color: [255, 36, 0] # почти красный
+
+                  - stop:
+
+              - conditions:
+                  - condition: state
+                    entity_id: binary_sensor.humidifiers_need_refill
+                    state: 'on'
+
+                  - condition: state
+                    entity_id: person.dextor
+                    state: home
+                sequence:
+                  - action: light.turn_on
+                    entity_id: light.living_room_tv_status_left
+                    data:
+                      brightness_pct: 25
+                      rgb_color: [249, 76, 255] # розовый
+
+                  - stop:
+
+      - if:
+          - condition: state
+            entity_id: light.living_room_tv_status_left
+            state: 'on'
+        then:
+          - action: light.turn_off
+            entity_id: light.living_room_tv_status_left
+
+  - id: living_room_tv_status_right_light_update
+    alias: 'Living Room TV Status Right Light: Update'
+    mode: queued
+    triggers:
+      - trigger: state
+        entity_id:
+          - binary_sensor.anyone_home
+          - input_boolean.scene_movie
+          - input_boolean.scene_meal
+          - input_select.dryer_status
+          - input_select.home_mode
+          - input_select.washing_machine_status
+
+      - trigger: time_pattern
+        minutes: '/10'
+
+      - trigger: event
+        event_type: living_room_tv_status_light_ack_flash_done
+    actions:
+      - if:
+          - condition: state
+            entity_id: input_select.home_mode
+            state: Day
+
+          - condition: state
+            entity_id: binary_sensor.anyone_home
+            state: 'on'
+
+          - condition: state
+            entity_id:
+              - input_boolean.scene_movie
+              - input_boolean.scene_meal
             state: 'off'
         then:
           - choose:
@@ -105,111 +227,37 @@ automation:
                     state: Done
                     match: any
                 sequence:
-                  - service: light.turn_on
-                    entity_id:
-                      - light.living_room_tv_status_left
-                      - light.living_room_tv_status_right
+                  - action: light.turn_on
+                    entity_id: light.living_room_tv_status_right
                     data:
-                      brightness_pct: 100
+                      brightness_pct: 25
                       rgb_color: [0, 225, 255]  # голубой
 
-              - conditions:
-                  - or:
-                      - condition: state
-                        entity_id: binary_sensor.humidifier_cleanup_notice
-                        state: 'on'
+                  - stop:
 
-                      - and:
-                          - condition: state
-                            entity_id: input_boolean.living_room_humidifier_control
-                            state: 'on'
+      - if:
+          - condition: state
+            entity_id: light.living_room_tv_status_right
+            state: 'on'
+        then:
+          - action: light.turn_off
+            entity_id: light.living_room_tv_status_right
 
-                          - condition: state
-                            entity_id: humidifier.living_room_humidifier
-                            state:
-                              - 'on'
-                              - 'off'
+template:
+  - binary_sensor:
+      - unique_id: binary_sensor.living_room_light_alert_available
+        name: Living Room Light Alert Available
+        icon: mdi:alarm-light-outline
+        state: >
+          {{ is_state('binary_sensor.living_room_occupancy', 'on') and
+             not is_state('light.living_room_tv_status_left', 'unavailable') }}
 
-                          - or:
-                              - and:
-                                  - condition: numeric_state
-                                    entity_id: sensor.living_room_humidifier_water_level
-                                    below: 35
-                                    above: 0
-
-                              - condition: numeric_state
-                                entity_id: sensor.living_room_humidifier_water_tank_level
-                                below: 15
-                sequence:
-                  - if:
-                      - condition: state
-                        entity_id: binary_sensor.humidifier_cleanup_notice
-                        state: 'on'
-                    then:
-                      - service: light.turn_on
-                        entity_id: light.living_room_tv_status_left
-                        data:
-                          brightness_pct: 25
-                          rgb_color: [255, 36, 0] # почти красный
-                    else:
-                      - service: light.turn_on
-                        entity_id: light.living_room_tv_status_left
-                        data:
-                          brightness_pct: 25
-                          rgb_color: [255, 110, 0] # оранжевый
-
-                  # TODO: стрёмное дублирование
-                  - if:
-                      - condition: state
-                        entity_id: input_boolean.living_room_humidifier_control
-                        state: 'on'
-
-                      - condition: state
-                        entity_id: humidifier.living_room_humidifier
-                        state:
-                          - 'on'
-                          - 'off'
-
-                      - or:
-                          - condition: numeric_state
-                            entity_id: sensor.living_room_humidifier_water_level
-                            below: 35
-
-                          - condition: numeric_state
-                            entity_id: sensor.living_room_humidifier_water_tank_level
-                            below: 15
-                    then:
-                      - service: light.turn_on
-                        entity_id: light.living_room_tv_status_right
-                        data:
-                          brightness_pct: 25
-                          rgb_color: [255, 110, 0] # оранжевый
-            default:
-              - if:
-                  - condition: state
-                    entity_id:
-                      - light.living_room_tv_status_left
-                      - light.living_room_tv_status_right
-                    state: 'on'
-                    match: any
-                then:
-                  - service: light.turn_off
-                    entity_id:
-                      - light.living_room_tv_status_left
-                      - light.living_room_tv_status_right
-        else:
-          - if:
-              - condition: state
-                entity_id:
-                  - light.living_room_tv_status_left
-                  - light.living_room_tv_status_right
-                state: 'on'
-                match: any
-            then:
-              - service: light.turn_off
-                entity_id:
-                  - light.living_room_tv_status_left
-                  - light.living_room_tv_status_right
+      - unique_id: binary_sensor.kitchen_light_alert_available
+        name: Kitchen Light Alert Available
+        icon: mdi:alarm-light-outline
+        state: >
+          {{ is_state('binary_sensor.kitchen_occupancy', 'on') and
+             not is_state('light.kitchen_status', 'unavailable') }}
 
 script:
   living_room_tv_status_light_ack_flash:

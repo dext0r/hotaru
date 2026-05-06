@@ -16,63 +16,23 @@ input_number:
 automation:
   - id: humidifiers_maintenance_alert
     alias: 'Humidifiers: Maintenance Alert'
-    trigger:
-      - platform: time_pattern
+    triggers:
+      - trigger: time_pattern
         minutes: '/10'
-    condition:
+    conditions:
       - condition: state
-        entity_id: binary_sensor.anyone_home
+        entity_id: person.dextor
+        state: home
+
+      - condition: state
+        entity_id: binary_sensor.humidifiers_need_refill
         state: 'on'
 
-      - condition: or
-        conditions:
-          - and:
-              - condition: numeric_state
-                entity_id: sensor.bedroom_humidifier_water_level
-                below: 25
-
-              - condition: state
-                entity_id: input_boolean.bedroom_humidifier_control
-                state: 'on'
-
-          - and:
-              - condition: state
-                entity_id: switch.living_room_humidifier_water_tank_maintenance
-                state:
-                  - 'off'
-                  - 'unavailable'
-
-              - condition: numeric_state
-                entity_id: sensor.living_room_humidifier_water_level
-                below: 25
-
-              - condition: state
-                entity_id: input_boolean.living_room_humidifier_control
-                state: 'on'
-
-          - and:
-              - or:
-                  - and:
-                      - condition: numeric_state
-                        entity_id: sensor.workshop_humidifier_1_water_level
-                        below: 60
-
-                      - condition: state
-                        entity_id: binary_sensor.workshop_humidifier_1_water_tank
-                        state: 'on'
-
-                  - and:
-                      - condition: numeric_state
-                        entity_id: sensor.workshop_humidifier_2_water_level
-                        below: 60
-
-                      - condition: state
-                        entity_id: binary_sensor.workshop_humidifier_2_water_tank
-                        state: 'on'
-
-              - condition: state
-                entity_id: input_boolean.workshop_humidifier_control
-                state: 'on'
+      - condition: state
+        entity_id:
+          - binary_sensor.living_room_light_alert_available
+          - binary_sensor.kitchen_light_alert_available
+        state: 'off'
 
       - condition: state
         entity_id:
@@ -94,7 +54,7 @@ automation:
         value_template: >
           {{ (now() - state_attr('automation.humidifiers_maintenance_alert',
                                  'last_triggered')|default(now() - timedelta(days=1), true)).total_seconds() > 60 * 60 }}
-    action:
+    actions:
       - wait_template: >
           {{ not is_state('media_player.atv', ['playing', 'pause']) }}
         timeout:
@@ -136,8 +96,8 @@ automation:
                     'Увлажните меня!',
                     ]|random
                 }}
-                {% if not is_state('sensor.humidifier_need_refill', 'unavailable') %}
-                  {{ states('sensor.humidifier_need_refill') }}
+                {% if not is_state('binary_sensor.humidifiers_need_refill', 'unavailable') %}
+                  {{ state_attr('binary_sensor.humidifiers_need_refill', 'location') or '' }}
                 {% endif %}
 
   - id: humidifiers_cleanup
@@ -164,35 +124,82 @@ group:
       - input_boolean.workshop_humidifier_control
 
 template:
-  - sensor:
-      - unique_id: sensor.humidifier_need_refill
-        name: 'Humidifier: Need Refill'
-        icon: mdi:water-well-outline
+  - binary_sensor:
+      - unique_id: binary_sensor.humidifiers_need_refill
+        name: 'Humidifiers: Need Refill'
+        icon: mdi:format-color-fill
         state: >
-          {% set data = namespace(humidifiers=[]) %}
+          {% set v = false %}
 
-          {% if is_state('input_boolean.bedroom_humidifier_control', 'on') and states('sensor.bedroom_humidifier_water_level')|int(100) < 30 %}
-            {% set data.humidifiers = data.humidifiers + ['спальне'] %}
+          {% if is_state('input_boolean.bedroom_humidifier_control', 'on') and
+                states('sensor.bedroom_humidifier_water_level') | int(100) < 30 %}
+            {% set v = true %}
           {% endif %}
 
-          {% if is_state('input_boolean.living_room_humidifier_control', 'on') and 0 < states('sensor.living_room_humidifier_water_level')|int(100) < 30 %}
-            {% set data.humidifiers = data.humidifiers + ['гостиной'] %}
+          {% if is_state('input_boolean.living_room_humidifier_control', 'on') and
+                0 < states('sensor.living_room_humidifier_water_level') | int(100) < 30 %}
+            {% set v = true %}
           {% endif %}
 
-          {% if is_state('switch.living_room_humidifier_water_tank_auto_refill', 'on') and states('sensor.living_room_humidifier_water_tank_level')|int(100) < 15 %}
-            {% set data.humidifiers = data.humidifiers + ['злой бочке'] %}
+          {% if is_state('switch.living_room_humidifier_water_tank_auto_refill', 'on') and
+                states('sensor.living_room_humidifier_water_tank_level') | int(100) < 20 %}
+            {% set v = true %}
           {% endif %}
 
-          {% if is_state('input_boolean.workshop_humidifier_control', 'on') and
-                (states('sensor.workshop_humidifier_1_water_level')|int(100) < 60 or
-                 states('sensor.workshop_humidifier_2_water_level')|int(100) < 60) %}
-            {% set data.humidifiers = data.humidifiers + ['мастерской'] %}
+          {% if is_state('input_boolean.workshop_humidifier_control', 'on') %}
+            {% if is_state('binary_sensor.workshop_humidifier_1_water_tank', 'on') and
+                  states('sensor.workshop_humidifier_1_water_level') | int(100) < 60 %}
+              {% set v = true %}
+            {% endif %}
+
+            {% if is_state('binary_sensor.workshop_humidifier_2_water_tank', 'on') and
+                  states('sensor.workshop_humidifier_2_water_level') | int(100) < 60 %}
+              {% set v = true %}
+            {% endif %}
           {% endif %}
 
-          {% if data.humidifiers %}
-            в {{ data.humidifiers|join(', ') }}
-          {% endif %}
+          {{ v }}
+        attributes:
+          location: >
+            {% set data = namespace(humidifiers=[]) %}
 
+            {% if is_state('input_boolean.bedroom_humidifier_control', 'on') and
+                  states('sensor.bedroom_humidifier_water_level') | int(100) < 30 %}
+              {% set data.humidifiers = data.humidifiers + ['спальне'] %}
+            {% endif %}
+
+            {% if is_state('input_boolean.living_room_humidifier_control', 'on') and
+                  0 < states('sensor.living_room_humidifier_water_level') | int(100) < 30 %}
+              {% set data.humidifiers = data.humidifiers + ['гостиной'] %}
+            {% endif %}
+
+            {% if is_state('switch.living_room_humidifier_water_tank_auto_refill', 'on') and
+                  states('sensor.living_room_humidifier_water_tank_level') | int(100) < 20 %}
+              {% set data.humidifiers = data.humidifiers + ['злой бочке'] %}
+            {% endif %}
+
+            {% if is_state('input_boolean.workshop_humidifier_control', 'on') %}
+              {% set workshop = false %}
+              {% if is_state('binary_sensor.workshop_humidifier_1_water_tank', 'on') and
+                    states('sensor.workshop_humidifier_1_water_level') | int(100) < 60 %}
+                {% set workshop = true %}
+              {% endif %}
+
+              {% if is_state('binary_sensor.workshop_humidifier_2_water_tank', 'on') and
+                    states('sensor.workshop_humidifier_2_water_level') | int(100) < 60 %}
+                {% set workshop = true %}
+              {% endif %}
+
+              {% if workshop %}
+                {% set data.humidifiers = data.humidifiers + ['мастерской'] %}
+              {% endif %}
+            {% endif %}
+
+            {% if data.humidifiers %}
+              в {{ data.humidifiers|join(', ') }}
+            {% endif %}
+
+  - sensor:
       - unique_id: sensor.humidifiers_water_consumption
         name: 'Humidifiers: Water consumption'
         state: >

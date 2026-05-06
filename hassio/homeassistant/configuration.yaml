@@ -148,7 +148,7 @@ recorder:
       - input_select.home_mode
       - select.intercom_mode
       - number.living_room_humidifier_fan_speed
-      - switch.bedroom_moon_light_charger
+      - switch.bedroom_moon_light_charger # обход исключения switch.*_light*
     entity_globs:
       - input_boolean.*_airing_*
       - input_boolean.scene_*
@@ -157,16 +157,14 @@ recorder:
     entities:
       - automation.yandex_station_busy
       - binary_sensor.motion_anywhere
-      - media_player.atv
       - number.kettle_target_temperature
       - sensor.alert_greeting
       - sensor.chores
       - sensor.kettle_water_temperature
-      - sensor.humidifier_need_refill
       - sensor.pingzen_heartbeat
-      - switch.kettle_power
     entity_globs:
       - '*.0x*'
+      - '*.*_target_*'
       - automation.*_airing_swap_modes
       - automation.*_log
       - automation.*_region_*
@@ -174,20 +172,18 @@ recorder:
       - automation.tv_*
       - cover.*_motor  # сырые моторы для шаблонных штор с ограничением открытия
       - binary_sensor.*_contact  # сырые герконы для шаблонов
-      - binary_sensor.*_humidifier_target_*
       - binary_sensor.*presence*layma*
       - binary_sensor.*presence*misaka*
       - binary_sensor.*workday*
       - binary_sensor.workday*
       - binary_sensor.*_running
+      - binary_sensor.*_light_alert_available
       - input_datetime.*_last_seen
       - light.workshop_main_*
-      - sensor.*_intake_fan_target_*
-      - sensor.*_humidifier_target_*
       - sensor.*_raw
       - sensor.person_pronoun_*
       - sensor.cb_branch_circuit_power_for_ac
-      - switch.*_light*
+      - switch.*_light* # из них делается light на шаблоне
 panel_custom:
   - name: config/automation
     sidebar_title: Automations

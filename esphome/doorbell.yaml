@@ -31,7 +31,7 @@ esp32:
       ignore_efuse_mac_crc: true
 
 external_components:
-  - source: github://pauln/esphome-linp-doorbell-g04
+  - source: github://dext0r/esphome-linp-doorbell-g04 # github://pauln/esphome-linp-doorbell-g04
     components:
       - linptech_g6l
 

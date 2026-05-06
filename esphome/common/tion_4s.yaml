@@ -6,6 +6,7 @@ external_components:
       - cgp
       - etl
       - vport
+  - source: lib/patches
 
 esphome:
   min_version: 2026.2.0

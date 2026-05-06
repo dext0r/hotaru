@@ -2,3 +2,4 @@
 .esphome
 .mise
 lib/ESP8266Audio
+lib/patches

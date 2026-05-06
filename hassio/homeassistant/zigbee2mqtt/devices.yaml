@@ -153,15 +153,6 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/226e331663924b0408096afd5efa4c99.png
-'0xcc86ecfffeb622f0':
-  friendly_name: Bedroom Shades Motor
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: false
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/1b207aa49030115625a437e32f945d49.png
 '0x00158d000460badf':
   friendly_name: Hallway Motion
   occupancy_timeout: 7

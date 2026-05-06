@@ -30,6 +30,8 @@ zone.dextor_work:
 
 sensor.living_room_heater_power:
   volatile: true
+sensor.pingzen_heartbeat:
+  volatile: true
 switch.living_room_heater:
   volatile: true
 sensor.living_room_heater_energy:

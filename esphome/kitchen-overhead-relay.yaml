@@ -1,5 +1,6 @@
 packages:
   base: !include generic/sonoff_dual_r3.yaml
+  esp32_ble_tracker: !include common/esp32_ble_tracker.yaml
 
 substitutions:
   relay_1_restore_mode: ALWAYS_ON
@@ -13,6 +14,10 @@ esphome:
   name: kitchen-overhead-relay
   name_add_mac_suffix: false
 
+  areas:
+    - id: closet
+      name: Closet
+
   devices:
     - id: device_1
       name: Kitchen Ovens Socket
@@ -21,3 +26,38 @@ esphome:
     - id: device_2
       name: Kitchen Overhead Power Line
       area_id: kitchen
+
+    - id: closet_meteo
+      name: Closet Meteo
+      area_id: closet
+
+sensor:
+  - platform: pvvx_mithermometer
+    mac_address: A4:C1:38:E2:26:3C
+    temperature:
+      name: Temperature
+      device_id: closet_meteo
+      accuracy_decimals: 1
+      filters:
+        - round: 1
+        - or:
+          - throttle: 30min
+          - delta: 0.2
+        - timeout: 35min
+
+    humidity:
+      name: Humidity
+      device_id: closet_meteo
+      accuracy_decimals: 0
+      filters:
+        - round: 0
+        - or:
+          - throttle: 30min
+          - delta: 2
+        - timeout: 35min
+
+    battery_level:
+      name: Battery
+      device_id: closet_meteo
+      filters:
+        - delta: 5

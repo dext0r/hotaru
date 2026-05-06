@@ -1688,6 +1688,22 @@ views:
                   --mdc-icon-size: 20px;
                 }
           - type: custom:mini-graph-card
+            name: Closet
+            align_icon: state
+            font_size: 65
+            font_size_header: 10
+            hours_to_show: 6
+            points_per_hour: 6
+            entities:
+              - entity: sensor.closet_temperature
+                color: '#98a7f2'
+            card_mod:
+              style: |
+                ha-card {
+                  --mdc-icon-size: 20px;
+                  --mdc-icon-size: 20px;
+                }
+          - type: custom:mini-graph-card
             name: Workshop
             align_icon: state
             font_size: 65
@@ -2452,6 +2468,22 @@ views:
             entities:
               - entity: sensor.bathroom_humidity
                 color: '#e1c40f'
+            card_mod:
+              style: |
+                ha-card {
+                  --mdc-icon-size: 20px;
+                  --mdc-icon-size: 20px;
+                }
+          - type: custom:mini-graph-card
+            name: Closet
+            align_icon: state
+            font_size: 65
+            font_size_header: 10
+            hours_to_show: 6
+            points_per_hour: 6
+            entities:
+              - entity: sensor.closet_temperature
+                color: '#98a7f2'
             card_mod:
               style: |
                 ha-card {

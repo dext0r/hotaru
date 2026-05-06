@@ -3153,6 +3153,12 @@ views:
                   {% endif %}
                 tap_action:
                   action: more-info
+              - type: tile
+                entity: sensor.living_room_backlight_relay_power
+                name: Backlight
+                icon: mdi:light-recessed
+                vertical: false
+                features_position: bottom
           - type: custom:mushroom-title-card
             title: ''
             subtitle: Bedroom Sockets

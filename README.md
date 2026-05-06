@@ -121,7 +121,7 @@
 * 1x **Sonoff Mini** (esphome): сабвуфер (жрёт 5 ватт ничего не делая)
 * 2x **Sonoff Dual R3** (esphome): мониторинг в "серверной", розетка на кухне для печек
 * 1x **Sonoff Basic R2** (esphome): перезагружать сервер с HA удалённо при необходимости :)
-* 1x **[Tuya WBP-1G](https://www.ozon.ru/product/umnoe-rele-wi-fi-16a-s-izmereniem-moshchnosti-s-alisoy-tuya-smartlife-1-sht-1540285728/)**: розетки на кухонной поверхности
+* 2x **[Tuya WBP-1G](https://www.ozon.ru/product/umnoe-rele-wi-fi-16a-s-izmereniem-moshchnosti-s-alisoy-tuya-smartlife-1-sht-1540285728/)**: розетки на кухонной поверхности, подсветка в гостиной (проклятый Yeelight вешается иногда)
 
 ## Электричество
 
@@ -306,7 +306,7 @@ Tion Iris - классный увлажнитель, но у него есть �
 ## Статистика по устройствам
 
 * Zigbee устройств: 54 на Z2M + 21 на ZHA = 75
-* Esphome устройств: 53
+* Esphome устройств: 54
 * Matter на WiFi: 1
 * Камер на WiFi: 2
 * Прочих УД устройств на wifi: 13

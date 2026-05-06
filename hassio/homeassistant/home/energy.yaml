@@ -106,6 +106,7 @@ template:
           {% set living_room_heater_socket = states('switch.living_room_heater_socket') %}
           {% set living_room_humidifier_plug = states('switch.living_room_humidifier_plug') %}
           {% set living_room_media_socket = states('switch.living_room_media_socket') %}
+          {% set living_room_backlight_relay = states('switch.living_room_backlight_relay') %}
           {% set workshop_socket_2 = states('switch.workshop_socket_2') %}
           {% set workshop_socket_3 = states('switch.workshop_socket_3') %}
           {% set ironing_board_socket = states('switch.ironing_board_socket') %}
@@ -129,6 +130,7 @@ template:
             (living_room_heater_socket, 1.1, 0.5),
             (living_room_humidifier_plug, 1.25, 0.7),
             (living_room_media_socket, 1.25, 0.7),
+            (living_room_backlight_relay, 1.25, 0.7),
             (workshop_socket_2, 1.25, 0.7),
             (workshop_socket_3, 1.25, 0.7),
             (ironing_board_socket, 1.5, 0.85),

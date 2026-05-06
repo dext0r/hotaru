@@ -1,0 +1,13 @@
+packages:
+  base: !include generic/wbp_1g_relay.yaml
+
+substitutions:
+  relay_restore_mode: ALWAYS_ON
+  bl0942_current_reference: 253350.24461
+  bl0942_voltage_reference: 15667.15787
+
+esphome:
+  friendly_name: Living Room Backlight Relay
+  area: Living Room
+  name: living-room-backlight-relay
+  name_add_mac_suffix: false

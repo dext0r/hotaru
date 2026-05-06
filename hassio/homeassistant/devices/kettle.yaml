@@ -26,11 +26,6 @@ climate:
         off
       {% endif %}
     set_hvac_mode:
-      - service: notify.send_message
-        data:
-          entity_id: notify.debug
-          message: 'Set HVAC mode: {{ hvac_mode }}'
-
       - choose:
           - conditions:
               - condition: template
@@ -71,11 +66,6 @@ climate:
           - service: switch.turn_off
             entity_id: switch.kettle_power
     set_temperature:
-      - service: notify.send_message
-        data:
-          entity_id: notify.debug
-          message: 'Set temperature: {{ temperature }}'
-
       - service: number.set_value
         entity_id: number.kettle_target_temperature
         data:
@@ -110,8 +100,8 @@ automation:
         entity_id: climate.kettle
         attribute: current_temperature
         above: 93
-    action:
-      - service: script.yandex_station_tts
+    actions:
+      - action: script.yandex_station_tts
         data:
           target:
             - media_player.living_room_station

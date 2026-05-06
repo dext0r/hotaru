@@ -34,6 +34,12 @@ skykettle:
         id: status
         name: Status
         disabled_by_default: true
+        on_value:
+          lambda: |-
+            if (x == "Off Line") {
+              id(offline_cooldown).execute();
+            }
+
     controlling:
       power:
         name: Power
@@ -49,11 +55,15 @@ skykettle:
         disabled_by_default: true
 
 binary_sensor:
-  - platform: template
-    name: Online
+  - name: Online
+    platform: template
     device_class: connectivity
     lambda: |-
-      return id(status).state != "Off Line";
+      if (id(status).state == "Off Line" && !id(offline_cooldown).is_running()) {
+        return false;
+      }
+
+      return true;
 
 sensor:
   - id: water_level_ml
@@ -91,3 +101,9 @@ sensor:
           - 0 -> 0
           - 1700 -> 100
       - lambda: return min(int(x / 10) * 10, 100);
+
+script:
+  - id: offline_cooldown
+    mode: restart
+    then:
+      - delay: 5min

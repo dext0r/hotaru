@@ -52,6 +52,12 @@ automation:
         to: 'on'
         for:
           minutes: 30
+
+      - platform: state
+        entity_id: light.closet
+        to: 'on'
+        for:
+          minutes: 40
     condition:
       - condition: state
         entity_id:

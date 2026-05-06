@@ -340,6 +340,11 @@ views:
                 secondary_info: none
                 layout: vertical
               - type: custom:mushroom-entity-card
+                entity: binary_sensor.kitchen_door
+                name: Kitchen
+                secondary_info: none
+                layout: vertical
+              - type: custom:mushroom-entity-card
                 entity: binary_sensor.fridge_door
                 name: Fridge
                 secondary_info: none

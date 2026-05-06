@@ -1,13 +1,20 @@
 automation:
   - id: kitchen_light_turn_on_full
     alias: 'Kitchen Light: Turn on (full)'
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: binary_sensor.kitchen_motion
+        to: 'on'
+
+      - trigger: state
+        entity_id: binary_sensor.kitchen_door
+        from: 'off'
         to: 'on'
     condition:
       - condition: state
-        entity_id: input_boolean.light_control
+        entity_id:
+          - input_boolean.light_control
+          - binary_sensor.anyone_home
         state: 'on'
 
       - condition: state
@@ -42,14 +49,20 @@ automation:
 
   - id: kitchen_light_turn_on_dimmed
     alias: 'Kitchen Light: Turn on (dimmed)'
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: binary_sensor.kitchen_motion
+        to: 'on'
+
+      - trigger: state
+        entity_id: binary_sensor.kitchen_door
+        from: 'off'
         to: 'on'
     condition:
       - condition: state
         entity_id:
           - input_boolean.light_control
+          - binary_sensor.anyone_home
           - binary_sensor.dim_light
         state: 'on'
 

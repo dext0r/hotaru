@@ -1,0 +1,14 @@
+packages:
+  base: !include base.yaml
+
+esphome:
+  min_version: 2026.2.0
+  platformio_options:
+    custom_versions.beken-bdk: 3.0.78
+
+bk72xx:
+  board: generic-bk7238-tuya
+  family: BK7231N # временно до начала официальной поддержки в esphome
+  framework:
+    version: 0.0.0
+    source: https://github.com/libretiny-eu/libretiny#feature/bk7238

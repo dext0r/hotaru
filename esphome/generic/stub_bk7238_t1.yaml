@@ -1,0 +1,6 @@
+packages:
+  base: !include ../common/bk7238.yaml
+
+esphome:
+  name: bk7238-t1
+

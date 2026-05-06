@@ -49,6 +49,7 @@
 * Debian 13 c Proxmox
 * ИБП Ippon Back Basic 650S Euro
 * Основной роутер: Mikrotik hAP ax3
+* Дополнительная точка доступа на кухне: Mikrotik hAP
 * Zigbee (Z2M): Sonoff Zigbee Dongle Plus-P
 * Zigbee (ZHA): Sonoff Zigbee Dongle Plus-E
 * HA OS в виртуальной машине

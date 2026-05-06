@@ -1,5 +1,6 @@
 packages:
   base: !include common/esp8266.yaml
+  wifi_e: !include common/wifi_e.yaml
 
 esphome:
   friendly_name: Kitchen Water Meter

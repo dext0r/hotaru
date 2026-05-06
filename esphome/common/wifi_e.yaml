@@ -1,10 +1,3 @@
 wifi:
-  ssid: !remove
-  password: !remove
-  min_auth_mode: WPA2
-  networks:
-    - ssid: !secret ssid_e
-      password: !secret password
-      priority: 10
-    - ssid: !secret ssid
-      password: !secret password
+  ssid: !secret ssid_e
+  password: !secret password

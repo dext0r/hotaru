@@ -1,6 +1,7 @@
 packages:
   base: !include common/esp8266.yaml
   energy: !include common/energy.yaml
+  wifi_e: !include common/wifi_e.yaml
 
 esphome:
   friendly_name: Kitchen Worktop Light

@@ -127,7 +127,7 @@ automation:
         conditions:
           - condition: numeric_state
             entity_id: sensor.illuminance_south_side
-            below: 200
+            below: 300
 
           - condition: state
             entity_id: cover.living_room

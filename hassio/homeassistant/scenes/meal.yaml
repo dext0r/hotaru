@@ -98,9 +98,14 @@ automation:
         entity_id: input_boolean.scene_meal
 
       - if:
-          - condition: state
-            entity_id: cover.living_room
-            state: closed
+          - or:
+              - condition: state
+                entity_id: cover.living_room
+                state: closed
+
+              - condition: numeric_state
+                entity_id: sensor.illuminance_south_side
+                below: 200
         then:
           - action: script.living_room_cozy_light
 

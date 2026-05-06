@@ -54,7 +54,7 @@ automation:
           - action: light.toggle
             entity_id: light.bathroom_bathtub
 
-      - action: switch.toggle
+      - action: switch.turn_on
         entity_id: switch.home_airing
 
   - id: bathroom_mirror_button_many_press

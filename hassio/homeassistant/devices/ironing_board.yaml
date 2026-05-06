@@ -9,113 +9,63 @@ input_select:
 automation:
   - id: ironing_board_turn_off_occupance_living_room
     alias: 'Ironing Board: Turn off (Occupancy / Living Room)'
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: binary_sensor.living_room_occupancy
         to: 'off'
         for:
-          minutes: 18
-    condition:
+          minutes: 20
+
+      - trigger: state
+        entity_id: binary_sensor.ironing_board_occupancy
+        to: 'off'
+        for:
+          minutes: 20
+    conditions:
       - condition: state
         entity_id: switch.ironing_board_socket
         state: 'on'
 
       - condition: state
+        entity_id: binary_sensor.ironing_board_occupancy
+        state: 'off'
+
+      - condition: state
         entity_id: input_select.ironing_board_room
         state: 'Living Room'
-    action:
+    actions:
       - action: switch.turn_off
         entity_id: switch.ironing_board_socket
 
-  - id: ironing_board_turn_off_idle_living_room
-    alias: 'Ironing Board: Turn off (Idle / Living Room)'
-    trigger:
-      - platform: state
-        entity_id: switch.ironing_board_socket
-        to: 'on'
-    condition:
-      - condition: state
-        entity_id: binary_sensor.living_room_motion
-        state:
-          - 'off'
-          - 'unavailable'
-
-      - condition: state
-        entity_id: input_select.ironing_board_room
-        state: 'Living Room'
-    action:
-      - wait_for_trigger:
-          - platform: state
-            entity_id: binary_sensor.living_room_motion
-            to: 'on'
-        timeout:
-          minutes: 10
-        continue_on_timeout: true
-
-      - if:
-          - condition: state
-            entity_id: binary_sensor.living_room_motion
-            state:
-              - 'off'
-              - 'unavailable'
-        then:
-          - action: switch.turn_off
-            entity_id: switch.ironing_board_socket
-
   - id: ironing_board_turn_off_occupancy_bedroom
     alias: 'Ironing Board: Turn off (Occupancy / Bedroom)'
-    trigger:
+    triggers:
       - platform: state
         entity_id: binary_sensor.bedroom_any_occupancy
         to: 'off'
         for:
-          minutes: 18
-    condition:
+          minutes: 20
+
+      - trigger: state
+        entity_id: binary_sensor.ironing_board_occupancy
+        to: 'off'
+        for:
+          minutes: 20
+    conditions:
       - condition: state
         entity_id: switch.ironing_board_socket
         state: 'on'
 
       - condition: state
+        entity_id: binary_sensor.ironing_board_occupancy
+        state: 'off'
+
+      - condition: state
         entity_id: input_select.ironing_board_room
         state: Bedroom
-    action:
+    actions:
       - action: switch.turn_off
         entity_id: switch.ironing_board_socket
-
-  - id: ironing_board_turn_off_idle_bedroom
-    alias: 'Ironing Board: Turn off (Idle / Bedroom)'
-    trigger:
-      - platform: state
-        entity_id: switch.ironing_board_socket
-        to: 'on'
-    condition:
-      - condition: state
-        entity_id: binary_sensor.bedroom_motion
-        state:
-          - 'off'
-          - 'unavailable'
-
-      - condition: state
-        entity_id: input_select.ironing_board_room
-        state: Bedroom
-    action:
-      - wait_for_trigger:
-          - platform: state
-            entity_id: binary_sensor.bedroom_motion
-            to: 'on'
-        timeout:
-          minutes: 10
-        continue_on_timeout: true
-
-      - if:
-          - condition: state
-            entity_id: binary_sensor.bedroom_motion
-            state:
-              - 'off'
-              - 'unavailable'
-        then:
-          - action: switch.turn_off
-            entity_id: switch.ironing_board_socket
 
   - id: ironing_board_turn_off_no_one_home
     alias: 'Ironing Board: Turn off (no one home)'
@@ -168,26 +118,27 @@ automation:
             target: media_player.{{ states('input_select.ironing_board_room')|lower|replace(' ', '_') }}_station
             text: Выключи утюг
 
-  - id: ironing_board_alarm
-    alias: 'Ironing Board: Alarm'
-    trigger:
-      - platform: state
+  - id: ironing_board_turn_off_idle
+    alias: 'Ironing Board: Turn off (idle)'
+    triggers:
+      - trigger: state
         entity_id: switch.ironing_board_socket
         to: 'on'
         for:
-          minutes: 50
-    action:
-      - action: notify.send_message
-        data:
-          entity_id: notify.dextor
-          message: 🪠 Гладильная доска долго включена, вряд ли так должно быть
-        continue_on_error: true
+          minutes: 60
+    actions:
+      - action: switch.turn_off
+        entity_id: switch.ironing_board_socket
 
-      - action: script.yandex_station_tts
-        data:
-          target: all
-          type: attention
-          text: Гладильная доска долго включена, вряд ли так должно быть
+  - id: ironing_board_occupancy_update
+    alias: 'Ironing Board: Occupancy update'
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.ironing_board_vibration
+        to: 'on'
+    actions:
+      - action: timer.start
+        entity_id: timer.ironing_board_occupancy
 
 sensor:
   - platform: integration
@@ -199,3 +150,19 @@ sensor:
     method: trapezoidal
     max_sub_interval:
       seconds: 5
+
+template:
+  binary_sensor:
+    - name: Ironing Board Occupancy
+      unique_id: binary_sensor.ironing_board_occupancy
+      state: >
+        {{ is_state('timer.ironing_board_occupancy', 'active') }}
+      availability: >
+        {{ states('binary_sensor.ironing_board_vibration') in ['on', 'off'] }}
+      device_class: occupancy
+
+timer:
+  ironing_board_occupancy:
+    name: 'Ironing Board: Occupancy'
+    duration:
+      minutes: 4

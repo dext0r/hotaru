@@ -73,28 +73,55 @@ automation:
 
   - id: living_room_light_turn_off
     alias: 'Living Room Light: Turn off'
-    trigger:
-      - platform: state
+    triggers:
+      - id: occupancy
+        trigger: state
         entity_id: binary_sensor.living_room_occupancy
         from: 'on'
         to: 'off'
         for:
           minutes: 20
 
-      - platform: state
+      - id: motion
+        trigger: state
         entity_id: binary_sensor.living_room_motion
         from: 'on'
         to: 'off'
         for:
           hours: 2
-    condition:
+    conditions:
       - condition: state
         entity_id:
           - input_boolean.light_control
           - group.living_room_lights
         state: 'on'
-    action:
-      - service: light.turn_off
+
+      - or:
+        - condition: trigger
+          id: motion
+
+        - and:
+            - condition: trigger
+              id: occupancy
+
+            - not:
+                - condition: state
+                  entity_id: input_select.ironing_board_room
+                  state: Living Room
+
+        - and:
+            - condition: trigger
+              id: occupancy
+
+            - condition: state
+              entity_id: input_select.ironing_board_room
+              state: Living Room
+
+            - condition: state
+              entity_id: binary_sensor.ironing_board_occupancy
+              state: 'off'
+    actions:
+      - action: light.turn_off
         entity_id: group.living_room_lights
 
   - id: living_room_main_light_turn_on

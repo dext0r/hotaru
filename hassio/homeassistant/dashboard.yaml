@@ -2727,6 +2727,20 @@ views:
                   margin-right: 1em;
                   justify-content: end;
                 }
+          - type: custom:mushroom-entity-card
+            entity: binary_sensor.ironing_board_occupancy
+            primary_info: none
+            secondary_info: none
+            card_mod:
+              style: |
+                :host {
+                  max-width: 25px;
+                  padding-right: 25px;
+                }
+
+                ha-card {
+                  border: 0;
+                }
       - square: false
         type: grid
         cards:
@@ -4190,6 +4204,11 @@ views:
                 entity: binary_sensor.living_room_occupancy
                 vertical: true
                 name: Occupancy
+                state_content: last-changed
+              - type: tile
+                entity: binary_sensor.ironing_board_occupancy
+                vertical: true
+                name: Ironing Board
                 state_content: last-changed
               - type: tile
                 entity: binary_sensor.living_room_balcony_door

@@ -113,6 +113,7 @@ template:
           {% set bathroom_hot_water_valve = states('switch.bathroom_hot_water_valve') %}
           {% set bedroom_humidifier_socket = states('switch.bedroom_humidifier_socket') %}
           {% set bathroom_occupancy = states('binary_sensor.bathroom_occupancy') %}
+          {% set bathroom_mirror_light = states('light.bathroom_mirror') %}
           {% set camera_xiaofang_1d9e = states('binary_sensor.camera_xiaofang_1d9e') %}
 
           {% set devices = (
@@ -137,6 +138,7 @@ template:
             (bathroom_hot_water_valve, 0.5, 0.5),
             (bedroom_humidifier_socket, 0.7, 0),
             (bathroom_occupancy, 1.2, 1.2),
+            (bathroom_mirror_light, 1, 0.5),
             (camera_xiaofang_1d9e, 2, 0),
           ) %}
           {% set data = namespace(power=0, unknown=false) %}

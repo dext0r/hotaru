@@ -124,6 +124,11 @@ automation:
       - condition: template
         value_template: >
           {{ label_entities('camera') | select('is_state', 'off') | list | length > 0 }}
+
+      - condition: template
+        value_template: >
+          {{ (now() - state_attr('automation.camera_unavailable_alert',
+                                 'last_triggered')|default(now() - timedelta(days=1), true)).total_seconds() > 600 }}
     actions:
       - action: notify.send_message
         data:

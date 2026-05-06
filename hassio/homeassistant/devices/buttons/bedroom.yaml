@@ -11,7 +11,7 @@ automation:
       - condition: state
         entity_id: input_boolean.scene_sleepy_mood
         state: 'off'
-    action:
+    actions:
       - choose:
           - conditions:
               - condition: state

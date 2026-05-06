@@ -199,7 +199,7 @@ automation:
         entity_id: light.living_room_tv
         attribute: brightness
         state: '115'
-    action:
+    actions:
       - service: light.turn_off
         entity_id:
           - light.living_room_tv

@@ -152,7 +152,6 @@ automation:
           type: alert
           text: В морозильнике очень жарко, проверь что там как
 
-
 template:
   binary_sensor:
     - name: Fridge Overheated

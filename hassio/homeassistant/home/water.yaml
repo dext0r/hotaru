@@ -27,7 +27,7 @@ automation:
         to: 'on'
         for:
           minutes: 5
-    action:
+    actions:
       - choose:
           - conditions:
               - condition: template

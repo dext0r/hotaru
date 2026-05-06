@@ -14,7 +14,7 @@ automation:
         event_type: yandex_intent
         event_data:
           text: Хочется спать
-    action:
+    actions:
       - service: input_boolean.turn_on
         entity_id:
           - input_boolean.scene_sleepy_mood

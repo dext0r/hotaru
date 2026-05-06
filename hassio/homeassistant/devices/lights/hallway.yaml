@@ -22,8 +22,8 @@ automation:
       - condition: state
         entity_id: timer.scene_welcome_home
         state: active
-    action:
-      - service: light.turn_off
+    actions:
+      - action: light.turn_off
         entity_id:
           - light.hallway
           - light.entrance

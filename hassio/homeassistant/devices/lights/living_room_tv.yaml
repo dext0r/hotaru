@@ -25,6 +25,35 @@ automation:
         data:
           brightness_pct: 45
 
+  - id: living_room_tv_light_turn_on_pre_meal
+    alias: 'Living Room TV Light: Turn on (pre-meal)'
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.living_room_dinner_table_parked
+        from: 'off'
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: input_select.home_mode
+        state:
+          - Day
+          - Vacation
+
+      - condition: state
+        entity_id:
+          - binary_sensor.anyone_home
+          - input_boolean.light_control
+        state: 'on'
+
+      - condition: state
+        entity_id: light.living_room_tv
+        state: 'off'
+    action:
+      - service: light.turn_on
+        entity_id: light.living_room_tv
+        data:
+          brightness_pct: 50
+
   - id: living_room_tv_light_turn_off
     alias: 'Living Room TV Light: Turn off'
     trigger:

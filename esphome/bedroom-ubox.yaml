@@ -45,6 +45,11 @@ esphome:
       name: Wardrobe Meteo
       area_id: wardrobe
 
+esp32:
+  framework:
+    advanced:
+      minimum_chip_revision: '3.0'
+
 sensor:
   - platform: pvvx_mithermometer
     mac_address: A4:C1:38:FC:04:50

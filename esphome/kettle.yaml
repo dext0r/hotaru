@@ -12,6 +12,11 @@ esphome:
   model: REDMOND SkyKettle G240S / ESP32 / HX711
   name_add_mac_suffix: false
 
+esp32:
+  framework:
+    advanced:
+      minimum_chip_revision: '3.0'
+
 ready4sky:
   scan_parameters:
     interval: 200ms

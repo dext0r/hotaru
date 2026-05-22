@@ -6,7 +6,7 @@ esp32:
   framework:
     type: esp-idf
     advanced:
-      minimum_chip_revision: '3.0'
+      minimum_chip_revision: '1.0'
 
 wifi:
   min_auth_mode: WPA2

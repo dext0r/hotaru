@@ -9,11 +9,6 @@ esphome:
   friendly_name: sonoff-dual-r3
   model: Sonoff Dual R3
 
-esp32:
-  framework:
-    advanced:
-      minimum_chip_revision: '1.0'
-
 preferences:
   flash_write_interval: 20min
 

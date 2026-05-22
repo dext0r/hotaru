@@ -8,6 +8,11 @@ esphome:
   name: north-balcony-presence
   name_add_mac_suffix: false
 
+esp32:
+  framework:
+    advanced:
+      minimum_chip_revision: '3.0'
+
 binary_sensor:
   - name: Misaka
     platform: ble_presence

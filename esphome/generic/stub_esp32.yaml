@@ -6,6 +6,3 @@ esphome:
 
 esp32:
   board: esp32dev
-  framework:
-    advanced:
-      minimum_chip_revision: '1.0'

@@ -30,11 +30,6 @@ esphome:
       name: Workshop Meteo
       area_id: workshop
 
-esp32:
-  framework:
-    advanced:
-      minimum_chip_revision: '1.0'
-
 uart:
   - id: pm1006_uart
     rx_pin: 34

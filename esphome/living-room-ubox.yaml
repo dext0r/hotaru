@@ -46,11 +46,6 @@ esphome:
       name: Living Room Presence
       area_id: living_room
 
-esp32:
-  framework:
-    advanced:
-      minimum_chip_revision: '1.0'
-
 logger:
   baud_rate: 0
 

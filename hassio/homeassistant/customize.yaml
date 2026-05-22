@@ -36,5 +36,7 @@ switch.living_room_heater:
   volatile: true
 sensor.living_room_heater_energy:
   volatile: true
+sensor.living_room_heater_boot_time:
+  volatile: true
 switch.ps5_power:
   volatile: true

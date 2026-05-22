@@ -170,16 +170,24 @@ automation:
           - condition: numeric_state
             entity_id: sensor.outside_temperature
             above: 10
-
-          - condition: numeric_state
-            entity_id: sensor.bedroom_temperature
-            above: 24
         then:
-          - service: climate.set_temperature
-            entity_id: climate.bedroom_ac
-            data:
-              hvac_mode: cool
-              temperature: 22
+          - if:
+              - or:
+                  - not:
+                    - condition: numeric_state
+                      entity_id: sensor.bedroom_temperature
+                      below: 22.8
+
+                  - condition: state
+                    entity_id: climate.bedroom_ac
+                    state: cool
+            then:
+              - action: climate.set_temperature
+                entity_id: climate.bedroom_ac
+                data:
+                  hvac_mode: cool
+                  temperature: >-
+                    {{ iif(states('sensor.outside_temperature') | int(0) >= 15, 22, 23) }}
 
       - if:
           - condition: state

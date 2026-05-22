@@ -36,7 +36,9 @@ automation:
     condition:
       - condition: state
         entity_id: input_select.dryer_status
-        state: Idle
+        state:
+          - Idle
+          - Done # повторный цикл без открытия дверцы
     action:
       - service: input_select.select_option
         entity_id: input_select.dryer_status

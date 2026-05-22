@@ -1,0 +1,23 @@
+automation:
+  - id: portable_fan_turn_off
+    alias: 'Portable Fan: Turn off'
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.anyone_home
+        from: 'on'
+        to: 'off'
+
+      - trigger: state
+        entity_id: input_select.home_mode
+        from: Day
+
+      - trigger: state
+        entity_id: input_boolean.scene_sleepy_mood
+        to: 'on'
+    conditions:
+      - condition: template
+        value_template: >
+          {{ is_state('fan.portable', 'on') }}
+    actions:
+      - action: fan.turn_off
+        entity_id: fan.portable

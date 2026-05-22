@@ -1,0 +1,11 @@
+packages:
+  base: !include generic/atmt_zb_t1_plug.yaml
+
+substitutions:
+  relay_restore_mode: ALWAYS_ON
+
+esphome:
+  friendly_name: Portable Fan Plug
+  area: Living Room
+  name: portable-fan-plug
+  name_add_mac_suffix: false

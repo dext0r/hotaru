@@ -58,22 +58,25 @@ automation:
 
   - id: living_room_hot
     alias: 'Living Room: Hot'
-    trigger:
-      - platform: event
+    triggers:
+      - trigger: event
         event_type: yandex_intent
         event_data:
           text: Очень жарко
           room: Гостиная
     actions:
-      - action: climate.set_temperature
-        entity_id:
-          - climate.bedroom_ac
-          - climate.workshop_ac
-        data:
-          temperature: 22
-          hvac_mode: cool
+      - if:
+          - condition: state
+            entity_id: binary_sensor.workshop_door
+            state: 'on'
+        then:
+          - action: climate.set_temperature
+            entity_id: climate.workshop_ac
+            data:
+              temperature: 22
+              hvac_mode: cool
 
-      - service: script.yandex_station_tts
+      - action: script.yandex_station_tts
         data:
           target: >
             {{ trigger.event.data.get('entity_id', 'last') }}
@@ -81,23 +84,24 @@ automation:
 
   - id: living_room_cold
     alias: 'Living Room: cold'
-    trigger:
-      - platform: event
+    triggers:
+      - trigger: event
         event_type: yandex_intent
         event_data:
           text: Я замёрз
           room: Гостиная
     actions:
-      - service: climate.turn_off
-        entity_id:
-          - climate.bedroom_ac
-          - climate.workshop_ac
+      - action: climate.turn_off
+        entity_id: climate.workshop_ac
 
-      - service: script.yandex_station_tts
+      - action: fan.turn_off
+        entity_id: fan.portable
+
+      - action: script.yandex_station_tts
         data:
           target: >
             {{ trigger.event.data.get('entity_id', 'last') }}
-          text: Ну и ладно
+          text: Выключаю морозилку
 
 template:
   - switch:

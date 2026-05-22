@@ -23,6 +23,24 @@ automation:
       - service: media_player.turn_off
         entity_id: media_player.tv
 
+      # костыль для корректного расчёта света при повторном "хочется спать"
+      - if:
+          - condition: state
+            entity_id: light.bedroom_bed
+            state: 'on'
+        then:
+          - service: light.turn_off
+            entity_id:
+              - light.bedroom_bed
+
+          - wait_for_trigger:
+              - platform: state
+                entity_id: light.bedroom_bed
+                to: 'off'
+            timeout:
+              seconds: 2
+            continue_on_timeout: true
+
       - service: light.turn_on
         entity_id:
           - light.bedroom_bed
@@ -181,22 +199,22 @@ automation:
 
   - id: scene_sleepy_mood_turn_off
     alias: 'Scene Sleepy Mood: Turn off'
-    trigger:
-      - platform: state
-        entity_id: light.bedroom_bed
-        from: 'on'
-        to: 'off'
+    triggers:
+      - trigger: state
+        entity_id: input_select.home_mode
 
-      - platform: state
+      - trigger: state
         entity_id:
           - light.bedroom_main
           - light.living_room_main
+          - light.kitchen_main
+          - light.entrance
         from: 'off'
         to: 'on'
-    condition:
+    conditions:
       - condition: state
         entity_id: input_boolean.scene_sleepy_mood
         state: 'on'
-    action:
-      - service: input_boolean.turn_off
+    actions:
+      - action: input_boolean.turn_off
         entity_id: input_boolean.scene_sleepy_mood

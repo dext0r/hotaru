@@ -153,7 +153,6 @@ template:
           {% endfor %}
 
           {% set data.power = data.power + states('sensor.cb_branch_circuit_iot_power') | float(0) %}
-          {% set data.power = data.power + 6 %} {# PLC #}
 
           {{ data.unknown | iif('unknown', data.power | round(2)) }}
         state_class: measurement

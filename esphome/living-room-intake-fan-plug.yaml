@@ -12,3 +12,10 @@ esphome:
   area: Living Room
   name: living-room-intake-fan-plug
   name_add_mac_suffix: false
+  on_boot:
+    priority: 900
+    then:
+      # https://github.com/libretiny-eu/libretiny/issues/338
+      - lambda: |-
+          const uint8_t mac[] = {0x00, 0x50, 0xC2, 0x5E, 0x10, 0x91};
+          WiFi.setMacAddress(mac);

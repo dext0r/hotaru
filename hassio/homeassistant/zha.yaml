@@ -4,7 +4,5 @@ device_config:
     type: switch
   a4:c1:38:a1:f1:b5:81:e6-1:
     type: switch
-  00:3c:84:ff:fe:90:65:8e-1:
-    type: light
   a4:c1:38:17:f9:c2:5b:f6-1:
     type: light

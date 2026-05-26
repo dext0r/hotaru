@@ -31,6 +31,13 @@ automation:
       - platform: numeric_state
         entity_id: sensor.cb_branch_circuit_power
         above: 3600
+
+      - platform: state
+        entity_id: binary_sensor.workshop_door
+        from: 'on'
+        to: 'off'
+        for:
+          seconds: 30
     condition:
       - condition: state
         entity_id: climate.workshop_ac

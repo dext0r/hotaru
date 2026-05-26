@@ -1,0 +1,12 @@
+packages:
+  base: !include ../generic/livebest_wb02a_plug.yaml
+
+substitutions:
+  relay_restore_mode: ALWAYS_ON
+  mac_trailer: 22
+  bl0937_current_resistor: 0.00107
+  bl0937_voltage_divider: 1615.35
+
+esphome:
+  name: livebest-plug-22
+  name_add_mac_suffix: false

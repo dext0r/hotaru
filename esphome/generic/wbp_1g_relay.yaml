@@ -1,5 +1,7 @@
 # https://www.elektroda.com/rtvforum/topic3965530.html
 # https://www.ozon.ru/product/umnoe-rele-wi-fi-16a-s-izmereniem-moshchnosti-s-alisoy-tuya-smartlife-1-sht-1540285728/
+# https://ali.click/kz7381x
+# https://ali.click/m18381p
 
 packages:
   base: !include ../common/base.yaml
@@ -12,7 +14,7 @@ substitutions:
 
 esphome:
   friendly_name: WBP-1G Relay
-  name: wbp-1g
+  name: wbp-1g-relay
   model: WBP-1G Relay
 
 bk72xx:

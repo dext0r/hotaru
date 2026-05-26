@@ -1,0 +1,77 @@
+# Нейм розетка из Китая
+# Маркировка на плате: LiveBest ver2.01 2025q1
+
+packages:
+  base: !include ../common/ln882x.yaml
+  bl0937: !include ../common/bl0937.yaml
+
+substitutions:
+  relay_restore_mode: RESTORE_DEFAULT_OFF
+  power_led: 'true'
+  bl0937_sel_pin: PA3
+  bl0937_sel_pin_inverted: 'true'
+  bl0937_cf_pin: PA10
+  bl0937_cf_pin_inverted: 'true'
+  bl0937_cf1_pin: PA5
+  bl0937_cf1_pin_inverted: 'true'
+  bl0937_current_resistor: 0.001075
+  bl0937_voltage_divider: 1615.35
+
+esphome:
+  friendly_name: LiveBest Smart Plug
+  name: livebest-plug
+  model: LiveBest Smart Plug (LN882H)
+  on_boot:
+    - priority: 900
+      then:
+        # https://github.com/libretiny-eu/libretiny/issues/338
+        - lambda: |-
+            const uint8_t mac[] = {0x00, 0x50, 0xC2, 0x5E, 0x10, 0x${mac_trailer}};
+            WiFi.setMacAddress(mac);
+
+    - priority: -100.0
+      then:
+        - if:
+            condition:
+              - switch.is_on: relay
+              - lambda: return ${power_led};
+            then:
+              - light.turn_on: push_button_led
+
+ln882x:
+  board: wb02a
+
+logger:
+  baud_rate: 0
+
+binary_sensor:
+  - id: push_button
+    platform: gpio
+    pin:
+      number: PB09
+      inverted: true
+    on_press:
+      switch.toggle: relay
+
+light:
+  - id: push_button_led
+    platform: status_led
+    pin:
+      number: PA7
+      inverted: true
+
+switch:
+  - id: relay
+    name: ''
+    platform: gpio
+    pin: PA4
+    device_class: outlet
+    restore_mode: $relay_restore_mode
+    on_turn_on:
+      - if:
+          condition:
+            - lambda: return ${power_led};
+          then:
+            - light.turn_on: push_button_led
+    on_turn_off:
+      - light.turn_off: push_button_led

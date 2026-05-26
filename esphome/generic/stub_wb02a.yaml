@@ -1,0 +1,8 @@
+packages:
+  base: !include ../common/ln882x.yaml
+
+esphome:
+  name: wb02a
+
+ln882x:
+  board: wb02a

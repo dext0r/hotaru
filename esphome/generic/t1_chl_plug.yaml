@@ -1,0 +1,67 @@
+# Абсолютно белая розетка с чипом T1-CHL
+
+packages:
+  base: !include ../common/bk7238.yaml
+  bl0937: !include ../common/bl0937.yaml
+
+substitutions:
+  relay_restore_mode: RESTORE_DEFAULT_ON
+  power_led: 'true'
+  bl0937_sel_pin: 9
+  bl0937_sel_pin_inverted: 'true'
+  bl0937_cf_pin: 6
+  bl0937_cf_pin_inverted: 'true'
+  bl0937_cf1_pin: 8
+  bl0937_cf1_pin_inverted: 'true'
+  bl0937_current_resistor: 0.001038
+  bl0937_voltage_divider: 731.8701
+
+esphome:
+  friendly_name: Tuya T1-CHL Smart Plug
+  name: t1-chl-plug
+  model: Tuya T1-CHL Smart Plug
+
+  on_boot:
+    priority: -100.0
+    then:
+      - if:
+          condition:
+            - switch.is_on: relay
+            - lambda: return ${power_led};
+          then:
+            - light.turn_on: push_button_led
+
+logger:
+  baud_rate: 0
+
+binary_sensor:
+  - id: push_button
+    platform: gpio
+    pin:
+      number: 26
+      inverted: true
+    on_press:
+      switch.toggle: relay
+
+light:
+  - id: push_button_led
+    platform: status_led
+    pin:
+      number: 22
+      inverted: true
+
+switch:
+  - id: relay
+    name: ''
+    platform: gpio
+    pin: 24
+    device_class: outlet
+    restore_mode: $relay_restore_mode
+    on_turn_on:
+      - if:
+          condition:
+            - lambda: return ${power_led};
+          then:
+            - light.turn_on: push_button_led
+    on_turn_off:
+      - light.turn_off: push_button_led

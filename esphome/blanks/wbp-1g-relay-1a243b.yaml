@@ -1,0 +1,11 @@
+packages:
+  base: !include ../generic/wbp_1g_relay.yaml
+
+substitutions:
+  relay_restore_mode: ALWAYS_ON
+  bl0942_current_reference: 250088.35636
+  bl0942_voltage_reference: 15949.6832
+
+esphome:
+  name: wbp-1g-relay-1a243b
+  name_add_mac_suffix: false

@@ -96,12 +96,12 @@ template:
   - binary_sensor:
       - name: Anyone Home
         state: >
-          {{ states('zone.home')|int(0) > 0 }}
+          {{ states.person | selectattr('state', 'eq', 'home') | list | count > 0 }}
         device_class: presence
 
       - name: Anyone Near Home
         state: >
-          {{ states('zone.near_home')|int(0) > 0 }}
+          {{ states.person | selectattr('state', 'eq', 'near_home') | list | count > 0 }}
         device_class: presence
 
 timer:

@@ -52,7 +52,7 @@
 * Основной роутер: Mikrotik hAP ax3
 * Дополнительная точка доступа на кухне: Mikrotik hAP
 * Zigbee (Z2M): Sonoff Zigbee Dongle Plus-P
-* Zigbee (ZHA): Sonoff Zigbee Dongle Plus-E
+* Zigbee (ZHA): DIY [V6POE](https://telegra.ph/Zigbee-Coordinator-V6POE-12-12) от Egony
 * HA OS в виртуальной машине
 * Аддоны HA: supervisor, chrony, let's encrypt, mosquitto broker, nginx home assistant ssl proxy, timescale db, zigbee2mqtt, advanced ssh & web terminal, ps5 mqtt, matter server
 * Интеграции HA: Glances (сбор метрик с физического хоста), Nut (состояние ИБП), Yandex Smart Home (облачное подключение) и другие

@@ -114,14 +114,11 @@ logbook:
 logger:
   default: warning
   logs:
-    custom_components.dualmode_generic: debug
-    custom_components.yandex_dialogs: debug
     custom_components.yandex_smart_home: debug
+    custom_components.yandex_smart_home.notifier: info
     custom_components.yandex_station_intents: debug
     custom_components.yandex_station: debug
-    homeassistant.components.telegram_bot: debug
 mobile_app:
-morph_numbers:
 my:
 recorder:
   db_url: !secret recorder_db_url

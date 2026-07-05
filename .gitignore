@@ -1,6 +1,7 @@
 .git*
 !.gitignore
 .vscode
+**/uv.lock
 hassio/addons
 hassio/ssl
 hassio/store
@@ -11,6 +12,8 @@ hassio/homeassistant/blueprints
 hassio/homeassistant/image
 hassio/homeassistant/tts
 hassio/homeassistant/ps5-mqtt
+hassio/homeassistant/zhaquirks/*
+!hassio/homeassistant/zhaquirks/README.md
 hassio/homeassistant/zigbee2mqtt/*
 !hassio/homeassistant/zigbee2mqtt/devices.yaml
 hassio/homeassistant/zigbee.db*
@@ -20,13 +23,8 @@ hassio/homeassistant/scripts.yaml
 esphome/secrets.yaml
 esphome/common/secrets.yaml
 esphome/test
-esphome/uv.lock
 etc/transmission
 etc/bin
 etc/crontab
 legacy
 sync
-ttlock
-tuya-cli
-extract-backup
-labels.sketch

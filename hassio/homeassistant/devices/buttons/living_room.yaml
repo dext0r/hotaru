@@ -172,9 +172,17 @@ automation:
         state:
           - 'on'
           - unavailable
-    action:
-      - action: switch.turn_on
-        entity_id: switch.living_room_heater
+    actions:
+      - if:
+          - condition: state
+            entity_id: switch.living_room_heater
+            state: unavailable
+        then:
+          - action: fan.turn_on
+            entity_id: fan.portable
+        else:
+          - action: switch.turn_on
+            entity_id: switch.living_room_heater
 
   - id: living_room_heater_button_turn_off
     alias: 'Living Room Heater Button: Turn off'
@@ -185,8 +193,16 @@ automation:
         type: action
         subtype: 'off'
     action:
-      - action: switch.turn_off
-        entity_id: switch.living_room_heater
+      - if:
+          - condition: state
+            entity_id: switch.living_room_heater
+            state: unavailable
+        then:
+          - action: fan.turn_off
+            entity_id: fan.portable
+        else:
+          - action: switch.turn_off
+            entity_id: switch.living_room_heater
 
   - id: living_room_heater_button_hold_down
     alias: 'Living Room Heater Button: Hold down'

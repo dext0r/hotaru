@@ -1,0 +1,1 @@
+# [Redirect](../../../zha-quirks)

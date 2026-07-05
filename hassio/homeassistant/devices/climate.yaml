@@ -76,6 +76,14 @@ automation:
               temperature: 22
               hvac_mode: cool
 
+      - if:
+          - condition: state
+            entity_id: fan.portable
+            state: 'off'
+        then:
+          - action: fan.turn_on
+            entity_id: fan.portable
+
       - action: script.yandex_station_tts
         data:
           target: >

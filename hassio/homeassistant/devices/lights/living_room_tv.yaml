@@ -46,7 +46,9 @@ automation:
         state: 'on'
 
       - condition: state
-        entity_id: light.living_room_tv
+        entity_id:
+          - light.living_room_tv
+          - input_boolean.scene_sleepy_mood
         state: 'off'
     action:
       - service: light.turn_on

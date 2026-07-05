@@ -156,7 +156,9 @@ template:
     - name: Ironing Board Occupancy
       unique_id: binary_sensor.ironing_board_occupancy
       state: >
-        {{ is_state('timer.ironing_board_occupancy', 'active') }}
+        {{ is_state('timer.ironing_board_occupancy', 'active') and
+           is_state('binary_sensor.anyone_home', 'on') and
+           is_state('input_select.home_mode', 'Day') }}
       availability: >
         {{ states('binary_sensor.ironing_board_vibration') in ['on', 'off'] }}
       device_class: occupancy
@@ -165,4 +167,4 @@ timer:
   ironing_board_occupancy:
     name: 'Ironing Board: Occupancy'
     duration:
-      minutes: 4
+      minutes: 10

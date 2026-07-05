@@ -234,3 +234,4 @@ sensor:
     precision: 0
     max_age:
       days: 9
+    keep_last_sample: true

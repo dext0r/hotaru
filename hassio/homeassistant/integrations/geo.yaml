@@ -101,7 +101,7 @@ template:
 
       - name: Anyone Near Home
         state: >
-          {{ states.person | selectattr('state', 'eq', 'near_home') | list | count > 0 }}
+          {{ states.person | selectattr('state', 'eq', 'Near Home') | list | count > 0 }}
         device_class: presence
 
 timer:

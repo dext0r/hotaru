@@ -1,12 +1,3 @@
-'0x00124b002471b91a':
-  friendly_name: Kitchen Light Switch
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/67caa0801772e10821535639970b116c.png
 '0x00124b00226b1703':
   friendly_name: Hallway Light Switch
   homeassistant: {}
@@ -99,15 +90,6 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/8da97afa2d57d9d2e86756a4aa2a6072.png
-'0x00158d000589044e':
-  friendly_name: Freezer Meteo
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/8da97afa2d57d9d2e86756a4aa2a6072.png
 '0x00158d000392f2f4':
   friendly_name: Dishwasher Door
   homeassistant: {}
@@ -144,15 +126,6 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/53bb2a9b13189fa922f665f466b6a532.png
-'0x00124b002342ba2b':
-  friendly_name: Front Door Vacation Lock
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/226e331663924b0408096afd5efa4c99.png
 '0x00158d000460badf':
   friendly_name: Hallway Motion
   occupancy_timeout: 7

@@ -91,56 +91,6 @@ automation:
         data:
           command: screensaver
 
-  - id: tv_switch_to_ps5
-    alias: 'TV: Switch to PS5'
-    max_exceeded: silent
-    trigger:
-      - trigger: state
-        entity_id: media_player.tv
-        from: 'off'
-        to: 'on'
-        for:
-          seconds: 1
-
-      - trigger: state
-        entity_id: switch.ps5_power
-        from: 'off'
-        to: 'on'
-        for:
-          seconds: 20
-
-      - trigger: event
-        event_type: call_service
-        event_data:
-          domain: switch
-          service: turn_on
-          service_data:
-            entity_id: switch.ps5_power
-    action:
-      - if:
-          - condition: state
-            entity_id: timer.tv_warming_up
-            state: active
-        then:
-          - wait_for_trigger:
-              - platform: state
-                entity_id: timer.tv_warming_up
-                to: idle
-            timeout:
-              seconds: 25
-            continue_on_timeout: true
-
-      - condition: state
-        entity_id:
-          - media_player.tv
-          - switch.ps5_power
-        state: 'on'
-
-      - service: media_player.select_source
-        entity_id: media_player.living_room_tv_base
-        data:
-          source: PS5
-
   - id: tv_set_volume_ps5
     alias: 'TV: Set volume (PS5)'
     trigger:

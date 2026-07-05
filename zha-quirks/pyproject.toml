@@ -1,0 +1,5 @@
+[project]
+name = "hotaru-zha-quirks"
+version = "0.1.0"
+requires-python = ">=3.14"
+dependencies = ["zha-quirks==2.1.0"]

@@ -1,0 +1,15 @@
+Board type: CC2530
+Device type: End device without routing
+Manufacturer name: eWeLink/PTVO
+Model ID: ZB-SW02
+Update firmware's timestamp : 2026-07-04
+Status LED: P10, Joining or errors
+Set default reporting interval (s): 60
+
+Output pins:
+P07: Output 1, GPIO, External pull-up (Role: Generic)
+P05: Output 2, GPIO, External pull-up (Role: Generic)
+
+Input pins:
+P13: Input 1, GPIO, External pull-up, Link to out 1 (Bind command: On/Off)
+P00: Input 2, GPIO, Pull-up, Link to out 2 (Bind command: On/Off)

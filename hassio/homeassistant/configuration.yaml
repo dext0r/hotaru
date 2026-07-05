@@ -163,7 +163,8 @@ recorder:
     entity_globs:
       - '*.0x*'
       - '*.*_target_*'
-      - automation.*_airing_swap_modes
+      - automation.intake_fan_airing_swap_modes
+      - automation.intake_fan_airing_*_timer
       - automation.*_log
       - automation.*_region_*
       - automation.*_update

@@ -21,9 +21,7 @@ automation:
         above: 25.5
 
       - platform: state
-        entity_id:
-          - input_boolean.living_room_airing_warm
-          - input_boolean.living_room_airing_cold
+        entity_id: switch.living_room_airing
         from: 'off'
         to: 'on'
 

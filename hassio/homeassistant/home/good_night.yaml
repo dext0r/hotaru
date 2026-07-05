@@ -35,6 +35,15 @@ automation:
           - light.workshop_main
           - light.bedroom_main
 
+      - action: timer.start
+        entity_id: timer.bedroom_airing
+        data:
+          duration:
+            minutes: 30
+
+      - action: input_boolean.turn_on
+        entity_id: input_boolean.bedroom_airing_cold
+
       - service: input_select.select_option
         entity_id: input_select.home_mode
         data:
@@ -53,6 +62,3 @@ automation:
 
       - service: media_player.turn_off
         entity_id: media_player.tv
-
-      - service: switch.turn_off
-        entity_id: switch.bedroom_airing

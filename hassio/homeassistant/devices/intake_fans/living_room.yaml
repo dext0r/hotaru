@@ -16,6 +16,11 @@ input_boolean:
     icon: mdi:refresh-auto
 
 timer:
+  living_room_airing:
+    name: 'Living Room Airing'
+    duration:
+      minutes: 20
+
   living_room_intake_fan_restart:
     name: 'Living Room Intake Fan: Restart'
     duration:
@@ -110,7 +115,8 @@ template:
           {% endif %}
         {% endif %}
 
-        {% if is_state('input_boolean.living_room_airing_warm', 'on') or is_state('input_boolean.living_room_airing_cold', 'on') %}
+        {% if is_state('input_boolean.living_room_airing_warm', 'on') or
+              is_state('input_boolean.living_room_airing_cold', 'on') %}
           {% set v = 6 %}
         {% endif %}
 
@@ -122,7 +128,8 @@ template:
           {% set v = 1 %}
         {% endif %}
 
-        {% if is_state('input_select.home_mode', 'Night') or is_state('input_boolean.scene_sleepy_mood', 'on') %}
+        {% if is_state('input_select.home_mode', 'Night') or
+              is_state('input_boolean.scene_sleepy_mood', 'on') %}
           {% if outdoor_temperature < 0 %}
             {% set v = 1 %}
           {% endif %}
@@ -149,9 +156,14 @@ template:
         }}
       turn_on:
         - if:
-            - condition: numeric_state
-              entity_id: sensor.living_room_temperature
-              above: 24.7
+            - or:
+                - condition: state
+                  entity_id: binary_sensor.warm_outside
+                  state: 'on'
+
+                - condition: numeric_state
+                  entity_id: sensor.living_room_temperature
+                  above: 24.7
           then:
             - action: input_boolean.turn_on
               target:
@@ -216,7 +228,7 @@ automation:
 
   - id: living_room_intake_fan_update
     alias: 'Living Room Intake Fan: Update'
-    mode: single
+    mode: queued
     max_exceeded: silent
     trigger:
       - platform: time_pattern
@@ -297,37 +309,3 @@ automation:
     actions:
       - action: timer.start
         entity_id: timer.living_room_intake_fan_warming_up
-
-  - id: living_room_airing_swap_modes
-    alias: 'Living Room Airing: Swap modes'
-    trigger:
-      - platform: state
-        entity_id:
-          - input_boolean.living_room_airing_warm
-          - input_boolean.living_room_airing_cold
-        to: 'on'
-    action:
-      - service: input_boolean.turn_off
-        data_template:
-          entity_id: >
-            {%- if trigger.from_state.entity_id == 'input_boolean.living_room_airing_warm' -%}
-              input_boolean.living_room_airing_cold
-            {%- else -%}
-              input_boolean.living_room_airing_warm
-            {%- endif -%}
-
-  - id: living_room_airing_auto_turn_off
-    alias: 'Living Room Airing: Auto turn off'
-    trigger:
-      - platform: state
-        entity_id:
-          - input_boolean.living_room_airing_warm
-          - input_boolean.living_room_airing_cold
-        to: 'on'
-        for:
-          minutes: 25
-    action:
-      - service: input_boolean.turn_off
-        data_template:
-          entity_id: >
-            {{ trigger.from_state.entity_id }}

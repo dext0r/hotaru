@@ -32,11 +32,11 @@ automation:
 
           - conditions:
               - condition: state
-                entity_id: input_boolean.bedroom_airing_cold
+                entity_id: switch.bedroom_airing
                 state: 'on'
             sequence:
-              - service: input_boolean.turn_off
-                entity_id: input_boolean.bedroom_airing_cold
+              - service: switch.turn_off
+                entity_id: switch.bedroom_airing
 
               - service: script.yandex_station_tts
                 data:
@@ -59,17 +59,39 @@ automation:
 
   - id: bedroom_bed_button_double_press
     alias: 'Bedroom Bed Button: Double press'
-    trigger:
+    triggers:
       - trigger: device
         domain: mqtt
         device_id: 620c20157f0cbf8a0249f3f083a531ff
         type: action
         subtype: double
-    action:
-      - service: input_boolean.turn_on
+    actions:
+      - if:
+          - or:
+              - condition: state
+                entity_id: binary_sensor.warm_outside
+                state: 'on'
+
+              - condition: state
+                entity_id: climate.bedroom_ac
+                state: cool
+        then:
+          - action: timer.start
+            entity_id: timer.bedroom_airing
+            data:
+              duration:
+                hours: 1
+        else:
+          - action: timer.start
+            entity_id: timer.bedroom_airing
+            data:
+              duration:
+                minutes: 30
+
+      - action: input_boolean.turn_on
         entity_id: input_boolean.bedroom_airing_cold
 
-      - service: script.yandex_station_tts
+      - action: script.yandex_station_tts
         data:
           target: media_player.bedroom_station
           text: >

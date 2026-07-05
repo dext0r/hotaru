@@ -15,19 +15,6 @@ input_boolean:
     icon: mdi:thermometer-auto
 
 automation:
-  - id: home_airing_turn_off
-    alias: 'Home Airing: Turn off'
-    trigger:
-      - platform: state
-        entity_id: switch.home_airing
-        from: 'off'
-        to: 'on'
-        for:
-          minutes: 20
-    action:
-      - service: switch.turn_off
-        entity_id: switch.home_airing
-
   - id: climate_anomaly_alert
     alias: 'Climate: Anomaly alert'
     trigger:
@@ -170,3 +157,14 @@ template:
           {% else %}
             {{ t }}
           {% endif %}
+
+  - triggers:
+      - trigger: time_pattern
+        minutes: /1
+    binary_sensor:
+      - name: Warm Outside
+        unique_id: binary_sensor.warm_outside
+        state: >-
+          {{ states('sensor.outside_temperature') | int(0) > 10 }}
+        availability: >-
+          {{ not is_state('sensor.outside_temperature', ['unknown', 'unavailable']) }}

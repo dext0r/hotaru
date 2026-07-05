@@ -12,6 +12,11 @@ input_boolean:
     icon: mdi:refresh-auto
 
 timer:
+  workshop_airing:
+    name: 'Workshop Airing'
+    duration:
+      minutes: 20
+
   workshop_intake_fan_restart:
     name: 'Workshop Intake Fan: Restart'
     duration:
@@ -90,7 +95,8 @@ template:
           {% endif %}
         {% endif %}
 
-        {% if is_state('input_boolean.workshop_airing_warm', 'on') or is_state('input_boolean.workshop_airing_cold', 'on') %}
+        {% if is_state('input_boolean.workshop_airing_warm', 'on') or
+              is_state('input_boolean.workshop_airing_cold', 'on') %}
           {% set v = 6 %}
         {% endif %}
 
@@ -131,9 +137,14 @@ template:
         }}
       turn_on:
         - if:
-            - condition: numeric_state
-              entity_id: sensor.workshop_temperature
-              above: 25.5
+            - or:
+                - condition: state
+                  entity_id: binary_sensor.warm_outside
+                  state: 'on'
+
+                - condition: numeric_state
+                  entity_id: sensor.workshop_temperature
+                  above: 25.5
           then:
             - action: input_boolean.turn_on
               entity_id: input_boolean.workshop_airing_cold
@@ -149,7 +160,7 @@ template:
 automation:
   - id: workshop_intake_fan_update
     alias: 'Workshop Intake Fan: Update'
-    mode: single
+    mode: queued
     max_exceeded: silent
     trigger:
       - platform: time_pattern
@@ -212,37 +223,3 @@ automation:
       - action: script.intake_fan_update
         data:
           area: workshop
-
-  - id: workshop_airing_swap_modes
-    alias: 'Workshop Airing: Swap modes'
-    trigger:
-      - platform: state
-        entity_id:
-          - input_boolean.workshop_airing_warm
-          - input_boolean.workshop_airing_cold
-        to: 'on'
-    action:
-      - service: input_boolean.turn_off
-        data_template:
-          entity_id: >
-            {%- if trigger.from_state.entity_id == 'input_boolean.workshop_airing_warm' -%}
-              input_boolean.workshop_airing_cold
-            {%- else -%}
-              input_boolean.workshop_airing_warm
-            {%- endif -%}
-
-  - id: workshop_airing_auto_turn_off
-    alias: 'Workshop Airing: Auto turn off'
-    trigger:
-      - platform: state
-        entity_id:
-          - input_boolean.workshop_airing_warm
-          - input_boolean.workshop_airing_cold
-        to: 'on'
-        for:
-          minutes: 35
-    action:
-      - service: input_boolean.turn_off
-        data_template:
-          entity_id: >
-            {{ trigger.from_state.entity_id }}

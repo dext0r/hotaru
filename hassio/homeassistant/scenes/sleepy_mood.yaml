@@ -21,9 +21,7 @@ automation:
           option: Day
 
       - service: input_boolean.turn_on
-        entity_id:
-          - input_boolean.scene_sleepy_mood
-          - input_boolean.bedroom_airing_cold
+        entity_id: input_boolean.scene_sleepy_mood
 
       - service: media_player.turn_off
         entity_id: media_player.tv

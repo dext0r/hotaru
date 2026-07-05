@@ -1,3 +1,114 @@
+automation:
+  - id: intake_fan_airing_start_timer
+    alias: 'Intake Fan Airing: Start timer'
+    mode: queued
+    triggers:
+      - trigger: state
+        entity_id:
+          - input_boolean.bedroom_airing_cold
+          - input_boolean.bedroom_airing_warm
+          - input_boolean.living_room_airing_cold
+          - input_boolean.living_room_airing_warm
+          - input_boolean.workshop_airing_cold
+          - input_boolean.workshop_airing_warm
+        to: 'on'
+    conditions:
+      - condition: template
+        value_template: >-
+          {{ is_state('timer.%s_airing' % area_id(trigger.from_state.entity_id), 'idle') }}
+    actions:
+      - if:
+          - condition: state
+            entity_id: binary_sensor.warm_outside
+            state: 'on'
+        then:
+          - action: timer.start
+            data:
+              entity_id: >-
+                timer.{{ area_id(trigger.from_state.entity_id) }}_airing
+              duration:
+                minutes: 45
+        else:
+          - action: timer.start
+            data:
+              entity_id: >-
+                timer.{{ area_id(trigger.from_state.entity_id) }}_airing
+              duration:
+                minutes: 25
+
+  - id: intake_fan_airing_cancel_timer
+    alias: 'Intake Fan Airing: Cancel timer'
+    mode: queued
+    triggers:
+      - trigger: state
+        entity_id:
+          - input_boolean.bedroom_airing_cold
+          - input_boolean.bedroom_airing_warm
+          - input_boolean.living_room_airing_cold
+          - input_boolean.living_room_airing_warm
+          - input_boolean.workshop_airing_cold
+          - input_boolean.workshop_airing_warm
+        to: 'off'
+        for:
+          seconds: 5
+    conditions:
+      - condition: template
+        value_template: >-
+          {% set _area_id = area_id(trigger.from_state.entity_id) %}
+          {{ is_state('input_boolean.%s_airing_cold' % _area_id, 'off') and
+             is_state('input_boolean.%s_airing_warm' % _area_id, 'off') }}
+    actions:
+      - action: timer.cancel
+        data:
+          entity_id: >-
+            timer.{{ area_id(trigger.from_state.entity_id) }}_airing
+
+  - id: intake_fan_airing_auto_off_by_timer
+    alias: 'Intake Fan Airing: Auto off by timer'
+    mode: queued
+    triggers:
+      - trigger: state
+        entity_id:
+          - timer.bedroom_airing
+          - timer.living_room_airing
+          - timer.workshop_airing
+        to: idle
+    conditions:
+      - condition: template
+        value_template: >-
+          {{ is_state('input_boolean.%s_airing_cold' % area_id(trigger.from_state.entity_id), 'on') or
+             is_state('input_boolean.%s_airing_warm' % area_id(trigger.from_state.entity_id), 'on') }}
+    actions:
+      - action: input_boolean.turn_off
+        data:
+          entity_id:
+            - input_boolean.{{ area_id(trigger.from_state.entity_id) }}_airing_cold
+            - input_boolean.{{ area_id(trigger.from_state.entity_id) }}_airing_warm
+
+  - id: intake_fan_airing_swap_modes
+    alias: 'Intake Fan Airing: Swap modes'
+    mode: queued
+    triggers:
+      - trigger: state
+        entity_id:
+          - input_boolean.bedroom_airing_cold
+          - input_boolean.bedroom_airing_warm
+          - input_boolean.living_room_airing_cold
+          - input_boolean.living_room_airing_warm
+          - input_boolean.workshop_airing_cold
+          - input_boolean.workshop_airing_warm
+        to: 'on'
+    actions:
+      - action: input_boolean.turn_off
+        data:
+          entity_id: >-
+            {%- set _area_id = area_id(trigger.from_state.entity_id) -%}
+            {%- if trigger.from_state.entity_id.endswith('_airing_warm')  -%}
+              input_boolean.{{ _area_id }}_airing_cold
+            {%- else -%}
+              input_boolean.{{ _area_id }}_airing_warm
+            {%- endif -%}
+
 script:
   intake_fan_update:
     alias: 'Intake Fan: Update'

@@ -121,8 +121,16 @@ automation:
         entity_id: input_boolean.scene_meal
         state: 'on'
     actions:
-      - action: input_boolean.turn_on
-        entity_id: input_boolean.living_room_airing_cold
+      - if:
+          - condition: state
+            entity_id: binary_sensor.warm_outside
+            state: 'on'
+        then:
+          - action: switch.turn_on
+            entity_id: switch.home_airing
+        else:
+          - action: input_boolean.turn_on
+            entity_id: input_boolean.living_room_airing_cold
 
       - delay:
           seconds: 1

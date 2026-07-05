@@ -12,6 +12,11 @@ input_boolean:
     icon: mdi:refresh-auto
 
 timer:
+  bedroom_airing:
+    name: 'Bedroom Airing'
+    duration:
+      minutes: 20
+
   bedroom_intake_fan_restart:
     name: 'Bedroom Intake Fan: Restart'
     duration:
@@ -101,7 +106,7 @@ template:
           {% endif %}
 
           {% if is_state('input_boolean.bedroom_humidifier_control', 'off') %}
-            {% set v = max(v, 3) %}  {# больше шума для жены :) #}
+            {% set v = max(v, 4) %}  {# больше шума для жены :) #}
           {% endif %}
         {% endif %}
 
@@ -109,7 +114,9 @@ template:
           {% set v = 1 %}
         {% endif %}
 
-        {% if is_state('input_boolean.bedroom_airing_warm', 'on') or is_state('input_boolean.bedroom_airing_cold', 'on') %}
+        {% if is_state('input_boolean.bedroom_airing_warm', 'on') or
+              is_state('input_boolean.bedroom_airing_cold', 'on') or
+              is_state('input_boolean.scene_sleepy_mood', 'on') %}
           {% set v = 6 %}
         {% endif %}
 
@@ -143,11 +150,10 @@ template:
               - input_boolean.bedroom_airing_cold
               - input_boolean.bedroom_airing_warm
 
-
 automation:
   - id: bedroom_intake_fan_update
     alias: 'Bedroom Intake Fan: Update'
-    mode: single
+    mode: queued
     max_exceeded: silent
     trigger:
       - platform: time_pattern
@@ -159,6 +165,7 @@ automation:
           - input_select.home_mode
           - input_select.washing_machine_status
           - input_boolean.bedroom_intake_fan_control
+          - input_boolean.scene_sleepy_mood
 
       - id: room_airing
         platform: state
@@ -228,37 +235,3 @@ automation:
     actions:
       - action: timer.start
         entity_id: timer.bedroom_intake_fan_warming_up
-
-  - id: bedroom_airing_swap_modes
-    alias: 'Bedroom Airing: Swap modes'
-    trigger:
-      - platform: state
-        entity_id:
-          - input_boolean.bedroom_airing_warm
-          - input_boolean.bedroom_airing_cold
-        to: 'on'
-    action:
-      - service: input_boolean.turn_off
-        data_template:
-          entity_id: >
-            {%- if trigger.from_state.entity_id == 'input_boolean.bedroom_airing_warm' -%}
-              input_boolean.bedroom_airing_cold
-            {%- else -%}
-              input_boolean.bedroom_airing_warm
-            {%- endif -%}
-
-  - id: bedroom_airing_auto_turn_off
-    alias: 'Bedroom Airing: Auto turn off'
-    trigger:
-      - platform: state
-        entity_id:
-          - input_boolean.bedroom_airing_warm
-          - input_boolean.bedroom_airing_cold
-        to: 'on'
-        for:
-          minutes: 40
-    action:
-      - service: input_boolean.turn_off
-        data_template:
-          entity_id: >
-            {{ trigger.from_state.entity_id }}

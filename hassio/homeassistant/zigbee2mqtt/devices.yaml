@@ -54,32 +54,6 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/5af4a3a117c693914f063f9e87cd28de.png
-'0x54ef441000585ebc':
-  friendly_name: Bathroom Presence
-  disabled: false
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  description: |
-    Ванна:
-    {
-      "region_upsert": {
-        "region_id": 1,
-        "zones": [{"x": 2, "y": 4}, {"x": 3, "y": 4}]
-      }
-    }
-
-    Унитаз:
-    {
-      "region_upsert": {
-        "region_id": 2,
-        "zones": [{"x": 2, "y": 2}]
-      }
-    }
-  icon: device_icons/152f6228e7918a779c968eed05e46693.png
 '0x00158d0001d735a5':
   friendly_name: Fridge Meteo
   disabled: false

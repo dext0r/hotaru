@@ -3,3 +3,8 @@ device_config:
   # Bathroom Hot Water Valve (_TZ3000_iedbgyxt)
   a4:c1:38:fb:e1:6d:53:b0-1:
     type: switch
+# Bathroom Presence
+#  monitoring mode: undirect
+#  approach distance: far
+#  motion sensitivity: high
+#  region 1: y4x2/y4x3

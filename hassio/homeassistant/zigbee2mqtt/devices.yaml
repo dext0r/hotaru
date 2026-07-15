@@ -140,15 +140,6 @@
   occupancy_timeout: 20
   no_occupancy_since: []
   icon: device_icons/4858000fa9561bbf20da88e96154ed3f.png
-'0x00158d0003cf7beb':
-  friendly_name: Entrance Motion
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/4858000fa9561bbf20da88e96154ed3f.png
 '0x00158d00039820ed':
   friendly_name: Workshop Door
   homeassistant: {}
@@ -335,15 +326,6 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/5816cec5864b2553c5c835aefa557722.png
-'0x00158d00075fa58e':
-  friendly_name: Workshop Motion
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/2e7485d54446698ed62425812fe12303.png
 '0x00158d0002b18420':
   friendly_name: Fridge Door
   homeassistant: {}

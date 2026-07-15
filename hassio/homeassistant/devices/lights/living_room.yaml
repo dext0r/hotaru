@@ -1,11 +1,11 @@
 automation:
-  - id: living_room_light_turn_on
-    alias: 'Living Room Light: Turn on'
-    trigger:
-      - platform: state
+  - id: living_room_main_light_turn_on_day
+    alias: 'Living Room Main Light: Turn on (day)'
+    triggers:
+      - trigger: state
         entity_id: binary_sensor.living_room_motion
         to: 'on'
-    condition:
+    conditions:
       - condition: state
         entity_id:
           - input_boolean.light_control
@@ -14,81 +14,97 @@ automation:
 
       - condition: state
         entity_id: input_select.home_mode
-        state:
-          - Day
-          - Vacation
+        state: Day
+
+      - condition: time
+        after: '8:00:00'
+        before: '17:00:00'
 
       - condition: state
-        entity_id: input_boolean.scene_sleepy_mood
+        entity_id:
+          - binary_sensor.living_room_occupancy
+          - binary_sensor.dim_light
+          - input_boolean.scene_sleepy_mood
+          - group.living_room_lights
         state: 'off'
 
       - condition: or
         conditions:
           - condition: numeric_state
             entity_id: sensor.illuminance_south_side
-            below: 500
+            below: 8500
 
           - condition: state
             entity_id: cover.living_room
             state: closed
 
           - condition: state
-            entity_id: binary_sensor.winter_bright_light
-            state: 'on'
+            entity_id: input_select.season
+            state: Winter
+    actions:
+      - action: light.turn_on
+        entity_id: light.living_room_main
+
+  - id: living_room_light_turn_on_ironing
+    alias: 'Living Room Light: Turn on (ironing)'
+    triggers:
+      - trigger: state
+        entity_id: switch.ironing_board_socket
+        to: 'on'
+    conditions:
+      - condition: state
+        entity_id:
+          - input_boolean.light_control
+          - binary_sensor.anyone_home
+        state: 'on'
+
+      - condition: state
+        entity_id: input_select.home_mode
+        state: Day
+
+      - condition: state
+        entity_id: input_select.ironing_board_room
+        state: Living Room
+
+      - condition: time
+        after: '10:00:00'
+        before: '21:00:00'
 
       - condition: state
         entity_id:
-          - group.living_room_lights
-          - binary_sensor.dim_light
-        state: 'off'
-    action:
-      - service: light.turn_on
-        entity_id: light.living_room_tv
-        data:
-          brightness_pct: 45
+          - binary_sensor.living_room_motion
+          - binary_sensor.living_room_occupancy
+          - binary_sensor.ironing_board_occupancy
+        state: 'on'
+        match: any
+    actions:
+      - action: light.turn_on
+        entity_id: light.living_room_main
 
-      - service: light.turn_on
+      - action: light.turn_on
         entity_id: light.living_room_backlight
         data:
-          brightness_pct: 23
-          color_temp_kelvin: 3400
+          brightness_pct: 100
+          color_temp_kelvin: 4200
 
-      - if:
-          - or:
-              - condition: state
-                entity_id: binary_sensor.winter_bright_light
-                state: 'on'
-
-              - and:
-                  - condition: numeric_state
-                    entity_id: sensor.illuminance_south_side
-                    below: 1700
-
-                  - condition: template
-                    value_template: >-
-                      {{ now().hour >= 9 and now().hour <= 15 }}
-        then:
-          - action: light.turn_on
-            entity_id: light.living_room_main
-
-  - id: living_room_light_turn_off
-    alias: 'Living Room Light: Turn off'
+  - id: living_room_light_turn_off_occupancy_cleared
+    alias: 'Living Room Light: Turn off (occupancy cleared)'
     triggers:
-      - id: occupancy
-        trigger: state
-        entity_id: binary_sensor.living_room_occupancy
-        from: 'on'
-        to: 'off'
-        for:
-          minutes: 20
+      - id: room_occupancy
+        trigger: occupancy.cleared
+        target:
+          entity_id: binary_sensor.living_room_occupancy
+        options:
+          for:
+            minutes: 10
 
-      - id: motion
-        trigger: state
-        entity_id: binary_sensor.living_room_motion
-        from: 'on'
-        to: 'off'
-        for:
-          hours: 2
+      - id: ironing_board_occupancy
+        trigger: occupancy.cleared
+        target:
+          entity_id: binary_sensor.ironing_board_occupancy
+        options:
+          for:
+            minutes: 5
     conditions:
       - condition: state
         entity_id:
@@ -96,62 +112,76 @@ automation:
           - group.living_room_lights
         state: 'on'
 
+      - condition: state
+        entity_id:
+          - binary_sensor.living_room_occupancy
+          - input_boolean.scene_sleepy_mood
+        state: 'off'
+
       - or:
-        - condition: trigger
-          id: motion
+          - not:
+              - condition: trigger
+                id: ironing_board_occupancy
 
-        - and:
-            - condition: trigger
-              id: occupancy
+          - and:
+              - condition: trigger
+                id: ironing_board_occupancy
 
-            - not:
-                - condition: state
-                  entity_id: input_select.ironing_board_room
-                  state: Living Room
+              - not:
+                  - and:
+                      - condition: state
+                        entity_id: input_select.ironing_board_room
+                        state: Living Room
 
-        - and:
-            - condition: trigger
-              id: occupancy
-
-            - condition: state
-              entity_id: input_select.ironing_board_room
-              state: Living Room
-
-            - condition: state
-              entity_id: binary_sensor.ironing_board_occupancy
-              state: 'off'
+                      - condition: state
+                        entity_id: switch.ironing_board_socket
+                        state: 'on'
     actions:
       - action: light.turn_off
         entity_id: group.living_room_lights
 
-  - id: living_room_main_light_turn_on
-    alias: 'Living Room Main Light: Turn on'
-    trigger:
-      - platform: state
-        entity_id: input_boolean.scene_meal
-        from: 'on'
-        to: 'off'
-    condition:
+  - id: living_room_light_turn_off_no_occupancy
+    alias: 'Living Room Light: Turn off (no occupancy)'
+    mode: restart
+    triggers:
+      - trigger: state
+        entity_id: group.living_room_lights
+        from: 'off'
+        to: 'on'
+    conditions:
       - condition: state
-        entity_id:
-          - input_boolean.light_control
-          - binary_sensor.winter_bright_light
+        entity_id: input_boolean.light_control
         state: 'on'
+    actions:
+      - wait_for_trigger:
+          - trigger: occupancy.detected
+            target:
+              entity_id: binary_sensor.living_room_occupancy
+        timeout:
+          minutes: 1
 
       - condition: state
-        entity_id: input_select.home_mode
-        state:
-          - Day
-          - Vacation
-
-      - condition: state
-        entity_id:
-          - light.living_room_main
-          - binary_sensor.dim_light
+        entity_id: binary_sensor.living_room_occupancy
         state: 'off'
-    action:
-      - action: light.turn_on
-        entity_id: light.living_room_main
+
+      - action: light.turn_off
+        entity_id: group.living_room_lights
+
+  - id: living_room_light_turn_off_failsafe
+    alias: 'Living Room Light: Turn off (failsafe)'
+    triggers:
+      - trigger: state
+        entity_id: group.living_room_lights
+        to: 'on'
+        for:
+          hours: 16
+    conditions:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+    actions:
+      - action: light.turn_off
+        entity_id: group.living_room_lights
 
 light:
   - platform: group
@@ -181,25 +211,6 @@ template:
         turn_off:
           - action: switch.turn_off
             entity_id: switch.living_room_light_switch_left
-
-script:
-  living_room_cozy_light:
-    alias: 'Living Room: Cozy Light'
-    description: Включает "уютный свет" в гостинной
-    sequence:
-      - service: light.turn_on
-        entity_id: light.living_room_tv
-        data:
-          brightness_pct: 45
-
-      - service: light.turn_on
-        entity_id: light.living_room_backlight
-        data:
-          brightness_pct: 23
-          color_temp_kelvin: 3400
-
-      - service: light.turn_off
-        entity_id: light.living_room_main
 
 group:
   living_room_lights:

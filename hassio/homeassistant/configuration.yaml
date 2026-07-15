@@ -58,6 +58,7 @@ homeassistant:
     lights_closet: !include devices/lights/closet.yaml
     lights_hallway: !include devices/lights/hallway.yaml
     lights_kitchen: !include devices/lights/kitchen.yaml
+    lights_living_room_cozy: !include devices/lights/living_room_cozy.yaml
     lights_living_room_tv: !include devices/lights/living_room_tv.yaml
     lights_living_room: !include devices/lights/living_room.yaml
     lights_path: !include devices/lights/path.yaml

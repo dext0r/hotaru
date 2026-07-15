@@ -40,36 +40,23 @@ automation:
         state: 'on'
 
       - condition: state
-        entity_id:
-          - light.living_room_tv
-          - input_boolean.scene_sleepy_mood
-        state: 'off'
-    action:
-      - service: light.turn_on
-        entity_id: light.living_room_tv
-        data:
-          brightness_pct: 50
-
-  - id: living_room_tv_light_turn_off
-    alias: 'Living Room TV Light: Turn off'
-    trigger:
-      - platform: state
-        entity_id: media_player.tv
-        to: 'off'
-    condition:
-      - condition: numeric_state
-        entity_id: sensor.illuminance_south_side
-        above: 500
+        entity_id: input_select.home_mode
+        state: Day
 
       - condition: state
-        entity_id: binary_sensor.winter_bright_light
+        entity_id: input_boolean.scene_sleepy_mood
         state: 'off'
 
-      - condition: state
-        entity_id:
-          - input_boolean.light_control
-          - light.living_room_tv
-        state: 'on'
+      - or:
+          - condition: time
+            after: '12:00:00'
+            before: '14:00:00'
+
+          - condition: time
+            after: '18:00:00'
+            before: '19:30:00'
     actions:
       - service: light.turn_on
         entity_id: light.living_room_tv
+        data:
+          brightness_pct: 60

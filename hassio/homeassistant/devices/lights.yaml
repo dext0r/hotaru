@@ -16,15 +16,6 @@ template:
           is_state('input_boolean.scene_sleepy_mood', 'on')
         }}
 
-    # "запрос" яркого света зимой, жена грустит в темноте :(
-    - name: Winter Bright Light
-      unique_id: binary_sensor.winter_bright_light
-      state: >
-        {{
-          is_state('input_select.season', 'Winter') and
-          now().hour >= 8 and now().hour <= 17
-        }}
-
 automation:
   - id: light_control_turn_on
     alias: 'Light Control: Turn on'

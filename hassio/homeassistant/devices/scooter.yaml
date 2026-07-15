@@ -22,6 +22,9 @@ automation:
       - action: switch.turn_off
         entity_id: switch.scooter_charger_socket
 
+      - action: input_boolean.turn_on
+        entity_id: input_boolean.scooter_charged
+
   - id: scooter_charging_socket_turn_off
     alias: 'Scooter Charging Socket: Turn off'
     triggers:
@@ -37,3 +40,45 @@ automation:
     actions:
       - action: switch.turn_off
         entity_id: switch.scooter_charger_socket
+
+  - id: scooter_charged_notify
+    alias: 'Scooter Charged: Notify'
+    mode: restart
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.front_door
+        to: 'on'
+    conditions:
+      - condition: state
+        entity_id: switch.scooter_charger_socket
+        state: 'off'
+
+      - condition: state
+        entity_id: input_boolean.scooter_charged
+        state: 'on'
+
+      - condition: time
+        before: '10:00:00'
+    actions:
+      - action: switch.turn_on
+        entity_id: switch.scooter_charger_socket
+
+      - wait_for_trigger:
+          - platform: state
+            entity_id: switch.scooter_charger_socket
+            to: 'off'
+        timeout:
+          minutes: 5
+        continue_on_timeout: true
+
+      - action: input_boolean.turn_off
+        entity_id: input_boolean.scooter_charged
+
+      - action: switch.turn_off
+        entity_id: switch.scooter_charger_socket
+
+input_boolean:
+  scooter_charged:
+    name: Scooter charged
+    initial: false
+    icon: mdi:battery-check-outline

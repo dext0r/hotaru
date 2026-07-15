@@ -17,23 +17,23 @@ automation:
           entity_id: notify.dextor
           message: 👮 Дверь открыта, а нас нет дома 🙀
 
-  - id: front_door_opened_alert
-    alias: 'Front Door: Opened alert'
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.front_door
-        from: 'off'
-        to: 'on'
-        for:
-          minutes: 15
+  - id: front_door_open_for_a_long_time
+    alias: 'Front Door: Open for a long time'
+    triggers:
+      - trigger: door.opened
+        target:
+          entity_id: binary_sensor.front_door
+        options:
+          for:
+            minutes: 45
 
-      - platform: state
-        entity_id: binary_sensor.front_door
-        from: 'off'
-        to: 'on'
-        for:
-          minutes: 30
-    condition:
+      - trigger: door.opened
+        target:
+          entity_id: binary_sensor.front_door
+        options:
+          for:
+            hours: 1
+    conditions:
       - condition: state
         entity_id: binary_sensor.anyone_home
         state: 'on'
@@ -55,10 +55,10 @@ automation:
                 ]|random
             }}
 
-  - id: porch_door_opened_alert
-    alias: 'Porch Door: Opened alert'
-    trigger:
-      - platform: state
+  - id: porch_door_open_for_a_long_time
+    alias: 'Porch Door: Open for a long time'
+    triggers:
+      - trigger: state
         entity_id: binary_sensor.porch_door
         to: 'on'
         for:

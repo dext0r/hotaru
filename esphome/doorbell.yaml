@@ -141,6 +141,11 @@ script:
                 tune: 3
                 volume: 6
 
+  - id: use_lock_state
+    mode: restart
+    then:
+      - delay: 7s
+
 switch:
   - id: doorbell_mute
     platform: template
@@ -175,14 +180,22 @@ lock:
         return state;
       }
 
+      if (id(use_lock_state).is_running()) {
+        // после закрытие статус с внешнего датчика приходит с задержкой
+        // доверяем на это время статусу с замка
+        return state;
+      }
+
       if (id(front_door_lock_contact).state) {
         return LOCK_STATE_UNLOCKED;
       } else {
         return LOCK_STATE_LOCKED;
       }
     lock_action:
+      - script.execute: use_lock_state
       - lock.lock: lock_control
     unlock_action:
+      - script.execute: use_lock_state
       - lock.unlock: lock_control
 
   - id: lock_control

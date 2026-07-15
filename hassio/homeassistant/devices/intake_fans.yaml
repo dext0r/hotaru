@@ -12,10 +12,13 @@ automation:
           - input_boolean.workshop_airing_cold
           - input_boolean.workshop_airing_warm
         to: 'on'
+    variables:
+      _area_id_: >-
+        {{ area_id(trigger.from_state.entity_id) }}
     conditions:
       - condition: template
         value_template: >-
-          {{ is_state('timer.%s_airing' % area_id(trigger.from_state.entity_id), 'idle') }}
+          {{ is_state('timer.%s_airing' % _area_id_, 'idle') }}
     actions:
       - if:
           - condition: state
@@ -25,14 +28,14 @@ automation:
           - action: timer.start
             data:
               entity_id: >-
-                timer.{{ area_id(trigger.from_state.entity_id) }}_airing
+                timer.{{ _area_id_ }}_airing
               duration:
                 minutes: 45
         else:
           - action: timer.start
             data:
               entity_id: >-
-                timer.{{ area_id(trigger.from_state.entity_id) }}_airing
+                timer.{{ _area_id_ }}_airing
               duration:
                 minutes: 25
 
@@ -51,17 +54,19 @@ automation:
         to: 'off'
         for:
           seconds: 5
+    variables:
+      _area_id_: >-
+        {{ area_id(trigger.from_state.entity_id) }}
     conditions:
       - condition: template
         value_template: >-
-          {% set _area_id = area_id(trigger.from_state.entity_id) %}
-          {{ is_state('input_boolean.%s_airing_cold' % _area_id, 'off') and
-             is_state('input_boolean.%s_airing_warm' % _area_id, 'off') }}
+          {{ is_state('input_boolean.%s_airing_cold' % _area_id_, 'off') and
+             is_state('input_boolean.%s_airing_warm' % _area_id_, 'off') }}
     actions:
       - action: timer.cancel
         data:
           entity_id: >-
-            timer.{{ area_id(trigger.from_state.entity_id) }}_airing
+            timer.{{ _area_id_ }}_airing
 
   - id: intake_fan_airing_auto_off_by_timer
     alias: 'Intake Fan Airing: Auto off by timer'
@@ -73,17 +78,20 @@ automation:
           - timer.living_room_airing
           - timer.workshop_airing
         to: idle
+    variables:
+      _area_id_: >-
+        {{ area_id(trigger.from_state.entity_id) }}
     conditions:
       - condition: template
         value_template: >-
-          {{ is_state('input_boolean.%s_airing_cold' % area_id(trigger.from_state.entity_id), 'on') or
-             is_state('input_boolean.%s_airing_warm' % area_id(trigger.from_state.entity_id), 'on') }}
+          {{ is_state('input_boolean.%s_airing_cold' % _area_id_, 'on') or
+             is_state('input_boolean.%s_airing_warm' % _area_id_, 'on') }}
     actions:
       - action: input_boolean.turn_off
         data:
           entity_id:
-            - input_boolean.{{ area_id(trigger.from_state.entity_id) }}_airing_cold
-            - input_boolean.{{ area_id(trigger.from_state.entity_id) }}_airing_warm
+            - input_boolean.{{ _area_id_ }}_airing_cold
+            - input_boolean.{{ _area_id_ }}_airing_warm
 
   - id: intake_fan_airing_swap_modes
     alias: 'Intake Fan Airing: Swap modes'
@@ -98,16 +106,23 @@ automation:
           - input_boolean.workshop_airing_cold
           - input_boolean.workshop_airing_warm
         to: 'on'
+    variables:
+      _target_entity_id_: >-
+        {%- set area_id = area_id(trigger.from_state.entity_id) -%}
+        {%- if trigger.from_state.entity_id.endswith('_airing_warm')  -%}
+          input_boolean.{{ area_id }}_airing_cold
+        {%- else -%}
+          input_boolean.{{ area_id }}_airing_warm
+        {%- endif -%}
+    conditions:
+      - condition: template
+        value_template: >-
+          {{ is_state(_target_entity_id_, 'on')}}
     actions:
       - action: input_boolean.turn_off
         data:
           entity_id: >-
-            {%- set _area_id = area_id(trigger.from_state.entity_id) -%}
-            {%- if trigger.from_state.entity_id.endswith('_airing_warm')  -%}
-              input_boolean.{{ _area_id }}_airing_cold
-            {%- else -%}
-              input_boolean.{{ _area_id }}_airing_warm
-            {%- endif -%}
+            {{ _target_entity_id_ }}
 
   - id: Intake Fan Error
     alias: Intake Fan Error

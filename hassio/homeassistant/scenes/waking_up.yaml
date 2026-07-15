@@ -39,24 +39,3 @@ automation:
     action:
       - action: input_boolean.turn_off
         entity_id: input_boolean.scene_waking_up
-
-  - id: scene_waking_up_turn_off_porch_door
-    alias: 'Scene Waking up: Turn off (porch door)'
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.front_door
-        to: 'on'
-    condition:
-      - condition: state
-        entity_id: input_boolean.scene_waking_up
-        state: 'on'
-    action:
-      - wait_for_trigger:
-          - platform: state
-            entity_id: binary_sensor.porch_door
-            to: 'off'
-        timeout:
-          minutes: 3
-
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.scene_waking_up

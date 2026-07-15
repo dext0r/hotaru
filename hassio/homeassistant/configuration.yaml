@@ -68,7 +68,8 @@ homeassistant:
     lights_workshop: !include devices/lights/workshop.yaml
     lights_xmas: !include devices/lights/xmas.yaml
     lights: !include devices/lights.yaml
-    locks: !include devices/locks.yaml
+    lock_front_door: !include devices/locks/front_door.yaml
+    lock_porch_door: !include devices/locks/porch_door.yaml
     media_avr: !include devices/media/avr.yaml
     media_tv: !include devices/media/tv.yaml
     media_yandex_station: !include devices/media/yandex_station.yaml

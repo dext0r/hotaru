@@ -160,22 +160,6 @@ automation:
               Только не забудь {{ states('sensor.chores') }}
             {% endif %}
 
-      - if:
-          - condition: state
-            entity_id: lock.front_door
-            state: unlocked
-        then:
-          - service: lock.lock
-            entity_id: lock.front_door
-
-      - if:
-          - condition: state
-            entity_id: binary_sensor.porch_door
-            state: 'off'
-        then:
-          - service: lock.lock
-            entity_id: lock.porch_door
-
   - id: scene_sleepy_mood_turn_off
     alias: 'Scene Sleepy Mood: Turn off'
     triggers:

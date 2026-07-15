@@ -1,0 +1,250 @@
+# Важно: Открытие всегда в приоритете.
+# Лучше пусть будет открыта дверь какое-то время, чем стоять перед ней как дурак
+automation:
+  - id: porch_door_lock
+    alias: 'Porch Door: Lock'
+    mode: restart
+    triggers:
+      - id: front_door_locked
+        trigger: lock.locked
+        target:
+          entity_id: lock.front_door
+        options:
+          for:
+            minutes: 3
+
+      - id: sleepy_mood
+        trigger: state
+        entity_id: input_boolean.scene_sleepy_mood
+        to: 'on'
+
+      - id: time
+        trigger: time
+        at: '01:00:00'
+    conditions:
+      - condition: lock.is_unlocked
+        target:
+          entity_id: lock.porch_door
+
+      - condition: door.is_closed
+        target:
+          entity_id: binary_sensor.porch_door
+
+      - condition: timer.is_idle
+        target:
+          entity_id:
+            - timer.porch_door_auto_lock
+            - timer.porch_door_auto_unlock
+        options:
+          behavior: all
+
+      - or:
+          - not:
+              - condition: trigger
+                id: front_door_locked
+          - and:
+              - condition: trigger
+                id: front_door_locked
+
+              - condition: time
+                note: В другое время сосед дома, не будем ему мешать
+                after: '17:00:00'
+                before: '09:00:00'
+    actions:
+      - action: lock.lock
+        target:
+          entity_id: lock.porch_door
+
+  - id: porch_door_auto_lock
+    alias: 'Porch Door: Auto lock'
+    triggers:
+      - trigger: door.closed
+        target:
+          entity_id: binary_sensor.porch_door
+        options:
+          for:
+            seconds: 2
+    conditions:
+      - condition: timer.is_active
+        target:
+          entity_id: timer.porch_door_auto_lock
+    actions:
+      - action: lock.lock
+        entity_id: lock.porch_door
+
+  - id: porch_door_auto_unlock
+    alias: 'Porch Door: Auto unlock'
+    triggers:
+      - trigger: timer.started
+        target:
+          entity_id: timer.porch_door_auto_unlock
+
+      - trigger: lock.locked
+        note: Злобный сосед закрыл замок и скрылся
+        target:
+          entity_id: lock.porch_door
+        options:
+          for:
+            seconds: 20
+    conditions:
+      - condition: timer.is_active
+        target:
+          entity_id: timer.porch_door_auto_unlock
+
+      # проверки на закрытость замка нет специально
+      # можеть быть неверный статус при ручном закрытии
+    actions:
+      - action: lock.unlock
+        target:
+          entity_id: lock.porch_door
+
+  - id: porch_door_lock_restore_after_failed_auto_unlock
+    alias: 'Porch Door Lock: Restore after failed auto unlock'
+    triggers:
+      - trigger: timer.finished
+        target:
+          entity_id: timer.porch_door_auto_unlock
+    conditions:
+      - condition: door.is_closed
+        target:
+          entity_id: binary_sensor.porch_door
+    actions:
+      - action: scene.turn_on
+        entity_id: scene.porch_door_lock_before_auto_unlock
+
+  - id: porch_door_presence_unlock
+    alias: 'Porch Door: Presence Unlock'
+    mode: restart
+    description: Пробрались в подъезд мимо домофона
+    triggers:
+      - trigger: state
+        entity_id:
+          - person.dextor
+          - person.layma
+        to: home
+    conditions:
+      - condition: lock.is_locked
+        target:
+          entity_id: lock.porch_door
+
+      - condition: door.is_closed
+        target:
+          entity_id: binary_sensor.porch_door
+
+      - condition: state
+        entity_id: binary_sensor.anyone_near_home_recently
+        state: 'on'
+    actions:
+      - action: lock.unlock
+        entity_id: lock.porch_door
+
+      - wait_for_trigger:
+          - trigger: door.opened
+            target:
+              entity_id: binary_sensor.porch_door
+        timeout:
+          seconds: 30
+        continue_on_timeout: true
+
+      # дверь не открылась, значит это всё обман при обновлении айфона
+      - if:
+          - condition: door.is_closed
+            target:
+              entity_id: binary_sensor.porch_door
+        then:
+          - action: lock.lock
+            entity_id: lock.porch_door
+
+  - id: porch_door_auto_lock_start_timer
+    alias: 'Porch Door Auto Lock: Start timer'
+    triggers:
+      - trigger: lock.locked
+        note: Это может быть с любой стороны от входной двери!
+        target:
+          entity_id: lock.front_door
+    conditions:
+      - condition: timer.is_idle
+        target:
+          entity_id:
+            - timer.porch_door_auto_lock
+            - timer.porch_door_auto_unlock
+        options:
+          behavior: all
+
+      - condition: time
+        note: В другое время сосед дома, не будем ему мешать
+        after: '17:00:00'
+        before: '09:00:00'
+    actions:
+      - action: timer.start
+        entity_id: timer.porch_door_auto_lock
+
+  - id: porch_door_auto_lock_cancel_timer
+    alias: 'Porch Door Auto Lock: Cancel timer'
+    triggers:
+      - trigger: lock.locked
+        target:
+          entity_id: lock.porch_door
+
+      - trigger: timer.started
+        target:
+          entity_id: timer.porch_door_auto_unlock
+    conditions:
+      - condition: timer.is_active
+        target:
+          entity_id: timer.porch_door_auto_lock
+    actions:
+      - action: timer.cancel
+        target:
+          entity_id: timer.porch_door_auto_lock
+
+  - id: porch_door_auto_unlock_start_timer
+    alias: 'Porch Door Auto Unlock: Start timer'
+    triggers:
+      - trigger: state
+        entity_id: sensor.intercom_status
+        to: Door opened
+    conditions:
+      - condition: state
+        entity_id:
+          - binary_sensor.anyone_near_home
+          - input_boolean.scene_wait_guests
+        state: 'on'
+        match: any
+    actions:
+      - action: timer.start
+        entity_id: timer.porch_door_auto_unlock
+
+      - action: scene.create
+        data:
+          scene_id: porch_door_lock_before_auto_unlock
+          snapshot_entities:
+            - lock.porch_door
+
+  - id: porch_door_auto_unlock_cancel_timer
+    alias: 'Porch Door Auto Unlock: Cancel timer'
+    triggers:
+      - trigger: door.closed
+        target:
+          entity_id: binary_sensor.front_door
+    conditions:
+      - condition: timer.is_active
+        target:
+          entity_id: timer.porch_door_auto_unlock
+    actions:
+      - action: timer.cancel
+        target:
+          entity_id: timer.porch_door_auto_unlock
+
+timer:
+  porch_door_auto_unlock:
+    name: 'Porch Door: Auto Unlock'
+    icon: mdi:lock-clock
+    duration:
+      minutes: 7
+
+  porch_door_auto_lock:
+    name: 'Porch Door: Auto Lock'
+    icon: mdi:lock-open-check-outline
+    duration:
+      minutes: 2

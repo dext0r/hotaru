@@ -1,3 +1,4 @@
+
 automation:
   - id: bedroom_ac_display_turn_off
     alias: 'Bedroom AC Display: Turn off'
@@ -31,6 +32,41 @@ automation:
 
       - action: switch.turn_off
         entity_id: switch.bedroom_ac_display
+
+  - id: bedroom_ac_turn_on
+    alias: 'Bedroom AC: Turn on'
+    max_exceeded: silent
+    triggers:
+      - trigger: time
+        at: '23:00:00'
+    conditions:
+      - condition: state
+        entity_id: binary_sensor.anyone_home
+        state: 'on'
+
+      - condition: state
+        entity_id: input_select.season
+        state: Summer
+
+      - condition: numeric_state
+        entity_id: sensor.outside_temperature
+        above: 4 # ну мало ли слишком холодное лето :D
+
+      - not:
+        - condition: state
+          entity_id: climate.bedroom_ac
+          state: unavailable
+    actions:
+      - action: climate.set_temperature
+        entity_id: climate.bedroom_ac
+        data:
+          hvac_mode: cool
+          temperature: 22
+
+      - action: climate.set_fan_mode
+        entity_id: climate.bedroom_ac
+        data:
+          fan_mode: auto
 
   - id: bedroom_ac_turn_off
     alias: 'Bedroom AC: Turn off'

@@ -161,26 +161,6 @@ automation:
             {% endif %}
 
       - if:
-          - not:
-              - condition: state
-                entity_id: climate.bedroom_ac
-                state: unavailable
-
-          - condition: state
-            entity_id: input_select.season
-            state: Summer
-
-          - condition: numeric_state
-            entity_id: sensor.outside_temperature
-            above: 4 # ну мало ли слишком холодное лето :D
-        then:
-          - action: climate.set_temperature
-            entity_id: climate.bedroom_ac
-            data:
-              hvac_mode: cool
-              temperature: 22
-
-      - if:
           - condition: state
             entity_id: lock.front_door
             state: unlocked

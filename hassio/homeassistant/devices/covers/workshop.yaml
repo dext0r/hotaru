@@ -2,13 +2,8 @@ automation:
   - id: workshop_shades_close
     alias: 'Workshop Shades: Close'
     triggers:
-      - id: lock_unlocked
-        platform: state
-        entity_id: lock.front_door
-        from:
-          - locked
-          - unlocking
-        to: unlocked
+      - trigger: event
+        event_type: welcome_home
 
       - trigger: state
         entity_id: binary_sensor.evening_time_north

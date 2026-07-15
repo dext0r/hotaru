@@ -30,16 +30,17 @@ homeassistant:
     dryer: !include devices/dryer.yaml
     doorbell: !include devices/doorbell.yaml
     fridge: !include devices/fridge.yaml
-    home_bathroom: !include home/bathroom.yaml
     home_common: !include home/common.yaml
     home_energy: !include home/energy.yaml
     home_good_morning: !include home/good_morning.yaml
     home_good_night: !include home/good_night.yaml
     home_kitchen: !include home/kitchen.yaml
     home_pills: !include home/pills.yaml
+    home_presence: !include home/presence.yaml
     home_smoke: !include home/smoke.yaml
     home_water: !include home/water.yaml
     home_vacation: !include home/vacation.yaml
+    home_welcome_home: !include home/welcome_home.yaml
     hotaru: !include devices/hotaru.yaml
     humidifiers_bedroom: !include devices/humidifiers/bedroom.yaml
     humidifiers_living_room: !include devices/humidifiers/living_room.yaml
@@ -76,7 +77,6 @@ homeassistant:
     portable_fan: !include devices/portable_fan.yaml
     portable_heater: !include devices/portable_heater.yaml
     scene_delivery: !include scenes/delivery.yaml
-    scene_departure: !include scenes/departure.yaml
     scene_evening: !include scenes/evening.yaml
     scene_meal: !include scenes/meal.yaml
     scene_movie: !include scenes/movie.yaml
@@ -84,7 +84,6 @@ homeassistant:
     scene_sleepy_mood: !include scenes/sleepy_mood.yaml
     scene_wait_guests: !include scenes/wait_guests.yaml
     scene_waking_up: !include scenes/waking_up.yaml
-    scene_welcome_home: !include scenes/welcome_home.yaml
     scooter: !include devices/scooter.yaml
     stove: !include devices/stove.yaml
     washing_machine: !include devices/washing_machine.yaml
@@ -139,6 +138,7 @@ recorder:
     entities:
       - input_boolean.light_control
       - input_boolean.climate_control
+      - input_boolean.everyone_left_home
       - input_select.home_mode
       - select.intercom_mode
       - number.living_room_humidifier_fan_speed

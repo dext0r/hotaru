@@ -1,0 +1,181 @@
+automation:
+  - id: everyone_left_home
+    alias: Everyone Left Home
+    mode: restart
+    triggers:
+      - trigger: lock.locked
+        target:
+          entity_id: lock.front_door
+
+      - trigger: state
+        entity_id: binary_sensor.anyone_home
+        to: 'off'
+        for:
+          hours: 1
+    conditions:
+      - condition: state
+        entity_id: input_boolean.everyone_left_home
+        state: 'off'
+    actions:
+      - if:
+          - condition: state
+            entity_id: binary_sensor.anyone_home
+            state: 'on'
+        then:
+          - wait_for_trigger:
+              - trigger: state
+                entity_id: binary_sensor.anyone_home
+                to: 'off'
+            timeout:
+              minutes: 5
+            continue_on_timeout: false
+
+      - action: input_boolean.turn_on
+        entity_id: input_boolean.everyone_left_home
+
+      # немного странное место, ну да ладно :)
+      - action: light.turn_off
+        entity_id: group.home_lights
+        continue_on_error: true
+
+      - action: media_player.turn_off
+        entity_id:
+          - media_player.tv
+          - media_player.bedroom_station
+          - media_player.living_room_station
+          - media_player.workshop_station
+          - media_player.kitchen_station
+        continue_on_error: true
+
+  - id: someone_returned_home
+    alias: Someone Returned Home
+    max_exceeded: silent
+    triggers:
+      - id: fallback
+        trigger: state
+        entity_id: binary_sensor.anyone_home
+        to: 'on'
+        for:
+          minutes: 5
+
+      - id: front_door_opened
+        trigger: door.opened
+        target:
+          entity_id: binary_sensor.front_door
+    conditions:
+      - condition: state
+        entity_id: input_boolean.everyone_left_home
+        state: 'on'
+
+      - condition: state
+        entity_id: binary_sensor.anyone_home
+        note: Мы уже дома, даже не открыв дверь
+        state: 'on'
+    actions:
+      - action: input_boolean.turn_off
+        entity_id: input_boolean.everyone_left_home
+
+      - if:
+          - condition: trigger
+            id: front_door_opened
+        then:
+          - event: welcome_home
+
+  - id: home_unlocked_alert
+    alias: Home Unlocked Alert
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.anyone_home
+        to: 'off'
+        for:
+          minutes: 5
+    condition:
+      - condition: lock.is_unlocked
+        target:
+          entity_id: lock.front_door
+    actions:
+      - action: notify.send_message
+        entity_id: notify.dextor
+        data:
+          message: 🔑 Никого нет дома, а дверь не закрыта. Страшно?
+
+  - id: north_balcony_presence_led_update
+    alias: 'North Balcony Presence: LED Update'
+    mode: queued
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.anyone_near_home
+        to:
+          - 'on'
+          - 'off'
+    actions:
+      - action: switch.turn_{{ trigger.to_state.state }}
+        entity_id: switch.north_balcony_presence_led
+
+device_tracker_template:
+  - unique_id: device_tracker.misaka_near_home
+    name: Misaka Near Home
+    icon: mdi:home-floor-negative-1
+    location: >
+      {{ is_state('binary_sensor.north_balcony_presence_misaka', 'on') | iif ('Near Home', False) }}
+    source_type: gps
+
+  - unique_id: device_tracker.layma_iphone_near_home
+    name: Layma iPhone Near Home
+    icon: mdi:home-floor-negative-1
+    location: >
+      {{ is_state('binary_sensor.north_balcony_presence_layma_iphone', 'on') | iif ('Near Home', False) }}
+    source_type: gps
+
+  - unique_id: device_tracker.misaka_ble
+    name: Misaka BLE
+    icon: mdi:bluetooth-connect
+    location: >
+      {{ is_state('binary_sensor.hallway_presence_misaka', 'on') or
+         is_state('binary_sensor.living_room_presence_misaka', 'on') }}
+    source_type: bluetooth_le
+
+  - unique_id: device_tracker.layma_iphone_ble
+    name: Layma iPhone BLE
+    icon: mdi:bluetooth-connect
+    location: >
+      {{ is_state('binary_sensor.hallway_presence_layma_iphone', 'on') or
+         is_state('binary_sensor.living_room_presence_layma_iphone', 'on') }}
+    source_type: bluetooth_le
+
+input_boolean:
+  # отличается от Anyone Home тем, что завязан на внешнее воздействие
+  # например: устанавливается только при выполнении цепочки закрыли входную дверь -> пропали из дома
+  everyone_left_home:
+    name: Everyone Left Home
+    icon: mdi:home-export-outline
+
+template:
+  - binary_sensor:
+      - name: Anyone Home
+        unique_id: binary_sensor.anyone_home
+        state: >
+          {{ states.person | selectattr('state', 'eq', 'home') | list | count > 0 }}
+        device_class: presence
+
+      - name: Anyone Near Home
+        unique_id: binary_sensor.anyone_near_home
+        state: >
+          {{ states.person | selectattr('state', 'eq', 'Near Home') | list | count > 0 }}
+        device_class: presence
+
+      - name: Anyone Near Home Recently
+        unique_id: binary_sensor.anyone_near_home_recently
+        state: >-
+          {{ states('binary_sensor.anyone_near_home') }}
+        device_class: presence
+        delay_off:
+          minutes: 7
+
+zone:
+  - name: Home
+    latitude: !secret geo_home_latitude
+    longitude: !secret geo_home_longitude
+    radius: 27
+    icon: mdi:home
+    passive: true

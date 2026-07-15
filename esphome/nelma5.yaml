@@ -143,6 +143,12 @@ light:
           update_interval: 1s
           transition_length: 1s
 
+      - pulse:
+          name: night_pulse
+          update_interval: 1s
+          transition_length: 1s
+          max_brightness: 20%
+
   - name: ''
     platform: partition
     device_id: porch_path_light
@@ -152,6 +158,38 @@ light:
         to: 22
     gamma_correct: 1
     restore_mode: ALWAYS_OFF
+    effects:
+      - addressable_lambda:
+          name: Progressive Fill
+          update_interval: 40ms
+          lambda: |-
+            static int filled = 0;
+            static bool filling = true;
+            const int step = 1;
+            const int keep = 2;
+
+            if (initial_run) {
+              filled = 0;
+            }
+
+            if (filling) {
+              filled += step;
+              if (filled >= it.size()) {
+                filled  = it.size();
+                filling = false;
+              }
+            } else {
+              filled -= step;
+              if (filled <= keep) {
+                filled  = keep;
+                filling = true;
+              }
+            }
+
+            it.all() = Color::BLACK;
+            for (int i = 0; i < filled && i < it.size(); i++) {
+              it[it.size() - 1 - i] = current_color;
+            }
 
   - id: led
     platform: esp32_rmt_led_strip

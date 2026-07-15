@@ -1,9 +1,11 @@
 automation:
-  - id: porch_light_turn_on_front_door
-    alias: 'Porch Light: Turn on (front door)'
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.front_door
+  - id: porch_light_turn_on
+    alias: 'Porch Light: Turn on'
+    triggers:
+      - trigger: state
+        entity_id:
+          - binary_sensor.porch_motion
+          - binary_sensor.porch_door
         to: 'on'
     conditions:
       - condition: state
@@ -11,77 +13,208 @@ automation:
         state: 'on'
 
       - condition: state
-        entity_id:
-          - light.porch
-          - light.porch_path
+        entity_id: input_boolean.porch_light_dimmed
         state: 'off'
-    action:
+
+      - condition: light.is_off
+        target:
+          entity_id: light.porch
+    actions:
+      - action: light.turn_on
+        entity_id: light.porch
+
+  - id: porch_light_turn_on_front_door
+    alias: 'Porch Light: Turn on (front door)'
+    triggers:
+      - trigger: door.opened
+        target:
+          entity_id: binary_sensor.front_door
+    conditions:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+
+      - condition: light.is_off
+        target:
+          entity_id: light.porch
+    actions:
       - if:
           - condition: state
             entity_id: input_select.home_mode
             state: Night
         then:
-          - service: light.turn_on
-            entity_id: light.porch_path
-            data:
-              rgbw_color: [255, 0, 0, 0]
-              brightness_pct: 45
+          - action: input_boolean.turn_on
+            entity_id: input_boolean.porch_light_dimmed
+
+          - event: porch_path_light_control
         else:
           - action: light.turn_on
             entity_id: light.porch
 
-  - id: porch_light_turn_on
-    alias: 'Porch Light: Turn on'
-    trigger:
-      - platform: state
-        entity_id:
-          - binary_sensor.porch_motion
-          - binary_sensor.porch_door
-        to: 'on'
-    condition:
+  - id: porch_light_turn_off
+    alias: 'Porch Light: Turn off'
+    triggers:
+      - trigger: motion.cleared
+        target:
+          area_id: porch
+        options:
+          for:
+            minutes: 10
+
+      - trigger: light.turned_on
+        target:
+          entity_id: light.porch
+        options:
+          for:
+            hours: 6
+    conditions:
       - condition: state
         entity_id: input_boolean.light_control
         state: 'on'
 
-      - condition: state
-        entity_id:
-          - light.porch
-          - light.porch_path
-        state: 'off'
-    action:
-      - service: light.turn_on
+      - condition: light.is_on
+        target:
+          entity_id: light.porch
+    actions:
+      - action: light.turn_off
         entity_id: light.porch
 
-  - id: porch_light_turn_off
-    alias: 'Porch Light: Turn off'
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.porch_motion
+  - id: porch_path_light_control
+    alias: 'Porch Path Light: Control'
+    mode: restart
+    triggers:
+      - trigger: event
+        event_type: porch_path_light_control
+
+      - trigger: state
+        entity_id: timer.front_door_auto_unlock
+
+      - trigger: state
+        entity_id: input_boolean.porch_light_dimmed
         to: 'off'
+
+      - trigger: door.opened
+        target:
+          entity_id: binary_sensor.front_door
+
+      - trigger: door.closed
+        target:
+          entity_id: binary_sensor.front_door
+
+      - trigger: light.turned_on
+        target:
+          entity_id: light.porch_path
+        options:
+          for:
+            hours: 1
+    actions:
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.porch_light_dimmed
+                state: 'on'
+            sequence:
+              - action: light.turn_on
+                entity_id: light.porch_path
+                data:
+                  rgbw_color: [255, 0, 0, 0]
+                  brightness_pct: 45
+
+          - conditions:
+              - condition: timer.is_active
+                target:
+                  entity_id: timer.front_door_auto_unlock
+
+              - condition: door.is_closed
+                target:
+                  entity_id: binary_sensor.front_door
+            sequence:
+              - action: light.turn_on
+                entity_id: light.porch_path
+                data:
+                  rgbw_color: [0, 0, 0, 255]
+                  brightness_pct: 30
+                  effect: Progressive Fill
+        default:
+          - action: light.turn_off
+            entity_id: light.porch_path
+
+  - id: porch_lock_light_control
+    alias: 'Porch Lock Light: Control'
+    mode: restart
+    triggers:
+      - trigger: state
+        entity_id: timer.front_door_auto_lock
+
+      - trigger: state
+        entity_id: timer.porch_door_auto_lock
+
+      - trigger: light.turned_on
+        target:
+          entity_id: light.porch_lock
+        options:
+          for:
+            hours: 1
+    variables:
+      _rgbw_color: >-
+        {%- if is_state('timer.front_door_auto_lock', 'active') -%}
+          [128, 115, 1, 0]
+        {%- elif is_state('timer.porch_door_auto_lock', 'active') -%}
+          [128, 0, 255, 0]
+        {%- else -%}
+          []
+        {%- endif -%}
+    actions:
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: '{{ _rgbw_color | length > 0 }}'
+            sequence:
+              # если сразу сделать пульс - будет рванное включение
+              - action: light.turn_on
+                entity_id: light.porch_lock
+                data:
+                  brightness_pct: >-
+                    {{ is_state('light.porch', 'off') | iif(20, 100) }}
+                  rgbw_color: '{{ _rgbw_color }}'
+                  transition: 1
+
+              - delay:
+                  seconds: 1
+
+              - action: light.turn_on
+                entity_id: light.porch_lock
+                data:
+                  effect: >-
+                    {{ is_state('light.porch', 'off') | iif('night_pulse', 'pulse') }}
+
+        default:
+          - action: light.turn_off
+            entity_id: light.porch_lock
+
+  - id: porch_light_dimmed_update
+    alias: 'Porch Light Dimmed: Update'
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.porch_light_dimmed
+        to: 'on'
         for:
           minutes: 10
 
-      - platform: state
-        entity_id: binary_sensor.porch_motion
-        to: 'off'
-        for:
-          minutes: 20
-    condition:
-      - condition: state
-        entity_id: input_boolean.light_control
-        state: 'on'
+      - trigger: light.turned_on
+        target:
+          entity_id: light.porch
 
+      - trigger: motion.cleared
+        target:
+          area_id: porch
+    conditions:
       - condition: state
-        entity_id:
-          - light.porch
-          - light.porch_path
-        match: any
+        entity_id: input_boolean.porch_light_dimmed
         state: 'on'
-    action:
-      - service: light.turn_off
-        entity_id:
-          - light.porch
-          - light.porch_path
+    actions:
+      - action: input_boolean.turn_off
+        entity_id: input_boolean.porch_light_dimmed
 
 template:
   - light:
@@ -99,3 +232,9 @@ template:
         turn_off:
           - action: switch.turn_off
             entity_id: switch.porch_light_switch
+
+input_boolean:
+  porch_light_dimmed:
+    name: 'Porch Light: Dimmed'
+    initial: false
+    icon: mdi:lightbulb-on-30

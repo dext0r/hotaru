@@ -3,34 +3,25 @@ automation:
     alias: Device unavailable alert
     mode: single
     max_exceeded: silent
-    trigger:
-      - platform: event
+    triggers:
+      - trigger: event
         event_type: state_changed
+    conditions:
+      - condition: template
+        value_template: >
+          {{ trigger.event.data.new_state and trigger.event.data.new_state.state == 'unavailable' }}
 
-      - platform: homeassistant
-        event: shutdown
-        id: shutdown
-    condition:
+      - condition: template
+        value_template: >
+          {{ this.attributes.last_triggered is none
+              or (now() - this.attributes.last_triggered) > timedelta(minutes=30) }}
+
       - condition: state
         entity_id: input_select.home_mode
         state:
           - Day
           - Night
-
-      - or:
-          - condition: trigger
-            id: shutdown
-
-          - and:
-              - condition: template
-                value_template: >
-                  {{ trigger.event.data.new_state and trigger.event.data.new_state.state == 'unavailable' }}
-
-              - condition: template
-                value_template: >
-                  {{ (now() - state_attr('automation.device_unavailable_alert',
-                                          'last_triggered')|default(now() - timedelta(days=1), true)).total_seconds() > 1800 }}
-    action:
+    actions:
       - if:
           - condition: trigger
             id: shutdown
@@ -44,7 +35,7 @@ automation:
         value_template: >
           {% set ns = namespace(break = false) %}
           {%- for entity in states if entity.state == 'unavailable' and entity.entity_id and ns.break == false -%}
-            {%- if (now() - entity.last_changed).total_seconds() > 180 and
+            {%- if (now() - entity.last_changed) > timedelta(minutes=3) and
                     not is_state_attr(entity.entity_id, 'volatile', true) and
                     not is_state_attr(entity.entity_id, 'restored', true) and
                     not 'xmas_' in entity.entity_id -%}
@@ -95,10 +86,10 @@ automation:
     alias: Device unavailable log
     mode: parallel
     max_exceeded: silent
-    trigger:
-      - platform: event
+    triggers:
+      - trigger: event
         event_type: state_changed
-    condition:
+    conditions:
       - or:
           - condition: template
             value_template: >
@@ -109,11 +100,12 @@ automation:
               {{ trigger.event.data.new_state and
                  'camera' in labels(trigger.event.data.new_state.entity_id) and
                  trigger.event.data.new_state.state == 'off' }}
-    action:
-      - service: notify.send_message
+    actions:
+      - action: notify.send_message
         data:
           entity_id: notify.debug
-          message: 'Device unavailable: {{ trigger.event.data.new_state.entity_id }}'
+          message: >-
+            Device unavailable: {{ trigger.event.data.new_state.entity_id }}
 
   - id: camera_unavailable_alert
     alias: Camera unavailable alert
@@ -127,8 +119,8 @@ automation:
 
       - condition: template
         value_template: >
-          {{ (now() - state_attr('automation.camera_unavailable_alert',
-                                 'last_triggered')|default(now() - timedelta(days=1), true)).total_seconds() > 600 }}
+          {{ this.attributes.last_triggered is none
+              or (now() - this.attributes.last_triggered) > timedelta(minutes=10) }}
     actions:
       - action: notify.send_message
         data:

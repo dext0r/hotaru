@@ -41,9 +41,7 @@ automation:
 
       - condition: state
         entity_id: input_select.home_mode
-        state:
-          - Day
-          - Vacation
+        state: Day
 
       - condition: light.is_off
         target:

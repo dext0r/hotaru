@@ -31,7 +31,6 @@ homeassistant:
     dryer: !include devices/dryer.yaml
     doorbell: !include devices/doorbell.yaml
     fridge: !include devices/fridge.yaml
-    hacks: !include devices/hacks.yaml
     home_bathroom: !include home/bathroom.yaml
     home_common: !include home/common.yaml
     home_energy: !include home/energy.yaml

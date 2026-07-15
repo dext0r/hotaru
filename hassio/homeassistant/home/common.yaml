@@ -50,33 +50,6 @@ automation:
                 {{ trigger.event.data.get('entity_id', 'last') }}
               text: Включила, не делай больше так, мне страшно и обидно
 
-  - id: home_mode_night_auto_turn_on
-    alias: 'Home Mode Night: Auto turn on'
-    trigger:
-      - platform: time
-        at: '01:55'
-    condition:
-      - condition: state
-        entity_id: binary_sensor.anyone_home
-        state: 'on'
-
-      - condition: state
-        entity_id: binary_sensor.motion_anywhere
-        state: 'off'
-        for:
-          hours: 1
-
-      - condition: not
-        conditions:
-          - condition: state
-            entity_id: input_select.home_mode
-            state: Night
-    action:
-      - service: input_select.select_option
-        entity_id: input_select.home_mode
-        data:
-          option: Night
-
   - id: home_mode_manual_day
     alias: 'Home Mode: Manual day'
     trigger:
@@ -114,6 +87,7 @@ input_select:
       - Day
       - Night
       - Vacation
+
   season:
     name: Season
     icon: mdi:sun-snowflake-variant

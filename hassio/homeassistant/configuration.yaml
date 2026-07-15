@@ -104,6 +104,7 @@ none:
 logbook:
   exclude:
     entity_globs:
+      - automation.*_no_occupancy
       - sensor.*_uptime
       - sensor.*_debug
 logger:
@@ -125,6 +126,7 @@ recorder:
       - binary_sensor
       - climate
       - cover
+      - fan
       - humidifier
       - input_datetime
       - light
@@ -136,9 +138,10 @@ recorder:
       - switch
       - weather
     entities:
-      - input_boolean.light_control
       - input_boolean.climate_control
       - input_boolean.everyone_left_home
+      - input_boolean.light_control
+      - input_boolean.scooter_charged
       - input_select.home_mode
       - select.intercom_mode
       - number.living_room_humidifier_fan_speed
@@ -150,20 +153,16 @@ recorder:
   exclude:
     entities:
       - automation.yandex_station_busy
-      - number.kettle_target_temperature
       - sensor.alert_greeting
       - sensor.chores
       - sensor.kettle_water_temperature
       - sensor.pingzen_heartbeat
     entity_globs:
       - '*.0x*'
-      - '*.*_target_*'
-      - automation.intake_fan_airing_swap_modes
-      - automation.intake_fan_airing_*_timer
-      - automation.*_log
-      - automation.*_region_*
-      - automation.*_update
-      - automation.tv_*
+      - '*.*_target_*' # вычисляемые значения, которые применяются к устройствам
+      - automation.*_log # логирование скучных вещей
+      - automation.*_update # часто вычисление состояния (например по таймеру)
+      - automation.*_timer # включение/отключение различных таймеров
       - cover.*_motor  # сырые моторы для шаблонных штор с ограничением открытия
       - binary_sensor.*_contact  # сырые герконы для шаблонов
       - binary_sensor.*presence*layma*
@@ -171,9 +170,8 @@ recorder:
       - binary_sensor.*workday*
       - binary_sensor.workday*
       - binary_sensor.*_running
-      - binary_sensor.*_light_alert_available
-      - input_datetime.*_last_seen
-      - light.workshop_main_*
+      - binary_sensor.*_light_alert_available # доступность функции "уведомление через диодик"
+      - light.workshop_main_* # обрабатывается как единое целое
       - sensor.*_raw
       - sensor.person_pronoun_*
       - sensor.cb_branch_circuit_power_for_ac

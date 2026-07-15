@@ -82,6 +82,22 @@ automation:
       - service: input_boolean.turn_off
         entity_id: input_boolean.closet_light_control
 
+  - id: closet_light_turn_off_failsafe
+    alias: 'Closet Light: Turn off (failsafe)'
+    triggers:
+      - trigger: state
+        entity_id: light.closet
+        to: 'on'
+        for:
+          hours: 3
+    conditions:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+    actions:
+      - action: light.turn_off
+        entity_id: light.closet
+
 input_boolean:
   closet_light_control:
     name: 'Allow automatic light control (closet)'

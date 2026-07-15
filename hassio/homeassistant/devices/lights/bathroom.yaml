@@ -151,6 +151,22 @@ automation:
       - service: light.turn_on
         entity_id: light.bathroom_bathtub
 
+  - id: bathroom_light_turn_off_failsafe
+    alias: 'Bathroom Light: Turn off (failsafe)'
+    triggers:
+      - trigger: state
+        entity_id: group.bathroom_lights
+        to: 'on'
+        for:
+          hours: 12
+    conditions:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+    actions:
+      - action: light.turn_off
+        entity_id: group.bathroom_lights
+
 input_boolean:
   bathroom_light_control:
     name: 'Allow automatic light control (bathroom)'

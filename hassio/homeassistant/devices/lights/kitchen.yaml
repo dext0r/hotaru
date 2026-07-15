@@ -156,6 +156,20 @@ automation:
         state: 'off'
     action:
       - service: light.turn_off
+  - id: kitchen_light_turn_off_failsafe
+    alias: 'Kitchen Light: Turn off (failsafe)'
+    triggers:
+      - trigger: state
+        entity_id: group.kitchen_lights
+        to: 'on'
+        for:
+          hours: 12
+    conditions:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+    actions:
+      - action: light.turn_off
         entity_id: group.kitchen_lights
 
 light:

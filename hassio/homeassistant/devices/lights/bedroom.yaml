@@ -222,6 +222,21 @@ automation:
       - service: switch.turn_off
         entity_id: switch.bedroom_moon_light_charger
 
+  - id: bedroom_light_turn_off_failsafe
+    alias: 'Bedroom Light: Turn off (failsafe)'
+    triggers:
+      - trigger: state
+        entity_id: group.bedroom_lights
+        to: 'on'
+        for:
+          hours: 12
+    conditions:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+    actions:
+      - action: light.turn_off
+        entity_id: group.bedroom_lights
 template:
   - light:
       - unique_id: light.bedroom_main

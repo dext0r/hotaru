@@ -1,52 +1,42 @@
 automation:
-  - id: hallway_light_turn_off_welcome_home
-    alias: 'Hallway Light: Turn off (welcome home)'
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.entrance_motion
-        to: 'off'
+  - id: entrance_light_turn_off
+    alias: 'Entrance Light: Turn off'
+    triggers:
+      - trigger: motion.cleared
+        target:
+          entity_id: binary_sensor.entrance_motion
+        options:
+          for:
+            minutes: 15
+    conditions:
+      - condition: state
+        entity_id:
+          - input_boolean.light_control
+          - light.entrance
+        state: 'on'
+    actions:
+      - action: light.turn_off
+        entity_id: light.entrance
+
+  - id: hallway_light_turn_off_failsafe
+    alias: 'Hallway Light: Turn off (failsafe)'
+    triggers:
+      - trigger: state
+        entity_id:
+          - light.entrance
+          - light.hallway
+        to: 'on'
         for:
-          minutes: 2
-    condition:
+          hours: 6
+    conditions:
       - condition: state
         entity_id: input_boolean.light_control
         state: 'on'
-
-      - condition: state
-        entity_id:
-          - light.hallway
-          - light.entrance
-        match: any
-        state: 'on'
-
-      - condition: state
-        entity_id: timer.scene_welcome_home
-        state: active
     actions:
       - action: light.turn_off
         entity_id:
-          - light.hallway
           - light.entrance
-
-  - id: entrance_light_turn_off
-    alias: 'Entrance Light: Turn off'
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.entrance_motion
-        to: 'off'
-        for:
-          minutes: 15
-    condition:
-      - condition: state
-        entity_id: input_boolean.light_control
-        state: 'on'
-
-      - condition: state
-        entity_id: light.entrance
-        state: 'on'
-    action:
-      - service: light.turn_off
-        entity_id: light.entrance
+          - light.hallway
 
 template:
   - light:

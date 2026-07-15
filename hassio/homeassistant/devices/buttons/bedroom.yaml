@@ -67,6 +67,14 @@ automation:
         subtype: double
     actions:
       - if:
+          - condition: state
+            entity_id: input_boolean.scene_sleepy_mood
+            state: 'on'
+        then:
+          - event: good_night
+          - stop:
+
+      - if:
           - or:
               - condition: state
                 entity_id: binary_sensor.warm_outside

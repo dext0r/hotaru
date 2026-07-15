@@ -125,19 +125,12 @@ automation:
   - id: kitchen_light_turn_off
     alias: 'Kitchen Light: Turn off'
     trigger:
-      - platform: state
-        entity_id: binary_sensor.kitchen_occupancy
-        from: 'on'
-        to: 'off'
-        for:
-          minutes: 10
-
-      - platform: state
-        entity_id: binary_sensor.kitchen_motion
-        from: 'on'
-        to: 'off'
-        for:
-          hours: 2
+      - trigger: occupancy.cleared
+        target:
+          entity_id: binary_sensor.kitchen_occupancy
+        options:
+          for:
+            minutes: 10
     conditions:
       - condition: state
         entity_id:

@@ -42,15 +42,7 @@ external_components:
     components:
       - ttlock
 
-substitutions:
-  doorbell_mode_day: Day # (0)
-  doorbell_mode_night: Night # (1)
-
 globals:
-  - id: doorbell_mode
-    type: int
-    initial_value: '0'
-
   - id: front_door_lock_battery
     type: float
     restore_value: yes
@@ -127,20 +119,6 @@ output:
 status_led:
   pin: 13
 
-select:
-  - id: doorbell_mode_select
-    platform: template
-    name: Mode
-    icon: mdi:bell-cog-outline
-    optimistic: true
-    options:
-      - ${doorbell_mode_day}
-      - ${doorbell_mode_night}
-    initial_option: ${doorbell_mode_day}
-    on_value:
-      lambda: |-
-        id(doorbell_mode) = i;
-
 sensor:
   - name: Battery
     platform: template
@@ -157,11 +135,19 @@ script:
     then:
       - if:
           condition:
-            lambda: 'return id(doorbell_mode) == 0;'
+            switch.is_off: doorbell_mute
           then:
             - remote_transmitter.transmit_szy8039b:
                 tune: 3
                 volume: 6
+
+switch:
+  - id: doorbell_mute
+    platform: template
+    name: Mute
+    icon: mdi:volume-off
+    optimistic: true
+    restore_mode: ALWAYS_OFF
 
 remote_receiver:
   pin: 26

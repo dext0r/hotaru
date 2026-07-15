@@ -11,30 +11,27 @@ automation:
           entity_id: notify.dextor
           message: 🔔 Динг-донг, кто-то звонит в дверь
 
-  - id: doorbell_mode_update
-    alias: 'Doorbell: Mode update'
-    trigger:
-      - platform: time_pattern
-        minutes: /10
+  - id: doorbell_mute_sync
+    alias: 'Doorbell: Mute Sync'
+    mode: restart
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.doorbell_target_mute
 
-      - platform: state
-        entity_id: input_select.home_mode
-    action:
-      - choose:
-          - conditions:
-              - condition: state
-                entity_id: input_select.home_mode
-                state: Night
-            sequence:
-              - service: select.select_option
-                entity_id: select.doorbell_mode
-                data:
-                  option: Night
-        default:
-          - service: select.select_option
-            entity_id: select.doorbell_mode
-            data:
-              option: Day
+      - trigger: time_pattern
+        minutes: /10
+    conditions:
+      - not:
+          - condition: state
+            entity_id: switch.doorbell_mute
+            state: unavailable
+
+      - condition: template
+        value_template: >-
+          {{ not is_state('switch.doorbell_mute', states('binary_sensor.doorbell_target_mute')) }}
+    actions:
+      - action: switch.turn_{{ states('binary_sensor.doorbell_target_mute') }}
+        entity_id: switch.doorbell_mute
 
   - id: doorbell_stop_playing
     alias: 'Doorbell: Stop playing'
@@ -48,3 +45,21 @@ automation:
         state: 'on'
     actions:
       - action: esphome.doorbell_stop
+
+template:
+  binary_sensor:
+    - unique_id: binary_sensor.doorbell_target_mute
+      name: 'Doorbell: Target Mute'
+      state: >
+        {% set mute = true %}
+        {% if is_state('input_select.home_mode', 'Day') %}
+          {% if is_state('person.dextor', 'home') %}
+            {% set mute = false %}
+          {% endif %}
+
+          {% if now().hour >= 17 or now().hour <= 9 %}
+            {% set mute = false %}
+          {% endif %}
+        {% endif %}
+
+        {{ mute }}

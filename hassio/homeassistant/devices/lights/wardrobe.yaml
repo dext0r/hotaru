@@ -1,26 +1,24 @@
 automation:
   - id: wardrobe_light_turn_on
     alias: 'Wardrobe Light: Turn on'
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.wardrobe_door
-        from: 'off'
-        to: 'on'
+    triggers:
+      - trigger: door.opened
+        target:
+          entity_id: binary_sensor.wardrobe_door
 
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.wardrobe_motion
-        from: 'off'
         to: 'on'
-    condition:
+    conditions:
       - condition: state
         entity_id: input_boolean.light_control
         state: 'on'
 
-      - condition: state
-        entity_id: light.wardrobe
-        state: 'off'
-    action:
-      - service: light.turn_on
+      - condition: light.is_off
+        target:
+          entity_id: light.wardrobe
+    actions:
+      - action: light.turn_on
         entity_id: light.wardrobe
         data:
           brightness_pct: >
@@ -34,38 +32,39 @@ automation:
 
   - id: wardrobe_light_turn_off
     alias: 'Wardorbe Light: Turn off'
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.wardrobe_door
-        to: 'off'
-        for:
-          milliseconds: 500
+    triggers:
+      - trigger: door.closed
+        target:
+          entity_id: binary_sensor.wardrobe_door
+        options:
+          for:
+            milliseconds: 500
 
       - id: no_motion
-        platform: state
-        entity_id: binary_sensor.wardrobe_motion
-        from: 'on'
-        to: 'off'
-        for:
-          minutes: 5
-    condition:
+        trigger: motion.cleared
+        target:
+          entity_id: binary_sensor.wardrobe_motion
+        options:
+          for:
+            minutes: 5
+    conditions:
       - condition: state
         entity_id:
           - input_boolean.light_control
           - input_boolean.wardrobe_light_control
           - light.wardrobe
         state: 'on'
-    action:
+    actions:
       - if:
           - condition: trigger
             id: no_motion
         then:
-          - service: light.turn_off
+          - action: light.turn_off
             entity_id: light.wardrobe
             data:
               transition: 10
         else:
-          - service: light.turn_off
+          - action: light.turn_off
             entity_id: light.wardrobe
 
   - id: wardrobe_light_control_turn_on

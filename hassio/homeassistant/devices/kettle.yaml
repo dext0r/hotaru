@@ -36,7 +36,7 @@ climate:
                 entity_id: sensor.kettle_water_level
                 above: 9
             sequence:
-              - service: climate.set_temperature
+              - action: climate.set_temperature
                 entity_id: climate.kettle
                 data:
                   temperature: 100
@@ -44,7 +44,7 @@ climate:
               - delay:
                   milliseconds: 1300
 
-              - service: switch.turn_on
+              - action: switch.turn_on
                 entity_id: switch.kettle_power
 
           - conditions:
@@ -59,14 +59,14 @@ climate:
               - delay:
                   milliseconds: 1300
 
-              - service: switch.turn_on
+              - action: switch.turn_on
                 entity_id: switch.kettle_power
 
         default:
-          - service: switch.turn_off
+          - action: switch.turn_off
             entity_id: switch.kettle_power
     set_temperature:
-      - service: number.set_value
+      - action: number.set_value
         entity_id: number.kettle_target_temperature
         data:
           value: '{{ temperature }}'
@@ -74,24 +74,24 @@ climate:
 automation:
   - id: kettle_auto_turn_off
     alias: 'Kettle: Auto turn off'
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: climate.kettle
         to: heat
         for:
           minutes: 7
-    action:
-      - service: climate.turn_off
+    actions:
+      - action: climate.turn_off
         entity_id: climate.kettle
 
   - id: kettle_boil_done_alert
     alias: 'Kettle: Boil done alert'
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: climate.kettle
         from: auto
         to: 'off'
-    condition:
+    conditions:
       - condition: state
         entity_id: input_select.home_mode
         state: Day
@@ -119,16 +119,16 @@ automation:
 
   - id: kettle_heat_done_alert
     alias: 'Kettle: Heat done alert'
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: climate.kettle
         from: 'off'
         to: heat
-    condition:
+    conditions:
       - condition: state
         entity_id: input_select.home_mode
         state: Day
-    action:
+    actions:
       - wait_template: >
           {{ state_attr('climate.kettle', 'current_temperature')|int(0) > (state_attr('climate.kettle', 'temperature')|int(0) - 4) }}
         timeout:
@@ -139,7 +139,7 @@ automation:
         entity_id: climate.kettle
         state: heat
 
-      - service: script.yandex_station_tts
+      - action: script.yandex_station_tts
         data:
           target:
             - media_player.living_room_station

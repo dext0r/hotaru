@@ -18,13 +18,13 @@ automation:
         for:
           minutes: 5
 
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.living_room_balcony_door
         from: 'on'
         to: 'off'
         for:
           seconds: 20
-    condition:
+    conditions:
       - condition: state
         entity_id: input_select.home_mode
         state: Day
@@ -51,10 +51,9 @@ automation:
         state: open
 
       - condition: template
-        value_template: >
-          {{ (now() - state_attr('automation.living_room_evening',
-                                  'last_triggered')|default(now() - timedelta(days=1), true)).total_seconds() > 8 * 60 * 60 }}
-    action:
+        value_template: >-
+          {{ this.attributes.last_triggered is none or this.attributes.last_triggered < today_at() }}
+    actions:
       - if:
           - condition: state
             entity_id: binary_sensor.living_room_occupancy
@@ -69,7 +68,7 @@ automation:
                 entity_id: light.living_room_tv
                 state: 'off'
             then:
-              - service: light.turn_on
+              - action: light.turn_on
                 entity_id: light.living_room_tv
                 data:
                   brightness_pct: 45
@@ -80,7 +79,7 @@ automation:
                 entity_id: light.living_room_backlight
                 state: 'off'
             then:
-              - service: light.turn_on
+              - action: light.turn_on
                 entity_id: light.living_room_backlight
                 data:
                   brightness_pct: 23
@@ -90,7 +89,7 @@ automation:
       - delay:
           seconds: 2
 
-      - service: cover.close_cover
+      - action: cover.close_cover
         entity_id: cover.living_room
 
   - id: bedroom_evening
@@ -138,11 +137,10 @@ automation:
         state: 100
 
       - condition: template
-        value_template: >
-          {{ (now() - state_attr('automation.bedroom_evening',
-                                 'last_triggered')|default(now() - timedelta(days=1), true)).total_seconds() > 8 * 60 * 60 }}
+        value_template: >-
+          {{ this.attributes.last_triggered is none or this.attributes.last_triggered < today_at() }}
     action:
-      - service: cover.close_cover
+      - action: cover.close_cover
         entity_id: cover.bedroom
 
       - if:
@@ -150,7 +148,7 @@ automation:
             entity_id: binary_sensor.bedroom_occupancy
             state: 'on'
         then:
-          - service: light.turn_on
+          - action: light.turn_on
             entity_id: light.bedroom_cat
             data:
               color_temp_kelvin: 2700

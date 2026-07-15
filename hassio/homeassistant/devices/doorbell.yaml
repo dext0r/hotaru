@@ -1,11 +1,11 @@
 automation:
   - id: doorbell_ringing
     alias: 'Doorbell: Ringing'
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: binary_sensor.doorbell_ringing
         to: 'on'
-    action:
+    actions:
       - action: notify.send_message
         data:
           entity_id: notify.dextor
@@ -38,15 +38,13 @@ automation:
 
   - id: doorbell_stop_playing
     alias: 'Doorbell: Stop playing'
-    mode: single
-    max_exceeded: silent
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: binary_sensor.front_door
         to: 'on'
-    condition:
+    conditions:
       - condition: state
         entity_id: binary_sensor.doorbell_ringing
         state: 'on'
-    action:
-      - service: esphome.doorbell_stop
+    actions:
+      - action: esphome.doorbell_stop

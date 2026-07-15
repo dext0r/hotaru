@@ -17,8 +17,8 @@ input_boolean:
 automation:
   - id: climate_anomaly_alert
     alias: 'Climate: Anomaly alert'
-    trigger:
-      - platform: numeric_state
+    triggers:
+      - trigger: numeric_state
         entity_id:
           - sensor.bathroom_temperature
           - sensor.bedroom_temperature
@@ -28,7 +28,7 @@ automation:
           - sensor.workshop_temperature
         below: 15
 
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id:
           - sensor.bathroom_temperature
           - sensor.bedroom_temperature
@@ -37,7 +37,7 @@ automation:
           - sensor.wardrobe_temperature
           - sensor.workshop_temperature
         above: 29
-    action:
+    actions:
       - action: notify.send_message
         data:
           entity_id: notify.dextor

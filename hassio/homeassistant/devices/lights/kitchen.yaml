@@ -6,11 +6,10 @@ automation:
         entity_id: binary_sensor.kitchen_motion
         to: 'on'
 
-      - trigger: state
-        entity_id: binary_sensor.kitchen_door
-        from: 'off'
-        to: 'on'
-    condition:
+      - trigger: door.opened
+        target:
+          entity_id: binary_sensor.kitchen_door
+    conditions:
       - condition: state
         entity_id:
           - input_boolean.light_control
@@ -26,9 +25,7 @@ automation:
 
       - condition: state
         entity_id: input_select.home_mode
-        state:
-          - Day
-          - Vacation
+        state: Day
 
       - or:
           - condition: state
@@ -37,14 +34,14 @@ automation:
 
           - condition: template
             value_template: >
-              {{ state_attr('light.kitchen_worktop', 'brightness')|int(0) in (0, 50) }}
-    action:
-      - service: light.turn_on
+              {{ state_attr('light.kitchen_worktop', 'brightness') | int(0) in (0, 50) }}
+    actions:
+      - action: light.turn_on
         entity_id: light.kitchen_worktop
         data:
           brightness: 255
 
-      - service: light.turn_on
+      - action: light.turn_on
         entity_id: light.kitchen_mood
 
   - id: kitchen_light_turn_on_dimmed
@@ -54,11 +51,10 @@ automation:
         entity_id: binary_sensor.kitchen_motion
         to: 'on'
 
-      - trigger: state
-        entity_id: binary_sensor.kitchen_door
-        from: 'off'
-        to: 'on'
-    condition:
+      - trigger: door.opened
+        target:
+          entity_id: binary_sensor.kitchen_door
+    conditions:
       - condition: state
         entity_id:
           - input_boolean.light_control
@@ -72,9 +68,7 @@ automation:
 
       - condition: state
         entity_id: input_select.home_mode
-        state:
-          - Day
-          - Vacation
+        state: Day
 
       - condition: state
         entity_id: input_boolean.scene_sleepy_mood
@@ -87,45 +81,45 @@ automation:
 
           - condition: template
             value_template: >
-              {{ state_attr('light.kitchen_worktop', 'brightness')|int(0) in (0, 100) }}
-    action:
-      - service: light.turn_on
+              {{ state_attr('light.kitchen_worktop', 'brightness') | int(0) in (0, 100) }}
+    actions:
+      - action: light.turn_on
         entity_id: light.kitchen_worktop
         data:
           brightness: 100
 
-      - service: light.turn_on
+      - action: light.turn_on
         entity_id: light.kitchen_mood
 
   - id: kitchen_light_dim_worktop
     alias: 'Kitchen Light: Dim worktop'
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.kitchen_occupancy
-        from: 'on'
-        to: 'off'
-        for:
-          minutes: 4
+    triggers:
+      - trigger: occupancy.cleared
+        target:
+          entity_id: binary_sensor.kitchen_occupancy
+        options:
+          for:
+            minutes: 4
     condition:
       - condition: state
         entity_id: input_boolean.light_control
         state: 'on'
 
       - or:
-          - condition: state
-            entity_id: light.kitchen_main
-            state: 'on'
+          - condition: light.is_on
+            target:
+              entity_id: light.kitchen_main
 
           - condition: template
             value_template: >
-              {{ state_attr('light.kitchen_worktop', 'brightness')|int(0) > 250 }}
+              {{ state_attr('light.kitchen_worktop', 'brightness') | int(0) > 250 }}
     action:
-      - service: light.turn_on
+      - action: light.turn_on
         entity_id: light.kitchen_worktop
         data:
           brightness: 50
 
-      - service: light.turn_off
+      - action: light.turn_off
         entity_id: light.kitchen_main
 
   - id: kitchen_light_turn_off
@@ -144,7 +138,7 @@ automation:
         to: 'off'
         for:
           hours: 2
-    condition:
+    conditions:
       - condition: state
         entity_id:
           - input_boolean.light_control
@@ -154,8 +148,10 @@ automation:
       - condition: state
         entity_id: input_boolean.scene_sleepy_mood
         state: 'off'
-    action:
-      - service: light.turn_off
+    actions:
+      - action: light.turn_off
+        entity_id: group.kitchen_lights
+
   - id: kitchen_light_turn_off_failsafe
     alias: 'Kitchen Light: Turn off (failsafe)'
     triggers:

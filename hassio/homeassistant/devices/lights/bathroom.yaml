@@ -1,11 +1,11 @@
 automation:
   - id: bathroom_light_turn_on
     alias: 'Bathroom Light: Turn on'
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: binary_sensor.bathroom_motion
         to: 'on'
-    condition:
+    conditions:
       - condition: state
         entity_id: input_boolean.light_control
         state: 'on'
@@ -13,14 +13,14 @@ automation:
       - condition: state
         entity_id: group.bathroom_lights
         state: 'off'
-    action:
+    actions:
       - choose:
           - conditions:
               - condition: state
                 entity_id: binary_sensor.dim_light
                 state: 'on'
             sequence:
-              - service: light.turn_on
+              - action: light.turn_on
                 entity_id: light.bathroom_main
                 data:
                   brightness_pct: 17
@@ -28,24 +28,22 @@ automation:
           - conditions:
               - condition: state
                 entity_id: input_select.home_mode
-                state:
-                  - Day
-                  - Vacation
+                state: Day
             sequence:
-              - service: light.turn_on
+              - action: light.turn_on
                 entity_id: light.bathroom_main
                 data:
                   brightness_pct: 100
 
   - id: bathroom_light_turn_on_night_fallback
     alias: 'Bathroom Light: Turn on (night fallback)'
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id:
           - binary_sensor.bathroom_motion
           - binary_sensor.hallway_motion
         to: 'on'
-    condition:
+    conditions:
       - condition: state
         entity_id: input_boolean.light_control
         state: 'on'
@@ -61,8 +59,8 @@ automation:
       - condition: state
         entity_id: group.bathroom_path_lights
         state: unavailable
-    action:
-      - service: light.turn_on
+    actions:
+      - action: light.turn_on
         entity_id: light.bathroom_main
         data:
           brightness_pct: 7
@@ -98,57 +96,55 @@ automation:
 
   - id: bathroom_light_control_turn_on
     alias: 'Bathroom Light Control: Turn on'
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: group.bathroom_lights
         to: 'off'
-    condition:
+    conditions:
       - condition: state
         entity_id: input_boolean.bathroom_light_control
         state: 'off'
-    action:
-      - service: input_boolean.turn_on
+    actions:
+      - action: input_boolean.turn_on
         entity_id: input_boolean.bathroom_light_control
 
   - id: bathroom_light_control_turn_off
     alias: 'Bathroom Light Control: Turn off'
-    trigger:
-      - platform: event
+    triggers:
+      - trigger: event
         event_type: yandex_intent
         event_data:
           text: Не выключай свет в ванной
-    condition:
+    conditions:
       - condition: state
         entity_id: input_boolean.bathroom_light_control
         state: 'on'
-    action:
-      - service: input_boolean.turn_off
+    actions:
+      - action: input_boolean.turn_off
         entity_id: input_boolean.bathroom_light_control
 
   - id: bathroom_bathtub_light_turn_on
     alias: 'Bathroom Bathtub Light: Turn on'
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.bathroom_bathtub_occupancy
-        to: 'on'
-    condition:
+    triggers:
+      - trigger: occupancy.detected
+        target:
+          entity_id: binary_sensor.bathroom_bathtub_occupancy
+    conditions:
       - condition: state
         entity_id: input_boolean.light_control
         state: 'on'
 
       - condition: state
         entity_id: input_select.home_mode
-        state:
-          - Day
-          - Vacation
+        state: Day
 
       - condition: state
         entity_id:
           - binary_sensor.dim_light
           - light.bathroom_bathtub
         state: 'off'
-    action:
-      - service: light.turn_on
+    actions:
+      - action: light.turn_on
         entity_id: light.bathroom_bathtub
 
   - id: bathroom_light_turn_off_failsafe

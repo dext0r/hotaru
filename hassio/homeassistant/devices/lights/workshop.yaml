@@ -3,8 +3,8 @@ automation:
     alias: 'Workshop Main Light: State update'
     description: Включает правую ленту при включении левой, жене лень нажимать две кнопки
     mode: queued
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: light.workshop_main_1_1
         from:
           - 'on'
@@ -12,7 +12,7 @@ automation:
         to:
           - 'on'
           - 'off'
-    action:
+    actions:
       - delay:
           milliseconds: 500
 
@@ -25,7 +25,7 @@ automation:
             value_template: >
               {{ trigger.to_state.state == 'on' }}
         then:
-          - service: light.turn_on
+          - action: light.turn_on
             entity_id:
               - light.workshop_main_2_1
               - light.workshop_main_2_2
@@ -33,7 +33,7 @@ automation:
               transition: 2
               brightness_pct: 100
         else:
-          - service: light.turn_off
+          - action: light.turn_off
             entity_id:
               - light.workshop_main_2_1
               - light.workshop_main_2_2
@@ -41,17 +41,15 @@ automation:
   - id: workshop_main_light_turn_on
     alias: 'Workshop Main Light: Turn on'
     max_exceeded: silent
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.workshop_door
-        from: 'off'
-        to: 'on'
+    triggers:
+      - trigger: door.opened
+        target:
+          entity_id: binary_sensor.workshop_door
 
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.workshop_motion
-        from: 'off'
         to: 'on'
-    condition:
+    conditions:
       - condition: state
         entity_id: input_boolean.light_control
         state: 'on'
@@ -59,23 +57,22 @@ automation:
       - condition: state
         entity_id: light.workshop_main
         state: 'off'
+    actions:
 
       - condition: state
         entity_id: timer.workshop_lights_skip_on
         state: idle
-    action:
       - if:
-          - condition: or
-            conditions:
+          - or:
               - condition: state
                 entity_id: binary_sensor.dim_light
                 state: 'on'
 
               - condition: state
                 entity_id: input_select.home_mode
-                state: 'Night'
+                state: Night
         then:
-          - service: light.turn_on
+          - action: light.turn_on
             entity_id:
               - light.workshop_main_2_1
               - light.workshop_main_2_2
@@ -83,28 +80,22 @@ automation:
               brightness_pct: 1
               transition: 0
         else:
-          - service: light.turn_on
+          - action: light.turn_on
             entity_id: light.workshop_main
             data:
               brightness_pct: 100
 
   - id: workshop_main_light_turn_off
     alias: 'Workshop Main Light: Turn off'
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.workshop_occupancy
-        from: 'on'
-        to: 'off'
-        for:
-          minutes: 10
+    triggers:
+      - trigger: occupancy.cleared
+        target:
+          entity_id: binary_sensor.workshop_occupancy
+        options:
+          for:
+            minutes: 10
 
-      - platform: state
-        entity_id: binary_sensor.workshop_occupancy
-        from: 'on'
-        to: 'off'
-        for:
-          minutes: 15
-    condition:
+    conditions:
       - condition: state
         entity_id: input_boolean.light_control
         state: 'on'
@@ -138,19 +129,19 @@ automation:
       - condition: state
         entity_id: light.workshop_main
         state: 'on'
-    action:
+    actions:
       - if:
           - condition: numeric_state
             entity_id: light.workshop_main
             attribute: brightness
             below: 40
         then:
-          - service: light.turn_off
+          - action: light.turn_off
             entity_id: light.workshop_main
             data:
               transition: 0
         else:
-          - service: light.turn_off
+          - action: light.turn_off
             entity_id: light.workshop_main
             data:
               transition: 4

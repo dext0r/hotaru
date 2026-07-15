@@ -1,15 +1,15 @@
 automation:
   - id: bedroom_ac_display_turn_off
     alias: 'Bedroom AC Display: Turn off'
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: input_select.home_mode
         to: Night
 
-      - platform: state
+      - trigger: state
         entity_id: climate.bedroom_ac
         from: 'off'
-    condition:
+    conditions:
       - condition: state
         entity_id: input_select.home_mode
         state: Night
@@ -21,7 +21,7 @@ automation:
           - cool
           - heat
           - dry
-    action:
+    actions:
       - delay:
           seconds: 2
 
@@ -29,20 +29,20 @@ automation:
         entity_id: switch.bedroom_ac_display
         state: 'on'
 
-      - service: switch.turn_off
+      - action: switch.turn_off
         entity_id: switch.bedroom_ac_display
 
   - id: bedroom_ac_turn_off
     alias: 'Bedroom AC: Turn off'
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: binary_sensor.anyone_home
         from: 'on'
         to: 'off'
         for:
           minutes: 20
 
-      - platform: state
+      - trigger: state
         entity_id: climate.bedroom_ac
         to:
           - heat_cool
@@ -52,16 +52,16 @@ automation:
         for:
           hours: 24
 
-      - platform: state
+      - trigger: state
         entity_id: input_select.home_mode
         from: Night
         for:
           minutes: 5
 
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id: sensor.cb_branch_circuit_power
         above: 3600
-    condition:
+    conditions:
       - condition: state
         entity_id: climate.bedroom_ac
         state:
@@ -69,15 +69,15 @@ automation:
           - cool
           - heat
           - dry
-    action:
-      - service: climate.turn_off
+    actions:
+      - action: climate.turn_off
         entity_id: climate.bedroom_ac
 
   - id: bedroom_ac_display_update
     alias: 'Bedroom AC Display: Update'
-    trigger:
+    triggers:
       - id: 'on'
-        platform: state
+        trigger: state
         entity_id: climate.bedroom_ac
         from: 'off'
         to:
@@ -87,7 +87,7 @@ automation:
           - dry
 
       - id: 'off'
-        platform: state
+        trigger: state
         entity_id: climate.bedroom_ac
         from:
           - heat_cool
@@ -95,30 +95,33 @@ automation:
           - heat
           - dry
         to: 'off'
-    action:
+    actions:
       - if:
           - condition: trigger
             id: 'on'
         then:
-          - service: input_boolean.turn_on
+          - action: input_boolean.turn_on
             entity_id: input_boolean.bedroom_ac_display
         else:
-          - service: input_boolean.turn_off
+          - action: input_boolean.turn_off
             entity_id: input_boolean.bedroom_ac_display
 
   - id: bedroom_ac_turn_off_protect
     alias: 'Bedroom AC: Turn off (protect)'
-    trigger:
-      - platform: time_pattern
+    triggers:
+      - trigger: time_pattern
         seconds: /30
 
-      - platform: state
+      - trigger: state
         entity_id:
           - climate.bedroom_ac
           - input_select.washing_machine_status
-    condition:
-      - condition: or
-        conditions:
+    conditions:
+      - or:
+          - condition: numeric_state
+            entity_id: sensor.outside_temperature
+            below: -15
+
           - and:
               - condition: state
                 entity_id: input_select.washing_machine_status
@@ -132,10 +135,6 @@ automation:
                   - heat
                   - dry
 
-          - condition: numeric_state
-            entity_id: sensor.outside_temperature
-            below: -15
-
       - condition: state
         entity_id: climate.bedroom_ac
         state:
@@ -143,8 +142,8 @@ automation:
           - cool
           - heat
           - dry
-    action:
-      - service: climate.turn_off
+    actions:
+      - action: climate.turn_off
         entity_id: climate.bedroom_ac
 
 template:

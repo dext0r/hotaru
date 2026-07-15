@@ -1,60 +1,54 @@
 automation:
   - id: closet_light_turn_on
     alias: 'Closet Light: Turn on'
-    mode: queued  # иногда подтормаживают репорты
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.closet_door
-        from: 'off'
-        to: 'on'
+    triggers:
+      - trigger: door.opened
+        target:
+          entity_id: binary_sensor.closet_door
 
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.closet_motion
-        from: 'off'
         to: 'on'
-    condition:
+    conditions:
       - condition: state
         entity_id:
           - input_boolean.light_control
           - input_boolean.closet_light_control
         state: 'on'
 
-      - condition: state
-        entity_id: light.closet
-        state: 'off'
+      - condition: light.is_off
+        target:
+          entity_id: light.closet
 
       - condition: state
         entity_id: input_select.home_mode
-        state:
-          - Day
-          - Vacation
-    action:
-      - service: light.turn_on
+        state: Day
+    actions:
+      - action: light.turn_on
         entity_id: light.closet
 
   - id: closet_light_turn_off
     alias: 'Closet Light: Turn off'
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.closet_door
-        from: 'on'
-        to: 'off'
+    triggers:
+      - trigger: door.closed
+        target:
+          entity_id: binary_sensor.closet_door
 
-      - platform: state
-        entity_id: binary_sensor.closet_motion
-        from: 'on'
-        to: 'off'
-        for:
-          minutes: 5
-    condition:
+      - trigger: motion.cleared
+        target:
+          entity_id: binary_sensor.closet_motion
+        options:
+          for:
+            minutes: 5
+    conditions:
       - condition: state
         entity_id:
           - input_boolean.light_control
           - input_boolean.closet_light_control
           - light.closet
         state: 'on'
-    action:
-      - service: light.turn_off
+    actions:
+      - action: light.turn_off
         entity_id: light.closet
 
   - id: closet_light_control_turn_on

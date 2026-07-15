@@ -5,7 +5,7 @@ automation:
       - platform: state
         entity_id: binary_sensor.front_door
         to: 'on'
-    condition:
+    conditions:
       - condition: state
         entity_id: input_boolean.light_control
         state: 'on'
@@ -27,7 +27,7 @@ automation:
               rgbw_color: [255, 0, 0, 0]
               brightness_pct: 45
         else:
-          - service: light.turn_on
+          - action: light.turn_on
             entity_id: light.porch
 
   - id: porch_light_turn_on

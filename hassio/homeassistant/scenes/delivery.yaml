@@ -152,29 +152,26 @@ automation:
 
   - id: scene_delivery_turn_off
     alias: 'Scene Delivery: Turn off'
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.front_door
-        from: 'on'
-        to: 'off'
-    condition:
+    triggers:
+      - platform: door.closed
+        target:
+          entity_id: binary_sensor.front_door
+    conditions:
       - condition: state
         entity_id: input_boolean.scene_delivery
         state: 'on'
 
       - condition: state
         entity_id: input_select.home_mode
-        state:
-          - Day
-          - Vacation
-    action:
-      - service: input_boolean.turn_off
+        state: Day
+    actions:
+      - action: input_boolean.turn_off
         entity_id: input_boolean.scene_delivery
 
       - delay:
           seconds: 8
 
-      - service: script.yandex_station_tts
+      - action: script.yandex_station_tts
         data:
           target: all
           type: attention
@@ -184,12 +181,12 @@ automation:
 
   - id: scene_delivery_turn_off_fallback
     alias: 'Scene Delivery: Turn off (fallback)'
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: input_boolean.scene_delivery
         to: 'on'
         for:
           hours: 6
-    action:
-      - service: input_boolean.turn_off
+    actions:
+      - action: input_boolean.turn_off
         entity_id: input_boolean.scene_delivery

@@ -14,9 +14,9 @@ automation:
         entity_id: binary_sensor.evening_time
         from: 'off'
         to: 'on'
+    conditions:
         for:
           minutes: 5
-    condition:
       - condition: state
         entity_id: binary_sensor.evening_time
         state: 'on'
@@ -40,12 +40,10 @@ automation:
         state: 100
 
       - condition: template
-        value_template: >
-          {{ (now() - state_attr('automation.workshop_shades_close',
-                                  'last_triggered')|default(now() - timedelta(days=1), true)).total_seconds() > 8 * 60 * 60 }}
-
-    action:
-      - service: cover.set_cover_position
+        value_template: >-
+          {{ this.attributes.last_triggered is none or this.attributes.last_triggered < today_at() }}
+    actions:
+      - action: cover.set_cover_position
         entity_id: cover.workshop
         data:
           position: 20

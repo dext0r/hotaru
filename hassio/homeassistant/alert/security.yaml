@@ -30,6 +30,7 @@ automation:
           - binary_sensor.anyone_home
           - binary_sensor.anyone_near_home
         state: 'off'
+    actions:
 
       # дикая кошка постоянно вызывает сработки некоторых датчиков
       - condition: state
@@ -40,7 +41,6 @@ automation:
         value_template: >
           {{ (now() - state_attr('automation.motion_alarm_no_one_home',
                                   'last_triggered')|default(now() - timedelta(days=1), true)).total_seconds() > 600 }}
-    action:
       - action: notify.send_message
         data:
           entity_id: notify.dextor
@@ -70,8 +70,8 @@ automation:
       - condition: state
         entity_id: lock.front_door
         state: unlocked
-    action:
-      - service: script.yandex_station_tts
+    actions:
+      - action: script.yandex_station_tts
         data:
           target: all
           type: attention
@@ -93,12 +93,12 @@ automation:
         for:
           hours: 12
 
-      - platform: state
+      - trigger: state
         entity_id: lock.porch_door
         to: 'unlocked'
         for:
           hours: 12
-    action:
+    actions:
       - action: notify.send_message
         data:
           entity_id: notify.dextor

@@ -1,11 +1,11 @@
 automation:
   - id: bedroom_light_turn_on
     alias: 'Bedroom Light: Turn on'
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: binary_sensor.bedroom_motion
         to: 'on'
-    condition:
+    conditions:
       - condition: state
         entity_id: input_boolean.light_control
         state: 'on'
@@ -35,8 +35,8 @@ automation:
           - binary_sensor.bedroom_bed_occupancy
           - group.bedroom_lights
         state: 'off'
-    action:
-      - service: light.turn_on
+    actions:
+      - action: light.turn_on
         entity_id:
           - light.bedroom_bed
           - light.bedroom_moon
@@ -44,7 +44,7 @@ automation:
           rgb_color: [10, 214, 255]
           brightness_pct: 100
 
-      - service: light.turn_on
+      - action: light.turn_on
         entity_id:
           - light.bedroom_cat
           - light.bedroom_string
@@ -54,11 +54,11 @@ automation:
 
   - id: bedroom_bed_light_turn_on_night
     alias: 'Bedroom Bed Light: Turn on (night)'
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: binary_sensor.bedroom_motion
         to: 'on'
-    condition:
+    conditions:
       - condition: state
         entity_id: input_boolean.light_control
         state: 'on'
@@ -70,8 +70,8 @@ automation:
       - condition: state
         entity_id: light.bedroom_bed
         state: 'off'
-    action:
-      - service: light.turn_on
+    actions:
+      - action: light.turn_on
         entity_id: light.bedroom_bed
         data:
           color_name: red
@@ -94,19 +94,19 @@ automation:
 
       - not:
           - and:
-            - condition: state
-              entity_id: input_select.ironing_board_room
-              state: Bedroom
+              - condition: state
+                entity_id: input_select.ironing_board_room
+                state: Bedroom
 
-            - condition: state
-              entity_id: switch.ironing_board_socket
-              state: 'on'
+              - condition: state
+                entity_id: switch.ironing_board_socket
+                state: 'on'
 
       - condition: state
         entity_id: input_boolean.scene_sleepy_mood
         state: 'off'
-    action:
-      - service: light.turn_off
+    actions:
+      - action: light.turn_off
         entity_id: light.bedroom_main
 
   - id: bedroom_bed_light_turn_off
@@ -147,6 +147,7 @@ automation:
         entity_id: input_boolean.scene_sleepy_mood
         state: 'off'
     action:
+      - action: light.turn_off
       - if:
           - condition: trigger
             id: motion
@@ -159,7 +160,6 @@ automation:
         then:
           stop:
 
-      - service: light.turn_off
         entity_id: light.bedroom_bed
 
   - id: bedroom_aux_light_turn_off
@@ -192,8 +192,8 @@ automation:
       - condition: state
         entity_id: input_boolean.scene_sleepy_mood
         state: 'off'
-    action:
-      - service: light.turn_off
+    actions:
+      - action: light.turn_off
         entity_id:
           - light.bedroom_moon
           - light.bedroom_bed
@@ -202,24 +202,24 @@ automation:
 
   - id: bedroom_moon_light_charger_turn_on
     alias: 'Bedroom Moon Light Charger: Turn on'
-    trigger:
-      - platform: time
+    triggers:
+      - trigger: time
         at: '18:00'
-    action:
-      - service: switch.turn_on
+    actions:
+      - action: switch.turn_on
         entity_id: switch.bedroom_moon_light_charger
 
   - id: bedroom_moon_light_charger_turn_off
     alias: 'Bedroom Moon Light Charger: Turn off'
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: switch.bedroom_moon_light_charger
         to: 'on'
         for:
           hours: 1
           minutes: 30
-    action:
-      - service: switch.turn_off
+    actions:
+      - action: switch.turn_off
         entity_id: switch.bedroom_moon_light_charger
 
   - id: bedroom_light_turn_off_failsafe

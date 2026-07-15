@@ -2,15 +2,15 @@ automation:
   - id: scooter_charging
     alias: 'Scooter: Charging'
     max_exceeded: silent
-    trigger:
-      - platform: numeric_state
+    triggers:
+      - trigger: numeric_state
         entity_id: sensor.scooter_charger_socket_power
         above: 30
         for:
           seconds: 15
-    action:
+    actions:
       - wait_for_trigger:
-          - platform: numeric_state
+          - trigger: numeric_state
             entity_id: sensor.scooter_charger_socket_power
             below: 1
             for:
@@ -19,21 +19,21 @@ automation:
           hours: 8
         continue_on_timeout: true
 
-      - service: switch.turn_off
+      - action: switch.turn_off
         entity_id: switch.scooter_charger_socket
 
   - id: scooter_charging_socket_turn_off
     alias: 'Scooter Charging Socket: Turn off'
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: switch.scooter_charger_socket
         to: 'on'
         for:
           hours: 10
 
-      - platform: state
+      - trigger: state
         entity_id: binary_sensor.porch_smoke
         to: 'on'
-    action:
-      - service: switch.turn_off
+    actions:
+      - action: switch.turn_off
         entity_id: switch.scooter_charger_socket

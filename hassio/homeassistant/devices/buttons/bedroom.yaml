@@ -114,25 +114,25 @@ automation:
 
   - id: bedroom_light_switch_single_right
     alias: 'Bedroom Light Switch: Single right'
-    trigger:
+    triggers:
       - trigger: device
-        domain: mqtt
-        device_id: c109a5cffc3ce01835ed7f55ce3b8cbc
-        type: action
-        subtype: single_right
-    action:
+        domain: zha
+        device_id: c33420ae0c351d525f195fc6dd39d030
+        type: button_single
+        subtype: button_2
+    actions:
       - if:
           - condition: state
             entity_id: input_select.home_mode
             state: Night
         then:
-          - service: light.turn_on
+          - action: light.turn_on
             entity_id: light.bedroom_bed
             data:
               color_name: red
               brightness_pct: 100
 
-          - service: light.turn_on
+          - action: light.turn_on
             entity_id: light.bedroom_moon
             data:
               rgb_color: [255, 10, 10]
@@ -143,10 +143,10 @@ automation:
                 entity_id: light.bedroom_bed
                 state: 'on'
             then:
-              - service: light.turn_off
+              - action: light.turn_off
                 entity_id: light.bedroom_bed
             else:
-              - service: light.turn_on
+              - action: light.turn_on
                 entity_id: light.bedroom_bed
                 data:
                   rgb_color: [10, 214, 255]
@@ -154,22 +154,22 @@ automation:
 
   - id: bedroom_light_switch_double_right
     alias: 'Bedroom Light Switch: Double right'
-    trigger:
+    triggers:
       - trigger: device
-        domain: mqtt
-        device_id: c109a5cffc3ce01835ed7f55ce3b8cbc
-        type: action
-        subtype: double_right
-    action:
+        domain: zha
+        device_id: c33420ae0c351d525f195fc6dd39d030
+        type: button_double
+        subtype: button_2
+    actions:
       - if:
           - condition: state
             entity_id: light.bedroom_moon
             state: 'on'
         then:
-          - service: light.turn_off
+          - action: light.turn_off
             entity_id: light.bedroom_moon
         else:
-          - service: light.turn_on
+          - action: light.turn_on
             entity_id: light.bedroom_moon
             data:
               rgb_color: [10, 214, 255]

@@ -110,27 +110,25 @@ automation:
 
   - id: intercom_door_opened
     alias: 'Intercom: Door opened'
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: sensor.intercom_status
         to: Door opened
-    condition:
+    conditions:
       - condition: state
         entity_id: binary_sensor.anyone_home
         state: 'on'
 
       - condition: state
         entity_id: input_select.home_mode
-        state:
-          - Day
-          - Vacation
+        state: Day
 
       - condition: template
         value_template: >
-          {{ (now() - state_attr('automation.intercom_door_opened',
-                                 'last_triggered')|default(now() - timedelta(days=1), true)).total_seconds() > 60 }}
-    action:
-      - service: media_player.media_pause
+          {{ this.attributes.last_triggered is none or
+             (now() - this.attributes.last_triggered) > timedelta(seconds=60) }}
+    actions:
+      - action: media_player.media_pause
         entity_id: group.yandex_stations
 
       - if:
@@ -138,10 +136,10 @@ automation:
             entity_id: media_player.atv
             state: playing
         then:
-          - service: media_player.media_pause
+          - action: media_player.media_pause
             entity_id: media_player.atv
 
-      - service: scene.create
+      - action: scene.create
         data:
           scene_id: intercom_door_opened
           snapshot_entities:
@@ -161,7 +159,7 @@ automation:
             - light.living_room_tv
             - light.workshop_main
           sequence:
-            - service: script.turn_on
+            - action: script.turn_on
               entity_id: script.flash_light
               data:
                 variables:
@@ -177,7 +175,7 @@ automation:
           seconds: 2
           milliseconds: 200
 
-      - service: scene.turn_on
+      - action: scene.turn_on
         entity_id: scene.intercom_door_opened
         data:
           transition: 0.6
@@ -188,7 +186,7 @@ automation:
                 entity_id: input_boolean.scene_wait_guests
                 state: 'on'
             sequence:
-              - service: script.yandex_station_tts
+              - action: script.yandex_station_tts
                 data:
                   target: all
                   type: attention
@@ -205,7 +203,7 @@ automation:
                 entity_id: input_boolean.scene_delivery
                 state: 'on'
             sequence:
-              - service: script.yandex_station_tts
+              - action: script.yandex_station_tts
                 data:
                   target: all
                   type: attention
@@ -221,9 +219,11 @@ automation:
           - conditions:
               - condition: template
                 value_template: >
-                  {{ state_attr('input_datetime.scene_delivery_scheduled_from', 'timestamp') <= as_timestamp(now()) <= state_attr('input_datetime.scene_delivery_scheduled_to', 'timestamp') }}
+                  {{ state_attr('input_datetime.scene_delivery_scheduled_from', 'timestamp') <=
+                      as_timestamp(now()) <=
+                     state_attr('input_datetime.scene_delivery_scheduled_to', 'timestamp') }}
             sequence:
-              - service: script.yandex_station_tts
+              - action: script.yandex_station_tts
                 data:
                   target: all
                   type: attention
@@ -238,7 +238,7 @@ automation:
                 entity_id: person.dextor
                 state: Near Home
             sequence:
-              - service: script.yandex_station_tts
+              - action: script.yandex_station_tts
                 data:
                   target: all
                   type: attention
@@ -255,13 +255,13 @@ automation:
                 entity_id: person.layma
                 state: Near Home
             sequence:
-              - service: script.yandex_station_tts
+              - action: script.yandex_station_tts
                 data:
                   target: all
                   type: attention
                   text: Жёнушка на пороге, готовься встречать
         default:
-          - service: script.yandex_station_tts
+          - action: script.yandex_station_tts
             data:
               target: all
               type: attention

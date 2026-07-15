@@ -7,16 +7,16 @@ input_boolean:
 automation:
   - id: scene_wait_guests_turn_on
     alias: 'Scene Wait Guests: Turn on'
-    trigger:
+    triggers:
       - platform: event
         event_type: yandex_intent
         event_data:
           text: Ждём гостей
-    action:
-      - service: input_boolean.turn_on
+    actions:
+      - action: input_boolean.turn_on
         entity_id: input_boolean.scene_wait_guests
 
-      - service: script.yandex_station_tts
+      - action: script.yandex_station_tts
         data:
           target: >
             {{ trigger.event.data.get('entity_id', 'last') }}
@@ -30,12 +30,11 @@ automation:
 
   - id: scene_wait_guests_turn_on_light
     alias: 'Scene Wait Guests: Turn on lights'
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.front_door
-        from: 'off'
-        to: 'on'
-    condition:
+    triggers:
+      - trigger: door.opened
+        target:
+          entity_id: binary_sensor.front_door
+    conditions:
       - condition: state
         entity_id: input_boolean.scene_wait_guests
         state: 'on'
@@ -46,30 +45,29 @@ automation:
           - Day
           - Vacation
 
-      - condition: state
-        entity_id: light.entrance
-        state: 'off'
-    action:
-      - service: light.turn_on
+      - condition: light.is_off
+        target:
+          entity_id: light.entrance
+    actions:
+      - action: light.turn_on
         entity_id: light.entrance
 
   - id: scene_wait_guests_turn_off
     alias: 'Scene Wait Guests: Turn off'
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.front_door
-        from: 'off'
-        to: 'on'
+    triggers:
+      - trigger: door.opened
+        target:
+          entity_id: binary_sensor.front_door
 
-      - platform: state
+      - trigger: state
         entity_id: input_boolean.scene_wait_guests
         to: 'on'
         for:
           hours: 1
-    condition:
+    conditions:
       - condition: state
         entity_id: input_boolean.scene_wait_guests
         state: 'on'
-    action:
-      - service: input_boolean.turn_off
+    actions:
+      - action: input_boolean.turn_off
         entity_id: input_boolean.scene_wait_guests

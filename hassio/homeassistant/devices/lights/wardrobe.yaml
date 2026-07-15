@@ -11,7 +11,10 @@ automation:
         to: 'on'
     conditions:
       - condition: state
-        entity_id: input_boolean.light_control
+        entity_id:
+          - input_boolean.light_control
+          - input_boolean.wardrobe_light_control
+          - binary_sensor.anyone_home
         state: 'on'
 
       - condition: light.is_off

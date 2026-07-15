@@ -14,6 +14,7 @@ automation:
         entity_id:
           - input_boolean.light_control
           - input_boolean.closet_light_control
+          - binary_sensor.anyone_home
         state: 'on'
 
       - condition: light.is_off

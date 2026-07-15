@@ -51,7 +51,10 @@ automation:
         to: 'on'
     conditions:
       - condition: state
-        entity_id: input_boolean.light_control
+        entity_id:
+          - input_boolean.light_control
+          - input_boolean.workshop_light_control
+          - binary_sensor.anyone_home
         state: 'on'
 
       - condition: state
@@ -97,7 +100,10 @@ automation:
 
     conditions:
       - condition: state
-        entity_id: input_boolean.light_control
+        entity_id:
+          - input_boolean.light_control
+          - input_boolean.workshop_light_control
+          - light.workshop_main
         state: 'on'
 
       - condition: state
@@ -123,7 +129,9 @@ automation:
         to: 'off'
     condition:
       - condition: state
-        entity_id: input_boolean.light_control
+        entity_id:
+          - input_boolean.light_control
+          - input_boolean.workshop_light_control
         state: 'on'
 
       - condition: state

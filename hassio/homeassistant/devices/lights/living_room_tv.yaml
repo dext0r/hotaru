@@ -7,14 +7,14 @@ automation:
         to: 'on'
     condition:
       - condition: state
-        entity_id: input_select.home_mode
-        state:
-          - Day
-          - Vacation
+        entity_id:
+          - input_boolean.light_control
+          - binary_sensor.anyone_home
+        state: 'on'
 
       - condition: state
-        entity_id: input_boolean.light_control
-        state: 'on'
+        entity_id: input_select.home_mode
+        state: Day
 
       - condition: state
         entity_id: light.living_room_tv
@@ -34,15 +34,9 @@ automation:
         to: 'on'
     conditions:
       - condition: state
-        entity_id: input_select.home_mode
-        state:
-          - Day
-          - Vacation
-
-      - condition: state
         entity_id:
-          - binary_sensor.anyone_home
           - input_boolean.light_control
+          - binary_sensor.anyone_home
         state: 'on'
 
       - condition: state

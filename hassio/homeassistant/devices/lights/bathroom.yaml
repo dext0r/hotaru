@@ -7,7 +7,9 @@ automation:
         to: 'on'
     conditions:
       - condition: state
-        entity_id: input_boolean.light_control
+        entity_id:
+          - input_boolean.light_control
+          - binary_sensor.anyone_home
         state: 'on'
 
       - condition: state
@@ -45,7 +47,9 @@ automation:
         to: 'on'
     conditions:
       - condition: state
-        entity_id: input_boolean.light_control
+        entity_id:
+          - input_boolean.light_control
+          - binary_sensor.anyone_home
         state: 'on'
 
       - condition: state
@@ -131,7 +135,9 @@ automation:
           entity_id: binary_sensor.bathroom_bathtub_occupancy
     conditions:
       - condition: state
-        entity_id: input_boolean.light_control
+        entity_id:
+          - input_boolean.light_control
+          - binary_sensor.anyone_home
         state: 'on'
 
       - condition: state

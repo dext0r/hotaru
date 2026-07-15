@@ -110,16 +110,3 @@ timer:
     duration:
       minutes: 7
 
-zone:
-  - name: Near Home
-    latitude: !secret geo_home_latitude
-    longitude: !secret geo_home_longitude
-    radius: 100
-    icon: mdi:home-import-outline
-
-  - name: Home
-    latitude: !secret geo_home_latitude
-    longitude: !secret geo_home_longitude
-    radius: 27
-    icon: mdi:home
-    passive: true

@@ -130,7 +130,7 @@ automation:
       - or:
           - condition: numeric_state
             entity_id: sensor.illuminance_south_side
-            below: 300
+            below: 4000
 
           - condition: state
             entity_id: cover.living_room
@@ -253,7 +253,7 @@ automation:
       - or:
           - condition: numeric_state
             entity_id: sensor.illuminance_north_side
-            below: 150
+            below: 400
 
           - condition: state
             entity_id: cover.kitchen

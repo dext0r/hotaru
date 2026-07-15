@@ -1,12 +1,17 @@
 automation:
   - id: bathroom_path_light_turn_on
     alias: 'Bathroom Path Light: Turn on'
+    max_exceeded: silent
     triggers:
       - trigger: state
         entity_id:
           - binary_sensor.bathroom_motion
           - binary_sensor.hallway_motion
         to: 'on'
+
+      - platform: state
+        entity_id: group.bathroom_lights
+        to: 'off'
     conditions:
       - condition: state
         entity_id: input_boolean.light_control
@@ -33,20 +38,22 @@ automation:
         entity_id: input_select.home_mode
         to: Night
 
-      - platform: state
-        entity_id: binary_sensor.bathroom_any_occupancy
-        from: 'on'
-        to: 'off'
-        for:
-          minutes: 10
+      - trigger: occupancy.cleared
+        target:
+          area_id: bathroom
+        options:
+          for:
+            minutes: 3
+          behavior: all
 
-      - platform: state
-        entity_id:
-          - binary_sensor.bathroom_motion
-          - binary_sensor.hallway_motion
-        to: 'off'
-        for:
-          minutes: 30
+      - trigger: motion.cleared
+        target:
+          entity_id:
+            - binary_sensor.bathroom_motion
+            - binary_sensor.hallway_motion
+        options:
+          for:
+            minutes: 5
     conditions:
       - condition: state
         entity_id: input_boolean.light_control
@@ -100,13 +107,12 @@ automation:
           - binary_sensor.entrance_motion
         to: 'on'
 
-      - platform: state
-        entity_id:
-          - light.entrance
-          - light.hallway
-        from: 'on'
-        to: 'off'
-    condition:
+      - trigger: light.turned_off
+        target:
+          entity_id:
+            - light.entrance
+            - light.hallway
+    conditions:
       - condition: state
         entity_id:
           - input_boolean.light_control
@@ -192,22 +198,21 @@ automation:
   - id: hallway_path_light_turn_off
     alias: 'Hallway Path Light: Turn off'
     trigger:
-      - id: no_motion
-        platform: state
-        entity_id:
-          - binary_sensor.hallway_motion
-          - binary_sensor.entrance_motion
-        from: 'on'
-        to: 'off'
-        for:
-          seconds: 30
+      - trigger: motion.cleared
+        target:
+          entity_id:
+            - binary_sensor.hallway_motion
+            - binary_sensor.entrance_motion
+        options:
+          for:
+            seconds: 30
+          behavior: all
 
-      - platform: state
-        entity_id:
-          - light.entrance
-          - light.hallway
-        from: 'off'
-        to: 'on'
+      - trigger: light.turned_on
+        target:
+          entity_id:
+            - light.entrance
+            - light.hallway
 
       - platform: state
         entity_id: input_select.home_mode
@@ -216,17 +221,6 @@ automation:
       - condition: state
         entity_id: input_boolean.scene_sleepy_mood
         state: 'off'
-
-      - or:
-          - not:
-              - condition: trigger
-                id: no_motion
-
-          - condition: state
-            entity_id:
-              - binary_sensor.hallway_motion
-              - binary_sensor.entrance_motion
-            state: 'off'
 
       - condition: state
         entity_id:
@@ -310,17 +304,17 @@ automation:
 
   - id: kitchen_path_light_turn_off
     alias: 'Kitchen Path Light: Turn off'
-    trigger:
-      - id: no_motion
-        platform: state
-        entity_id:
-          - binary_sensor.hallway_motion
-          - binary_sensor.entrance_motion
-          - binary_sensor.kitchen_occupancy
-        from: 'on'
-        to: 'off'
-        for:
-          minutes: 2
+    triggers:
+      - trigger: motion.cleared
+        target:
+          entity_id:
+            - binary_sensor.hallway_motion
+            - binary_sensor.entrance_motion
+            - binary_sensor.kitchen_motion
+        options:
+          for:
+            minutes: 2
+          behavior: all
 
       - platform: state
         entity_id: group.kitchen_lights
@@ -334,18 +328,6 @@ automation:
       - condition: state
         entity_id: input_boolean.scene_sleepy_mood
         state: 'off'
-
-      - or:
-          - not:
-              - condition: trigger
-                id: no_motion
-
-          - condition: state
-            entity_id:
-              - binary_sensor.hallway_motion
-              - binary_sensor.entrance_motion
-              - binary_sensor.kitchen_occupancy
-            state: 'off'
 
       - condition: state
         entity_id:

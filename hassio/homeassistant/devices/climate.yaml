@@ -22,6 +22,7 @@ automation:
         entity_id:
           - sensor.bathroom_temperature
           - sensor.bedroom_temperature
+          - sensor.closet_temperature
           - sensor.kitchen_temperature
           - sensor.living_room_temperature
           - sensor.wardrobe_temperature
@@ -32,6 +33,7 @@ automation:
         entity_id:
           - sensor.bathroom_temperature
           - sensor.bedroom_temperature
+          - sensor.closet_temperature
           - sensor.kitchen_temperature
           - sensor.living_room_temperature
           - sensor.wardrobe_temperature
@@ -41,7 +43,8 @@ automation:
       - action: notify.send_message
         data:
           entity_id: notify.dextor
-          message: 🤨 Подозрительная температура в доме
+          message: >-
+            🤨 Подозрительная температура {{ trigger.to_state.entity_id}}: {{ trigger.to_state.state | int }} °C
 
   - id: living_room_hot
     alias: 'Living Room: Hot'

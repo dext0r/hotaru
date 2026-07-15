@@ -14,6 +14,70 @@ automation:
       - action: button.press
         entity_id: button.nelma5_restart
 
+  - id: power_budget_exceeded_cb_branch_circuit
+    alias: 'Power Budget Exceeded: CB Branch Circuit'
+    mode: single
+    max_exceeded: silent
+    triggers:
+      - trigger: state
+        entity_id: sensor.cb_branch_circuit_power
+    conditions:
+      - condition: template
+        value_template: >
+          {{ trigger.to_state.state | int(0) >= 3700 }}
+
+      - condition: template
+        value_template: >
+          {{ this.attributes.last_triggered is none
+             or (now() - this.attributes.last_triggered) > timedelta(seconds=30) }}
+    actions:
+      - action: notify.send_message
+        data:
+          entity_id: notify.dextor
+          message: >
+            ⚡️ Превышена мощность по {{ trigger.to_state.entity_id }}: <b>{{ trigger.to_state.state | int(0) }}</b> W
+
+      - action: switch.turn_off
+        entity_id:
+          - switch.water_heater_socket
+          - switch.dryer_socket
+          - switch.bedroom_intake_fan_plug
+          - switch.workshop_intake_fan_relay
+
+      - action: switch.turn_off
+        entity_id:
+          - climate.bedroom_ac
+          - climate.workshop_ac
+
+  - id: power_budget_exceeded_sockets_branch_circuit
+    alias: 'Power Budget Exceeded: Sockets Branch Circuit'
+    mode: single
+    max_exceeded: silent
+    triggers:
+      - trigger: state
+        entity_id: sensor.sockets_branch_circuit_power
+    conditions:
+      - condition: template
+        value_template: >
+          {{ trigger.to_state.state | int(0) >= 3700 }}
+
+      - condition: template
+        value_template: >
+          {{ this.attributes.last_triggered is none or
+             (now() - this.attributes.last_triggered) > timedelta(seconds=30) }}
+    actions:
+      - action: notify.send_message
+        data:
+          entity_id: notify.dextor
+          message: >
+            ⚡️ Превышена мощность по {{ trigger.to_state.entity_id }}: <b>{{ trigger.to_state.state | int(0) }}</b> Вт.
+
+      - action: switch.turn_off
+        entity_id:
+          - switch.living_room_heater_socket
+          - switch.living_room_intake_fan_plug
+          - switch.ironing_board_socket
+
 template:
   - trigger:
       - platform: time_pattern

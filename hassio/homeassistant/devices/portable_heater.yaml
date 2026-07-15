@@ -28,10 +28,6 @@ automation:
       - platform: state
         entity_id: switch.ironing_board_socket
         to: 'on'
-
-      - platform: numeric_state
-        entity_id: sensor.sockets_branch_circuit_power
-        above: 3600
     condition:
       - condition: state
         entity_id: switch.living_room_heater

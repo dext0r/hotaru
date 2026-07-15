@@ -150,7 +150,6 @@ recorder:
   exclude:
     entities:
       - automation.yandex_station_busy
-      - binary_sensor.motion_anywhere
       - number.kettle_target_temperature
       - sensor.alert_greeting
       - sensor.chores

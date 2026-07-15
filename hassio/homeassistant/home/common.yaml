@@ -183,26 +183,6 @@ template:
 
   - trigger:
       - platform: time_pattern
-        seconds: /5
-    binary_sensor:
-      - name: Motion Anywhere
-        state: >
-          {% set ns = namespace(break = false) %}
-          {%- for state in states.binary_sensor if ns.break == false and
-                                                  state.state == 'on' and
-                                                  state.attributes.get('device_class') == 'motion' and
-                                                  state.entity_id not in (
-                                                    'binary_sensor.motion_anywhere',
-                                                    'binary_sensor.wardrobe_motion',
-                                                    'binary_sensor.porch_motion'
-                                                  ) -%}
-            {%- set ns.break = true -%}
-            true
-          {%- endfor -%}
-        device_class: motion
-
-  - trigger:
-      - platform: time_pattern
         seconds: /30
     binary_sensor:
       - name: Evening time (north)

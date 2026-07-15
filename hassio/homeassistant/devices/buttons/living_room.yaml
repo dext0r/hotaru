@@ -141,18 +141,19 @@ automation:
         type: action
         subtype: double_right
     action:
-      - if:
-          - condition: state
-            entity_id: light.living_room_tv
-            state: 'off'
-        then:
-          - service: light.turn_on
-            entity_id: light.living_room_tv
-            data:
-              brightness_pct: 100
-        else:
-          - service: light.turn_off
-            entity_id: light.living_room_tv
+      - action: script.living_room_cozy_light
+
+  - id: living_room_light_switch_double_left
+    alias: 'Living Room Light Switch: Double left'
+    triggers:
+      - trigger: device
+        domain: mqtt
+        device_id: e0a2386c0fbe8ec9b50b6bc773b4d635
+        type: action
+        subtype: double_left
+    actions:
+      - action: light.turn_off
+        entity_id: group.living_room_lights
 
   - id: living_room_heater_button_turn_on
     alias: 'Living Room Heater Button: Turn on'

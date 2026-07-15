@@ -54,6 +54,39 @@ automation:
           color_temp_kelvin: 2700
           brightness_pct: 100
 
+  - id: bedroom_light_turn_off_no_occupancy
+    alias: 'Bedroom Light: Turn off (no occupancy)'
+    mode: restart
+    triggers:
+      - trigger: state
+        entity_id: group.bedroom_lights
+        from: 'off'
+        to: 'on'
+    conditions:
+      - condition: state
+        entity_id: input_boolean.light_control
+        state: 'on'
+
+      - condition: state
+        entity_id: input_boolean.scene_sleepy_mood
+        state: 'off'
+    actions:
+      - wait_for_trigger:
+          - trigger: occupancy.detected
+            target:
+              area_id: bedroom
+        timeout:
+          minutes: 1
+
+      - condition: state
+        entity_id:
+          - binary_sensor.bedroom_occupancy
+          - binary_sensor.bedroom_bed_occupancy
+        state: 'off'
+
+      - action: light.turn_off
+        entity_id: group.bedroom_lights
+
   - id: bedroom_bed_light_turn_on_night
     alias: 'Bedroom Bed Light: Turn on (night)'
     triggers:
@@ -81,15 +114,17 @@ automation:
           color_name: red
           brightness_pct: 30
 
-  - id: bedroom_main_light_turn_off
-    alias: 'Bedroom Main Light: Turn off'
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.bedroom_any_occupancy
-        to: 'off'
-        for:
-          minutes: 3
-    condition:
+  - id: bedroom_main_light_turn_off_occupancy_cleared
+    alias: 'Bedroom Main Light: Turn off (occupancy cleared)'
+    triggers:
+      - trigger: occupancy.cleared
+        target:
+          area_id: bedroom
+        options:
+          for:
+            minutes: 3
+          behavior: all
+    conditions:
       - condition: state
         entity_id:
           - input_boolean.light_control
@@ -115,31 +150,17 @@ automation:
 
   - id: bedroom_bed_light_turn_off
     alias: 'Bedroom Bed Light: Turn off'
-    trigger:
-      - platform: state
-        entity_id: light.bedroom_bed
-        to: 'on'
-        for:
-          hours: 1
-
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: input_select.home_mode
         from: Night
 
-      - id: motion
-        platform: state
-        entity_id: binary_sensor.bedroom_motion
-        from: 'on'
-        to: 'off'
-        for:
-          minutes: 1
-
-      - platform: state
-        entity_id: binary_sensor.bedroom_bed_full_occupancy
-        from: 'off'
-        to: 'on'
-        for:
-          seconds: 30
+      - trigger: occupancy.detected
+        target:
+          entity_id: binary_sensor.bedroom_bed_occupancy
+        options:
+          for:
+            seconds: 10
     condition:
       - condition: state
         entity_id:
@@ -152,46 +173,34 @@ automation:
         state: 'off'
     action:
       - action: light.turn_off
-      - if:
-          - condition: trigger
-            id: motion
-
-          - condition: state
-            entity_id: input_select.home_mode
-            state:
-              - Day
-              - Vacation
-        then:
-          stop:
-
         entity_id: light.bedroom_bed
 
   - id: bedroom_aux_light_turn_off
     alias: 'Bedroom Aux Light: Turn off'
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.bedroom_any_occupancy
-        to: 'off'
-        for:
-          seconds: 15
+    triggers:
+      - trigger: occupancy.cleared
+        target:
+          area_id: bedroom
+        options:
+          for:
+            seconds: 15
+          behavior: all
 
-      - platform: state
-        entity_id: light.bedroom_main
-        from: 'off'
-        to: 'on'
-    condition:
+      - trigger: light.turned_on
+        target:
+          entity_id: light.bedroom_main
+    conditions:
       - condition: state
         entity_id: input_boolean.light_control
         state: 'on'
 
-      - condition: state
-        entity_id:
-          - light.bedroom_moon
-          - light.bedroom_bed
-          - light.bedroom_cat
-          - light.bedroom_string
-        state: 'on'
-        match: any
+      - condition: light.is_on
+        target:
+          entity_id:
+            - light.bedroom_moon
+            - light.bedroom_bed
+            - light.bedroom_cat
+            - light.bedroom_string
 
       - condition: state
         entity_id: input_boolean.scene_sleepy_mood

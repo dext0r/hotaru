@@ -15,7 +15,6 @@ homeassistant:
     alert_security: !include alert/security.yaml
     alert_sensors: !include alert/sensors.yaml
     alice_tests: !include devices/alice_tests.yaml
-    bedroom: !include home/bedroom.yaml
     buttons_bathroom: !include devices/buttons/bathroom.yaml
     buttons_bedroom: !include devices/buttons/bedroom.yaml
     buttons_kitchen: !include devices/buttons/kitchen.yaml

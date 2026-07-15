@@ -2,7 +2,7 @@
 automation:
   - id: living_room_evening
     alias: 'Living Room: Evening'
-    trigger:
+    triggers:
       - id: lock_unlocked
         platform: state
         entity_id: lock.front_door
@@ -11,12 +11,10 @@ automation:
           - unlocking
         to: unlocked
 
-      - platform: state
-        entity_id: binary_sensor.evening_time
+      - trigger: state
+        entity_id: binary_sensor.evening_time_south
         from: 'off'
         to: 'on'
-        for:
-          minutes: 5
 
       - trigger: state
         entity_id: binary_sensor.living_room_balcony_door
@@ -30,7 +28,7 @@ automation:
         state: Day
 
       - condition: state
-        entity_id: binary_sensor.evening_time
+        entity_id: binary_sensor.evening_time_south
         state: 'on'
 
       - condition: or
@@ -95,27 +93,20 @@ automation:
   - id: bedroom_evening
     alias: 'Bedroom: Evening'
     trigger:
-      - id: lock_unlocked
-        platform: state
-        entity_id: lock.front_door
-        from:
-          - locked
-          - unlocking
-        to: unlocked
+      - trigger: event
+        event_type: welcome_home
 
       - platform: state
-        entity_id: binary_sensor.evening_time
+        entity_id: binary_sensor.evening_time_north
         from: 'off'
         to: 'on'
-        for:
-          minutes: 5
     condition:
       - condition: state
         entity_id: input_select.home_mode
         state: Day
 
       - condition: state
-        entity_id: binary_sensor.evening_time
+        entity_id: binary_sensor.evening_time_north
         state: 'on'
 
       - condition: or

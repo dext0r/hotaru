@@ -30,7 +30,7 @@ automation:
 
       - if:
           - condition: state
-            entity_id: binary_sensor.evening_time
+            entity_id: binary_sensor.evening_time_north
             state: 'off'
         then:
           - service: cover.close_cover
@@ -143,7 +143,7 @@ automation:
 
       - if:
           - condition: state
-            entity_id: binary_sensor.evening_time
+            entity_id: binary_sensor.evening_time_north
             state: 'off'
         then:
           - service: cover.open_cover

@@ -86,7 +86,7 @@ automation:
           - light.living_room_main
 
       - platform: state
-        entity_id: binary_sensor.evening_time
+        entity_id: binary_sensor.evening_time_south
         from: 'off'
         to: 'on'
 
@@ -115,7 +115,7 @@ automation:
       - if:
           - or:
             - condition: state
-              entity_id: binary_sensor.evening_time
+              entity_id: binary_sensor.evening_time_south
               state: 'off'
 
             - condition: state

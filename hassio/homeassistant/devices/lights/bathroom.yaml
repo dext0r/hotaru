@@ -1,6 +1,6 @@
 automation:
-  - id: bathroom_light_turn_on
-    alias: 'Bathroom Light: Turn on'
+  - id: bathroom_light_turn_on_motion
+    alias: 'Bathroom Light: Turn on (motion)'
     triggers:
       - trigger: state
         entity_id: binary_sensor.bathroom_motion

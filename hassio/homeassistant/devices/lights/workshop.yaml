@@ -88,8 +88,9 @@ automation:
             data:
               brightness_pct: 100
 
-  - id: workshop_main_light_turn_off
-    alias: 'Workshop Main Light: Turn off'
+  - id: workshop_light_turn_off_occupancy_cleared
+    alias: 'Workshop Light: Turn off (occupancy cleared)'
+    mode: restart
     triggers:
       - trigger: occupancy.cleared
         target:

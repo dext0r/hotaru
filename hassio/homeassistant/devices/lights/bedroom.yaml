@@ -231,6 +231,13 @@ automation:
         for:
           hours: 1
           minutes: 30
+
+      - trigger: homeassistant
+        event: start
+    conditions:
+      - condition: switch.is_on
+        target:
+          entity_id: switch.bedroom_moon_light_charger
     actions:
       - action: switch.turn_off
         entity_id: switch.bedroom_moon_light_charger

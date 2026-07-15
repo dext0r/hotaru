@@ -216,6 +216,14 @@ automation:
                       ]|random
                     }}
 
+              - if:
+                  - condition: lock.is_locked
+                    target:
+                      entity_id: lock.front_door
+                then:
+                  - action: lock.unlock
+                    entity_id: lock.front_door
+
           - conditions:
               - condition: template
                 value_template: >

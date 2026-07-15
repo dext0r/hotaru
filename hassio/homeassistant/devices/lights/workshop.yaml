@@ -38,8 +38,8 @@ automation:
               - light.workshop_main_2_1
               - light.workshop_main_2_2
 
-  - id: workshop_main_light_turn_on
-    alias: 'Workshop Main Light: Turn on'
+  - id: workshop_light_turn_on
+    alias: 'Workshop Light: Turn on'
     max_exceeded: silent
     triggers:
       - trigger: door.opened
@@ -58,13 +58,11 @@ automation:
         state: 'on'
 
       - condition: state
-        entity_id: light.workshop_main
+        entity_id:
+          - light.workshop_main
+          - binary_sensor.workshop_light_suppress_auto_on
         state: 'off'
     actions:
-
-      - condition: state
-        entity_id: timer.workshop_lights_skip_on
-        state: idle
       - if:
           - or:
               - condition: state
@@ -99,6 +97,13 @@ automation:
           for:
             minutes: 10
 
+      - id: early
+        trigger: occupancy.cleared
+        target:
+          entity_id: binary_sensor.workshop_occupancy
+        options:
+          for:
+            seconds: 20
     conditions:
       - condition: state
         entity_id:
@@ -107,36 +112,101 @@ automation:
           - light.workshop_main
         state: 'on'
 
-      - condition: state
-        entity_id: binary_sensor.workshop_motion
-        state: 'off'
+      - or:
+          - not:
+              - condition: trigger
+                id: early
 
-      - condition: state
-        entity_id: light.workshop_main
-        state: 'on'
-    action:
-      - service: light.turn_off
+          - and:
+              - condition: trigger
+                id: early
+
+              - condition: template
+                value_template: >
+                  {{ (now() - states.light.workshop_main.last_changed).total_seconds() < 300 }}
+    actions:
+      - if:
+          - condition: motion.is_detected
+            target:
+              entity_id: binary_sensor.workshop_motion
+        then:
+          - wait_for_trigger:
+              - trigger: motion.cleared
+                target:
+                  entity_id: binary_sensor.workshop_motion
+            timeout:
+              minutes: 2
+            continue_on_timeout: false
+
+      - action: light.turn_off
         entity_id: light.workshop_main
         data:
           transition: 10
 
-  - id: workshop_main_light_turn_off_door
-    alias: 'Workshop Main Light: Turn off (door)'
-    trigger:
-      - id: door
-        platform: state
-        entity_id: binary_sensor.workshop_door
-        from: 'on'
-        to: 'off'
-    condition:
+  - id: workhop_light_turn_off_no_occupancy
+    alias: 'Workshop Light: Turn off (no occupancy)'
+    mode: restart
+    triggers:
+      - trigger: light.turned_on
+        target:
+          entity_id: light.workshop_main
+    conditions:
       - condition: state
         entity_id:
           - input_boolean.light_control
           - input_boolean.workshop_light_control
         state: 'on'
+    actions:
+      - wait_for_trigger:
+          - trigger: occupancy.detected
+            target:
+              entity_id: binary_sensor.workshop_occupancy
+        timeout:
+          minutes: 1
+
+      # если поймали присутствие - то автоматика выключения будет по другому триггеру
+      - if:
+          - condition: occupancy.is_detected
+            target:
+              entity_id: binary_sensor.workshop_occupancy
+        then:
+          stop: Occupancy detected
 
       - condition: state
+        note: Доступность датчика присутствия
+        entity_id: binary_sensor.workshop_occupancy
+        state: 'off'
+
+      - if:
+          - condition: motion.is_detected
+            target:
+              entity_id: binary_sensor.workshop_motion
+        then:
+          - wait_for_trigger:
+              - trigger: motion.cleared
+                target:
+                  entity_id: binary_sensor.workshop_motion
+            timeout:
+              minutes: 2
+            continue_on_timeout: false
+
+      - action: light.turn_off
         entity_id: light.workshop_main
+        data:
+          transition: 10
+
+  - id: workshop_light_turn_off_door_closed
+    alias: 'Workshop Light: Turn off (door closed)'
+    triggers:
+      - trigger: door.closed
+        target:
+          entity_id: binary_sensor.workshop_door
+    conditions:
+      - condition: state
+        entity_id:
+          - input_boolean.light_control
+          - input_boolean.workshop_light_control
+          - light.workshop_main
         state: 'on'
     actions:
       - if:
@@ -180,45 +250,21 @@ automation:
       - service: input_boolean.turn_off
         entity_id: input_boolean.workshop_light_control
 
-  - id: workshop_lights_skip_on_timer_start
-    alias: 'Workshop Lights Skip On Timer: Start'
+  - id: workshop_light_turn_off_failsafe
+    alias: 'Workshop Light: Turn off (failsafe)'
     triggers:
       - trigger: state
-        entity_id: input_select.home_mode
-        from: Night
-    conditions:
-      - condition: state
-        entity_id: binary_sensor.workshop_door
-        state: 'off'
-    actions:
-      - action: timer.start
-        entity_id: timer.workshop_lights_skip_on
-
-  - id: workshop_lights_skip_on_timer_stop
-    alias: 'Workshop Lights Skip On Timer: Stop'
-    mode: single
-    max_exceeded: silent
-    triggers:
-      - trigger: state
-        entity_id: binary_sensor.workshop_door
-        from: 'off'
+        entity_id: light.workshop_main
         to: 'on'
         for:
-          seconds: 1
-
-      - trigger: state
-        entity_id: binary_sensor.workshop_motion
-        to: 'on'
+          hours: 16
     conditions:
       - condition: state
-        entity_id: timer.workshop_lights_skip_on
-        state: active
+        entity_id: input_boolean.light_control
+        state: 'on'
     actions:
-      - delay:
-          seconds: 3
-
-      - action: timer.cancel
-        entity_id: timer.workshop_lights_skip_on
+      - action: light.turn_off
+        entity_id: light.workshop_main
 
 input_boolean:
   workshop_light_control:
@@ -242,8 +288,27 @@ group:
     entities:
       - light.workshop_main
 
-timer:
-  workshop_lights_skip_on:
-    name: 'Workshop Lights: Skip on'
-    duration:
-      hours: 60
+template:
+  - triggers:
+      - id: night_ended
+        trigger: state
+        entity_id: input_select.home_mode
+        from: Night
+
+      - trigger: state
+        entity_id: binary_sensor.workshop_door
+        from: 'off'
+        to: 'on'
+        for:
+          seconds: 3
+
+      - trigger: state
+        entity_id: binary_sensor.workshop_motion
+        to: 'on'
+    binary_sensor:
+      name: Workshop Light Suppress Auto On
+      unique_id: binary_sensor.workshop_light_suppress_auto_on
+      state: >-
+        {{ is_state('binary_sensor.workshop_door', 'off') and trigger.id == 'night_ended' }}
+      auto_off:
+        hours: 1

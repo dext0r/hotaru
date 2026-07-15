@@ -24,10 +24,10 @@ uart:
     stop_bits: 1
 
 ld2410:
-  # duration: 45
+  # duration: 30
   # range: 4.5m
-  # motion: 90 90 90 40 40 40 100
-  # static: 00 00 25 20 10 13 015
+  # motion: 100 100 98 90 45 100 100
+  # static: 100 100 25 20 10 013 015
 
 binary_sensor:
   - platform: ld2410

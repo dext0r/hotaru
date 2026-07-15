@@ -55,7 +55,7 @@ sensor:
     on_value:
       - if:
           condition:
-            lambda: return x >= 110;
+            lambda: return x >= 250;
           then:
             - script.execute: reset_occupancy
             - binary_sensor.template.publish:
@@ -82,7 +82,7 @@ sensor:
     on_value:
       - if:
           condition:
-            lambda: return x >= 110;
+            lambda: return x >= 250;
           then:
             - script.execute: reset_occupancy
             - binary_sensor.template.publish:

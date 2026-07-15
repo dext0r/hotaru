@@ -66,8 +66,8 @@ ld2410:
   uart_id: ld2410_uart
   # duration: 45
   # range: 4.5m
-  # motion: 100 100 90 100 100 100 100
-  # static: 100 100 30 010 010 025 100
+  # motion: 100 100 70 70 100 100 100
+  # static: 100 100 30 15 012 100 100
 
 binary_sensor:
   - platform: ld2410

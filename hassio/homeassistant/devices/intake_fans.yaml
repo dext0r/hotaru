@@ -109,6 +109,28 @@ automation:
               input_boolean.{{ _area_id }}_airing_warm
             {%- endif -%}
 
+  - id: Intake Fan Error
+    alias: Intake Fan Error
+    mode: single
+    max_exceeded: silent
+    triggers:
+      - trigger: state
+        entity_id:
+          - sensor.bedroom_intake_fan_errors
+          - sensor.living_room_intake_fan_errors
+          - sensor.workshop_intake_fan_errors
+    condition:
+      - condition: template
+        value_template: >
+          {{ trigger.to_state.state and
+             trigger.to_state.state not in ['unavailable', 'unknown'] }}
+    action:
+      - action: notify.send_message
+        data:
+          entity_id: notify.dextor
+          message: >
+            😨 Ошибки в бризере {{ trigger.to_state.entity_id }}: <b>{{ trigger.to_state.state }}</b>
+
 script:
   intake_fan_update:
     alias: 'Intake Fan: Update'

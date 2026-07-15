@@ -117,7 +117,7 @@ automation:
 
           - condition: template
             value_template: >
-              {{ (now() - states.input_select.washing_machine_status.last_changed).total_seconds() > 5400 }}
+              {{ (now() - states.input_select.washing_machine_status.last_changed).total_seconds() > 3600 }}
 
       - condition: state
         entity_id: input_select.washing_machine_status

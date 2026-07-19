@@ -1,12 +1,3 @@
-'0x00124b00226b1703':
-  friendly_name: Hallway Light Switch
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/67caa0801772e10821535639970b116c.png
 '0x54ef441000275552':
   friendly_name: Living Room Light Switch
   homeassistant: {}

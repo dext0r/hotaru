@@ -181,7 +181,7 @@
 
 * 4x Приводы на краны Zigbee **[Tuya ZN231392](https://aliexpress.ru/item/1005005837381838.html)**
 * **Nelma5** управлялка домофоном на ESP32 от [SCratORS](https://github.com/SCratORS/SmartIntercom): [конфиг](esphome/nelma5.yaml) полностью свой.
-* 3x **[PZEM-004](https://aliexpress.ru/item/33043137964.html)** для мониторинга энергопотребления + [аналоговые клещи](https://aliexpress.ru/item/32708887594.html): подключено к управлялке домфоном :) Никогда не используйте аналоговые клещи, только PZEM! (гуглить о power factor)
+* 5x **[PZEM-004](https://ozon.ru/t/uknnLfh)** для мониторинга энергопотребления по всем линиям: подключено к управлялке домофоном ([фото 1](images/pzem-1-26.jpg), [фото 2](images/pzem-2-26.jpg)).
 
 ## Датчики DIY
 

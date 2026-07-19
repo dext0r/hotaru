@@ -89,7 +89,7 @@ modbus:
 globals:
   - id: intercom_mode
     type: int
-    initial_value: '0'
+    initial_value: '2' # Always accept
 
   - id: intercom_oncall
     type: bool
@@ -212,7 +212,7 @@ select:
       - ${intercom_mode_always_reject}
       - ${intercom_mode_delivery}
       - ${intercom_mode_guests}
-    initial_option: ${intercom_mode_passthrough}
+    initial_option: ${intercom_mode_always_accept}
     on_value:
       lambda: |-
         id(intercom_mode) = i;

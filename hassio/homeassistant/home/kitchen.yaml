@@ -1,17 +1,4 @@
 automation:
-  - id: kitchen_ovens_status_update
-    alias: Kichen Ovens Status Update
-    triggers:
-      - trigger: state
-        entity_id: sensor.kitchen_ovens_socket_power
-    conditions:
-      - condition: template
-        value_template: >
-          {{ trigger.to_state.state | int(0) >= 100 }}
-    actions:
-      - action: timer.start
-        entity_id: timer.kitchen_ovens_running
-
   - id: kitchen_appliance_left_on_alert
     alias: Kitchen Appliance Left On Alert
     triggers:
@@ -40,7 +27,7 @@ automation:
         state: 'on'
 
       # TODO: тут должно быть исключающее правило, если что-то долго готовится в духовке
-    action:
+    actions:
       - action: notify.send_message
         data:
           entity_id: notify.dextor
@@ -52,11 +39,7 @@ template:
       - name: Kitchen Ovens
         unique_id: binary_sensor.kitchen_ovens
         state: >
-          {{ is_state('timer.kitchen_ovens_running', 'active') }}
+          {{ states('sensor.kitchen_ovens_socket_power') | int(0) > 100 }}
         device_class: running
-
-timer:
-  kitchen_ovens_running:
-    name: 'Kitchen Ovens: Running'
-    duration:
-      minutes: 2
+        delay_off:
+          minutes: 2

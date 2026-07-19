@@ -1,34 +1,30 @@
-automation:
-  - id: stove_status_update
-    alias: Stove Status Update
-    triggers:
-      - trigger: state
-        entity_id: sensor.kitchen_stove_power
-    conditions:
-      - condition: template
-        value_template: >
-          {{ trigger.to_state.state | int(0) >= 200 }}
-    actions:
-      - action: timer.start
-        entity_id: timer.stove_running
-
 template:
   - trigger:
-      - platform: time_pattern
+      - trigger: time_pattern
         seconds: /2
     sensor:
       - name: Kitchen Stove Power
         unique_id: sensor.kitchen_stove_power
         state: >
-          {% set power = states('sensor.stove_branch_circuit_power') | int(0) - 30 %} {# 30 - всякая ерунда на этой линии #}
+          {% set power = states('sensor.stove_branch_circuit_power') | int(0) -
+                         states('sensor.iot_stove_branch_circuit_power') | float(0) %}
 
-          {% if is_state('input_select.dishwasher_status', 'Running') or is_state('sensor.dishwasher_power', ['unavailable', 'unknown']) %}
-            {# не совсем честно, но адекватно выделить мощность именно плиты не получится #}
-            {# и в целом запуск плиты вместе с посудомойкой маловероятен #}
+          {% if power < 100 %}
+            {# это не похоже на плиту #}
             {% set power = 0 %}
           {% endif %}
 
-          {{ [0, power] | max }}
+          {# при работающей посудомойке невозможно достоверно определять мощность плиты #}
+          {% if not is_state('switch.dishwasher_plug', 'off') %}
+            {# если розетка выключена - значит посудомойка точно выключена #}
+
+            {% if is_state('input_select.dishwasher_status', 'Running') or
+                  is_state('sensor.dishwasher_progress', 'unavailable') %}
+              {% set power = 0 %}
+            {% endif %}
+          {% endif %}
+
+          {{ [1, power] | max }}
         state_class: measurement
         unit_of_measurement: W
         device_class: power
@@ -37,8 +33,10 @@ template:
       - name: Stove
         unique_id: binary_sensor.stove
         state: >
-          {{ is_state('timer.stove_running', 'active') }}
+          {{ states('sensor.kitchen_stove_power') | int(0) > 5 }}
         device_class: running
+        delay_off:
+          minutes: 1
 
 sensor:
   - platform: integration
@@ -50,9 +48,3 @@ sensor:
     method: trapezoidal
     max_sub_interval:
       seconds: 5
-
-timer:
-  stove_running:
-    name: 'Stove: Running'
-    duration:
-      minutes: 2

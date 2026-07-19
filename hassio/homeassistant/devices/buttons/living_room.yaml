@@ -157,12 +157,12 @@ automation:
 
   - id: living_room_heater_button_turn_on
     alias: 'Living Room Heater Button: Turn on'
-    trigger:
+    triggers:
       - trigger: device
-        domain: mqtt
-        device_id: 624d122c903dda63a2c71e9d636f4a0c
-        type: action
-        subtype: 'on'
+        domain: zha
+        device_id: 91869928aa57092360ae10b73ed11a5d
+        type: remote_button_short_press
+        subtype: turn_on
     conditions:
       - condition: state
         entity_id: binary_sensor.anyone_home
@@ -187,13 +187,13 @@ automation:
 
   - id: living_room_heater_button_turn_off
     alias: 'Living Room Heater Button: Turn off'
-    trigger:
+    triggers:
       - trigger: device
-        domain: mqtt
-        device_id: 624d122c903dda63a2c71e9d636f4a0c
-        type: action
-        subtype: 'off'
-    action:
+        domain: zha
+        device_id: 91869928aa57092360ae10b73ed11a5d
+        type: remote_button_short_press
+        subtype: turn_off
+    actions:
       - if:
           - condition: state
             entity_id: switch.living_room_heater
@@ -209,10 +209,10 @@ automation:
     alias: 'Living Room Heater Button: Hold down'
     triggers:
       - trigger: device
-        domain: mqtt
-        device_id: 624d122c903dda63a2c71e9d636f4a0c
-        type: action
-        subtype: brightness_move_down
+        domain: zha
+        device_id: 91869928aa57092360ae10b73ed11a5d
+        type: remote_button_long_press
+        subtype: dim_down
     conditions:
       - condition: state
         entity_id: binary_sensor.anyone_home

@@ -3,25 +3,25 @@ automation:
     alias: 'Pills taken'
     mode: single
     max_exceeded: silent
-    trigger:
+    triggers:
       - trigger: device
-        domain: mqtt
-        device_id: 9be5a240d99a0f8b0fc13585cda78fba
-        type: action
-        subtype: single
+        domain: zha
+        device_id: 710f9479173632be0930e36e4107c9f6 # Kitchen Pills Button
+        type: remote_button_short_press
+        subtype: remote_button_short_press
 
       - trigger: device
-        domain: mqtt
-        device_id: 9be5a240d99a0f8b0fc13585cda78fba
-        type: action
-        subtype: double
-    action:
-      - service: input_datetime.set_datetime
+        domain: zha
+        device_id: 710f9479173632be0930e36e4107c9f6 # Kitchen Pills Button
+        type: remote_button_double_press
+        subtype: remote_button_double_press
+    actions:
+      - action: input_datetime.set_datetime
         entity_id: input_datetime.pills_takes
         data:
           datetime: '{{ now().strftime("%Y-%m-%d %H:%M:%S") }}'
 
-      - service: script.yandex_station_tts
+      - action: script.yandex_station_tts
         data:
           target: media_player.kitchen_station
           text: >

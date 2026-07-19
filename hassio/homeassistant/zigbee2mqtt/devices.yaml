@@ -25,17 +25,6 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/d0aacfe1754363dbc83d95e152834262.png
-'0xa4c138104391cbaa':
-  friendly_name: Dishwasher Socket
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  current_precision: 1
-  power_precision: 1
-  icon: device_icons/08a9016bbc0657cf5f581ae9c19c31a5.png
 '0x00124b0023add1f3':
   friendly_name: Porch Light Switch
   homeassistant: {}
@@ -100,15 +89,6 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/53bb2a9b13189fa922f665f466b6a532.png
-'0x04cf8cdf3c7cc6cd':
-  friendly_name: Illuminance South Side
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/956bdca587d0b5a2cd6200ffdcb3e3d1.png
 '0x00158d0003e701ed':
   friendly_name: Kitchen Motion
   homeassistant: {}
@@ -181,15 +161,6 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/c7706a8b7bac2de2a6d18635d4047f81.png
-'0x54ef4410000ec68a':
-  friendly_name: Illuminance North Side
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/956bdca587d0b5a2cd6200ffdcb3e3d1.png
 '0x00158d0001e53cc5':
   friendly_name: Porch Motion
   homeassistant: {}
@@ -199,24 +170,6 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/2e7485d54446698ed62425812fe12303.png
-'0x00158d00045e53c5':
-  friendly_name: Kitchen Meteo
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/f5833cbbcb99d97a0c8b715687c43d80.png
-'0x84fd27fffe3b745a':
-  friendly_name: Living Room Heater Button
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/7146bc3333829dd31b1a37b1f83f6e01.png
 '0x00158d0003972602':
   friendly_name: Bathroom Bathtub Button
   homeassistant: {}
@@ -294,15 +247,6 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/5816cec5864b2553c5c835aefa557722.png
-'0x00158d0002b18420':
-  friendly_name: Fridge Door
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/5816cec5864b2553c5c835aefa557722.png
 '0x588e81fffe43ce4f':
   friendly_name: Porch Door Lock
   homeassistant: {}
@@ -333,15 +277,6 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/08a9016bbc0657cf5f581ae9c19c31a5.png
-'0x00158d0006c8b148':
-  friendly_name: Kitchen Pills Button
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/c7706a8b7bac2de2a6d18635d4047f81.png
 '0x00158d0002aef0e9':
   friendly_name: Porch Door
   homeassistant: {}

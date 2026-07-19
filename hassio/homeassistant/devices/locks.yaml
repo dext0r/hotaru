@@ -1,0 +1,5 @@
+input_boolean:
+  lock_control:
+    name: 'Allow automatic lock control'
+    initial: true
+    icon: mdi:shield-lock-outline

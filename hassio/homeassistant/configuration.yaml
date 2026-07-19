@@ -71,6 +71,7 @@ homeassistant:
     lights: !include devices/lights.yaml
     lock_front_door: !include devices/locks/front_door.yaml
     lock_porch_door: !include devices/locks/porch_door.yaml
+    locks: !include devices/locks.yaml
     media_avr: !include devices/media/avr.yaml
     media_tv: !include devices/media/tv.yaml
     media_yandex_station: !include devices/media/yandex_station.yaml
@@ -141,6 +142,7 @@ recorder:
       - input_boolean.climate_control
       - input_boolean.everyone_left_home
       - input_boolean.light_control
+      - input_boolean.lock_control
       - input_boolean.scooter_charged
       - input_select.home_mode
       - select.intercom_mode

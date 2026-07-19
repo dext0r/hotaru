@@ -22,6 +22,10 @@ automation:
         trigger: time
         at: '01:00:00'
     conditions:
+      - condition: state
+        entity_id: input_boolean.lock_control
+        state: 'on'
+
       - condition: lock.is_unlocked
         target:
           entity_id: lock.porch_door
@@ -123,6 +127,10 @@ automation:
           - person.layma
         to: home
     conditions:
+      - condition: state
+        entity_id: input_boolean.lock_control
+        state: 'on'
+
       - condition: lock.is_locked
         target:
           entity_id: lock.porch_door
@@ -163,6 +171,10 @@ automation:
         target:
           entity_id: lock.front_door
     conditions:
+      - condition: state
+        entity_id: input_boolean.lock_control
+        state: 'on'
+
       - condition: timer.is_idle
         target:
           entity_id:
@@ -189,6 +201,10 @@ automation:
       - trigger: timer.started
         target:
           entity_id: timer.porch_door_auto_unlock
+
+      - trigger: state
+        entity_id: input_boolean.lock_control
+        to: 'off'
     conditions:
       - condition: timer.is_active
         target:
@@ -205,6 +221,10 @@ automation:
         entity_id: sensor.intercom_status
         to: Door opened
     conditions:
+      - condition: state
+        entity_id: input_boolean.lock_control
+        state: 'on'
+
       - condition: state
         entity_id:
           - binary_sensor.anyone_near_home
@@ -227,6 +247,10 @@ automation:
       - trigger: door.closed
         target:
           entity_id: binary_sensor.front_door
+
+      - trigger: state
+        entity_id: input_boolean.lock_control
+        to: 'off'
     conditions:
       - condition: timer.is_active
         target:

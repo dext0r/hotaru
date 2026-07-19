@@ -17,6 +17,9 @@ automation:
     triggers:
       - trigger: state
         entity_id: binary_sensor.doorbell_target_mute
+        to:
+          - 'on'
+          - 'off'
 
       - trigger: time_pattern
         minutes: /10
@@ -24,6 +27,10 @@ automation:
       - not:
           - condition: state
             entity_id: switch.doorbell_mute
+            state: unavailable
+
+          - condition: state
+            entity_id: binary_sensor.doorbell_target_mute
             state: unavailable
 
       - condition: template

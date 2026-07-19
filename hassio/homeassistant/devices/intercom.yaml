@@ -43,24 +43,33 @@ automation:
     alias: 'Intercom: Mode update'
     mode: single
     max_exceeded: silent
-    trigger:
-      - platform: time_pattern
+    triggers:
+      - trigger: time_pattern
         minutes: /5
 
-      - platform: state
+      - trigger: state
         entity_id:
           - input_select.home_mode
           - input_boolean.scene_delivery
           - input_boolean.scene_wait_guests
           - binary_sensor.anyone_near_home
-    action:
+
+      - trigger: state
+        entity_id: select.intercom_mode
+        from: unavailable
+    conditions:
+      - not:
+          - condition: state
+            entity_id: select.intercom_mode
+            state: unavailable
+    actions:
       - choose:
           - conditions:
               - condition: state
                 entity_id: input_boolean.scene_delivery
                 state: 'on'
             sequence:
-              - service: select.select_option
+              - action: select.select_option
                 entity_id: select.intercom_mode
                 data:
                   option: Delivery
@@ -70,14 +79,13 @@ automation:
                 entity_id: input_boolean.scene_wait_guests
                 state: 'on'
             sequence:
-              - service: select.select_option
+              - action: select.select_option
                 entity_id: select.intercom_mode
                 data:
                   option: Guests
 
           - conditions:
-              - condition: or
-                conditions:
+              - or:
                   - condition: state
                     entity_id: input_select.home_mode
                     state:

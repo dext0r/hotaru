@@ -17,6 +17,11 @@ automation:
 
       - trigger: time_pattern
         minutes: '/10'
+    conditions:
+      - not:
+          - condition: state
+            entity_id: light.kitchen_status
+            state: unavailable
     actions:
       - if:
           - condition: state

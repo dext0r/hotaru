@@ -107,6 +107,11 @@ automation:
         options:
           for:
             hours: 1
+    conditions:
+      - not:
+          - condition: state
+            entity_id: light.porch_path
+            state: unavailable
     actions:
       - choose:
           - conditions:
@@ -155,6 +160,11 @@ automation:
         options:
           for:
             hours: 1
+    conditions:
+      - not:
+          - condition: state
+            entity_id: light.porch_lock
+            state: unavailable
     variables:
       _rgbw_color: >-
         {%- if is_state('timer.front_door_auto_lock', 'active') -%}

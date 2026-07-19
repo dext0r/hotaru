@@ -227,6 +227,40 @@ template:
           {% endfor %}
 
           {% set data.power = data.power + states('sensor.cb_branch_circuit_iot_power') | float(0) %}
+          {% set data.power = data.power + states('sensor.iot_stove_branch_circuit_power') | float(0) %}
+
+          {{ data.unknown | iif('unknown', data.power | round(2)) }}
+        state_class: measurement
+        unit_of_measurement: W
+        device_class: power
+
+      # подсчёт мощности на IOT устройства по линии "Плита", которые не подсчитываются розетками
+      - unique_id: sensor.iot_stove_branch_circuit_power
+        name: IoT Stove Branch Circuit Power
+        state: >
+          {% set dishwasher = states('sensor.dishwasher_mode') %}
+          {% set dishwasher_plug = states('switch.dishwasher_plug') %}
+          {% set kitchen_watermeter = states('sensor.kitchen_water_meter_boot_time') %}
+          {% set kitchen_water_leak_detector = states('binary_sensor.kitchen_water_leak_detector_problem') %}
+
+          {# kitchen_watermeter -  не учитывает горяющую ленту #}
+          {# kitchen_water_leak_detector - не учитывает зарядку батареи #}
+          {% set devices = (
+            (dishwasher, 1, none),
+            (dishwasher_plug, 1, 0.5),
+            (kitchen_watermeter, 1.2, none),
+            (kitchen_water_leak_detector, 1.2, 1.2),
+          ) %}
+          {% set data = namespace(power=0, unknown=false) %}
+          {% for (state, on_power, off_power) in devices %}
+            {% if state == 'unknown' %}
+              {% set data.unknown = true %}
+            {% elif state == 'off' %}
+              {% set data.power = data.power + off_power %}
+            {% elif state != 'unavailable' %}
+              {% set data.power = data.power + on_power %}
+            {% endif %}
+          {% endfor %}
 
           {{ data.unknown | iif('unknown', data.power | round(2)) }}
         state_class: measurement

@@ -249,6 +249,11 @@ entity_config:
           NOT_ENOUGH_WATER
         {% endif %}
       {% endif %}
+  cover.kitchen:
+    error_code_template: |
+      {% if not is_state('binary_sensor.kitchen_balcony_door', 'off') %}
+        DOOR_OPEN
+      {% endif %}
   cover.bedroom:
     error_code_template: |
       {% if not is_state('binary_sensor.bedroom_window', 'off') %}

@@ -15,14 +15,19 @@ template:
         availability: >
           {{ states('cover.kitchen_curtains_motor') not in ['unknown', 'unavailable'] and 'current_position' in states.cover.kitchen_curtains_motor.attributes }}
         set_cover_position:
-          action: cover.set_cover_position
-          entity_id: cover.kitchen_curtains_motor
-          data:
-            position: >
-              {% set position_range = [0, 65] %}
-              {% set motor_range = [0, 100] %}
-              {% set target_position = ((position_range[1] - position_range[0]) / (motor_range[1] - motor_range[0]) * (position - motor_range[0]) + position_range[0]) %}
-              {{ [target_position|int, position_range|max]| min }}
+          if:
+            - condition: state
+              entity_id: binary_sensor.kitchen_balcony_door
+              state: 'off'
+          then:
+            - action: cover.set_cover_position
+              entity_id: cover.kitchen_curtains_motor
+              data:
+                position: >
+                  {% set position_range = [0, 65] %}
+                  {% set motor_range = [0, 100] %}
+                  {% set target_position = ((position_range[1] - position_range[0]) / (motor_range[1] - motor_range[0]) * (position - motor_range[0]) + position_range[0]) %}
+                  {{ [target_position|int, position_range|max]| min }}
         stop_cover:
           action: cover.stop_cover
           entity_id: cover.kitchen_curtains_motor

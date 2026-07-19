@@ -7,12 +7,20 @@ automation:
           - sensor.cb_branch_circuit_power
           - sensor.kitchen_branch_circuit_power
           - sensor.sockets_branch_circuit_power
+          - sensor.light_branch_circuit_power
+          - sensor.sockets_branch_circuit_power
         to: unknown
         for:
           minutes: 5
     actions:
       - action: button.press
         entity_id: button.nelma5_restart
+
+      - action: notify.send_message
+        data:
+          entity_id: notify.dextor
+          message: >
+            Nelma 5 перезагружена
 
   - id: power_budget_exceeded_cb_branch_circuit
     alias: 'Power Budget Exceeded: CB Branch Circuit'

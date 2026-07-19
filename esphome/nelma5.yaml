@@ -68,10 +68,48 @@ esp32:
   framework:
     type: arduino # для ESP8266Audio
 
+logger:
+  baud_rate: 0
+  logs:
+    pzemac: INFO
+
 uart:
-  rx_pin: 9
-  tx_pin: 10
-  baud_rate: 9600
+  - id: uart_pzem_1
+    rx_pin:
+      number: 9
+      mode:
+        input: true
+        pullup: true
+    tx_pin: 10
+    baud_rate: 9600
+
+  - id: uart_pzem_2
+    rx_pin:
+      number: 32
+      mode:
+        input: true
+        pullup: true
+    tx_pin: 33
+    baud_rate: 9600
+
+  - id: uart_pzem_3
+    rx_pin:
+      number: 21
+      mode:
+        input: true
+        pullup: true
+    tx_pin: 22
+    baud_rate: 9600
+
+modbus:
+  - id: modbus_pzem_1
+    uart_id: uart_pzem_1
+
+  - id: modbus_pzem_2
+    uart_id: uart_pzem_2
+
+  - id: modbus_pzem_3
+    uart_id: uart_pzem_3
 
 audio:
   id: player
@@ -83,8 +121,6 @@ file:
     file: lib/intercom/guests.mp3
   - id: reject_mp3
     file: lib/intercom/reject.mp3
-
-modbus:
 
 globals:
   - id: intercom_mode
@@ -294,6 +330,7 @@ sensor:
   # Розетки: Кухня
   - id: pzem5
     platform: pzemac
+    modbus_id: modbus_pzem_3
     address: 5
     update_interval: never
 
@@ -314,6 +351,10 @@ sensor:
       device_id: power_meter
       accuracy_decimals: 2
       filters:
+        - min:  # при старте значение временно может улететь в космос
+            window_size: 5
+            send_every: 5
+            send_first_at: 5
         - throttle: 2.5min
 
   - &pzem_power_avg
@@ -335,6 +376,7 @@ sensor:
   - id: pzem6
     platform: pzemac
     address: 6
+    modbus_id: modbus_pzem_1
     update_interval: never
 
     power:
@@ -357,6 +399,7 @@ sensor:
   - id: pzem7
     platform: pzemac
     address: 7
+    modbus_id: modbus_pzem_1
     update_interval: never
 
     power:
@@ -375,15 +418,68 @@ sensor:
     id: pzem7_power_avg
     name: Sockets Power
 
+  # Плита / Посудомойка
+  - id: pzem11
+    platform: pzemac
+    address: 11
+    modbus_id: modbus_pzem_2
+    update_interval: never
+
+    power:
+      id: pzem11_raw_power
+      on_value:
+        - sensor.template.publish:
+            id: pzem11_power_avg
+            state: !lambda return x;
+      <<: *pzem_power_raw
+
+    energy:
+      name: Stove Energy
+      <<: *pzem_energy
+
+  - <<: *pzem_power_avg
+    id: pzem11_power_avg
+    name: Stove Power
+
+  # Освещение
+  - id: pzem12
+    platform: pzemac
+    address: 12
+    modbus_id: modbus_pzem_2
+    update_interval: never
+
+    power:
+      id: pzem12_raw_power
+      on_value:
+        - sensor.template.publish:
+            id: pzem12_power_avg
+            state: !lambda return x;
+      <<: *pzem_power_raw
+
+    energy:
+      name: Light Energy
+      <<: *pzem_energy
+
+  - <<: *pzem_power_avg
+    id: pzem12_power_avg
+    name: Light Power
+
 interval:
   - interval: 1s
     then:
-      - delay: 150ms
       - component.update: pzem5
-      - delay: 150ms
+
+  - interval: 1s
+    then:
       - component.update: pzem6
       - delay: 150ms
       - component.update: pzem7
+
+  - interval: 1s
+    then:
+      - component.update: pzem11
+      - delay: 150ms
+      - component.update: pzem12
 
 binary_sensor:
   - id: intercom_ring

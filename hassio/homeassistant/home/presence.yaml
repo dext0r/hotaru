@@ -132,7 +132,8 @@ device_tracker_template:
     icon: mdi:bluetooth-connect
     location: >
       {{ is_state('binary_sensor.hallway_presence_misaka', 'on') or
-         is_state('binary_sensor.living_room_presence_misaka', 'on') }}
+         is_state('binary_sensor.living_room_presence_misaka', 'on') or
+         is_state('binary_sensor.comms_presence_misaka', 'on') }}
     source_type: bluetooth_le
 
   - unique_id: device_tracker.layma_iphone_ble
@@ -140,7 +141,8 @@ device_tracker_template:
     icon: mdi:bluetooth-connect
     location: >
       {{ is_state('binary_sensor.hallway_presence_layma_iphone', 'on') or
-         is_state('binary_sensor.living_room_presence_layma_iphone', 'on') }}
+         is_state('binary_sensor.living_room_presence_layma_iphone', 'on') or
+         is_state('binary_sensor.comms_presence_layma_iphone', 'on') }}
     source_type: bluetooth_le
 
 input_boolean:

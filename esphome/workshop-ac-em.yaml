@@ -1,0 +1,12 @@
+packages:
+  base: !include generic/shelly_em_mini_gen4.yaml
+
+substitutions:
+  bl0942_current_reference: 250032.57753
+  bl0942_voltage_reference: 14269.08714
+
+esphome:
+  friendly_name: Workshop AC Energy Meter
+  area: Workshop
+  name: workshop-ac-em
+  name_add_mac_suffix: false

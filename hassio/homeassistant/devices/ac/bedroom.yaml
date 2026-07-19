@@ -212,15 +212,6 @@ template:
             - action: button.press
               entity_id: button.bedroom_ac_display_toggle
 
-  - binary_sensor:
-      - unique_id: binary_sensor.bedroom_ac_running
-        name: 'Bedroom AC Running'
-        icon: mdi:play
-        state: >
-          {{ not is_state('climate.bedroom_ac', 'off') }}
-        availability: >
-          {{ is_state('climate.bedroom_ac', ['heat_cool', 'cool', 'heat', 'fan_only', 'dry', 'off']) }}
-
 input_boolean:
   bedroom_ac_display:
     name: 'Bedroom AC: Display'

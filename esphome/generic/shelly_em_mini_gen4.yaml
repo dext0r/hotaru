@@ -1,0 +1,45 @@
+packages:
+  base: !include ../common/base.yaml
+  bl0942: !include ../common/bl0942.yaml
+
+substitutions:
+  bl0942_current_reference: 248717.01074
+  bl0942_voltage_reference: 14244.00038
+
+esphome:
+  friendly_name: Shelly EM Mini Gen4
+  name: shell-em-mini-gen4
+  model: Shelly EM Mini Gen4
+
+esp32:
+  board: esp32-c6-devkitc-1
+  variant: esp32c6
+  flash_size: 8MB
+  framework:
+    type: esp-idf
+    sdkconfig_options:
+      CONFIG_ESPTOOLPY_FLASHSIZE_8MB: y
+
+uart:
+  tx_pin: 20
+  rx_pin:
+    number: 19
+    mode:
+      input: true
+      pullup: true
+  baud_rate: 9600
+
+binary_sensor:
+  - id: push_button
+    platform: gpio
+    pin:
+      number: 22
+      inverted: true
+      mode:
+        input: true
+        pullup: true
+
+status_led:
+  pin:
+    number: 5
+    inverted: true

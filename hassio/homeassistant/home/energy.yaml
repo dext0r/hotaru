@@ -87,29 +87,6 @@ automation:
           - switch.ironing_board_socket
 
 template:
-  - trigger:
-      - platform: time_pattern
-        seconds: /1
-    sensor:
-      # потребляемая мощность по линии Ванная/Климат, которая потребляется кондиционерами
-      - unique_id: sensor.cb_branch_circuit_power_for_ac
-        name: CB Branch Circuit Power For AC
-        state: >
-          {% set power = states('sensor.cb_branch_circuit_power') | int(0) %}
-          {% set power = power - states('sensor.bedroom_desk_plug_power') | int(0) %}
-          {% set power = power - states('sensor.bedroom_intake_fan_power') | int(0) %}
-          {% set power = power - states('sensor.dryer_power') | int(0) %}
-          {% set power = power - states('sensor.vacuum_charger_power') | int(0) %}
-          {% set power = power - states('sensor.washing_machine_power') | int(0) %}
-          {% set power = power - states('sensor.water_heater_power') | int(0) %}
-          {% set power = power - states('sensor.workshop_intake_fan_power') | int(0) %}
-          {% set power = power - states('sensor.cb_branch_circuit_iot_power') | int(0) %}
-
-          {{ [power, 0] | max }}
-        state_class: measurement
-        unit_of_measurement: W
-        device_class: power
-
   # подсчёт мощности на IOT устройства, которые не подсчитываются розетками
   # всё это очень примерно, но хоть как-то позволят скомпенсировать положительный Untracked consumptions на графиках
   # Яндекс Розетка (Matter): 1.5/0.85
@@ -122,45 +99,6 @@ template:
       - trigger: time_pattern
         seconds: /10
     sensor:
-      - unique_id: sensor.cb_branch_circuit_iot_power
-        name: CB Branch Circuit IoT Power
-        state: >
-          {% set bathroom_cold_water_valve = states('switch.bathroom_cold_water_valve') %}
-          {% set bedroom_desk_plug = states('switch.bedroom_desk_plug') %}
-          {% set bedroom_intake_fan_plug = states('switch.bedroom_intake_fan_plug') %}
-          {% set dryer_socket = states('switch.dryer_socket') %}
-          {% set north_balcony_presence = states('sensor.north_balcony_presence_boot_time') %}
-          {% set vacuum_charger = states('switch.vacuum_charger') %}
-          {% set washing_machine_socket = states('switch.washing_machine_socket')  %}
-          {% set water_heater_socket = states('switch.water_heater_socket') %}
-          {% set workshop_intake_fan_relay = states('switch.workshop_intake_fan_relay') %}
-          {% set devices = (
-            (bathroom_cold_water_valve, 0.5, 0.5),
-            (bedroom_desk_plug, 1.25, 0.7),
-            (bedroom_intake_fan_plug, 1.25, 0.7),
-            (dryer_socket, 0.7, 0),
-            (north_balcony_presence, 0.8, none),
-            (vacuum_charger, 1.25, 0.7),
-            (washing_machine_socket, 0.7, 0),
-            (water_heater_socket, 1.25, 0.7),
-            (workshop_intake_fan_relay, 1.25, 0.7),
-          ) %}
-          {% set data = namespace(power=0, unknown=false) %}
-          {% for (state, on_power, off_power) in devices %}
-            {% if state == 'unknown' %}
-              {% set data.unknown = true %}
-            {% elif state == 'off' %}
-              {% set data.power = data.power + off_power %}
-            {% elif state != 'unavailable' %}
-              {% set data.power = data.power + on_power %}
-            {% endif %}
-          {% endfor %}
-
-          {{ data.unknown | iif('unknown', data.power | round(2)) }}
-        state_class: measurement
-        unit_of_measurement: W
-        device_class: power
-
       - unique_id: sensor.iot_power
         name: IoT Power
         state: >
@@ -188,6 +126,17 @@ template:
           {% set bathroom_mirror_light = states('light.bathroom_mirror') %}
           {% set camera_xiaofang_1d9e = states('binary_sensor.camera_xiaofang_1d9e') %}
           {% set portable_fan_plug = states('switch.portable_fan_plug') %}
+          {% set bathroom_cold_water_valve = states('switch.bathroom_cold_water_valve') %}
+          {% set bedroom_ac_em = states('sensor.bedroom_ac_energy_meter_boot_time') %}
+          {% set bedroom_desk_plug = states('switch.bedroom_desk_plug') %}
+          {% set bedroom_intake_fan_plug = states('switch.bedroom_intake_fan_plug') %}
+          {% set dryer_socket = states('switch.dryer_socket') %}
+          {% set north_balcony_presence = states('sensor.north_balcony_presence_boot_time') %}
+          {% set vacuum_charger = states('switch.vacuum_charger') %}
+          {% set washing_machine_socket = states('switch.washing_machine_socket')  %}
+          {% set water_heater_socket = states('switch.water_heater_socket') %}
+          {% set workshop_ac_em = states('sensor.workshop_ac_energy_meter_boot_time') %}
+          {% set workshop_intake_fan_relay = states('switch.workshop_intake_fan_relay') %}
 
           {% set devices = (
             (comms_relay, 0.5, none),
@@ -214,6 +163,17 @@ template:
             (bathroom_mirror_light, 1, 0.5),
             (camera_xiaofang_1d9e, 2, 0),
             (portable_fan_plug, 1.25, 0.7),
+            (bathroom_cold_water_valve, 0.5, 0.5),
+            (bedroom_ac_em, 0.8, none),
+            (bedroom_desk_plug, 1.25, 0.7),
+            (bedroom_intake_fan_plug, 1.25, 0.7),
+            (dryer_socket, 0.7, 0),
+            (north_balcony_presence, 0.8, none),
+            (vacuum_charger, 1.25, 0.7),
+            (washing_machine_socket, 0.7, 0),
+            (water_heater_socket, 1.25, 0.7),
+            (workshop_ac_em, 0.8, none),
+            (workshop_intake_fan_relay, 1.25, 0.7),
           ) %}
           {% set data = namespace(power=0, unknown=false) %}
           {% for (state, on_power, off_power) in devices %}
@@ -226,7 +186,6 @@ template:
             {% endif %}
           {% endfor %}
 
-          {% set data.power = data.power + states('sensor.cb_branch_circuit_iot_power') | float(0) %}
           {% set data.power = data.power + states('sensor.iot_stove_branch_circuit_power') | float(0) %}
 
           {{ data.unknown | iif('unknown', data.power | round(2)) }}

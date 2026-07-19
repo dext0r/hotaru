@@ -90,13 +90,3 @@ automation:
     action:
       - service: climate.turn_off
         entity_id: climate.workshop_ac
-
-template:
-  - binary_sensor:
-      - unique_id: binary_sensor.workshop_ac_running
-        name: 'Workshop AC Running'
-        icon: mdi:play
-        state: >
-          {{ not is_state('climate.workshop_ac', 'off') }}
-        availability: >
-          {{ is_state('climate.workshop_ac', ['heat_cool', 'cool', 'heat', 'fan_only', 'dry', 'off']) }}

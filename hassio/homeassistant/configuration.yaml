@@ -171,12 +171,10 @@ recorder:
       - binary_sensor.*presence*misaka*
       - binary_sensor.*workday*
       - binary_sensor.workday*
-      - binary_sensor.*_running
       - binary_sensor.*_light_alert_available # доступность функции "уведомление через диодик"
       - light.workshop_main_* # обрабатывается как единое целое
       - sensor.*_raw
       - sensor.person_pronoun_*
-      - sensor.cb_branch_circuit_power_for_ac
       - switch.*_light* # из них делается light на шаблоне
 panel_custom:
   - name: config/automation

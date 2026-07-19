@@ -1,0 +1,12 @@
+packages:
+  base: !include generic/shelly_em_mini_gen4.yaml
+
+substitutions:
+  bl0942_current_reference: 248717.01074
+  bl0942_voltage_reference: 14244.00038
+
+esphome:
+  friendly_name: Bedroom AC Energy Meter
+  area: Bedroom
+  name: bedroom-ac-em
+  name_add_mac_suffix: false

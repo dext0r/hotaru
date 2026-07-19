@@ -11,7 +11,6 @@ hassio/homeassistant/custom_components
 hassio/homeassistant/blueprints
 hassio/homeassistant/image
 hassio/homeassistant/tts
-hassio/homeassistant/ps5-mqtt
 hassio/homeassistant/zhaquirks/*
 !hassio/homeassistant/zhaquirks/README.md
 hassio/homeassistant/zigbee2mqtt/*

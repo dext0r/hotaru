@@ -55,9 +55,11 @@ automation:
     alias: 'TV: Switch to ATV'
     trigger:
       - trigger: state
-        entity_id: switch.ps5_power
+        entity_id: media_player.ps5
         from: 'on'
-        to: 'off'
+        to:
+          - 'off'
+          - 'unavailable'
     condition:
       - condition: state
         entity_id: media_player.tv

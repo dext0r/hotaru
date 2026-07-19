@@ -100,17 +100,6 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/53bb2a9b13189fa922f665f466b6a532.png
-'0x00158d000460badf':
-  friendly_name: Hallway Motion
-  occupancy_timeout: 7
-  disabled: false
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  temperature_precision: 1
-  retain: true
-  icon: device_icons/2e7485d54446698ed62425812fe12303.png
 '0x04cf8cdf3c7cc6cd':
   friendly_name: Illuminance South Side
   homeassistant: {}
@@ -128,17 +117,6 @@
   optimistic: true
   retain: true
   temperature_precision: 1
-  icon: device_icons/4858000fa9561bbf20da88e96154ed3f.png
-'0x00158d0003cb436e':
-  friendly_name: Bedroom Motion
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  occupancy_timeout: 20
-  no_occupancy_since: []
   icon: device_icons/4858000fa9561bbf20da88e96154ed3f.png
 '0x00158d00039820ed':
   friendly_name: Workshop Door
@@ -279,16 +257,6 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/2e7485d54446698ed62425812fe12303.png
-'0x00158d000792773c':
-  friendly_name: Wardrobe Motion
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  occupancy_timeout: 8
-  icon: device_icons/4858000fa9561bbf20da88e96154ed3f.png
 '0xa4c13845111a6874':
   friendly_name: Dryer Socket
   homeassistant: {}

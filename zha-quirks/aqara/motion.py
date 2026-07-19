@@ -27,7 +27,8 @@ class AqaraOccupancyCluster(LocalDataCluster, OccupancyCluster):
 
         delay_s: int = {
             "00:15:8d:00:04:60:ba:df": 10,  # Hallway
-            "00:15:8d:00:07:92:77:3c": 10,  # Wardrobe
+            "00:15:8d:00:07:92:77:3c": 25,  # Wardrobe
+            "00:15:8d:00:03:cb:43:6e": 20,  # Bedroom
         }.get(str(self.endpoint.device.ieee), DEFAULT_DELAY_S)
 
         self._DEFAULT_VALUES = {

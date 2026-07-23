@@ -266,6 +266,9 @@ automation:
                       ]|random
                     }}
 
+              - action: light.turn_on
+                entity_id: light.entrance
+
           - conditions:
               - condition: state
                 entity_id: person.layma
@@ -276,6 +279,10 @@ automation:
                   target: all
                   type: attention
                   text: Жёнушка на пороге, готовься встречать
+
+              - action: light.turn_on
+                entity_id: light.entrance
+
         default:
           - action: script.yandex_station_tts
             data:

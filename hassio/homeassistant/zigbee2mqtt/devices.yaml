@@ -62,15 +62,6 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/2d19c1b8e82d9b72921bbd1fcbde4541.png
-'0x00158d00054da4c0':
-  friendly_name: Kitchen Curtains Motor
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/cc69377915a3830598dd400ff027ad38.png
 '0xa4c1388ef2d5a611':
   friendly_name: Bathroom Cold Water Valve
   homeassistant: {}

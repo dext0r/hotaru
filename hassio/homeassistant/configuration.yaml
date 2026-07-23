@@ -128,7 +128,9 @@ recorder:
       - cover
       - fan
       - humidifier
+      - input_boolean
       - input_datetime
+      - input_select
       - light
       - lock
       - media_player
@@ -138,19 +140,9 @@ recorder:
       - switch
       - weather
     entities:
-      - input_boolean.climate_control
-      - input_boolean.everyone_left_home
-      - input_boolean.light_control
-      - input_boolean.lock_control
-      - input_boolean.scooter_charged
-      - input_select.home_mode
       - select.intercom_mode
       - number.living_room_humidifier_fan_speed
       - switch.bedroom_moon_light_charger # обход исключения switch.*_light*
-    entity_globs:
-      - input_boolean.*_airing_*
-      - input_boolean.scene_*
-      - input_select.*_status  # состояние стиралки/посудомойки/сушилки
   exclude:
     entities:
       - automation.yandex_station_busy
@@ -171,6 +163,8 @@ recorder:
       - binary_sensor.*workday*
       - binary_sensor.workday*
       - binary_sensor.*_light_alert_available # доступность функции "уведомление через диодик"
+      - input_boolean.*_airing_* # проветривания, статус отслеживается через выключатель
+      - input_boolean.porch_light_dimmed
       - light.workshop_main_* # обрабатывается как единое целое
       - sensor.*_raw
       - sensor.person_pronoun_*

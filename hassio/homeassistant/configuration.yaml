@@ -11,9 +11,10 @@ homeassistant:
   packages:
     ac_bedroom: !include devices/ac/bedroom.yaml
     ac_workshop: !include devices/ac/workshop.yaml
-    alert_devices: !include alert/devices.yaml
-    alert_security: !include alert/security.yaml
-    alert_sensors: !include alert/sensors.yaml
+    activity_waking_up: !include activities/waking_up.yaml
+    alert_devices: !include alerts/devices.yaml
+    alert_security: !include alerts/security.yaml
+    alert_sensors: !include alerts/sensors.yaml
     alice_tests: !include devices/alice_tests.yaml
     buttons_bathroom: !include devices/buttons/bathroom.yaml
     buttons_bedroom: !include devices/buttons/bedroom.yaml
@@ -84,7 +85,6 @@ homeassistant:
     scene_overnight_guests: !include scenes/overnight_guests.yaml
     scene_sleepy_mood: !include scenes/sleepy_mood.yaml
     scene_wait_guests: !include scenes/wait_guests.yaml
-    scene_waking_up: !include scenes/waking_up.yaml
     scooter: !include devices/scooter.yaml
     stove: !include devices/stove.yaml
     washing_machine: !include devices/washing_machine.yaml

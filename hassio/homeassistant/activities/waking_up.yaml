@@ -1,0 +1,45 @@
+# Активность "пробуждение": когда все спят, но надо собираться на работу
+input_boolean:
+  waking_up:
+    name: Waking Up
+    icon: mdi:sun-clock-outline
+
+automation:
+  - id: waking_up_start
+    alias: 'Waking Up: Start'
+    triggers:
+      - trigger: switch.turned_on
+        note: Включается по кнопке в ванной
+        target:
+          entity_id: input_boolean.waking_up
+    actions:
+      - action: light.turn_on
+        target:
+          entity_id: light.bathroom_main
+        data:
+          brightness_pct: 22
+
+  - id: waking_up_end
+    alias: 'Waking Up: End'
+    triggers:
+      - trigger: door.opened
+        target:
+          entity_id: binary_sensor.front_door
+
+      - trigger: state
+        entity_id: input_select.home_mode
+
+      - trigger: switch.turned_on
+        target:
+          entity_id: input_boolean.waking_up
+        options:
+          for:
+            hours: 2
+    conditions:
+      - condition: switch.is_on
+        target:
+          entity_id: input_boolean.waking_up
+    action:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.waking_up

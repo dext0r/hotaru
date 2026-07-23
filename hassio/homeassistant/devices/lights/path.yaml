@@ -21,9 +21,9 @@ automation:
         entity_id: input_select.home_mode
         state: Night
 
-      - condition: state
-        entity_id: input_boolean.scene_waking_up
-        state: 'off'
+      - condition: switch.is_off
+        target:
+          entity_id: input_boolean.waking_up
     actions:
       - action: light.turn_on
         entity_id: group.bathroom_path_lights

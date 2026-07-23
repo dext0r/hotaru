@@ -111,9 +111,9 @@ automation:
   - id: front_door_auto_lock_start_timer
     alias: 'Front Door Auto Lock: Start timer'
     triggers:
-      - trigger: state
-        entity_id: input_boolean.scene_waking_up
-        to: 'off'
+      - trigger: switch.turned_off
+        target:
+          entity_id: input_boolean.waking_up
 
       # + планируется экранчик у входной двери
     conditions:
@@ -122,7 +122,7 @@ automation:
         state: 'on'
 
       - condition: door.is_open
-        note: Открытие двери -> Завершение scene_waking_up
+        note: Открытие двери -> Завершение waking_up
         target:
           entity_id: binary_sensor.front_door
     actions:

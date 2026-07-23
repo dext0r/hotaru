@@ -12,7 +12,7 @@ template:
       state: >
         {{
           is_state('input_boolean.scene_movie', 'on') or
-          is_state('input_boolean.scene_waking_up', 'on') or
+          is_state('input_boolean.waking_up', 'on') or
           is_state('input_boolean.scene_sleepy_mood', 'on')
         }}
 

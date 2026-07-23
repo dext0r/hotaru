@@ -15,7 +15,7 @@ template:
           {% set mode = 'manual' %}
         {% endif %}
 
-        {% if is_state('input_boolean.scene_waking_up', 'off') or is_state('input_boolean.scene_overnight_guests', 'on') %}
+        {% if is_state('input_boolean.waking_up', 'off') or is_state('input_boolean.scene_overnight_guests', 'on') %}
           {% if is_state('binary_sensor.anyone_home', 'off') or
                 is_state('input_boolean.scene_sleepy_mood', 'on') or
                 is_state('input_select.home_mode', 'Night') %}
@@ -79,7 +79,7 @@ template:
 
           {% if speed >= 80 %}
               {% if is_state('binary_sensor.living_room_occupancy', 'off') or
-                    is_state('input_boolean.scene_waking_up', 'on') or
+                    is_state('input_boolean.waking_up', 'on') or
                     not is_state('person.layma', 'home') %}
                 {% set speed = 100 %}
               {% endif %}
@@ -104,7 +104,7 @@ automation:
           - binary_sensor.living_room_occupancy
           - input_boolean.scene_movie
           - input_boolean.scene_sleepy_mood
-          - input_boolean.scene_waking_up
+          - input_boolean.waking_up
           - input_number.home_target_humidity
           - input_select.home_mode
 
@@ -262,7 +262,7 @@ automation:
         entity_id:
           - input_select.home_mode
           - binary_sensor.anyone_home
-          - input_boolean.scene_waking_up
+          - input_boolean.waking_up
           - input_boolean.living_room_humidifier_control
     conditions:
       - condition: template
@@ -271,9 +271,9 @@ automation:
     actions:
       - if:
           - or:
-              - condition: state
-                entity_id: input_boolean.scene_waking_up
-                state: 'on'
+              - condition: switch.is_on
+                target:
+                  entity_id: input_boolean.waking_up
 
               - condition: state
                 entity_id: input_select.home_mode

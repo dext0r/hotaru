@@ -64,7 +64,7 @@ template:
       icon: mdi:target-variant
       state: >
         {{ states('input_select.home_mode') in ('Day', 'Vacation') or
-           is_state('input_boolean.scene_waking_up', 'on') }}
+           is_state('input_boolean.waking_up', 'on') }}
 
 automation:
   - id: bedroom_humidifier_update
@@ -80,7 +80,7 @@ automation:
         entity_id:
           - input_number.home_target_humidity
           - input_select.home_mode
-          - input_boolean.scene_waking_up
+          - input_boolean.waking_up
 
       - platform: state
         entity_id: sensor.ups_status

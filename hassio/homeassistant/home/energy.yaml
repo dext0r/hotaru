@@ -226,6 +226,19 @@ template:
         unit_of_measurement: W
         device_class: power
 
+  - sensor:
+      - name: Input Voltage
+        device_class: voltage
+        unit_of_measurement: V
+        state: >
+          {{ states('sensor.ups_input_voltage')|float(0) }}
+        availability: >
+          {{ states('sensor.ups_input_voltage') not in ['unavailable', 'unknown'] }}
+
+      - name: Energy Tariff
+        unit_of_measurement: RUB/kWh
+        state: '4.21'
+
 sensor:
   - platform: integration
     unique_id: sensor.iot_energy

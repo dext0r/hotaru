@@ -11,6 +11,6 @@ run = "uv sync --reinstall && rm -f .venv/patched"
 [deps.patch-esphome]
 auto = true
 depends = ["uv"]
-run = "patch -d .venv/lib/python*/site-packages/esphome -p 1 -f < patches/device-model-202602.patch && touch .venv/patched"
-sources = ["patches/device-model-202602.patch"]
+run = "patch -d .venv/lib/python*/site-packages/esphome -p 1 -f < patches/device-model-202607.patch && touch .venv/patched"
+sources = ["patches/device-model-202607.patch"]
 outputs = [".venv/patched"]

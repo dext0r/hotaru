@@ -34,7 +34,8 @@ esphome:
     # AudioOutputSPIFFSWAV.cpp AudioFileSourceSPIFFS.h AudioFileSourceFS.cpp
     # AudioFileSourceICYStream.cpp AudioFileSourceHTTPStream.cpp AudioFileSourceHTTPStream.h
     # AudioFileSourceICYStream.h AudioFileSourceSD.cpp AudioFileSourceSD.h
-    - ESP8266Audio=file://../../../lib/ESP8266Audio
+    - ESP8266Audio=file:///Users/dextor/Projects/hotaru/esphome/lib/ESP8266Audio
+    - SPI
 
   on_boot:
     priority: -100

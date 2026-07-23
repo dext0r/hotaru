@@ -1,7 +1,7 @@
 # Абсолютно белая розетка с чипом T1-CHL
 
 packages:
-  base: !include ../common/bk7238.yaml
+  base: !include ../common/base.yaml
   bl0937: !include ../common/bl0937.yaml
 
 substitutions:
@@ -30,6 +30,9 @@ esphome:
             - lambda: return ${power_led};
           then:
             - light.turn_on: push_button_led
+
+bk72xx:
+  board: generic-bk7238-tuya
 
 logger:
   baud_rate: 0

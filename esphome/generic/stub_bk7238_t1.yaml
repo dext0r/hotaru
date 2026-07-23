@@ -1,6 +1,8 @@
 packages:
-  base: !include ../common/bk7238.yaml
+  base: !include ../common/base.yaml
 
 esphome:
   name: bk7238-t1
 
+bk72xx:
+  board: generic-bk7238-tuya

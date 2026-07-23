@@ -28,6 +28,9 @@ esphome:
           then:
             - light.turn_on: push_button_led
 
+ln882x:
+  board: generic-ln882h
+
 logger:
   baud_rate: 0 # иначе будет тускло светиться диодик
 

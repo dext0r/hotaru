@@ -7,4 +7,4 @@ wifi:
 captive_portal: !remove
 
 ln882x:
-  board: generic-ln882hki
+  board: generic-ln882h

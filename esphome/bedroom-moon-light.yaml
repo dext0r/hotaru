@@ -21,6 +21,17 @@ esphome:
 logger:
   baud_rate: 0
 
+globals:
+  - id: current_ir_brightness
+    type: int
+    restore_value: no
+    initial_value: '0'
+
+  - id: current_ir_color
+    type: int
+    restore_value: no
+    initial_value: '0'
+
 remote_receiver:
   pin:
     number: 5
@@ -42,110 +53,76 @@ light:
     blue: dummy_pmw
     default_transition_length: 0s
     on_state:
-      - lambda: |-
-          static int current_ir_brightness = 0;
-          static long current_ir_color = 0;
+      - if:
+          condition:
+            light.is_off: light_rgb
+          then:
+            - remote_transmitter.transmit_nec:
+                address: 0xEF00
+                command: 0xFD02 # turn off
 
-          LightColorValues v = id(light_rgb).remote_values;
-          remote_base::NECAction<> *ir_action;
-          ir_action = new remote_base::NECAction<>();
-          ir_action->set_transmitter(id(ir));
-          ir_action->set_command_repeats(1);
-          ir_action->set_address(0xEF00);
+      - if:
+          condition:
+            light.is_on: light_rgb
+          then:
+            - remote_transmitter.transmit_nec:
+                address: 0xEF00
+                command: 0xFC03 # turn on
 
-          if (id(light_rgb).remote_values.is_on()) {
-            // turn on
-            ir_action->set_command(0xFC03);
-            ir_action->play_complex();
-          } else {
-            // turn off
-            ir_action->set_command(0xFD02);
-            ir_action->play_complex();
-          }
+            - if:
+                condition:
+                  lambda: |-
+                    auto v = id(light_rgb).remote_values;
+                    int target_color = rgbToInt(int(v.get_red() * 255), int(v.get_green() * 255), int(v.get_blue() * 255));
+                    return target_color != id(current_ir_color);
+                then:
+                  - remote_transmitter.transmit_nec:
+                      address: 0xEF00
+                      command: !lambda |-
+                        auto v = id(light_rgb).remote_values;
+                        int target_color = rgbToInt(int(v.get_red() * 255), int(v.get_green() * 255), int(v.get_blue() * 255));
+                        id(current_ir_color) = target_color;
+                        switch (target_color) {
+                          case 16777215: return 0xF807;  // white
+                          case 16714250: return 0xFB04;  // red       (R)
+                          case 16727040: return 0xF708;  // orange    (R-1)
+                          case 16729907: return 0xF30C;  // coral     (R-2)
+                          case 13303562: return 0xEF10;  // lime      (R-3)
+                          case 16740362: return 0xEB14;  // yellow    (R-4)
+                          case 720711:   return 0xFA05;  // green     (G)
+                          case 720813:   return 0xF609;  // emerald   (G-1)
+                          case 720883:   return 0xF20D;  // turquoise (G-2)
+                          case 15067647: return 0xEE11;  // moonlight (G-3)
+                          case 710399:   return 0xEA15;  // cyan      (G-4)
+                          case 673791:   return 0xF906;  // blue      (B)
+                          case 11340543: return 0xF50A;  // violet    (B-1)
+                          case 8719103:  return 0xF10E;  // lavender  (B-2)
+                          case 16714393: return 0xED12;  // orchid    (B-3)
+                          case 16714471: return 0xE916;  // purple    (B-4)
+                          case 16722742: return 0xE916;  // mauve
+                          case 16711765: return 0xE916;  // raspberry
+                          default:       return 0x0000;
+                        }
 
-          if (id(light_rgb).remote_values.is_on()) {
-            int target_color = rgbToInt(int(v.get_red() * 255), int(v.get_green() * 255), int(v.get_blue() * 255));
-            if (target_color != current_ir_color) {
-              current_ir_color = target_color;
-              ir_action->set_command(0x0000);
+            - while:
+                condition:
+                  lambda: 'return int(id(light_rgb).remote_values.get_brightness() * 10) > id(current_ir_brightness);'
+                then:
+                  - lambda: 'id(current_ir_brightness)++;'
+                  - remote_transmitter.transmit_nec:
+                      address: 0xEF00
+                      command: 0xFF00
+                  - delay: 10ms
 
-              switch (target_color) {
-                case 16777215: // white
-                  ir_action->set_command(0xF807);
-                  break;
-                case 16714250: // red
-                  ir_action->set_command(0xFB04); // R
-                  break;
-                case 16727040: // orange
-                  ir_action->set_command(0xF708); // R-1
-                  break;
-                case 16729907: // coral
-                  ir_action->set_command(0xF30C); // R-2
-                  break;
-                case 13303562: // lime
-                  ir_action->set_command(0xEF10); // R-3
-                  break;
-                case 16740362: // yellow
-                  ir_action->set_command(0xEB14); // R-4
-                  break;
-                case 720711: // green
-                  ir_action->set_command(0xFA05); // G
-                  break;
-                case 720813: // emerald
-                  ir_action->set_command(0xF609); // G-1
-                  break;
-                case 720883: // turquoise
-                  ir_action->set_command(0xF20D); // G-2
-                  break;
-                case 15067647: // moonlight
-                  ir_action->set_command(0xEE11); // G-3
-                  break;
-                case 710399: // cyan
-                  ir_action->set_command(0xEA15); // G-4
-                  break;
-                case 673791: // blue
-                  ir_action->set_command(0xF906); // B
-                  break;
-                case 11340543: // violet
-                  ir_action->set_command(0xF50A); // B-1
-                  break;
-                case 8719103: // lavender
-                  ir_action->set_command(0xF10E); // B-2
-                  break;
-                case 16714393: // orchid
-                  ir_action->set_command(0xED12); // B-3
-                  break;
-                case 16714471: // purple
-                  ir_action->set_command(0xE916); // B-4
-                  break;
-                case 16722742: // mauve
-                  ir_action->set_command(0xE916);
-                  break;
-                case 16711765: // raspberry
-                  ir_action->set_command(0xE916);
-                  break;
-              }
-              ir_action->play_complex();
-            }
-
-            int target_brightness = v.get_brightness() * 10;
-            if (target_brightness > current_ir_brightness) {
-              while (target_brightness != current_ir_brightness) {
-                current_ir_brightness++;
-                ir_action->set_command(0xFF00);
-                ir_action->play_complex();
-                delay(10);
-              }
-            }
-            else if (target_brightness < current_ir_brightness) {
-              while (target_brightness != current_ir_brightness) {
-                current_ir_brightness--;
-                ir_action->set_command(0xFE01);
-                ir_action->play_complex();
-                delay(10);
-              }
-            }
-          }
+            - while:
+                condition:
+                  lambda: 'return int(id(light_rgb).remote_values.get_brightness() * 10) < id(current_ir_brightness);'
+                then:
+                  - lambda: 'id(current_ir_brightness)--;'
+                  - remote_transmitter.transmit_nec:
+                      address: 0xEF00
+                      command: 0xFE01
+                  - delay: 10ms
 
   - id: string_light_w
     platform: binary

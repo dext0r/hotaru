@@ -143,6 +143,7 @@ recorder:
       - select.intercom_mode
       - number.living_room_humidifier_fan_speed
       - switch.bedroom_moon_light_charger # обход исключения switch.*_light*
+      - timer.come_back_soon
   exclude:
     entities:
       - automation.yandex_station_busy

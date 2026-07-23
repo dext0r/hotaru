@@ -127,6 +127,10 @@ automation:
         entity_id: binary_sensor.anyone_home
         state: 'on'
 
+      - condition: timer.is_idle
+        target:
+          entity_id: timer.come_back_soon
+
       - condition: state
         entity_id: input_select.home_mode
         state: Day

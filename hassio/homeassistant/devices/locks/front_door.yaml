@@ -1,6 +1,6 @@
 automation:
-  - id: front_door_lock
-    alias: 'Front Door: Lock'
+  - id: front_door_lock_anyone_home
+    alias: 'Front Door: Lock (anyone home)'
     mode: restart
     description: Закрытие входной двери когда её недавно закрыли и остались дома
     triggers:
@@ -14,6 +14,10 @@ automation:
       - condition: state
         entity_id: input_boolean.lock_control
         state: 'on'
+
+      - condition: timer.is_idle
+        target:
+          entity_id: timer.come_back_soon
 
       - condition: lock.is_unlocked
         target:
@@ -48,6 +52,31 @@ automation:
           - action: lock.lock
             target:
               entity_id: lock.front_door
+
+  - id: front_door_lock_no_one_comes_back
+    alias: 'Front Door: Lock (no one comes back)'
+    mode: restart
+    description: Закрытие входной двери когда сказали "скоро вернусь" и не вернулись
+    triggers:
+      - trigger: timer.finished
+        target:
+          entity_id: timer.come_back_soon
+    conditions:
+      - condition: state
+        entity_id: input_boolean.lock_control
+        state: 'on'
+
+      - condition: lock.is_unlocked
+        target:
+          entity_id: lock.front_door
+
+      - condition: door.is_closed
+        target:
+          entity_id: binary_sensor.front_door
+    actions:
+      - action: lock.lock
+        target:
+          entity_id: lock.front_door
 
   - id: front_door_auto_lock
     alias: 'Front Door: Auto lock'
@@ -99,6 +128,10 @@ automation:
       - trigger: timer.started
         target:
           entity_id: timer.front_door_auto_unlock
+
+      - trigger: timer.started
+        target:
+          entity_id: timer.come_back_soon
     conditions:
       - condition: lock.is_locked
         target:

@@ -112,6 +112,45 @@ automation:
       - action: switch.turn_{{ trigger.to_state.state }}
         entity_id: switch.north_balcony_presence_led
 
+  - id: come_back_soon_on_by_voice
+    alias: 'Come Back Soon: On (by voice)'
+    triggers:
+      - trigger: event
+        event_type: yandex_intent
+        event_data:
+          text: Скоро вернусь
+    actions:
+      - action: timer.start
+        target:
+          entity_id: timer.come_back_soon
+
+      - action: script.turn_on
+        target:
+          entity_id: script.yandex_station_tts
+        data:
+          variables:
+            target: >
+              {{ trigger.event.data.get('entity_id', 'last') }}
+            text: >
+              {{ ['Жду с нетерпением назад', 'Поскорее возвращайся, буду ждать'] | random }}
+
+  - id: come_back_soon_off
+    alias: 'Come Back Soon: Off'
+    triggers:
+      - trigger: state
+        entity_id:
+          - person.dextor
+          - person.layma
+        to: home
+    conditions:
+      - condition: timer.is_active
+        target:
+          entity_id: timer.come_back_soon
+    actions:
+      - action: timer.cancel
+        target:
+          entity_id: timer.come_back_soon
+
 device_tracker_template:
   - unique_id: device_tracker.misaka_near_home
     name: Misaka Near Home
@@ -173,6 +212,13 @@ template:
         device_class: presence
         delay_off:
           minutes: 7
+
+timer:
+  come_back_soon:
+    name: Come Back Soon
+    icon: mdi:home-clock-outline
+    duration:
+      minutes: 45
 
 zone:
   - name: Home

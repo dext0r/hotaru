@@ -99,7 +99,9 @@ automation:
       - or:
           - condition: template
             value_template: >
-              {{ trigger.event.data.new_state and trigger.event.data.new_state.state == 'unavailable' }}
+              {{ trigger.event.data.new_state and
+                 trigger.event.data.new_state.state == 'unavailable' and
+                 trigger.event.data.new_state.entity_id != 'media_player.ps5' }}
 
           - condition: template
             value_template: >

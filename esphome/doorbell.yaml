@@ -37,7 +37,7 @@ external_components:
   - source:
       type: git
       url: https://github.com/bazuchan/esphome-ttlock
-      ref: b8b35231eb180aacabce773c8d64dd32961e977a
+      ref: ff5caab7f47077f6c70a46dde9a2b39685be860f
       path: esphome-ttlock/components
     components:
       - ttlock
@@ -175,7 +175,7 @@ lock:
     platform: template
     device_id: front_door_lock
     lambda: |-
-      auto state = id(lock_control).Lock::state; // TODO: временно
+      auto state = id(lock_control).state;
       if (state == LOCK_STATE_LOCKING || state == LOCK_STATE_UNLOCKING) {
         return state;
       }

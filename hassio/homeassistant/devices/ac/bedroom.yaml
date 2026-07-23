@@ -33,9 +33,9 @@ automation:
       - action: switch.turn_off
         entity_id: switch.bedroom_ac_display
 
-  - id: bedroom_ac_turn_on
-    alias: 'Bedroom AC: Turn on'
-    max_exceeded: silent
+  - id: bedroom_ac_cool_for_sleep
+    alias: 'Bedroom AC: Cool for sleep'
+    description: Пытается охладить комнату в морозильник перед сном
     triggers:
       - trigger: time
         at: '23:00:00'
@@ -61,7 +61,36 @@ automation:
         entity_id: climate.bedroom_ac
         data:
           hvac_mode: cool
+          temperature: 20
+
+      - delay:
+          seconds: 5
+
+      - action: climate.set_fan_mode
+        entity_id: climate.bedroom_ac
+        data:
+          fan_mode: high
+
+  - id: bedroom_ac_night_cool
+    alias: 'Bedroom AC: Night cool'
+    description: Переключает кондиционер в ночное охлаждение
+    triggers:
+      - trigger: state
+        entity_id: input_select.home_mode
+        to: Night
+    conditions:
+      - condition: state
+        entity_id: climate.bedroom_ac
+        state: cool
+    actions:
+      - action: climate.set_temperature
+        entity_id: climate.bedroom_ac
+        data:
+          hvac_mode: cool
           temperature: 22
+
+      - delay:
+          seconds: 5
 
       - action: climate.set_fan_mode
         entity_id: climate.bedroom_ac

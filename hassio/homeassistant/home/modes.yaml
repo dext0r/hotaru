@@ -1,0 +1,14 @@
+input_select:
+  home_mode:
+    name: Home Mode
+    options:
+      - Day
+      - Night
+      - Vacation
+
+  season:
+    name: Season
+    icon: mdi:sun-snowflake-variant
+    options:
+      - Winter
+      - Summer

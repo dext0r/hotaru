@@ -33,16 +33,18 @@ homeassistant:
     fridge: !include devices/fridge.yaml
     home_common: !include home/common.yaml
     home_energy: !include home/energy.yaml
-    home_good_morning: !include home/good_morning.yaml
-    home_good_night: !include home/good_night.yaml
     home_kitchen: !include home/kitchen.yaml
     home_pills: !include home/pills.yaml
     home_presence: !include home/presence.yaml
     home_smoke: !include home/smoke.yaml
     home_water: !include home/water.yaml
-    home_vacation: !include home/vacation.yaml
     home_welcome_home: !include home/welcome_home.yaml
+    home_modes: !include home/modes.yaml
+    home_mode_night: !include home/modes/night.yaml
+    home_mode_morning: !include home/modes/morning.yaml
+    home_mode_day: !include home/modes/day.yaml
     home_mode_evening: !include home/modes/evening.yaml
+    home_mode_vacation: !include home/modes/vacation.yaml
     hotaru: !include devices/hotaru.yaml
     humidifiers_bedroom: !include devices/humidifiers/bedroom.yaml
     humidifiers_living_room: !include devices/humidifiers/living_room.yaml

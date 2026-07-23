@@ -102,6 +102,22 @@ automation:
         target:
           entity_id: lock.porch_door
 
+  - id: porch_door_emergency_unlock
+    alias: 'Porch Door: Emergency unlock'
+    description: У Danalock опять улета калибровка и он не может открыться :(
+    triggers:
+      - trigger: state
+        entity_id: input_button.porch_door_lock_emergency_unlock
+    actions:
+      - action: button.press
+        target:
+          entity_id: button.porch_porch_door_lock_auto_calibration
+
+      - action: notify.dextor
+        data:
+          message: >
+            🛟 Дверь на крыльце открыта аварийно. Калибровка замка сброшена.
+
   - id: porch_door_lock_restore_after_failed_auto_unlock
     alias: 'Porch Door Lock: Restore after failed auto unlock'
     triggers:
@@ -272,3 +288,8 @@ timer:
     icon: mdi:lock-open-check-outline
     duration:
       minutes: 2
+
+input_button:
+  porch_door_lock_emergency_unlock:
+    name: 'Porch Door Lock: Emergency unlock'
+    icon: mdi:lock-open-alert

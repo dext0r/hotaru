@@ -202,15 +202,6 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/5816cec5864b2553c5c835aefa557722.png
-'0x588e81fffe43ce4f':
-  friendly_name: Porch Door Lock
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/f9edd10ffbe83265affdd72393f886b8.png
 '0xa4c138edaeb5d672':
   friendly_name: Workshop Presence
   homeassistant: {}

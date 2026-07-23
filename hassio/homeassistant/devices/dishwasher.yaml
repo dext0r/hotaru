@@ -12,22 +12,44 @@ input_select:
 automation:
   - id: dishwasher_cycle
     alias: 'Dishwasher: Cycle'
-    mode: restart
-    trigger:
-      platform: state
-      entity_id: sensor.dishwasher_progress
-      from: Idle
-      to:
-        - Pre-wash
-        - Wash
-    action:
-      - service: input_select.select_option
+    mode: single
+    max_exceeded: silent
+    triggers:
+      - id: power
+        trigger: numeric_state
+        entity_id: sensor.dishwasher_power
+        note: Резерв на случай отвала облака или перезапуска HA
+        above: 10
+        for:
+          seconds: 15
+
+      - id: progress
+        trigger: state
+        entity_id: sensor.dishwasher_progress
+        from: Idle
+        to:
+          - Pre-wash
+          - Wash
+    conditions:
+      - or:
+          - condition: trigger
+            id: progress
+
+          - and:
+              - condition: trigger
+                id: power
+
+              - condition: state
+                entity_id: input_select.dishwasher_status
+                state: Idle
+    actions:
+      - action: input_select.select_option
         entity_id: input_select.dishwasher_status
         data:
           option: Running
 
       - wait_for_trigger:
-          - platform: state
+          - trigger: state
             entity_id: sensor.dishwasher_progress
             to:
               - Complete

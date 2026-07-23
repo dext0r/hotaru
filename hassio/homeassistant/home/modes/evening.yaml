@@ -120,3 +120,32 @@ automation:
             data:
               color_temp_kelvin: 2700
               brightness_pct: 100
+
+template:
+  - trigger:
+      - platform: time_pattern
+        seconds: /30
+    binary_sensor:
+      - name: Evening time (north)
+        unique_id: binary_sensor.evening_time_north
+        state: >-
+          {% set illuminance = states('sensor.illuminance_north_side') | int(-1) %}
+          {% set elevation = state_attr('sun.sun', 'elevation') | float %}
+          {% set by_sensor = 0 <= illuminance < 200 and elevation < 14 %}
+          {% set no_sensor = illuminance == -1 and elevation < 5 %}
+
+          {{ now().hour > 12 and (by_sensor or no_sensor) }}
+        auto_off: >-
+          {{ (today_at('23:59:59') - now()).total_seconds() | int }}
+
+      - name: Evening time (south)
+        unique_id: binary_sensor.evening_time_south
+        state: >-
+          {% set illuminance = states('sensor.illuminance_south_side') | int(-1) %}
+          {% set elevation = state_attr('sun.sun', 'elevation') | float %}
+          {% set by_sensor = 0 <= illuminance < 105 and elevation < 14 %}
+          {% set no_sensor = illuminance == -1 and elevation < 5 %}
+
+          {{ now().hour > 12 and (by_sensor or no_sensor) }}
+        auto_off: >-
+          {{ (today_at('23:59:59') - now()).total_seconds() | int }}

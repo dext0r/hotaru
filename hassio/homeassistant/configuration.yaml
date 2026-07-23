@@ -42,6 +42,7 @@ homeassistant:
     home_water: !include home/water.yaml
     home_vacation: !include home/vacation.yaml
     home_welcome_home: !include home/welcome_home.yaml
+    home_mode_evening: !include home/modes/evening.yaml
     hotaru: !include devices/hotaru.yaml
     humidifiers_bedroom: !include devices/humidifiers/bedroom.yaml
     humidifiers_living_room: !include devices/humidifiers/living_room.yaml
@@ -79,7 +80,6 @@ homeassistant:
     portable_fan: !include devices/portable_fan.yaml
     portable_heater: !include devices/portable_heater.yaml
     scene_delivery: !include scenes/delivery.yaml
-    scene_evening: !include scenes/evening.yaml
     scene_meal: !include scenes/meal.yaml
     scene_movie: !include scenes/movie.yaml
     scene_overnight_guests: !include scenes/overnight_guests.yaml

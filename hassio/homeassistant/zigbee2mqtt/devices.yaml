@@ -44,15 +44,6 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/8da97afa2d57d9d2e86756a4aa2a6072.png
-'0x00158d000392f2f4':
-  friendly_name: Dishwasher Door
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/5af4a3a117c693914f063f9e87cd28de.png
 '0x00158d00045683bc':
   friendly_name: Kitchen Water Leak
   homeassistant: {}
@@ -98,15 +89,6 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/5af4a3a117c693914f063f9e87cd28de.png
-'0x00158d0006e9f7c0':
-  friendly_name: Bathroom Washing Machine Water Leak
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/2d19c1b8e82d9b72921bbd1fcbde4541.png
 '0x00158d0007110231':
   friendly_name: Bathroom Sink Water Leak
   homeassistant: {}
@@ -211,15 +193,6 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/1b207aa49030115625a437e32f945d49.png
-'0x00158d0002b18458':
-  friendly_name: Living Room Balcony Door
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  temperature_precision: 1
-  retain: true
-  icon: device_icons/5816cec5864b2553c5c835aefa557722.png
 '0x00158d0002b18350':
   friendly_name: Workshop Window
   homeassistant: {}

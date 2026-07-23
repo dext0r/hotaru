@@ -15,7 +15,7 @@ template:
           {% set mode = 'manual' %}
         {% endif %}
 
-        {% if is_state('input_boolean.waking_up', 'off') or is_state('input_boolean.scene_overnight_guests', 'on') %}
+        {% if is_state('input_boolean.waking_up', 'off') or is_state('input_boolean.overnight_guests', 'on') %}
           {% if is_state('binary_sensor.anyone_home', 'off') or
                 is_state('input_boolean.scene_sleepy_mood', 'on') or
                 is_state('input_select.home_mode', 'Night') %}

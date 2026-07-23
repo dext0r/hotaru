@@ -3873,14 +3873,14 @@ views:
             name: Sleepy mood
             secondary_info: none
           - type: custom:mushroom-entity-card
-            entity: input_boolean.scene_wait_guests
+            entity: input_boolean.waiting_guests
             tap_action:
               action: more-info
             layout: vertical
             name: Wait guests
             secondary_info: none
           - type: custom:mushroom-entity-card
-            entity: input_boolean.scene_overnight_guests
+            entity: input_boolean.overnight_guests
             tap_action:
               action: more-info
             layout: vertical

@@ -1,20 +1,25 @@
 input_boolean:
-  scene_wait_guests:
-    name: 'Scene: Wait guests'
+  waiting_guests:
+    name: Waiting guests
     icon: mdi:account-star-outline
     initial: false
 
+  overnight_guests:
+    name: Overnight guests
+    icon: mdi:wizard-hat
+    initial: false
+
 automation:
-  - id: scene_wait_guests_turn_on
-    alias: 'Scene Wait Guests: Turn on'
+  - id: waiting_guests_on_by_voice
+    alias: 'Waiting Guests: On (by voice)'
     triggers:
-      - platform: event
+      - trigger: event
         event_type: yandex_intent
         event_data:
           text: Ждём гостей
     actions:
       - action: input_boolean.turn_on
-        entity_id: input_boolean.scene_wait_guests
+        entity_id: input_boolean.waiting_guests
 
       - action: script.yandex_station_tts
         data:
@@ -28,16 +33,16 @@ automation:
                ]|random
             }}
 
-  - id: scene_wait_guests_turn_on_light
-    alias: 'Scene Wait Guests: Turn on lights'
+  - id: waiting_guests_turn_on_light
+    alias: 'Waiting Guests: Turn on lights'
     triggers:
       - trigger: door.opened
         target:
           entity_id: binary_sensor.front_door
     conditions:
-      - condition: state
-        entity_id: input_boolean.scene_wait_guests
-        state: 'on'
+      - condition: switch.is_on
+        target:
+          entity_id: input_boolean.waiting_guests
 
       - condition: state
         entity_id: input_select.home_mode
@@ -50,22 +55,36 @@ automation:
       - action: light.turn_on
         entity_id: light.entrance
 
-  - id: scene_wait_guests_turn_off
-    alias: 'Scene Wait Guests: Turn off'
+  - id: waiting_guests_off
+    alias: 'Waiting Guests: Off'
     triggers:
       - trigger: door.opened
         target:
           entity_id: binary_sensor.front_door
 
-      - trigger: state
-        entity_id: input_boolean.scene_wait_guests
-        to: 'on'
-        for:
-          hours: 1
+      - trigger: switch.turned_on
+        target:
+          entity_id: input_boolean.waiting_guests
+        options:
+          for:
+            hours: 1
     conditions:
-      - condition: state
-        entity_id: input_boolean.scene_wait_guests
-        state: 'on'
+      - condition: switch.is_on
+        target:
+          entity_id: input_boolean.waiting_guests
     actions:
       - action: input_boolean.turn_off
-        entity_id: input_boolean.scene_wait_guests
+        entity_id: input_boolean.waiting_guests
+
+  - id: overnight_guests_off_by_timeout
+    alias: 'Overnight Guests: Off (by timeout)'
+    triggers:
+      - trigger: switch.turned_on
+        target:
+          entity_id: input_boolean.overnight_guests
+        options:
+          for:
+            hours: 14
+    actions:
+      - action: input_boolean.turn_off
+        entity_id: input_boolean.overnight_guests

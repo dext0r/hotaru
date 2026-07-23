@@ -201,7 +201,7 @@ automation:
           - condition: state
             entity_id:
               - binary_sensor.anyone_near_home
-              - input_boolean.scene_wait_guests
+              - input_boolean.waiting_guests
             state: 'on'
             match: any
     actions:

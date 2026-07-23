@@ -7,7 +7,7 @@ views:
     type: custom:vertical-layout
     layout:
       column: 3
-      '--control-height': 12px
+      "--control-height": 12px
     badges: []
     cards:
       - type: horizontal-stack
@@ -28,8 +28,8 @@ views:
       - type: horizontal-stack
         cards:
           - type: custom:mushroom-template-card
-            primary: '{{ states(''input_select.home_mode'') }}'
-            secondary: ''
+            primary: "{{ states('input_select.home_mode') }}"
+            secondary: ""
             icon: |-
               {% set state = states('input_select.home_mode') %}
 
@@ -56,7 +56,7 @@ views:
             features_position: bottom
           - type: custom:mushroom-legacy-template-card
             primary: Door
-            secondary: ''
+            secondary: ""
             icon: |
               {% if is_state('lock.front_door', 'locked') %}
               mdi:lock
@@ -93,7 +93,7 @@ views:
             layout: horizontal
           - type: custom:mushroom-legacy-template-card
             primary: Porch
-            secondary: ''
+            secondary: ""
             icon: |
               {% if is_state('lock.porch_door', 'locked') %}
               mdi:lock
@@ -317,7 +317,7 @@ views:
                 secondary_info: last-changed
         view_layout:
           show:
-            mediaquery: '(min-width: 800px)'
+            mediaquery: "(min-width: 800px)"
       - type: vertical-stack
         cards:
           - square: false
@@ -356,7 +356,7 @@ views:
                 layout: vertical
         view_layout:
           show:
-            mediaquery: '(min-width: 800px)'
+            mediaquery: "(min-width: 800px)"
       - type: horizontal-stack
         cards:
           - type: tile
@@ -379,7 +379,7 @@ views:
             name: Fridge
         view_layout:
           show:
-            mediaquery: '(min-width: 800px)'
+            mediaquery: "(min-width: 800px)"
       - type: custom:layout-break
       - type: custom:mushroom-chips-card
         chips:
@@ -405,14 +405,14 @@ views:
             icon: mdi:lightning-bolt
           - type: template
             icon: mdi:kettle-outline
-            content: '{{ states(''sensor.kettle_water_level_ml'') | int }} mL'
+            content: "{{ states('sensor.kettle_water_level_ml') | int }} mL"
             entity: climate.kettle
             tap_action:
               action: more-info
           - type: conditional
             conditions:
               - entity: input_boolean.bedroom_airing_cold
-                state: 'on'
+                state: "on"
             chip:
               type: entity
               entity: input_boolean.bedroom_airing_cold
@@ -425,7 +425,7 @@ views:
           - type: conditional
             conditions:
               - entity: input_boolean.bedroom_airing_warm
-                state: 'on'
+                state: "on"
             chip:
               type: entity
               entity: input_boolean.bedroom_airing_warm
@@ -438,7 +438,7 @@ views:
           - type: conditional
             conditions:
               - entity: input_boolean.workshop_airing_cold
-                state: 'on'
+                state: "on"
             chip:
               type: entity
               entity: input_boolean.workshop_airing_cold
@@ -451,7 +451,7 @@ views:
           - type: conditional
             conditions:
               - entity: input_boolean.workshop_airing_warm
-                state: 'on'
+                state: "on"
             chip:
               type: entity
               entity: input_boolean.workshop_airing_warm
@@ -464,7 +464,7 @@ views:
           - type: conditional
             conditions:
               - entity: input_boolean.living_room_airing_cold
-                state: 'on'
+                state: "on"
             chip:
               type: entity
               entity: input_boolean.living_room_airing_cold
@@ -477,7 +477,7 @@ views:
           - type: conditional
             conditions:
               - entity: input_boolean.living_room_airing_warm
-                state: 'on'
+                state: "on"
             chip:
               type: entity
               entity: input_boolean.living_room_airing_warm
@@ -497,7 +497,7 @@ views:
                 show_conditions: true
                 show_temperature: true
               - type: entity
-                entity: sensor.weather_temperature
+                entity: sensor.outside_temperature
                 name: Outside
                 icon: mdi:home-thermometer-outline
                 use_entity_picture: false
@@ -524,7 +524,7 @@ views:
                 points_per_hour: 8
                 entities:
                   - entity: sensor.bedroom_temperature
-                    color: '#3498db'
+                    color: "#3498db"
                 card_mod:
                   style: |
                     ha-card {
@@ -541,7 +541,7 @@ views:
                 decimals: 0
                 entities:
                   - entity: sensor.bedroom_humidity
-                    color: '#1498db'
+                    color: "#1498db"
                 card_mod:
                   style: |
                     ha-card {
@@ -557,7 +557,7 @@ views:
                 points_per_hour: 8
                 entities:
                   - entity: sensor.bedroom_co2
-                    color: '#2980b9'
+                    color: "#2980b9"
               - type: custom:mini-graph-card
                 name: Workshop
                 align_icon: state
@@ -567,7 +567,7 @@ views:
                 points_per_hour: 8
                 entities:
                   - entity: sensor.workshop_temperature
-                    color: '#af52b0'
+                    color: "#af52b0"
                 card_mod:
                   style: |
                     ha-card {
@@ -584,7 +584,7 @@ views:
                 decimals: 0
                 entities:
                   - entity: sensor.workshop_humidity
-                    color: '#6f52b0'
+                    color: "#6f52b0"
                 card_mod:
                   style: |
                     ha-card {
@@ -600,7 +600,7 @@ views:
                 points_per_hour: 8
                 entities:
                   - entity: sensor.workshop_co2
-                    color: '#4f52b0'
+                    color: "#4f52b0"
               - type: custom:mini-graph-card
                 name: Living Room
                 align_icon: state
@@ -610,7 +610,7 @@ views:
                 points_per_hour: 8
                 entities:
                   - entity: sensor.living_room_temperature
-                    color: '#f1c40f'
+                    color: "#f1c40f"
                 card_mod:
                   style: |
                     ha-card {
@@ -627,7 +627,7 @@ views:
                 decimals: 0
                 entities:
                   - entity: sensor.living_room_humidity
-                    color: '#e1c40f'
+                    color: "#e1c40f"
                 card_mod:
                   style: |
                     ha-card {
@@ -643,11 +643,11 @@ views:
                 points_per_hour: 8
                 entities:
                   - entity: sensor.living_room_co2
-                    color: '#1abc9c'
+                    color: "#1abc9c"
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
-            title: ''
+            title: ""
             subtitle: Living Room Lights
             alignment: center
           - square: false
@@ -676,7 +676,7 @@ views:
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
-            title: ''
+            title: ""
             subtitle: Bedroom Lights
             alignment: center
           - square: false
@@ -722,7 +722,7 @@ views:
           - type: conditional
             conditions:
               - entity: light.bedroom_moon
-                state: 'on'
+                state: "on"
             card:
               type: entities
               entities:
@@ -806,7 +806,7 @@ views:
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
-            title: ''
+            title: ""
             subtitle: Lights
             alignment: center
           - square: false
@@ -821,7 +821,7 @@ views:
                 name: Hallway Path
               - type: custom:mushroom-legacy-template-card
                 primary: Porch
-                secondary: ''
+                secondary: ""
                 icon: |
                   {% if states('light.porch') in ['on', 'off'] %}
                   mdi:lightbulb
@@ -864,7 +864,7 @@ views:
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
-            title: ''
+            title: ""
             subtitle: Kitchen Lights
             alignment: center
           - square: false
@@ -886,7 +886,7 @@ views:
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
-            title: ''
+            title: ""
             subtitle: Bathroom Lights
             alignment: center
           - square: false
@@ -915,7 +915,7 @@ views:
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
-            title: ''
+            title: ""
             subtitle: Workshop Light
             alignment: center
           - square: false
@@ -1116,7 +1116,7 @@ views:
                 secondary_info: last-changed
         view_layout:
           show:
-            mediaquery: '(max-width: 400px)'
+            mediaquery: "(max-width: 400px)"
       - type: vertical-stack
         cards:
           - square: false
@@ -1150,11 +1150,11 @@ views:
                 layout: vertical
         view_layout:
           show:
-            mediaquery: '(max-width: 400px)'
+            mediaquery: "(max-width: 400px)"
       - type: horizontal-stack
         view_layout:
           show:
-            mediaquery: '(max-width: 400px)'
+            mediaquery: "(max-width: 400px)"
         cards:
           - type: tile
             entity: binary_sensor.water_leak
@@ -1194,7 +1194,7 @@ views:
             decimals: 1
             entities:
               - entity: sensor.bedroom_temperature
-                color: '#3498db'
+                color: "#3498db"
             card_mod:
               style: |
                 ha-card {
@@ -1211,7 +1211,7 @@ views:
             decimals: 0
             entities:
               - entity: sensor.bedroom_humidity
-                color: '#1498db'
+                color: "#1498db"
             card_mod:
               style: |
                 ha-card {
@@ -1227,7 +1227,7 @@ views:
             points_per_hour: 8
             entities:
               - entity: sensor.bedroom_co2
-                color: '#2980b9'
+                color: "#2980b9"
           - type: custom:mini-graph-card
             name: Workshop
             align_icon: state
@@ -1238,7 +1238,7 @@ views:
             decimals: 1
             entities:
               - entity: sensor.workshop_temperature
-                color: '#af52b0'
+                color: "#af52b0"
             card_mod:
               style: |
                 ha-card {
@@ -1255,7 +1255,7 @@ views:
             decimals: 0
             entities:
               - entity: sensor.workshop_humidity
-                color: '#6f52b0'
+                color: "#6f52b0"
             card_mod:
               style: |
                 ha-card {
@@ -1271,7 +1271,7 @@ views:
             points_per_hour: 8
             entities:
               - entity: sensor.workshop_co2
-                color: '#4f52b0'
+                color: "#4f52b0"
           - type: custom:mini-graph-card
             name: Living Room
             align_icon: state
@@ -1282,7 +1282,7 @@ views:
             decimals: 1
             entities:
               - entity: sensor.living_room_temperature
-                color: '#f1c40f'
+                color: "#f1c40f"
             card_mod:
               style: |
                 ha-card {
@@ -1299,7 +1299,7 @@ views:
             decimals: 0
             entities:
               - entity: sensor.living_room_humidity
-                color: '#e1c40f'
+                color: "#e1c40f"
             card_mod:
               style: |
                 ha-card {
@@ -1315,7 +1315,7 @@ views:
             points_per_hour: 8
             entities:
               - entity: sensor.living_room_co2
-                color: '#1abc9c'
+                color: "#1abc9c"
       - type: custom:stack-in-card
         cards:
           - type: horizontal-stack
@@ -1581,7 +1581,7 @@ views:
             points_per_hour: 8
             entities:
               - entity: sensor.outside_temperature
-                color: '#34495e'
+                color: "#34495e"
             card_mod:
               style: |
                 ha-card {
@@ -1597,7 +1597,7 @@ views:
             points_per_hour: 6
             entities:
               - entity: sensor.wardrobe_temperature
-                color: '#3498db'
+                color: "#3498db"
             card_mod:
               style: |
                 ha-card {
@@ -1613,7 +1613,7 @@ views:
             points_per_hour: 6
             entities:
               - entity: sensor.comms_temperature
-                color: '#1928db'
+                color: "#1928db"
             card_mod:
               style: |
                 ha-card {
@@ -1629,7 +1629,7 @@ views:
             points_per_hour: 6
             entities:
               - entity: sensor.kitchen_temperature
-                color: '#6f52b0'
+                color: "#6f52b0"
             card_mod:
               style: |
                 ha-card {
@@ -1645,7 +1645,7 @@ views:
             points_per_hour: 6
             entities:
               - entity: sensor.kitchen_humidity
-                color: '#af52b0'
+                color: "#af52b0"
             card_mod:
               style: |
                 ha-card {
@@ -1661,7 +1661,7 @@ views:
             points_per_hour: 8
             entities:
               - entity: sensor.bathroom_temperature
-                color: '#f1c40f'
+                color: "#f1c40f"
             card_mod:
               style: |
                 ha-card {
@@ -1677,7 +1677,7 @@ views:
             points_per_hour: 8
             entities:
               - entity: sensor.bathroom_humidity
-                color: '#e1c40f'
+                color: "#e1c40f"
             card_mod:
               style: |
                 ha-card {
@@ -1693,7 +1693,7 @@ views:
             points_per_hour: 6
             entities:
               - entity: sensor.closet_temperature
-                color: '#98a7f2'
+                color: "#98a7f2"
             card_mod:
               style: |
                 ha-card {
@@ -1709,7 +1709,7 @@ views:
             points_per_hour: 8
             entities:
               - entity: sensor.workshop_pm_2_5
-                color: '#b1c40f'
+                color: "#b1c40f"
             card_mod:
               style: |
                 ha-card {
@@ -1725,7 +1725,7 @@ views:
             points_per_hour: 8
             entities:
               - entity: sensor.living_room_pm_2_5
-                color: '#a1c40f'
+                color: "#a1c40f"
             card_mod:
               style: |
                 ha-card {
@@ -1734,7 +1734,7 @@ views:
                 }
         view_layout:
           show:
-            mediaquery: '(min-width: 800px)'
+            mediaquery: "(min-width: 800px)"
       - type: custom:layout-break
       - square: false
         columns: 2
@@ -1791,7 +1791,7 @@ views:
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
-            title: ''
+            title: ""
             subtitle: Intake Fans
             alignment: center
           - type: custom:stack-in-card
@@ -1831,7 +1831,7 @@ views:
                   error_codes:
                     icon: mdi:alert-circle-outline
                     source:
-                      entity: sensor.bedroom_intake_fan_error_codes
+                      entity: sensor.bedroom_intake_fan_errors
                     hide: |
                       (state) => state === ''
                 buttons:
@@ -1914,7 +1914,7 @@ views:
                   error_codes:
                     icon: mdi:alert-circle-outline
                     source:
-                      entity: sensor.living_room_intake_fan_error_codes
+                      entity: sensor.living_room_intake_fan_errors
                     hide: |
                       (state) => state === ''
                 buttons:
@@ -2046,7 +2046,7 @@ views:
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
-            title: ''
+            title: ""
             subtitle: Humidifiers
             alignment: center
           - type: custom:stack-in-card
@@ -2070,7 +2070,7 @@ views:
                   water_level_tank:
                     tap_action: more-info
                     icon: mdi:car-coolant-level
-                    unit: '%'
+                    unit: "%"
                     round: 0
                     source:
                       entity: sensor.living_room_humidifier_water_tank_level
@@ -2224,8 +2224,8 @@ views:
                 entity: humidifier.bedroom_humidifier
                 model: zhimi.humidifier.ca1
                 toggle:
-                  default: 'on'
-                  hide: 'on'
+                  default: "on"
+                  hide: "on"
                 indicators:
                   power:
                     icon: mdi:flash
@@ -2372,7 +2372,7 @@ views:
             points_per_hour: 8
             entities:
               - entity: sensor.outside_temperature
-                color: '#34495e'
+                color: "#34495e"
             card_mod:
               style: |
                 ha-card {
@@ -2388,7 +2388,7 @@ views:
             points_per_hour: 6
             entities:
               - entity: sensor.wardrobe_temperature
-                color: '#3498db'
+                color: "#3498db"
             card_mod:
               style: |
                 ha-card {
@@ -2404,7 +2404,7 @@ views:
             points_per_hour: 6
             entities:
               - entity: sensor.comms_temperature
-                color: '#1928db'
+                color: "#1928db"
             card_mod:
               style: |
                 ha-card {
@@ -2420,7 +2420,7 @@ views:
             points_per_hour: 6
             entities:
               - entity: sensor.kitchen_temperature
-                color: '#6f52b0'
+                color: "#6f52b0"
             card_mod:
               style: |
                 ha-card {
@@ -2437,7 +2437,7 @@ views:
             decimals: 0
             entities:
               - entity: sensor.kitchen_humidity
-                color: '#af52b0'
+                color: "#af52b0"
             card_mod:
               style: |
                 ha-card {
@@ -2453,7 +2453,7 @@ views:
             points_per_hour: 8
             entities:
               - entity: sensor.bathroom_temperature
-                color: '#f1c40f'
+                color: "#f1c40f"
             card_mod:
               style: |
                 ha-card {
@@ -2470,7 +2470,7 @@ views:
             decimals: 0
             entities:
               - entity: sensor.bathroom_humidity
-                color: '#e1c40f'
+                color: "#e1c40f"
             card_mod:
               style: |
                 ha-card {
@@ -2486,7 +2486,7 @@ views:
             points_per_hour: 6
             entities:
               - entity: sensor.closet_temperature
-                color: '#98a7f2'
+                color: "#98a7f2"
             card_mod:
               style: |
                 ha-card {
@@ -2502,7 +2502,7 @@ views:
             points_per_hour: 8
             entities:
               - entity: sensor.workshop_pm_2_5
-                color: '#b1c40f'
+                color: "#b1c40f"
             card_mod:
               style: |
                 ha-card {
@@ -2518,7 +2518,7 @@ views:
             points_per_hour: 8
             entities:
               - entity: sensor.living_room_pm_2_5
-                color: '#a1c40f'
+                color: "#a1c40f"
             card_mod:
               style: |
                 ha-card {
@@ -2527,7 +2527,7 @@ views:
                 }
         view_layout:
           show:
-            mediaquery: '(max-width: 400px)'
+            mediaquery: "(max-width: 400px)"
     theme: Mushroom
   - theme: Mushroom
     icon: mdi:washing-machine
@@ -2670,7 +2670,7 @@ views:
                       max-width: 20px;
                     }
               - type: custom:mushroom-entity-card
-                entity: switch.dishwasher_socket
+                entity: switch.dishwasher_plug
                 primary_info: none
                 secondary_info: none
                 card_mod:
@@ -2771,17 +2771,11 @@ views:
                   disabled: true
                 toggle:
                   hide: true
-                buttons:
-                  power:
-                    icon: mdi:kettle-steam
-                    location: main
-                    state:
-                      entity: switch.kettle_boiling
                 indicators:
                   water_level:
                     tap_action: more-info
                     icon: mdi:water-percent
-                    unit: '%'
+                    unit: "%"
                     round: 0
                     source:
                       entity: sensor.kettle_water_level
@@ -2962,7 +2956,7 @@ views:
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
-            title: ''
+            title: ""
             subtitle: Bathroom Valves
             alignment: center
           - square: false
@@ -2980,7 +2974,7 @@ views:
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
-            title: ''
+            title: ""
             subtitle: Kitchen Valves
             alignment: center
           - square: false
@@ -2998,7 +2992,7 @@ views:
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
-            title: ''
+            title: ""
             subtitle: Humidifiers Water Consumption
             alignment: center
           - square: false
@@ -3061,7 +3055,7 @@ views:
             points_per_hour: 8
             entities:
               - entity: sensor.cb_branch_circuit_power
-                color: '#f1c40f'
+                color: "#f1c40f"
           - type: custom:mini-graph-card
             name: Kitchen Sockets
             align_icon: state
@@ -3071,7 +3065,7 @@ views:
             points_per_hour: 8
             entities:
               - entity: sensor.kitchen_branch_circuit_power
-                color: '#2ecc71'
+                color: "#2ecc71"
           - type: custom:mini-graph-card
             name: Rooms Sockets
             align_icon: state
@@ -3081,7 +3075,7 @@ views:
             points_per_hour: 8
             entities:
               - entity: sensor.sockets_branch_circuit_power
-                color: '#e67e22'
+                color: "#e67e22"
           - type: custom:mini-graph-card
             name: Stove
             align_icon: state
@@ -3091,7 +3085,17 @@ views:
             points_per_hour: 8
             entities:
               - entity: sensor.stove_branch_circuit_power
-                color: '#2980b9'
+                color: "#2980b9"
+          - type: custom:mini-graph-card
+            name: Light
+            align_icon: state
+            font_size: 65
+            font_size_header: 10
+            hours_to_show: 6
+            points_per_hour: 8
+            entities:
+              - entity: sensor.light_branch_circuit_power
+                color: "#6980b9"
       - square: false
         columns: 2
         type: grid
@@ -3105,7 +3109,7 @@ views:
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
-            title: ''
+            title: ""
             subtitle: Living Room Sockets
             alignment: center
             card_mod:
@@ -3194,13 +3198,34 @@ views:
                     | {{ states('sensor.living_room_intake_fan_power') | int }} W
                   {% endif %}
                 icon: mdi:air-filter
-                entity: switch.living_room_intake_fan
+                entity: switch.living_room_intake_fan_plug
                 icon_color: >-
                   {% if is_state('switch.living_room_intake_fan_plug',
                   'unavailable') %}
                     var(--rgb-disabled)
                   {% elif is_state('switch.living_room_intake_fan_plug', 'on')
                   %}
+                    var(--rgb-state-entity)
+                  {% else %}
+                    var(--rgb-grey)
+                  {% endif %}
+                tap_action:
+                  action: more-info
+              - type: custom:mushroom-legacy-template-card
+                primary: Portable Fan
+                secondary: >-
+                  {{ states('switch.portable_fan_plug')|capitalize }}
+
+                  {% if not is_state('sensor.portable_fan_power', 'unavailable')
+                  %}
+                    | {{ states('sensor.portable_fan_power') | int }} W
+                  {% endif %}
+                icon: mdi:fan
+                entity: switch.portable_fan_plug
+                icon_color: |-
+                  {% if is_state('switch.portable_fan_plug', 'unavailable') %}
+                    var(--rgb-disabled)
+                  {% elif is_state('switch.portable_fan_plug', 'on') %}
                     var(--rgb-state-entity)
                   {% else %}
                     var(--rgb-grey)
@@ -3214,7 +3239,7 @@ views:
                 vertical: false
                 features_position: bottom
           - type: custom:mushroom-title-card
-            title: ''
+            title: ""
             subtitle: Bedroom Sockets
             alignment: center
             card_mod:
@@ -3316,7 +3341,7 @@ views:
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
-            title: ''
+            title: ""
             subtitle: Bathroom Sockets
             alignment: center
             card_mod:
@@ -3406,11 +3431,11 @@ views:
               - type: entity
                 entity: sensor.ups_battery_voltage
               - type: entity
-                entity: sensor.ups_temperature
+                entity: sensor.comms_temperature
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
-            title: ''
+            title: ""
             subtitle: Kitchen Sockets
             alignment: center
             card_mod:
@@ -3425,18 +3450,18 @@ views:
               - type: custom:mushroom-legacy-template-card
                 primary: Dishwasher
                 secondary: >-
-                  {{ states('switch.dishwasher_socket')|capitalize }}
+                  {{ states('switch.dishwasher_plug')|capitalize }}
 
                   {% if not is_state('sensor.dishwasher_power', 'unavailable')
                   %}
                     | {{ states('sensor.dishwasher_power') }} W
                   {% endif %}
                 icon: mdi:dishwasher
-                entity: switch.dishwasher_socket
+                entity: switch.dishwasher_plug
                 icon_color: |-
-                  {% if is_state('switch.dishwasher_socket', 'unavailable') %}
+                  {% if is_state('switch.dishwasher_plug', 'unavailable') %}
                     var(--rgb-disabled)
-                  {% elif is_state('switch.dishwasher_socket', 'on') %}
+                  {% elif is_state('switch.dishwasher_plug', 'on') %}
                     var(--rgb-state-entity)
                   {% else %}
                     var(--rgb-grey)
@@ -3552,7 +3577,7 @@ views:
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
-            title: ''
+            title: ""
             subtitle: Workshop Sockets
             alignment: center
             card_mod:
@@ -3653,7 +3678,7 @@ views:
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
-            title: ''
+            title: ""
             subtitle: Sockets
             alignment: center
             card_mod:
@@ -3786,8 +3811,6 @@ views:
             entity: media_player.living_room_station
           - type: media-control
             entity: media_player.atv
-          - type: media-control
-            entity: media_player.living_room_yandex_module
       - square: false
         columns: 2
         type: grid
@@ -3807,7 +3830,7 @@ views:
           - type: media-control
             entity: media_player.kitchen_station
           - type: entity
-            entity: switch.ps5_power
+            entity: media_player.ps5
             name: PS5
     type: custom:vertical-layout
   - theme: Mushroom
@@ -3864,24 +3887,31 @@ views:
             name: Overnight guests
             secondary_info: none
           - type: custom:mushroom-entity-card
-            entity: input_boolean.scene_waking_up
+            entity: input_boolean.waking_up
             tap_action:
               action: more-info
             layout: vertical
             name: Waking up
             secondary_info: none
           - type: custom:mushroom-entity-card
-            entity: binary_sensor.evening_time
+            entity: binary_sensor.evening_time_north
             tap_action:
               action: more-info
             layout: vertical
-            name: Evening
+            name: Evening (North)
+            secondary_info: none
+          - type: custom:mushroom-entity-card
+            entity: binary_sensor.evening_time_south
+            tap_action:
+              action: more-info
+            layout: vertical
+            name: Evening (South)
             secondary_info: none
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
             title: Delivery
-            subtitle: ''
+            subtitle: ""
           - type: entities
             entities:
               - entity: input_datetime.scene_delivery_started
@@ -3903,6 +3933,9 @@ views:
           - type: tile
             entity: input_boolean.light_control
             name: Light control
+          - type: tile
+            entity: input_boolean.lock_control
+            name: Lock control
           - type: tile
             entity: input_boolean.climate_control
             name: Climate control
@@ -3936,7 +3969,7 @@ views:
             points_per_hour: 8
             entities:
               - entity: sensor.hotaru_sda_temperature
-            line_color: '#e74c3c'
+            line_color: "#e74c3c"
           - type: custom:mini-graph-card
             name: CPU Fan
             hours_to_show: 2
@@ -3952,8 +3985,8 @@ views:
         hours_to_show: 8
       - type: entities
         entities:
-          - select.intercom_mode
-          - select.doorbell_mode
+          - entity: select.intercom_mode
+          - entity: switch.doorbell_mute
       - type: custom:auto-entities
         card:
           type: entities
@@ -3968,6 +4001,20 @@ views:
                     domain: button
                 - not:
                     domain: conversation
+          exclude:
+            - options: {}
+              attributes:
+                volatile: true
+      - type: custom:auto-entities
+        card:
+          type: entities
+        filter:
+          include:
+            - options: {}
+              and:
+                - state: unavailable
+                - attributes:
+                    volatile: true
   - icon: mdi:candycane
     badges: []
     cards:
@@ -4072,8 +4119,8 @@ views:
           - entity: sensor.wardrobe_temperature
             name: Wardrobe
             stroke_width: 2
-          - entity: sensor.living_room_humidifier_temperature
-            name: LRH
+          - entity: sensor.closet_temperature
+            name: Closet
             stroke_width: 2
   - theme: Backend-selected
     icon: mdi:cloud-percent-outline
@@ -4141,7 +4188,7 @@ views:
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
-            title: ''
+            title: ""
             subtitle: Bedroom
             alignment: center
           - square: false
@@ -4166,7 +4213,7 @@ views:
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
-            title: ''
+            title: ""
             subtitle: Bathroom
             alignment: center
           - square: false
@@ -4191,7 +4238,7 @@ views:
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
-            title: ''
+            title: ""
             subtitle: Living Room
             alignment: center
           - square: false
@@ -4221,7 +4268,7 @@ views:
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
-            title: ''
+            title: ""
             subtitle: Workshop
             alignment: center
           - square: false

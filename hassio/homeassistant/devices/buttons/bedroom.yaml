@@ -9,8 +9,10 @@ automation:
         subtype: single
     condition:
       - condition: state
-        entity_id: input_boolean.scene_sleepy_mood
-        state: 'off'
+        entity_id: input_select.home_mode
+        state:
+          - Day
+          - Night
     actions:
       - choose:
           - conditions:
@@ -68,8 +70,8 @@ automation:
     actions:
       - if:
           - condition: state
-            entity_id: input_boolean.scene_sleepy_mood
-            state: 'on'
+            entity_id: input_select.home_mode
+            state: Bedtime
         then:
           - event: good_night
           - stop:

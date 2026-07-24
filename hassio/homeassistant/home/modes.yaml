@@ -4,6 +4,7 @@ input_select:
     options:
       - Day
       - Night
+      - Bedtime
       - Vacation
 
   season:

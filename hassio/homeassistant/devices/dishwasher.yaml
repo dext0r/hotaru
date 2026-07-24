@@ -172,9 +172,7 @@ automation:
           - conditions:
               - condition: state
                 entity_id: input_select.home_mode
-                state:
-                  - Day
-                  - Vacation
+                state: Day
 
               - condition: state
                 entity_id: input_select.dishwasher_status
@@ -189,9 +187,7 @@ automation:
           - conditions:
               - condition: state
                 entity_id: input_select.home_mode
-                state:
-                  - Day
-                  - Vacation
+                state: Day
 
               - condition: state
                 entity_id: input_select.dishwasher_status
@@ -205,9 +201,7 @@ automation:
           - conditions:
               - condition: state
                 entity_id: input_select.home_mode
-                state:
-                  - Day
-                  - Vacation
+                state: Day
 
               - condition: state
                 entity_id: input_select.dishwasher_status

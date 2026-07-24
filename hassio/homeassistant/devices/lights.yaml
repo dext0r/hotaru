@@ -13,7 +13,7 @@ template:
         {{
           is_state('input_boolean.cinema', 'on') or
           is_state('input_boolean.waking_up', 'on') or
-          is_state('input_boolean.scene_sleepy_mood', 'on')
+          is_state('input_select.home_mode', 'Bedtime')
         }}
 
 automation:

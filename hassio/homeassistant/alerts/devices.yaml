@@ -26,6 +26,7 @@ automation:
         entity_id: input_select.home_mode
         state:
           - Day
+          - Bedtime
           - Night
     actions:
       - if:

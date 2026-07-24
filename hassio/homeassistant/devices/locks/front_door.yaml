@@ -78,6 +78,32 @@ automation:
         target:
           entity_id: lock.front_door
 
+  - id: front_door_lock_bedtime
+    alias: 'Front Door: Lock (Bedtime/Night)'
+    mode: restart
+    triggers:
+      - trigger: state
+        entity_id: input_select.home_mode
+        to:
+          - Bedtime
+          - Night
+    conditions:
+      - condition: state
+        entity_id: input_boolean.lock_control
+        state: 'on'
+
+      - condition: lock.is_unlocked
+        target:
+          entity_id: lock.front_door
+
+      - condition: door.is_closed
+        target:
+          entity_id: binary_sensor.front_door
+    actions:
+      - action: lock.lock
+        target:
+          entity_id: lock.front_door
+
   - id: front_door_auto_lock
     alias: 'Front Door: Auto lock'
     description: Закрытие замка входной двери при взведённом флаге автозакрытия

@@ -148,37 +148,3 @@ automation:
               target: >
                 {{ trigger.event.data.get('entity_id', 'last') }}
               command: Сколько осталось до нового года
-
-  - id: good_morning_fallback
-    alias: Good Morning (fallback)
-    trigger:
-      - platform: state
-        entity_id: light.bedroom_main
-        to: 'on'
-        for:
-          minutes: 2
-    condition:
-      - condition: state
-        entity_id: binary_sensor.anyone_home
-        state: 'on'
-
-      - condition: time
-        after: '07:00'
-        before: '21:00'
-
-      - condition: not
-        conditions:
-          - condition: state
-            entity_id: input_select.home_mode
-            state: Day
-    action:
-      - service: input_select.select_option
-        entity_id: input_select.home_mode
-        data:
-          option: Day
-
-      - service: cover.open_cover
-        entity_id:
-          - cover.living_room
-          - cover.kitchen
-          - cover.bedroom

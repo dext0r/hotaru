@@ -20,7 +20,6 @@ automation:
         entity_id:
           - binary_sensor.living_room_occupancy
           - binary_sensor.dim_light
-          - input_boolean.scene_sleepy_mood
           - group.living_room_lights
         state: 'off'
 

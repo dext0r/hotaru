@@ -86,7 +86,6 @@ automation:
       - trigger: state
         entity_id: input_select.home_mode
         to: Day
-
     actions:
       - action: switch.turn_on
         entity_id: switch.station_duo_plug
@@ -96,13 +95,7 @@ automation:
     triggers:
       - trigger: state
         entity_id: input_select.home_mode
-        to:
-          - Night
-          - Vacation
-
-      - trigger: state
-        entity_id: input_boolean.scene_sleepy_mood
-        to: 'on'
+        from: Day
     actions:
       - action: switch.turn_off
         entity_id: switch.station_duo_plug

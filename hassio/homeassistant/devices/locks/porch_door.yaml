@@ -13,10 +13,10 @@ automation:
           for:
             minutes: 3
 
-      - id: sleepy_mood
+      - id: bedtime
         trigger: state
-        entity_id: input_boolean.scene_sleepy_mood
-        to: 'on'
+        entity_id: input_select.home_mode
+        to: Bedtime
 
       - id: time
         trigger: time

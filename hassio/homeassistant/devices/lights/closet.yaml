@@ -23,7 +23,9 @@ automation:
 
       - condition: state
         entity_id: input_select.home_mode
-        state: Day
+        state:
+          - Day
+          - Bedtime
     actions:
       - action: light.turn_on
         entity_id: light.closet

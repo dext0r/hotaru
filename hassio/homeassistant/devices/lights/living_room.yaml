@@ -24,7 +24,6 @@ automation:
         entity_id:
           - binary_sensor.living_room_occupancy
           - binary_sensor.dim_light
-          - input_boolean.scene_sleepy_mood
           - group.living_room_lights
         state: 'off'
 
@@ -113,9 +112,13 @@ automation:
         state: 'on'
 
       - condition: state
-        entity_id:
-          - binary_sensor.living_room_occupancy
-          - input_boolean.scene_sleepy_mood
+        entity_id: input_select.home_mode
+        state:
+          - Day
+          - Night
+
+      - condition: state
+        entity_id: binary_sensor.living_room_occupancy
         state: 'off'
 
       - or:

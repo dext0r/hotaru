@@ -63,7 +63,7 @@ template:
       name: 'Bedroom Humidifier: Target screen'
       icon: mdi:target-variant
       state: >
-        {{ states('input_select.home_mode') in ('Day', 'Vacation') or
+        {{ is_state('input_select.home_mode', 'Day') or
            is_state('input_boolean.waking_up', 'on') }}
 
 automation:

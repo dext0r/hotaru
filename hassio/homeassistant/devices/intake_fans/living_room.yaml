@@ -60,7 +60,8 @@ template:
           {% endif %}
         {% endif %}
 
-        {% if is_state('input_select.home_mode', 'Night') and is_state('input_boolean.overnight_guests', 'off') %}
+        {% if is_state('input_select.home_mode', ['Bedtime', 'Night']) and
+              is_state('input_boolean.overnight_guests', 'off') %}
           {% if outdoor_temperature >= 5 %}
             {% set v = 1 %}
           {% else %}
@@ -107,7 +108,7 @@ template:
           {% endif %}
         {% endif %}
 
-        {% if is_state('input_select.home_mode', 'Night') %}
+        {% if is_state('input_select.home_mode', ['Bedtime', 'Night']) %}
           {% if co2_level > 600 %}
             {% set v = 3 %}
           {% elif co2_level > 580 %}
@@ -128,8 +129,7 @@ template:
           {% set v = 1 %}
         {% endif %}
 
-        {% if is_state('input_select.home_mode', 'Night') or
-              is_state('input_boolean.scene_sleepy_mood', 'on') %}
+        {% if is_state('input_select.home_mode', ['Bedtime', 'Night']) %}
           {% if outdoor_temperature < 0 %}
             {% set v = 1 %}
           {% endif %}
@@ -237,7 +237,6 @@ automation:
       - platform: state
         entity_id:
           - input_select.home_mode
-          - input_boolean.scene_sleepy_mood
           - input_boolean.living_room_intake_fan_control
           - switch.ironing_board_socket
 

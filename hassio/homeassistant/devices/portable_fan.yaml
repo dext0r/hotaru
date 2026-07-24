@@ -10,10 +10,6 @@ automation:
       - trigger: state
         entity_id: input_select.home_mode
         from: Day
-
-      - trigger: state
-        entity_id: input_boolean.scene_sleepy_mood
-        to: 'on'
     conditions:
       - condition: template
         value_template: >

@@ -1,30 +1,57 @@
 automation:
-  - id: home_mode_manual_day
-    alias: 'Home Mode: Manual day'
-    trigger:
-      - platform: event
+  - id: home_mode_set_day_by_light
+    alias: 'Home Mode: Set Day (by light)'
+    triggers:
+      - trigger: light.turned_on
+        target:
+          entity_id:
+            - light.bedroom_main
+            - light.living_room_main
+            - light.kitchen_main
+            - light.entrance
+        options:
+          for:
+            seconds: 10
+    conditions:
+      - condition: state
+        entity_id: input_select.home_mode
+        state:
+          - Bedtime
+          - Night
+    actions:
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.home_mode
+        data:
+          option: Day
+
+  - id: home_mode_set_day_by_voice
+    alias: 'Home Mode: Set Day (by voice)'
+    triggers:
+      - trigger: event
         event_type: yandex_intent
         event_data:
           text: Сейчас день
-    action:
+    actions:
       - if:
           - condition: state
             entity_id: input_select.home_mode
             state: Day
         then:
-          - service: script.yandex_station_tts
+          - action: script.yandex_station_tts
             data:
-              target: >
+              target: >-
                 {{ trigger.event.data.get('entity_id', 'last') }}
               text: Действительно, сейчас день
         else:
-          - service: input_select.select_option
-            entity_id: input_select.home_mode
+          - action: input_select.select_option
+            target:
+              entity_id: input_select.home_mode
             data:
               option: Day
 
-          - service: script.yandex_station_tts
+          - action: script.yandex_station_tts
             data:
-              target: >
+              target: >-
                 {{ trigger.event.data.get('entity_id', 'last') }}
               text: Переключила дом в дневной режим

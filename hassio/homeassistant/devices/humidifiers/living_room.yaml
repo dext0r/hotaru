@@ -17,8 +17,7 @@ template:
 
         {% if is_state('input_boolean.waking_up', 'off') or is_state('input_boolean.overnight_guests', 'on') %}
           {% if is_state('binary_sensor.anyone_home', 'off') or
-                is_state('input_boolean.scene_sleepy_mood', 'on') or
-                is_state('input_select.home_mode', 'Night') %}
+                is_state('input_select.home_mode', ['Bedtime', 'Night']) %}
             {% set mode = 'sleep' %}
           {% endif %}
         {% endif %}
@@ -103,7 +102,6 @@ automation:
           - binary_sensor.anyone_home
           - binary_sensor.living_room_occupancy
           - input_boolean.cinema
-          - input_boolean.scene_sleepy_mood
           - input_boolean.waking_up
           - input_number.home_target_humidity
           - input_select.home_mode
@@ -242,6 +240,7 @@ automation:
                 entity_id: input_select.home_mode
                 state:
                   - Day
+                  - Bedtime
                   - Night
 
           - condition: state

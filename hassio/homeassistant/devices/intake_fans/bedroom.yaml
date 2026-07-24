@@ -50,7 +50,7 @@ template:
           {% endif %}
         {% endif %}
 
-        {% if is_state('input_select.home_mode', 'Night') %}
+        {% if is_state('input_select.home_mode', ['Bedtime', 'Night']) %}
           {% if indoor_temperature < 21 and outdoor_temperature < 10 %}
             {% set v = 15 %}
           {% endif %}
@@ -116,7 +116,7 @@ template:
 
         {% if is_state('input_boolean.bedroom_airing_warm', 'on') or
               is_state('input_boolean.bedroom_airing_cold', 'on') or
-              is_state('input_boolean.scene_sleepy_mood', 'on') %}
+              is_state('input_select.home_mode', 'Bedtime') %}
           {% set v = 6 %}
         {% endif %}
 
@@ -165,7 +165,6 @@ automation:
           - input_select.home_mode
           - input_select.washing_machine_status
           - input_boolean.bedroom_intake_fan_control
-          - input_boolean.scene_sleepy_mood
 
       - id: room_airing
         platform: state

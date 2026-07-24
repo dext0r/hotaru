@@ -48,6 +48,7 @@ homeassistant:
     home_mode_morning: !include home/modes/morning.yaml
     home_mode_day: !include home/modes/day.yaml
     home_mode_evening: !include home/modes/evening.yaml
+    home_mode_bedtime: !include home/modes/bedtime.yaml
     home_mode_vacation: !include home/modes/vacation.yaml
     hotaru: !include devices/hotaru.yaml
     humidifiers_bedroom: !include devices/humidifiers/bedroom.yaml
@@ -85,7 +86,6 @@ homeassistant:
     media_yandex_station: !include devices/media/yandex_station.yaml
     portable_fan: !include devices/portable_fan.yaml
     portable_heater: !include devices/portable_heater.yaml
-    scene_sleepy_mood: !include scenes/sleepy_mood.yaml
     scooter: !include devices/scooter.yaml
     stove: !include devices/stove.yaml
     washing_machine: !include devices/washing_machine.yaml

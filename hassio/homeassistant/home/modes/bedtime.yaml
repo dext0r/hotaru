@@ -1,0 +1,173 @@
+automation:
+  - id: home_mode_set_bedtime_by_voice
+    alias: 'Home Mode: Set Bedtime (by voice)'
+    triggers:
+      - trigger: event
+        event_type: yandex_intent
+        event_data:
+          text: Хочется спать
+    actions:
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.home_mode
+        data:
+          option: Bedtime
+
+      - action: media_player.turn_off
+        target:
+          entity_id: media_player.tv
+
+      # костыль для корректного расчёта света при повторном "хочется спать"
+      - if:
+          - condition: light.is_on
+            target:
+              entity_id: light.bedroom_bed
+        then:
+          - action: light.turn_off
+            target:
+              entity_id: light.bedroom_bed
+
+          - wait_for_trigger:
+              - trigger: light.turned_off
+                target:
+                  entity_id: light.bedroom_bed
+            timeout:
+              seconds: 2
+            continue_on_timeout: true
+
+      - action: light.turn_on
+        target:
+          entity_id:
+            - light.bedroom_bed
+            - light.bedroom_moon
+        data:
+          rgb_color: >-
+            {{ [
+              [255, 71, 51],
+              [202, 255, 10],
+              [10, 255, 173],
+              [10, 255, 243],
+              [10, 214, 255],
+              [229, 233, 255],
+              [133, 10, 255],
+              [173, 10, 255],
+              [255, 10, 231],
+            ]|random }}
+          brightness_pct: 100
+
+      - action: light.turn_on
+        target:
+          entity_id:
+            - light.bedroom_cat
+            - light.bedroom_string
+        data:
+          color_temp_kelvin: 2700
+          brightness_pct: 12
+
+      - wait_template: >-
+          {{ state_attr('light.bedroom_bed', 'rgb_color') is not none }}
+        timeout:
+          seconds: 2
+        continue_on_timeout: true
+
+      - action: light.turn_on
+        target:
+          entity_id:
+            - light.hallway_path
+            - light.kitchen_path
+        data:
+          rgbw_color: >-
+            {{ (state_attr('light.bedroom_bed', 'rgb_color') or [10, 255, 243]) | list + [0] }}
+          brightness_pct: 15
+
+      - action: light.turn_on
+        target:
+          entity_id: group.bathroom_path_lights
+        data:
+          rgbw_color: >-
+            {{ (state_attr('light.bedroom_bed', 'rgb_color') or [10, 255, 243]) | list + [0] }}
+          brightness_pct: 75
+
+      - action: light.turn_on
+        target:
+          entity_id: light.living_room_backlight
+        data:
+          rgb_color: >-
+            {{ (state_attr('light.bedroom_bed', 'rgb_color') or [10, 255, 243]) | list }}
+          brightness_pct: 40
+
+      - action: light.turn_on
+        target:
+          entity_id: light.bathroom_main
+        data:
+          brightness_pct: 10
+
+      - action: light.turn_on
+        target:
+          entity_id: light.kitchen_worktop
+        data:
+          brightness_pct: 25
+
+      - if:
+          - condition: light.is_on
+            target:
+              entity_id: light.wardrobe
+        then:
+          - action: light.turn_on
+            target:
+              entity_id: light.wardrobe
+            data:
+              brightness_pct: 20
+
+      - if:
+          - condition: motion.is_not_detected
+            target:
+              entity_id: binary_sensor.porch_motion
+        then:
+          - action: light.turn_off
+            target:
+              entity_id: light.porch
+
+      - action: light.turn_off
+        target:
+          entity_id:
+            - group.workshop_lights
+            - light.bathroom_bathtub
+            - light.bathroom_mirror
+            - light.bedroom_main
+            - light.closet
+            - light.entrance
+            - light.hallway
+            - light.kitchen_main
+            - light.kitchen_mood
+            - light.living_room_main
+            - light.living_room_tv
+        continue_on_error: true
+
+      - action: cover.close_cover
+        target:
+          entity_id:
+            - cover.bedroom
+            - cover.kitchen
+            - cover.living_room
+            - cover.workshop
+
+      - action: script.yandex_station_tts
+        data:
+          target: >-
+            {{ trigger.event.data.get('entity_id', 'last') }}
+          text: >-
+            {{ [
+                'Готовимся к погружению в мир грёз',
+                'Ммм, подушка душистая и одеяло пустишое',
+                'Постелька уже ждет',
+                'Пойдём в кроватку',
+                'Пойдём баиньки',
+                'Одеялко готово тебя укрыть',
+                'Сон - это хорошо',
+                'Сны - это цветки сакуры, уносимые быстрым течением',
+            ] | random }}.
+
+            {% if states('sensor.chores') | length > 0 %}
+              Только не забудь {{ states('sensor.chores') }}
+            {% endif %}

@@ -78,16 +78,12 @@ automation:
     triggers:
       - platform: state
         entity_id: input_select.home_mode
-        from: Night
+        to: Day
 
       - platform: state
         entity_id: group.bathroom_lights
         to: 'on'
     conditions:
-      - condition: state
-        entity_id: input_boolean.scene_sleepy_mood
-        state: 'off'
-
       - condition: state
         entity_id:
           - input_boolean.light_control
@@ -118,10 +114,6 @@ automation:
           - input_boolean.light_control
           - binary_sensor.anyone_home
         state: 'on'
-
-      - condition: state
-        entity_id: input_boolean.scene_sleepy_mood
-        state: 'off'
 
       - condition: state
         entity_id: input_select.home_mode
@@ -216,11 +208,13 @@ automation:
 
       - platform: state
         entity_id: input_select.home_mode
-        from: Night
+        to: Day
     conditions:
       - condition: state
-        entity_id: input_boolean.scene_sleepy_mood
-        state: 'off'
+        entity_id: input_select.home_mode
+        state:
+          - Day
+          - Night
 
       - condition: state
         entity_id:
@@ -262,7 +256,6 @@ automation:
       - condition: state
         entity_id:
           - group.kitchen_lights
-          - input_boolean.scene_sleepy_mood
           - light.entrance
           - light.hallway
           - light.kitchen_path
@@ -323,11 +316,13 @@ automation:
 
       - platform: state
         entity_id: input_select.home_mode
-        from: Night
+        to: Day
     conditions:
       - condition: state
-        entity_id: input_boolean.scene_sleepy_mood
-        state: 'off'
+        entity_id: input_select.home_mode
+        state:
+          - Day
+          - Night
 
       - condition: state
         entity_id:

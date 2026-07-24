@@ -22,11 +22,10 @@ automation:
         entity_id: sensor.intercom_status
         to: Incoming call
     condition:
-      - condition: state
-        entity_id: input_select.home_mode
-        state:
-          - Day
-          - Vacation
+      - not:
+          - condition: state
+            entity_id: input_select.home_mode
+            state: Night
 
       - condition: state
         entity_id:
@@ -90,6 +89,7 @@ automation:
                     entity_id: input_select.home_mode
                     state:
                       - Day
+                      - Bedtime
                       - Vacation
 
                   - condition: state

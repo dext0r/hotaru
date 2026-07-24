@@ -89,9 +89,10 @@ automation:
           - group.bathroom_lights
         state: 'on'
 
-      - condition: state
-        entity_id: input_boolean.scene_sleepy_mood
-        state: 'off'
+      - not:
+          - condition: state
+            entity_id: input_select.home_mode
+            state: Bedtime
 
       - condition: motion.is_not_detected
         note: Костыль для редкого случая, когда одновременно пропадает присутствие и начинается движение
@@ -123,9 +124,10 @@ automation:
           - input_boolean.bathroom_light_control
         state: 'on'
 
-      - condition: state
-        entity_id: input_boolean.scene_sleepy_mood
-        state: 'off'
+      - not:
+          - condition: state
+            entity_id: input_select.home_mode
+            state: Bedtime
     actions:
       - wait_for_trigger:
           - trigger: state

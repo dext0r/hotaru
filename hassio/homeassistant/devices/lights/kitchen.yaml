@@ -20,7 +20,6 @@ automation:
         entity_id:
           - light.kitchen_main
           - binary_sensor.dim_light
-          - input_boolean.scene_sleepy_mood
         state: 'off'
 
       - condition: state
@@ -69,10 +68,6 @@ automation:
       - condition: state
         entity_id: input_select.home_mode
         state: Day
-
-      - condition: state
-        entity_id: input_boolean.scene_sleepy_mood
-        state: 'off'
 
       - or:
           - condition: state
@@ -139,8 +134,10 @@ automation:
         state: 'on'
 
       - condition: state
-        entity_id: input_boolean.scene_sleepy_mood
-        state: 'off'
+        entity_id: input_select.home_mode
+        state:
+          - Day
+          - Night
     actions:
       - action: light.turn_off
         entity_id: group.kitchen_lights

@@ -43,10 +43,6 @@ automation:
         entity_id: input_select.home_mode
         state: Day
 
-      - condition: state
-        entity_id: input_boolean.scene_sleepy_mood
-        state: 'off'
-
       - or:
           - condition: time
             after: '12:00:00'

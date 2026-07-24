@@ -33,7 +33,6 @@ automation:
 
       - condition: state
         entity_id:
-          - input_boolean.scene_sleepy_mood
           - binary_sensor.bedroom_bed_occupancy
           - group.bedroom_lights
         state: 'off'
@@ -68,8 +67,8 @@ automation:
         state: 'on'
 
       - condition: state
-        entity_id: input_boolean.scene_sleepy_mood
-        state: 'off'
+        entity_id: input_select.home_mode
+        state: Day
     actions:
       - wait_for_trigger:
           - trigger: occupancy.detected
@@ -142,8 +141,8 @@ automation:
                 state: 'on'
 
       - condition: state
-        entity_id: input_boolean.scene_sleepy_mood
-        state: 'off'
+        entity_id: input_select.home_mode
+        state: Day
     actions:
       - action: light.turn_off
         entity_id: light.bedroom_main
@@ -153,7 +152,7 @@ automation:
     triggers:
       - trigger: state
         entity_id: input_select.home_mode
-        from: Night
+        to: Day
 
       - trigger: occupancy.detected
         target:
@@ -167,10 +166,6 @@ automation:
           - input_boolean.light_control
           - light.bedroom_bed
         state: 'on'
-
-      - condition: state
-        entity_id: input_boolean.scene_sleepy_mood
-        state: 'off'
     action:
       - action: light.turn_off
         entity_id: light.bedroom_bed
@@ -203,8 +198,8 @@ automation:
             - light.bedroom_string
 
       - condition: state
-        entity_id: input_boolean.scene_sleepy_mood
-        state: 'off'
+        entity_id: input_select.home_mode
+        state: Day
     actions:
       - action: light.turn_off
         entity_id:

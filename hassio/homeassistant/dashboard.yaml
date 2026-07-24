@@ -37,6 +37,8 @@ views:
               mdi:weather-sunny
               {% elif state == 'Night' %}
               mdi:sleep
+              {% elif state == 'Bedtime' %}
+              mdi:bed
               {% elif state == 'Vacation' %}
               mdi:airplane
               {% endif %}
@@ -50,6 +52,8 @@ views:
               green
               {% elif state == 'Night' %}
               indigo
+              {% elif state == 'Bedtime' %}
+              purple
               {% elif state == 'Vacation' %}
               blue-grey
               {% endif %}
@@ -3877,13 +3881,6 @@ views:
               action: more-info
             layout: vertical
             name: Dinner
-            secondary_info: none
-          - type: custom:mushroom-entity-card
-            entity: input_boolean.scene_sleepy_mood
-            tap_action:
-              action: more-info
-            layout: vertical
-            name: Sleepy mood
             secondary_info: none
           - type: custom:mushroom-entity-card
             entity: input_boolean.waiting_guests

@@ -69,7 +69,7 @@ template:
             {% set speed = min(82, speed) %}
           {% endif %}
 
-          {% if is_state('input_boolean.scene_meal', 'on') %}
+          {% if is_state('input_boolean.meal', 'on') %}
             {% set speed = min(72, speed) %}
           {% endif %}
 

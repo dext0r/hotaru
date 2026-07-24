@@ -57,6 +57,7 @@ automation:
             before: '19:30:00'
     actions:
       - service: light.turn_on
-        entity_id: light.living_room_tv
+        target:
+          entity_id: light.living_room_tv
         data:
-          brightness_pct: 60
+          brightness_pct: 100

@@ -1,12 +1,12 @@
 input_boolean:
-  scene_meal:
-    name: 'Scene: Meal'
+  meal:
+    name: Meal
     icon: mdi:food-variant
     initial: false
 
 automation:
-  - id: scene_meal_turn_on
-    alias: 'Scene Meal: Turn on'
+  - id: meal_start
+    alias: 'Meal: Start'
     triggers:
       - trigger: event
         event_type: yandex_intent
@@ -19,32 +19,34 @@ automation:
       - id: table_button_hold
         trigger: event
         event_type: living_room_dinner_table_button_hold
-    condition:
+    conditions:
       - or:
+          - not:
+              - condition: trigger
+                id: table_button_hold
+
           - and:
               - condition: trigger
                 id: table_button_hold
 
-              - condition: state
-                entity_id: input_boolean.scene_meal
-                state: 'off'
-
-          - not:
-              - condition: trigger
-                id: table_button_hold
-    action:
-      - service: light.turn_on
-        entity_id: light.living_room_tv
+              - condition: switch.is_off
+                target:
+                  entity_id: input_boolean.meal
+    actions:
+      - action: light.turn_on
+        target:
+          entity_id: light.living_room_tv
         data:
           brightness_pct: 100
 
       - service: light.turn_on
-        entity_id: light.living_room_backlight
+        target:
+          entity_id: light.living_room_backlight
         data:
           brightness_pct: 100
           color_temp_kelvin: 4500
 
-      - service: script.yandex_station_tts
+      - action: script.yandex_station_tts
         data:
           target: all
           text: >
@@ -55,47 +57,52 @@ automation:
               ]|random
             }}
 
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.scene_meal
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.meal
 
       - if:
           - condition: state
             entity_id: media_player.tv
             state: 'off'
         then:
-          - service: media_player.turn_on
-            entity_id:
-              - media_player.tv
-              - media_player.atv
+          - action: media_player.turn_on
+            target:
+              entity_id:
+                - media_player.tv
+                - media_player.atv
 
-      - service: light.turn_off
-        entity_id:
-          - light.living_room_main
-          - group.aux_lights
-          - group.bedroom_lights
+      - action: light.turn_off
+        target:
+          entity_id:
+            - light.living_room_main
+            - group.aux_lights
+            - group.bedroom_lights
 
-  - id: scene_meal_turn_off
-    alias: 'Scene Meal: Turn off'
-    trigger:
-      - platform: state
+  - id: meal_end
+    alias: 'Meal: End'
+    triggers:
+      - trigger: state
         entity_id: media_player.tv
         to: 'off'
 
-      - platform: state
-        entity_id: input_boolean.scene_meal
-        to: 'on'
-        for:
-          minutes: 30
+      - trigger: switch.turned_on
+        target:
+          entity_id: input_boolean.meal
+        options:
+          for:
+            minutes: 30
 
       - trigger: event
-        event_type: scene_meal_turn_off
-    condition:
-      - condition: state
-        entity_id: input_boolean.scene_meal
-        state: 'on'
-    action:
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.scene_meal
+        event_type: meal_turn_off
+    conditions:
+      - condition: switch.is_on
+        target:
+          entity_id: input_boolean.meal
+    actions:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.meal
 
       - if:
           - condition: state
@@ -123,23 +130,24 @@ automation:
             before: '17:00:00'
         then:
           - action: light.turn_on
-            entity_id: light.living_room_main
+            target:
+              entity_id: light.living_room_main
 
       - action: script.living_room_cozy_light
         data:
           leave_main_light: true
 
-  - id: scene_meal_turn_off_with_airing
-    alias: 'Scene Meal: Turn off (with airing)'
+  - id: meal_end_with_airing
+    alias: 'Meal: End (with airing)'
     triggers:
       - trigger: state
         entity_id: binary_sensor.living_room_dinner_table_parked
         from: 'on'
         to: 'off'
     conditions:
-      - condition: state
-        entity_id: input_boolean.scene_meal
-        state: 'on'
+      - condition: switch.is_on
+        target:
+          entity_id: input_boolean.meal
     actions:
       - if:
           - condition: state
@@ -147,15 +155,17 @@ automation:
             state: 'on'
         then:
           - action: switch.turn_on
-            entity_id: switch.home_airing
+            target:
+              entity_id: switch.home_airing
         else:
           - action: input_boolean.turn_on
-            entity_id: input_boolean.living_room_airing_cold
+            target:
+              entity_id: input_boolean.living_room_airing_cold
 
       - delay:
           seconds: 1
 
-      - event: scene_meal_turn_off
+      - event: meal_turn_off
 
   - id: rice_cooking_status
     alias: 'Rice Cooking: Status'
@@ -166,21 +176,23 @@ automation:
           text: Что с рисоваркой
     actions:
       - if:
-          - condition: state
-            entity_id: timer.rice_cooking
-            state: active
+          - condition: timer.is_active
+            target:
+              entity_id: timer.rice_cooking
         then:
           - action: timer.pause
-            entity_id: timer.rice_cooking
+            target:
+              entity_id: timer.rice_cooking
 
           - action: timer.start
-            entity_id: timer.rice_cooking
+            target:
+              entity_id: timer.rice_cooking
 
-      - service: script.yandex_station_tts
+      - action: script.yandex_station_tts
         data:
-          target: >
+          target: >-
             {{ trigger.event.data.get('entity_id', 'last') }}
-          text: >
+          text: >-
             {% if is_state('timer.rice_cooking', 'idle') %}
               Рисоварка не запущена
             {% else %}
@@ -190,9 +202,8 @@ automation:
   - id: rice_almost_ready_alert
     alias: Rice almost ready alert
     triggers:
-      - trigger: event
-        event_type: timer.finished
-        event_data:
+      - trigger: timer.finished
+        target:
           entity_id: timer.rice_almost_ready
     conditions:
       - condition: state
@@ -207,21 +218,21 @@ automation:
         data:
           target: all
           type: attention
-          text: >
+          text: >-
             {{ [
                 'рис почти готов',
                 'рис на подходе, давай накрывать стол',
                 'пахнет рисом на всю кухню, он почти готов',
-                ]|random
+                ] | random
             }}
 
 timer:
   rice_cooking:
-    name: 'Rice Cooking'
+    name: Rice Cooking
     duration:
       minutes: 42
 
   rice_almost_ready:
-    name: 'Rice Almost Ready'
+    name: Rice Almost Ready
     duration:
       minutes: 31

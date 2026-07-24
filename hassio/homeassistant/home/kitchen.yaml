@@ -13,11 +13,12 @@ automation:
         entity_id: binary_sensor.anyone_home
         to: 'off'
 
-      - trigger: state
-        entity_id: input_boolean.scene_meal
-        to: 'on'
-        for:
-          minutes: 5
+      - trigger: switch.turned_on
+        target:
+          entity_id: input_boolean.meal
+        options:
+          for:
+            minutes: 5
     conditions:
       - condition: state
         entity_id:

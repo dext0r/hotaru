@@ -3845,7 +3845,7 @@ views:
         type: grid
         cards:
           - type: custom:mushroom-entity-card
-            entity: input_boolean.scene_delivery
+            entity: input_boolean.waiting_delivery
             tap_action:
               action: more-info
             layout: vertical
@@ -3859,7 +3859,7 @@ views:
             name: Cinema
             secondary_info: none
           - type: custom:mushroom-entity-card
-            entity: input_boolean.scene_meal
+            entity: input_boolean.meal
             tap_action:
               action: more-info
             layout: vertical

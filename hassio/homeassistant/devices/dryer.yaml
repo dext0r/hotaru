@@ -19,8 +19,8 @@ automation:
   - id: dryer_cycle
     alias: 'Dryer: Cycle'
     max_exceeded: silent
-    trigger:
-      - platform: numeric_state
+    triggers:
+      - trigger: numeric_state
         entity_id: sensor.dryer_power
         above: 0
         for:
@@ -28,34 +28,34 @@ automation:
 
       # если кратковременно открывали розетка не успеет скинуть потребление на 0
       # поэтому попытка поймать ещё раз другим изменением
-      - platform: numeric_state
+      - trigger: numeric_state
         entity_id: sensor.dryer_power
         above: 200
         for:
           seconds: 10
-    condition:
+    conditions:
       - condition: state
         entity_id: input_select.dryer_status
         state:
           - Idle
           - Done # повторный цикл без открытия дверцы
-    action:
-      - service: input_select.select_option
-        entity_id: input_select.dryer_status
+    actions:
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.dryer_status
         data:
           option: Running
 
       - wait_for_trigger:
-          - platform: numeric_state
+          - trigger: numeric_state
             entity_id: sensor.dryer_power
             below: 1
             for:
               minutes: 2
 
-          - platform: state
-            entity_id: binary_sensor.dryer_door
-            from: 'off'
-            to: 'on'
+          - trigger: door.opened
+            target:
+              entity_id: binary_sensor.dryer_door
         timeout:
           hours: 6
         continue_on_timeout: true
@@ -65,46 +65,49 @@ automation:
         state: Running
 
       - if:
-          - condition: state
-            entity_id: binary_sensor.dryer_door
-            state: 'on'
+          - condition: door.is_open
+            target:
+              entity_id: binary_sensor.dryer_door
         then:
-          - service: input_select.select_option
-            entity_id: input_select.dryer_status
+          - action: input_select.select_option
+            target:
+              entity_id: input_select.dryer_status
             data:
               option: Idle
         else:
-          - service: input_select.select_option
-            entity_id: input_select.dryer_status
+          - action: input_select.select_option
+            target:
+              entity_id: input_select.dryer_status
             data:
               option: Done
 
-  - id: dryer_door_open
-    alias: 'Dryer: Door open'
-    trigger:
-      platform: state
-      entity_id: binary_sensor.dryer_door
-      from: 'off'
-      to: 'on'
-    condition:
+  - id: dryer_door_opened
+    alias: 'Dryer: Door opened'
+    triggers:
+      - trigger: door.opened
+        target:
+          entity_id: binary_sensor.dryer_door
+    conditions:
       - condition: state
         entity_id: input_select.dryer_status
         state: Done
-    action:
-      - service: input_select.select_option
-        entity_id: input_select.dryer_status
+    actions:
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.dryer_status
         data:
           option: Idle
 
   - id: dryer_idle
     alias: 'Dryer: Idle'
-    trigger:
-      platform: state
-      entity_id: input_select.dryer_status
-      to: Idle
-    action:
-      - service: input_number.set_value
-        entity_id: input_number.dryer_done_alert_count
+    triggers:
+      - trigger: state
+        entity_id: input_select.dryer_status
+        to: Idle
+    actions:
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.dryer_done_alert_count
         data:
           value: 0
 
@@ -136,7 +139,7 @@ automation:
 
           - condition: template
             value_template: >
-              {{ (now() - states.input_select.dryer_status.last_changed).total_seconds() > 3600 }}
+              {{ (now() - states.input_select.dryer_status.last_changed) > timedelta(hours=1) }}
 
       - condition: state
         entity_id: input_select.dryer_status
@@ -148,7 +151,7 @@ automation:
 
       - condition: template
         value_template: >
-          {{ (now() - states.input_number.dryer_done_alert_count.last_changed).total_seconds() > 1200 }}
+          {{ (now() - states.input_number.dryer_done_alert_count.last_changed) > timedelta(minutes=20) }}
     actions:
       - wait_template: >
           {{ not is_state('media_player.atv', ['playing', 'pause']) }}
@@ -166,31 +169,32 @@ automation:
                 'Сушилка ждёт тебя, пора раскладывать бельё по полочкам.',
                 'Сушилка ждет тебя, в ней тебя ждёт что-то особенное.',
                 'Сушилка закончила, пора достать из неё мягонькое бельё.',
-                ]|random
+                ] | random
             }}
-            {% if states('input_number.dryer_done_alert_count')|int == 2 %}
+            {% if states('input_number.dryer_done_alert_count') | int(0) == 2 %}
               Если я ошиблась - закрой дверцу машины и открой снова.
             {% endif %}
-            {% if states('input_number.dryer_done_alert_count')|int == 3 %}
+            {% if states('input_number.dryer_done_alert_count') | int(0) == 3 %}
               Это последнее предупреждение! Мятое белье останется там навсегда!
             {% endif %}
 
       - action: input_number.increment
-        entity_id: input_number.dryer_done_alert_count
+        target:
+          entity_id: input_number.dryer_done_alert_count
 
-  - id: dryer_status
-    alias: 'Dryer: Status'
-    trigger:
-      platform: event
-      event_type: yandex_intent
-      event_data:
-        text: Что с сушильной машиной
-    action:
-      - service: script.yandex_station_tts
+  - id: dryer_status_by_voice
+    alias: 'Dryer: Status (by voice)'
+    triggers:
+      - trigger: event
+        event_type: yandex_intent
+        event_data:
+          text: Что с сушильной машиной
+    actions:
+      - action: script.yandex_station_tts
         data:
-          target: >
+          target: >-
             {{ trigger.event.data.get('entity_id', 'last') }}
-          text: >
+          text: >-
             Сушилка
             {% if is_state('input_select.dryer_status', 'Running') %}
               делает пух-пух. Скоро вещи будут сухими и мягонькими

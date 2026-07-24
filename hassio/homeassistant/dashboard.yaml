@@ -2561,7 +2561,7 @@ views:
                   border: 0;
                 }
           - type: custom:mushroom-entity-card
-            entity: switch.washing_machine_socket
+            entity: switch.washing_machine_plug
             primary_info: none
             secondary_info: none
             card_mod:
@@ -3360,19 +3360,19 @@ views:
               - type: custom:mushroom-legacy-template-card
                 primary: Washing Machine
                 secondary: >-
-                  {{ states('switch.washing_machine_socket')|capitalize }}
+                  {{ states('switch.washing_machine_plug')|capitalize }}
 
                   {% if not is_state('sensor.washing_machine_power',
                   'unavailable') %}
                     | {{ states('sensor.washing_machine_power') | int }} W
                   {% endif %}
                 icon: mdi:washing-machine
-                entity: switch.washing_machine_socket
+                entity: switch.washing_machine_plug
                 icon_color: >-
-                  {% if is_state('switch.washing_machine_socket', 'unavailable')
+                  {% if is_state('switch.washing_machine_plug', 'unavailable')
                   %}
                     var(--rgb-disabled)
-                  {% elif is_state('switch.washing_machine_socket', 'on') %}
+                  {% elif is_state('switch.washing_machine_plug', 'on') %}
                     var(--rgb-state-entity)
                   {% else %}
                     var(--rgb-grey)

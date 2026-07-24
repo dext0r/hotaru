@@ -133,7 +133,7 @@ template:
           {% set dryer_socket = states('switch.dryer_socket') %}
           {% set north_balcony_presence = states('sensor.north_balcony_presence_boot_time') %}
           {% set vacuum_charger = states('switch.vacuum_charger') %}
-          {% set washing_machine_socket = states('switch.washing_machine_socket')  %}
+          {% set washing_machine_plug = states('switch.washing_machine_plug')  %}
           {% set water_heater_socket = states('switch.water_heater_socket') %}
           {% set workshop_ac_em = states('sensor.workshop_ac_energy_meter_boot_time') %}
           {% set workshop_intake_fan_relay = states('switch.workshop_intake_fan_relay') %}
@@ -170,7 +170,7 @@ template:
             (dryer_socket, 0.7, 0),
             (north_balcony_presence, 0.8, none),
             (vacuum_charger, 1.25, 0.7),
-            (washing_machine_socket, 0.7, 0),
+            (washing_machine_plug, 0.7, 0),
             (water_heater_socket, 1.25, 0.7),
             (workshop_ac_em, 0.8, none),
             (workshop_intake_fan_relay, 1.25, 0.7),

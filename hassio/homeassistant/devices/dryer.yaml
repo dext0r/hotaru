@@ -20,25 +20,18 @@ automation:
     alias: 'Dryer: Cycle'
     max_exceeded: silent
     triggers:
-      - trigger: numeric_state
+      - trigger: state
         entity_id: sensor.dryer_power
-        above: 0
-        for:
-          seconds: 10
-
-      # если кратковременно открывали розетка не успеет скинуть потребление на 0
-      # поэтому попытка поймать ещё раз другим изменением
-      - trigger: numeric_state
-        entity_id: sensor.dryer_power
-        above: 200
-        for:
-          seconds: 10
     conditions:
       - condition: state
         entity_id: input_select.dryer_status
         state:
           - Idle
           - Done # повторный цикл без открытия дверцы
+
+      - condition: template
+        value_template: >-
+          {{ trigger.to_state.state | int(0) > 10 }}
     actions:
       - action: input_select.select_option
         target:

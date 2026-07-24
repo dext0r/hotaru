@@ -20,17 +20,18 @@ automation:
     alias: 'Washing Machine: Cycle'
     max_exceeded: silent
     triggers:
-      - trigger: numeric_state
+      - trigger: state
         entity_id: sensor.washing_machine_power
-        above: 5
-        for:
-          seconds: 15
     conditions:
       - condition: state
         entity_id: input_select.washing_machine_status
         state:
           - Idle
           - Done # повторный цикл без открытия дверцы
+
+      - condition: template
+        value_template: >-
+          {{ trigger.to_state.state | int(0) > 5 }}
     action:
       - action: input_select.select_option
         target:

@@ -16,12 +16,9 @@ automation:
     max_exceeded: silent
     triggers:
       - id: power
-        trigger: numeric_state
+        trigger: state
         entity_id: sensor.dishwasher_power
         note: Резерв на случай отвала облака или перезапуска HA
-        above: 10
-        for:
-          seconds: 15
 
       - id: progress
         trigger: state
@@ -42,6 +39,10 @@ automation:
               - condition: state
                 entity_id: input_select.dishwasher_status
                 state: Idle
+
+              - condition: template
+                value_template: >-
+                  {{ trigger.to_state.state | int(0) > 10 }}
     actions:
       - action: input_select.select_option
         target:

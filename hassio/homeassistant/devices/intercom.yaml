@@ -50,7 +50,7 @@ automation:
       - trigger: state
         entity_id:
           - input_select.home_mode
-          - input_boolean.scene_delivery
+          - input_boolean.waiting_delivery
           - input_boolean.waiting_guests
           - binary_sensor.anyone_near_home
 
@@ -65,9 +65,9 @@ automation:
     actions:
       - choose:
           - conditions:
-              - condition: state
-                entity_id: input_boolean.scene_delivery
-                state: 'on'
+              - condition: switch.is_on
+                target:
+                  entity_id: input_boolean.waiting_delivery
             sequence:
               - action: select.select_option
                 entity_id: select.intercom_mode
@@ -211,9 +211,9 @@ automation:
                     }}
 
           - conditions:
-              - condition: state
-                entity_id: input_boolean.scene_delivery
-                state: 'on'
+              - condition: switch.is_on
+                target:
+                  entity_id: input_boolean.waiting_delivery
             sequence:
               - action: script.yandex_station_tts
                 data:
@@ -239,9 +239,9 @@ automation:
           - conditions:
               - condition: template
                 value_template: >
-                  {{ state_attr('input_datetime.scene_delivery_scheduled_from', 'timestamp') <=
+                  {{ state_attr('input_datetime.delivery_scheduled_from', 'timestamp') <=
                       as_timestamp(now()) <=
-                     state_attr('input_datetime.scene_delivery_scheduled_to', 'timestamp') }}
+                     state_attr('input_datetime.delivery_scheduled_to', 'timestamp') }}
             sequence:
               - action: script.yandex_station_tts
                 data:

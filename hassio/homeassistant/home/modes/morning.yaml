@@ -98,22 +98,22 @@ automation:
 
       - if:
           - condition: template
-            value_template: >
-              {% if state_attr('input_datetime.scene_delivery_scheduled_from', 'has_date') %}
-                {% if states('input_datetime.scene_delivery_scheduled_from').split(' ')|first == now().date()|string %}
+            value_template: >-
+              {% if state_attr('input_datetime.delivery_scheduled_from', 'has_date') %}
+                {% if states('input_datetime.delivery_scheduled_from').split(' ')|first == now().date()|string %}
                   true
                 {% endif %}
               {% endif %}
         then:
-          - service: script.yandex_station_tts
+          - action: script.yandex_station_tts
             data:
-              target: >
+              target: >-
                 {{ trigger.event.data.get('entity_id', 'last') }}
-              text: >
+              text: >-
                 На сегодня запланирована доставка с
-                {{ state_attr('input_datetime.scene_delivery_scheduled_from', 'hour') }}:{{ '%02d' % state_attr('input_datetime.scene_delivery_scheduled_from', 'minute') }}
+                {{ state_attr('input_datetime.delivery_scheduled_from', 'hour') }}:{{ '%02d' % state_attr('input_datetime.delivery_scheduled_from', 'minute') }}
                 до
-                {{ state_attr('input_datetime.scene_delivery_scheduled_to', 'hour') }}:{{ '%02d' % state_attr('input_datetime.scene_delivery_scheduled_to', 'minute') }}
+                {{ state_attr('input_datetime.delivery_scheduled_to', 'hour') }}:{{ '%02d' % state_attr('input_datetime.delivery_scheduled_to', 'minute') }}
 
       - if:
           - condition: template

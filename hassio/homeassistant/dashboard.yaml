@@ -3914,12 +3914,12 @@ views:
             subtitle: ""
           - type: entities
             entities:
-              - entity: input_datetime.scene_delivery_started
+              - entity: input_datetime.waiting_delivery_from
                 secondary_info: last-changed
                 name: Started
-              - entity: input_datetime.scene_delivery_scheduled_from
+              - entity: input_datetime.delivery_scheduled_from
                 name: Schedule from
-              - entity: input_datetime.scene_delivery_scheduled_to
+              - entity: input_datetime.delivery_scheduled_to
                 name: Schedule to
       - type: entities
         entities:

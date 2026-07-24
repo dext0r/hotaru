@@ -33,6 +33,7 @@ homeassistant:
     doorbell: !include devices/doorbell.yaml
     fridge: !include devices/fridge.yaml
     home_common: !include home/common.yaml
+    home_delivery: !include home/delivery.yaml
     home_energy: !include home/energy.yaml
     home_guests: !include home/guests.yaml
     home_kitchen: !include home/kitchen.yaml
@@ -83,7 +84,6 @@ homeassistant:
     media_yandex_station: !include devices/media/yandex_station.yaml
     portable_fan: !include devices/portable_fan.yaml
     portable_heater: !include devices/portable_heater.yaml
-    scene_delivery: !include scenes/delivery.yaml
     scene_meal: !include scenes/meal.yaml
     scene_sleepy_mood: !include scenes/sleepy_mood.yaml
     scooter: !include devices/scooter.yaml

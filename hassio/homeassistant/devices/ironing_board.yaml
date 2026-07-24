@@ -41,7 +41,7 @@ automation:
     alias: 'Ironing Board: Turn off (Occupancy / Bedroom)'
     triggers:
       - platform: state
-        entity_id: binary_sensor.bedroom_any_occupancy
+        entity_id: binary_sensor.bedroom_occupancy
         to: 'off'
         for:
           minutes: 20

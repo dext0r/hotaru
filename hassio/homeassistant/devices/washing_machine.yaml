@@ -19,26 +19,27 @@ automation:
   - id: washing_machine_cycle
     alias: 'Washing Machine: Cycle'
     max_exceeded: silent
-    trigger:
-      platform: numeric_state
-      entity_id: sensor.washing_machine_power
-      above: 5
-      for:
-        seconds: 15
-    condition:
+    triggers:
+      - trigger: numeric_state
+        entity_id: sensor.washing_machine_power
+        above: 5
+        for:
+          seconds: 15
+    conditions:
       - condition: state
         entity_id: input_select.washing_machine_status
         state:
           - Idle
           - Done # повторный цикл без открытия дверцы
     action:
-      - service: input_select.select_option
-        entity_id: input_select.washing_machine_status
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.washing_machine_status
         data:
           option: Running
 
       - wait_for_trigger:
-          - platform: numeric_state
+          - trigger: numeric_state
             entity_id: sensor.washing_machine_power
             below: 1
             for:
@@ -51,39 +52,41 @@ automation:
         entity_id: input_select.washing_machine_status
         state: Running
 
-      - service: input_select.select_option
-        entity_id: input_select.washing_machine_status
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.washing_machine_status
         data:
           option: Done
 
-  - id: washing_machine_door_open
-    alias: 'Washing Machine: Door open'
-    trigger:
-      platform: state
-      entity_id: binary_sensor.washing_machine_door
-      from: 'off'
-      to: 'on'
-    condition:
+  - id: washing_machine_door_opened
+    alias: 'Washing Machine: Door opened'
+    triggers:
+      - platform: door.opened
+        target:
+          entity_id: binary_sensor.washing_machine_door
+    conditions:
       - condition: state
         entity_id: input_select.washing_machine_status
         state:
           - Running
           - Done
-    action:
-      - service: input_select.select_option
-        entity_id: input_select.washing_machine_status
+    actions:
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.washing_machine_status
         data:
           option: Idle
 
   - id: washing_machine_idle
     alias: 'Washing Machine: Idle'
-    trigger:
-      platform: state
-      entity_id: input_select.washing_machine_status
-      to: Idle
-    action:
-      - service: input_number.set_value
-        entity_id: input_number.washing_machine_done_alert_count
+    triggers:
+      - trigger: state
+        entity_id: input_select.washing_machine_status
+        to: Idle
+    actions:
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.washing_machine_done_alert_count
         data:
           value: 0
 
@@ -114,8 +117,8 @@ automation:
             state: 'off'
 
           - condition: template
-            value_template: >
-              {{ (now() - states.input_select.washing_machine_status.last_changed).total_seconds() > 3600 }}
+            value_template: >-
+              {{ (now() - states.input_select.washing_machine_status.last_changed) > timedelta(hours=1) }}
 
       - condition: state
         entity_id: input_select.washing_machine_status
@@ -125,11 +128,10 @@ automation:
         entity_id: input_number.washing_machine_done_alert_count
         below: 4
 
-      - condition: template
-        value_template: >
-          {{ (now() - states.input_number.washing_machine_done_alert_count.last_changed).total_seconds() > 900 }}
+        value_template: >-
+          {{ (now() - states.input_number.washing_machine_done_alert_count.last_changed) > timedelta(minutes=15) }}
     actions:
-      - wait_template: >
+      - wait_template: >-
           {{ not is_state('media_player.atv', ['playing', 'pause']) }}
         timeout:
           minutes: 28
@@ -139,37 +141,38 @@ automation:
         data:
           target: all
           type: attention
-          text: >
+          text: >-
             {{ states.sensor.alert_greeting.state }}
             {{ [
                 'Стиральная машина ждёт тебя, в ней что-то есть.',
                 'Стиральная машина закончила, пора достать из неё бельё.',
                 'Стиральная машина ждет тебя, у неё для тебя есть подарок.',
-                ]|random
+                ] | random
             }}
-            {% if states('input_number.washing_machine_done_alert_count')|int == 2 %}
+            {% if states('input_number.washing_machine_done_alert_count') | int(0) == 2 %}
               Если я ошиблась - закрой дверцу машины и открой снова.
             {% endif %}
-            {% if states('input_number.washing_machine_done_alert_count')|int == 3 %}
+            {% if states('input_number.washing_machine_done_alert_count') | int(0) == 3 %}
               Это последнее предупреждение! Мокрое белье останется там навсегда!
             {% endif %}
 
       - action: input_number.increment
-        entity_id: input_number.washing_machine_done_alert_count
+        target:
+          entity_id: input_number.washing_machine_done_alert_count
 
-  - id: washing_machine_status
-    alias: 'Washing Machine: Status'
-    trigger:
-      platform: event
-      event_type: yandex_intent
-      event_data:
-        text: Что со стиральной машиной
-    action:
-      - service: script.yandex_station_tts
+  - id: washing_machine_status_by_voice
+    alias: 'Washing Machine: Status (by voice)'
+    triggers:
+      - trigger: event
+        event_type: yandex_intent
+        event_data:
+          text: Что со стиральной машиной
+    actions:
+      - action: script.yandex_station_tts
         data:
-          target: >
+          target: >-
             {{ trigger.event.data.get('entity_id', 'last') }}
-          text: >
+          text: >-
             Стиралка
             {% if is_state('input_select.washing_machine_status', 'Running') %}
               делает вжух-вжух. Скоро вещи будут чистыми и пахнуть порошочком

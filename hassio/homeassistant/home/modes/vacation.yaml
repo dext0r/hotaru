@@ -1,55 +1,55 @@
+input_datetime:
+  next_trip:
+    name: Next Trip
+    has_date: true
+    icon: mdi:plane-train
+
 automation:
-  - id: home_mode_set_vacation
-    alias: 'Home Mode: Set Vacation'
-    trigger:
-      - platform: event
+  - id: home_mode_set_vacation_by_voice
+    alias: 'Home Mode: Set vacation (by voice)'
+    triggers:
+      - trigger: event
         event_type: yandex_intent
         event_data:
           text: Включи режим отпуска
-    action:
-      - service: input_select.select_option
-        entity_id: input_select.home_mode
+    actions:
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.home_mode
         data:
           option: Vacation
 
-      - service: script.yandex_station_tts
+      - action: script.yandex_station_tts
         data:
-          target: >
+          target: >-
             {{ trigger.event.data.get('entity_id', 'last') }}
           text: Дом переключен в режим отпуск, буду скучать по вам
 
-  - id: home_mode_to_vacation
-    alias: 'Home Mode: To Vacation'
-    trigger:
-      platform: state
-      entity_id: input_select.home_mode
-      to: Vacation
-    action:
-      - action: notify.send_message
+  - id: home_mode_vacation_start
+    alias: 'Home Mode: Vacation start'
+    triggers:
+      - trigger: state
+        entity_id: input_select.home_mode
+        to: Vacation
+    actions:
+      - action: notify.dextor
         data:
-          entity_id: notify.dextor
           message: 🌴 Дом перевёден в режим отпуска
 
-      - service: cover.open_cover
-        entity_id:
-          - cover.bedroom
-          - cover.kitchen
-          - cover.living_room
+      - action: cover.open_cover
+        target:
+          entity_id:
+            - cover.bedroom
+            - cover.kitchen
+            - cover.living_room
 
-  - id: home_mode_from_vacation
-    alias: 'Home Mode: From vacation'
-    trigger:
-      platform: state
-      entity_id: input_select.home_mode
-      from: Vacation
-    action:
-      - action: notify.send_message
+  - id: home_mode_vacation_end
+    alias: 'Home Mode: Vacation end'
+    triggers:
+      - trigger: state
+        entity_id: input_select.home_mode
+        from: Vacation
+    actions:
+      - action: notify.dextor
         data:
-          entity_id: notify.dextor
           message: 😟 Дом возвращён из режима отпуска
-
-input_datetime:
-  next_trip:
-    name: 'Next Trip'
-    has_date: true
-    icon: mdi:plane-train

@@ -11,7 +11,7 @@ template:
       unique_id: binary_sensor.dim_light
       state: >
         {{
-          is_state('input_boolean.scene_movie', 'on') or
+          is_state('input_boolean.cinema', 'on') or
           is_state('input_boolean.waking_up', 'on') or
           is_state('input_boolean.scene_sleepy_mood', 'on')
         }}

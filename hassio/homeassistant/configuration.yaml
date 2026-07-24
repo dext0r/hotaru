@@ -11,6 +11,7 @@ homeassistant:
   packages:
     ac_bedroom: !include devices/ac/bedroom.yaml
     ac_workshop: !include devices/ac/workshop.yaml
+    activity_cinema: !include activities/cinema.yaml
     activity_waking_up: !include activities/waking_up.yaml
     alert_devices: !include alerts/devices.yaml
     alert_security: !include alerts/security.yaml
@@ -84,7 +85,6 @@ homeassistant:
     portable_heater: !include devices/portable_heater.yaml
     scene_delivery: !include scenes/delivery.yaml
     scene_meal: !include scenes/meal.yaml
-    scene_movie: !include scenes/movie.yaml
     scene_sleepy_mood: !include scenes/sleepy_mood.yaml
     scooter: !include devices/scooter.yaml
     stove: !include devices/stove.yaml

@@ -3852,11 +3852,11 @@ views:
             name: Delivery
             secondary_info: none
           - type: custom:mushroom-entity-card
-            entity: input_boolean.scene_movie
+            entity: input_boolean.cinema
             tap_action:
               action: more-info
             layout: vertical
-            name: Movie
+            name: Cinema
             secondary_info: none
           - type: custom:mushroom-entity-card
             entity: input_boolean.scene_meal

@@ -125,7 +125,7 @@ automation:
           - binary_sensor.anyone_home
           - binary_sensor.humidifier_cleanup_notice
           - binary_sensor.humidifiers_need_refill
-          - input_boolean.scene_movie
+          - input_boolean.cinema
           - input_boolean.scene_meal
           - input_select.home_mode
 
@@ -146,7 +146,7 @@ automation:
 
           - condition: state
             entity_id:
-              - input_boolean.scene_movie
+              - input_boolean.cinema
               - input_boolean.scene_meal
             state: 'off'
         then:
@@ -196,7 +196,7 @@ automation:
       - trigger: state
         entity_id:
           - binary_sensor.anyone_home
-          - input_boolean.scene_movie
+          - input_boolean.cinema
           - input_boolean.scene_meal
           - input_select.dryer_status
           - input_select.home_mode
@@ -219,7 +219,7 @@ automation:
 
           - condition: state
             entity_id:
-              - input_boolean.scene_movie
+              - input_boolean.cinema
               - input_boolean.scene_meal
             state: 'off'
         then:

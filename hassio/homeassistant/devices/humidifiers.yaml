@@ -36,7 +36,7 @@ automation:
 
       - condition: state
         entity_id:
-          - input_boolean.scene_movie
+          - input_boolean.cinema
           - input_boolean.scene_meal
         state: 'off'
 

@@ -1,0 +1,261 @@
+input_boolean:
+  cinema:
+    name: Cinema
+    icon: mdi:popcorn
+    initial: false
+
+automation:
+  - id: cinema_start_by_voice
+    alias: 'Cinema: Start (by voice)'
+    triggers:
+      - trigger: event
+        event_type: yandex_intent
+        event_data:
+          text: Посмотрим кино
+    actions:
+      - if:
+          - condition: door.is_open
+            target:
+              entity_id: binary_sensor.living_room_balcony_door
+        then:
+          - action: script.yandex_station_tts
+            data:
+              target: >-
+                {{ trigger.event.data.get('entity_id', 'last') }}
+              text: Давай, только закрой дверь на балкон
+
+      - condition: door.is_closed
+        target:
+          entity_id: binary_sensor.living_room_balcony_door
+
+      - if:
+          - condition: state
+            entity_id: binary_sensor.evening_time_north
+            state: 'off'
+        then:
+          - action: cover.close_cover
+            target:
+              entity_id:
+                - cover.bedroom
+                - cover.workshop
+
+      - action: light.turn_on
+        target:
+          entity_id: light.living_room_backlight
+        data:
+          brightness_pct: 23
+          rgb_color: [215, 150, 255]
+
+      - action: light.turn_on
+        target:
+          entity_id: light.living_room_tv
+        data:
+          brightness_pct: 14
+
+      - action: cover.close_cover
+        target:
+          entity_id: cover.living_room
+
+      - if:
+          - condition: state
+            entity_id: media_player.tv
+            state: 'off'
+        then:
+          - action: media_player.turn_on
+            target:
+              entity_id:
+                - media_player.tv
+                - media_player.atv
+
+      - action: light.turn_off
+        target:
+          entity_id:
+            - group.bedroom_lights
+            - group.path_lights
+            - group.workshop_lights
+            - light.entrance
+            - light.hallway
+            - light.wardrobe
+
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.cinema
+
+      - action: script.yandex_station_tts
+        data:
+          target: >-
+            {{ trigger.event.data.get('entity_id', 'last') }}
+          text: Приятного просмотра!
+
+      - action: script.yandex_station_command
+        data:
+          target: media_player.living_room_station
+          command: выключи часы
+
+      - action: select.select_option
+        target:
+          entity_id: select.avr_display_brightness
+        data:
+          option: Low
+
+      - wait_for_trigger:
+          - trigger: state
+            entity_id: media_player.atv
+            to: idle
+        timeout:
+          seconds: 5
+        continue_on_timeout: true
+
+      - if:
+          - condition: state
+            entity_id: media_player.atv
+            state: idle
+        then:
+          - action: media_player.select_source
+            target:
+              entity_id: media_player.atv
+            data:
+              source: Infuse
+
+  - id: cinema_end
+    alias: 'Cinema: End'
+    triggers:
+      - trigger: event
+        id: yandex_intent
+        event_type: yandex_intent
+        event_data:
+          text: Просмотр окончен
+
+      - trigger: state
+        entity_id: media_player.tv
+        to: 'off'
+
+      - trigger: state
+        entity_id: media_player.atv
+        from:
+          - playing
+          - paused
+        to: idle
+
+      - trigger: state
+        entity_id: media_player.atv
+        attribute: app_id
+        from: com.firecore.infuse
+    conditions:
+      - condition: switch.is_on
+        target:
+          entity_id: input_boolean.cinema
+    actions:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.cinema
+
+      - if:
+          - condition: state
+            entity_id: binary_sensor.evening_time_north
+            state: 'off'
+        then:
+          - action: cover.open_cover
+            target:
+              entity_id:
+                - cover.bedroom
+                - cover.living_room
+                - cover.workshop
+
+      - if:
+          - condition: numeric_state
+            entity_id: sensor.illuminance_south_side
+            below: 500
+        then:
+          - action: light.turn_on
+            target:
+              entity_id: light.living_room_tv
+            data:
+              brightness_pct: 45
+              transition: 5
+
+          - action: light.turn_on
+            target:
+              entity_id: light.living_room_backlight
+            data:
+              brightness_pct: 23
+              color_temp_kelvin: 3400
+              transition: 5
+
+      - action: script.yandex_station_command
+        data:
+          target: media_player.living_room_station
+          command: включи часы
+
+      - action: select.select_option
+        target:
+          entity_id: select.avr_display_brightness
+        data:
+          option: High
+
+  - id: cinema_playing
+    alias: 'Cinema: Playing'
+    triggers:
+      - trigger: state
+        entity_id: media_player.atv
+        to: playing
+    conditions:
+      - condition: switch.is_on
+        target:
+          entity_id: input_boolean.cinema
+
+      - condition: light.is_on
+        target:
+          entity_id: light.living_room_tv
+
+      - condition: state
+        entity_id: light.living_room_tv
+        attribute: brightness
+        state: '115'
+    actions:
+      - action: light.turn_off
+        target:
+          entity_id:
+            - light.living_room_tv
+            - light.living_room_backlight
+        data:
+          transition: 5
+
+  - id: cinema_paused
+    alias: 'Cinema: Paused'
+    triggers:
+      - trigger: state
+        entity_id: media_player.atv
+        from: playing
+        to: paused
+    conditions:
+      - condition: switch.is_on
+        target:
+          entity_id: input_boolean.cinema
+
+      - condition: template
+        value_template: >-
+          {{ this.attributes.last_triggered is none or
+             (now() - this.attributes.last_triggered) > timedelta(seconds=30) }}
+    actions:
+      - action: light.turn_on
+        target:
+          entity_id: light.living_room_backlight
+        data:
+          brightness_pct: 30
+          rgb_color: [255, 68, 71]
+
+  - id: cinema_resume_playing
+    alias: 'Cinema: Resume playing'
+    triggers:
+      - trigger: state
+        entity_id: media_player.atv
+        to: playing
+    conditions:
+      - condition: switch.is_on
+        target:
+          entity_id: input_boolean.cinema
+    actions:
+      - action: light.turn_off
+        target:
+          entity_id: group.home_lights

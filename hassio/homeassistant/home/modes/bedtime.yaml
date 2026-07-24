@@ -171,3 +171,58 @@ automation:
             {% if states('sensor.chores') | length > 0 %}
               Только не забудь {{ states('sensor.chores') }}
             {% endif %}
+
+  - id: bedtime_remind_about_chores
+    alias: 'Bedtime: Remind about chores'
+    mode: restart
+    triggers:
+      - trigger: occupancy.detected
+        target:
+          entity_id: binary_sensor.bedroom_bed_occupancy
+
+      - id: cleared
+        trigger: occupancy.cleared
+        target:
+          entity_id: binary_sensor.bedroom_bed_occupancy
+    conditions:
+      - condition: state
+        entity_id: input_select.home_mode
+        state: Bedtime
+
+      - condition: template
+        value_template: >-
+          {{ states('sensor.chores') | length > 0 }}
+    actions:
+      - if:
+          - condition: trigger
+            id: cleared
+        then:
+          - stop: Occupation cleared
+
+      - if:
+          - condition: occupancy.is_detected
+            target:
+              area_id:
+                - kitchen
+                - bathroom
+
+        then:
+          - wait_for_trigger:
+              - trigger: occupancy.cleared
+                target:
+                  area_id:
+                    - kitchen
+                    - bathroom
+                options:
+                  behavior: all
+            timeout:
+              minutes: 10
+            continue_on_timeout: false
+
+      - action: script.yandex_station_tts
+        data:
+          target: media_player.bedroom_station
+          type: attention
+          text: >-
+            {{ ['Не спать, ты забыл', 'Зря ложишься, нужно', 'Давай вставай, нужно'] }}
+            {{ states('sensor.chores') }}

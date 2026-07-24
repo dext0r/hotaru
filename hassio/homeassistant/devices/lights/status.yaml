@@ -10,7 +10,7 @@ automation:
           - binary_sensor.humidifiers_need_refill
           - binary_sensor.freezer_door
           - binary_sensor.fridge_door
-          - binary_sensor.time_to_take_pills
+          - binary_sensor.time_to_take_pill
           - input_select.dryer_status
           - input_select.home_mode
           - input_select.washing_machine_status
@@ -62,7 +62,7 @@ automation:
 
           - conditions:
               - condition: state
-                entity_id: binary_sensor.time_to_take_pills
+                entity_id: binary_sensor.time_to_take_pill
                 state: 'on'
 
               - condition: state

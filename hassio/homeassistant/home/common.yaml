@@ -122,4 +122,8 @@ template:
             {% set data.chores = data.chores + ['закрыть балкон в гостиной'] %}
           {% endif %}
 
+          {% if is_state('binary_sensor.binary_sensor.time_to_take_pill', 'on') %}
+            {% set data.chores = data.chores + ['выпить таблетки'] %}
+          {% endif %}
+
           {{- data.chores|join(', ') -}}

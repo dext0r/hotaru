@@ -38,7 +38,7 @@ homeassistant:
     home_energy: !include home/energy.yaml
     home_guests: !include home/guests.yaml
     home_kitchen: !include home/kitchen.yaml
-    home_pills: !include home/pills.yaml
+    home_pill: !include home/pill.yaml
     home_presence: !include home/presence.yaml
     home_smoke: !include home/smoke.yaml
     home_water: !include home/water.yaml

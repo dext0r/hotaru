@@ -1,0 +1,77 @@
+automation:
+  - id: Pill taken
+    alias: 'Pill taken'
+    mode: single
+    max_exceeded: silent
+    triggers:
+      - trigger: device
+        domain: zha
+        device_id: 710f9479173632be0930e36e4107c9f6 # Kitchen Pills Button
+        type: remote_button_short_press
+        subtype: remote_button_short_press
+
+      - trigger: device
+        domain: zha
+        device_id: 710f9479173632be0930e36e4107c9f6 # Kitchen Pills Button
+        type: remote_button_double_press
+        subtype: remote_button_double_press
+    actions:
+      - action: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.pill_taken
+        data:
+          datetime: >-
+            {{ now().strftime('%Y-%m-%d %H:%M:%S') }}
+
+      - action: script.yandex_station_tts
+        data:
+          target: media_player.kitchen_station
+          text: >
+            <speaker audio="alice-sounds-game-boot-1.opus">
+          volume: 0.4
+
+  - id: pill_status_by_voice
+    alias: 'Pill: Status (by voice)'
+    triggers:
+      - platform: event
+        event_type: yandex_intent
+        event_data:
+          text: Я пила таблетку
+    actions:
+      - action: script.yandex_station_tts
+        data:
+          target: >-
+            {{ trigger.event.data.get('entity_id', 'last') }}
+          text: >-
+            {% set ts = state_attr('input_datetime.pill_taken', 'timestamp') %}
+            {% if ts is none %}
+              Нет, вообще никогда
+            {% else %}
+              {% set minutes = ((now() | as_timestamp - ts) / 60) | int %}
+              {% set hours = minutes // 60 %}
+              {% set ago = (hours > 0) | iif(hours ~ 'ч', minutes ~ 'мин') %}
+
+              {% if is_state('binary_sensor.time_to_take_pill', 'on') %}
+                Нет, последний раз {{ ago }} назад
+              {% else %}
+                Да, {{ ago }} назад
+              {% endif %}
+            {% endif %}
+
+input_datetime:
+  pill_taken:
+    name: Pill Taken
+    has_date: true
+    has_time: true
+    icon: mdi:pill-multiple
+
+template:
+  binary_sensor:
+    - name: Time to take pill
+      unique_id: binary_sensor.time_to_take_pill
+      icon: mdi:timer-alert-outline
+      state: >-
+        {% set ts = state_attr('input_datetime.pill_taken', 'timestamp') %}
+        {{ ts is not none and
+          (now().hour >= 22 or now().hour <= 6) and
+          (now() | as_timestamp - ts) > 12 * 3600 }}

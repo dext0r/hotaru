@@ -3933,7 +3933,7 @@ views:
                 name: Schedule to
       - type: entities
         entities:
-          - input_datetime.pills_takes
+          - input_datetime.pill_taken
           - input_datetime.next_trip
       - type: custom:layout-break
       - square: false

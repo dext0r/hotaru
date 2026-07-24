@@ -200,15 +200,15 @@ template:
           {% set dishwasher = states('sensor.dishwasher_mode') %}
           {% set dishwasher_plug = states('switch.dishwasher_plug') %}
           {% set kitchen_watermeter = states('sensor.kitchen_water_meter_boot_time') %}
-          {% set kitchen_water_leak_detector = states('binary_sensor.kitchen_water_leak_detector_problem') %}
+          {% set kitchen_water_leak_protection = states('binary_sensor.kitchen_water_leak_protection_problem') %}
 
           {# kitchen_watermeter -  не учитывает горяющую ленту #}
-          {# kitchen_water_leak_detector - не учитывает зарядку батареи #}
+          {# kitchen_water_leak_protection - не учитывает зарядку батареи #}
           {% set devices = (
             (dishwasher, 1, none),
             (dishwasher_plug, 1, 0.5),
             (kitchen_watermeter, 1.2, none),
-            (kitchen_water_leak_detector, 1.2, 1.2),
+            (kitchen_water_leak_protection, 1.2, 1.2),
           ) %}
           {% set data = namespace(power=0, unknown=false) %}
           {% for (state, on_power, off_power) in devices %}

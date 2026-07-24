@@ -199,57 +199,20 @@ automation:
 
   - id: living_room_humidifier_water_leak
     alias: 'Living Room Humidifier: Water Leak'
-    trigger:
-      - platform: state
-        entity_id:
-          - binary_sensor.living_room_humidifier_water_leak
-          - binary_sensor.living_room_humidifier_water_tank_leak
-        from: 'off'
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.living_room_humidifier_water_leak
         to: 'on'
 
-      - platform: state
-        entity_id:
-          - binary_sensor.living_room_humidifier_water_leak
-          - binary_sensor.living_room_humidifier_water_tank_leak
-        from: 'off'
+      - trigger: state
+        entity_id: binary_sensor.living_room_humidifier_water_leak
         to: 'on'
         for:
           minutes: 5
-    action:
-      - if:
-          - condition: template
-            value_template: >
-              {{ trigger.entity_id == 'binary_sensor.living_room_humidifier_water_leak' }}
-        then:
-          - action: switch.turn_off
-            entity_id: switch.living_room_humidifier_plug
-
-          - service: notify.mobile_app_misaka
-            data:
-              message: >
-                🚨 Обнаружена протечка {{ state_attr(trigger.from_state.entity_id, 'alert_text')|default('', True) }}
-              data:
-                push:
-                  sound:
-                    name: sms-received2.caf
-                    critical: 1
-                    volume: 1
-            continue_on_error: true
-
-          - service: script.yandex_station_tts
-            data:
-              target: all
-              type: alert
-              text: >
-                Обнаружена протечка {{ state_attr(trigger.from_state.entity_id, 'alert_text')|default('', True) }}.
-                Повторяю. Обнаружена протечка!
-
-      - action: notify.send_message
-        data:
-          entity_id: notify.dextor
-          message: >
-            🚨 Обнаружена протечка {{ state_attr(trigger.from_state.entity_id, 'alert_text')|default('', True) }}
-        continue_on_error: true
+    actions:
+      - action: switch.turn_off
+        target:
+          entity_id: switch.living_room_humidifier_plug
 
   - id: living_room_humidifier_water_tank_auto_refill_update
     alias: 'Living Room Humidifier Water Tank: Auto Refill Update'

@@ -44,24 +44,6 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/8da97afa2d57d9d2e86756a4aa2a6072.png
-'0x00158d00045683bc':
-  friendly_name: Kitchen Water Leak
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/2d19c1b8e82d9b72921bbd1fcbde4541.png
-'0xa4c1388ef2d5a611':
-  friendly_name: Bathroom Cold Water Valve
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/53bb2a9b13189fa922f665f466b6a532.png
 '0x00158d0003e701ed':
   friendly_name: Kitchen Motion
   homeassistant: {}
@@ -89,15 +71,6 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/5af4a3a117c693914f063f9e87cd28de.png
-'0x00158d0007110231':
-  friendly_name: Bathroom Sink Water Leak
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/2d19c1b8e82d9b72921bbd1fcbde4541.png
 '0x00158d00039723b6':
   friendly_name: Bedroom Bed Button
   homeassistant: {}
@@ -241,36 +214,6 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/5816cec5864b2553c5c835aefa557722.png
-'0x54ef44100071abb6':
-  friendly_name: Bathroom Hot Water Meter Leak
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/2d19c1b8e82d9b72921bbd1fcbde4541.png
-'0x54ef441000aa7b88':
-  friendly_name: Bathroom Cold Water Meter Leak
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/2d19c1b8e82d9b72921bbd1fcbde4541.png
-'0x54ef441000a6843a':
-  friendly_name: Bathroom Toilet Water Leak
-  homeassistant: {}
-  optimistic: true
-  retain: true
-  icon: device_icons/2d19c1b8e82d9b72921bbd1fcbde4541.png
-'0x54ef441000a68ada':
-  friendly_name: Living Room Humidifier Water Leak
-  homeassistant: {}
-  optimistic: true
-  retain: true
-  icon: device_icons/2d19c1b8e82d9b72921bbd1fcbde4541.png
 '0x84fd27fffe9c0fbd':
   friendly_name: Workshop Desk Button
   homeassistant: {}

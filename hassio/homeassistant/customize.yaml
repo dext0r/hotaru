@@ -1,22 +1,3 @@
-binary_sensor.bathroom_washing_machine_water_leak:
-  alert_text: в ванне под стиралкой
-binary_sensor.bathroom_sink_water_leak:
-  alert_text: в ванне под раковиной
-binary_sensor.bathroom_toilet_water_leak:
-  alert_text: в ванне за унитазом
-binary_sensor.bathroom_hot_water_meter_leak:
-  alert_text: в ванне горячий счётчик
-binary_sensor.bathroom_cold_water_meter_leak:
-  alert_text: в ванне холодный счётчик
-binary_sensor.living_room_humidifier_water_leak:
-  alert_text: в гостиной у увлажнителя
-binary_sensor.living_room_humidifier_water_tank_leak:
-  alert_text: в гостиной под увлажнителем
-binary_sensor.kitchen_water_leak:
-  alert_text: на кухне под раковиной
-binary_sensor.closet_water_leak:
-  alert_text: в кладовке
-
 zone.home:
   track_ios: false
 

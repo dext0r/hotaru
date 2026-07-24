@@ -2897,8 +2897,16 @@ views:
         type: grid
         cards:
           - type: tile
-            entity: binary_sensor.kitchen_water_leak
-            name: Kitchen
+            entity: binary_sensor.kitchen_water_inlet_leak
+            name: Kitchen Inlet
+            vertical: true
+          - type: tile
+            entity: binary_sensor.kitchen_water_filter_leak
+            name: Kitchen Filter
+            vertical: true
+          - type: tile
+            entity: binary_sensor.kitchen_backup_water_leak
+            name: Kitchen Backup
             vertical: true
           - type: tile
             entity: binary_sensor.closet_water_leak
@@ -2968,11 +2976,11 @@ views:
             type: grid
             cards:
               - type: tile
-                entity: switch.bathroom_cold_water_valve
+                entity: valve.bathroom_cold_water
                 name: Cold Water
                 color: light-blue
               - type: tile
-                entity: switch.bathroom_hot_water_valve
+                entity: valve.bathroom_hot_water
                 name: Hot Water
                 color: pink
       - type: vertical-stack
@@ -2986,13 +2994,14 @@ views:
             type: grid
             cards:
               - type: tile
-                entity: switch.kitchen_cold_water_valve
-                name: Cold Water
-                color: light-blue
+                entity: valve.kitchen_water_inlet
+                name: Inlet
               - type: tile
-                entity: switch.kitchen_hot_water_valve
-                name: Hot Water
-                color: pink
+                entity: valve.kitchen_water_filter_tank
+                name: Filter Tank
+              - type: tile
+                entity: binary_sensor.kitchen_water_leak_protection_problem
+                name: Leak Protection
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card

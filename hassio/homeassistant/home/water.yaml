@@ -1,74 +1,48 @@
 automation:
-  - id: water_leak_detected
-    alias: 'Water leak: Detected'
-    trigger:
-      - platform: state
-        entity_id:
-          - binary_sensor.kitchen_water_leak
+  - id: water_leak_detected_alert
+    alias: 'Water Leak Detected: Alert'
+    mode: restart
+    triggers:
+      - trigger: state
+        entity_id: &water_leak_entities_all
           - binary_sensor.closet_water_leak
+          - binary_sensor.kitchen_water_inlet_leak
+          - binary_sensor.kitchen_water_filter_leak
+          - binary_sensor.kitchen_backup_water_leak
           - binary_sensor.bathroom_washing_machine_water_leak
           - binary_sensor.bathroom_sink_water_leak
           - binary_sensor.bathroom_toilet_water_leak
           - binary_sensor.bathroom_hot_water_meter_leak
           - binary_sensor.bathroom_cold_water_meter_leak
-        from: 'off'
+          - binary_sensor.living_room_humidifier_water_leak
+          - binary_sensor.living_room_humidifier_water_tank_leak
         to: 'on'
 
-      - platform: state
-        entity_id:
-          - binary_sensor.kitchen_water_leak
-          - binary_sensor.closet_water_leak
-          - binary_sensor.bathroom_washing_machine_water_leak
-          - binary_sensor.bathroom_sink_water_leak
-          - binary_sensor.bathroom_toilet_water_leak
-          - binary_sensor.bathroom_hot_water_meter_leak
-          - binary_sensor.bathroom_cold_water_meter_leak
-        from: 'off'
+      - trigger: state
+        entity_id: *water_leak_entities_all
         to: 'on'
         for:
           minutes: 5
+    variables: &variables
+      _location_: >-
+        {{ {
+          'binary_sensor.closet_water_leak': 'в кладовке',
+          'binary_sensor.kitchen_water_inlet_leak': 'на кухне под мойкой',
+          'binary_sensor.kitchen_water_filter_leak': 'на кухне у фильтра',
+          'binary_sensor.kitchen_backup_water_leak': 'на кухне под мойкой радио',
+          'binary_sensor.bathroom_washing_machine_water_leak': 'за стиралкой',
+          'binary_sensor.bathroom_sink_water_leak': 'в ванне под раковиной',
+          'binary_sensor.bathroom_toilet_water_leak': 'в ванне за унитазом',
+          'binary_sensor.bathroom_hot_water_meter_leak': 'в ванне горячий счетчик',
+          'binary_sensor.bathroom_cold_water_meter_leak': 'в ванне холодный счётчик',
+          'binary_sensor.living_room_humidifier_water_leak': 'увлажнитель в гостиной',
+          'binary_sensor.living_room_humidifier_water_tank_leak': 'под увлажнителем в гостиной',
+        }.get(trigger.from_state.entity_id, trigger.from_state.entity_id.split('.')[1]) }}
     actions:
-      - choose:
-          - conditions:
-              - condition: template
-                value_template: >
-                  {{ area_name(trigger.entity_id) == 'Kitchen' }}
-            sequence:
-              - service: switch.turn_off
-                entity_id:
-                  - switch.kitchen_hot_water_valve
-                  - switch.kitchen_cold_water_valve
-                  - switch.dishwasher_socket
-                continue_on_error: true
-
-          - conditions:
-              - condition: template
-                value_template: >
-                  {{ area_name(trigger.entity_id) in ('Bathroom', 'Closet') }}
-            sequence:
-              - service: switch.turn_off
-                entity_id:
-                  - switch.bathroom_hot_water_valve
-                  - switch.bathroom_cold_water_valve
-                  - switch.washing_machine_socket
-                  - switch.water_heater_socket
-                continue_on_error: true
-        default:
-          - service: switch.turn_off
-            entity_id:
-              - switch.kitchen_hot_water_valve
-              - switch.kitchen_cold_water_valve
-              - switch.bathroom_hot_water_valve
-              - switch.bathroom_cold_water_valve
-              - switch.dishwasher_socket
-              - switch.washing_machine_socket
-              - switch.water_heater_socket
-            continue_on_error: true
-
-      - service: notify.mobile_app_misaka
+      - action: notify.mobile_app_misaka
         data:
-          message: >
-            🚨 Обнаружена протечка {{ state_attr(trigger.from_state.entity_id, 'alert_text')|default('', True) }}
+          message: >-
+            🚨 Протечка {{ _location_ }}
           data:
             push:
               sound:
@@ -77,50 +51,125 @@ automation:
                 volume: 1
         continue_on_error: true
 
-      - action: notify.send_message
+      - action: notify.dextor
         data:
-          entity_id: notify.dextor
           message: >
-            🚨 Обнаружена протечка {{ state_attr(trigger.from_state.entity_id, 'alert_text')|default('', True) }}
+            🚨 Протечка {{ _location_ }}
         continue_on_error: true
 
-      - service: script.yandex_station_tts
+      - condition: state
+        entity_id: binary_sensor.anyone_home
+        state: 'on'
+
+      - action: script.yandex_station_tts
         data:
           target: all
           type: alert
           text: >
-            Обнаружена протечка {{ state_attr(trigger.from_state.entity_id, 'alert_text')|default('', True) }}.
-            Повторяю. Обнаружена протечка!
+            Протечка {{ _location_ }}
 
-      - delay:
-          seconds: 25
-      - service: script.yandex_station_tts
-        data:
-          target: all
-          type: attention
-          text: >
-            Если протечки нет, скажи Алиса, включи воду или нажми кнопки на вентилях вручную.
+      - if:
+          - not:
+              - condition: state
+                entity_id: person.dextor
+                state: home
+        then:
+          - delay:
+              seconds: 25
 
-  - id: water_leak_resolved
-    alias: 'Water leak: Resolved'
-    trigger:
-      - platform: state
-        entity_id:
-          - binary_sensor.kitchen_water_leak
-          - binary_sensor.closet_water_leak
-          - binary_sensor.bathroom_washing_machine_water_leak
-          - binary_sensor.bathroom_sink_water_leak
-          - binary_sensor.bathroom_toilet_water_leak
-          - binary_sensor.bathroom_hot_water_meter_leak
-          - binary_sensor.bathroom_cold_water_meter_leak
+          - action: script.yandex_station_tts
+            data:
+              target: all
+              type: attention
+              text: >
+                Протри датчик и скажи Алиса, включи воду.
+
+  - id: water_leak_resolved_alert
+    alias: 'Water Leak Resolved: Alert'
+    triggers:
+      - trigger: state
+        entity_id: *water_leak_entities_all
         from: 'on'
         to: 'off'
-    action:
-      - action: notify.send_message
+    variables: *variables
+    actions:
+      - action: notify.dextor
         data:
-          entity_id: notify.dextor
           message: >
-            🎉 Устранена протечка {{ state_attr(trigger.from_state.entity_id, 'alert_text')|default('', True) }}
+            🎉 Устранена протечка {{ _location_ }}
+
+  - id: bathroom_water_leak_close_valves
+    alias: 'Bathroom Water Leak: Close valves'
+    triggers:
+      - trigger: state
+        entity_id: &water_leak_entities_bathroom
+          - binary_sensor.closet_water_leak
+          - binary_sensor.bathroom_sink_water_leak
+          - binary_sensor.bathroom_toilet_water_leak
+          - binary_sensor.bathroom_washing_machine_water_leak
+          - binary_sensor.bathroom_hot_water_meter_leak
+          - binary_sensor.bathroom_cold_water_meter_leak
+        to: 'on'
+
+      - trigger: state
+        entity_id: *water_leak_entities_bathroom
+        to: 'on'
+        for:
+          minutes: 5 # на всякий случай, если первый раз что-то пошло не так
+    actions:
+      - action: valve.close_valve
+        target:
+          entity_id:
+            - valve.bathroom_cold_water
+            - valve.bathroom_hot_water
+        continue_on_error: true
+
+      - action: switch.turn_off
+        target:
+          entity_id:
+            - switch.bathroom_hot_water_valve
+            - switch.bathroom_cold_water_valve
+            - switch.washing_machine_plug
+            - switch.water_heater_socket
+
+  - id: kitchen_water_leak_close_valves
+    alias: 'Kitchen Water Leak: Close valves'
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.kitchen_water_leak_protection_problem
+        to: 'on'
+        for:
+          seconds: 30 # за это время краны должны штатно закрыться
+      - trigger: state
+        entity_id: binary_sensor.kitchen_backup_water_leak
+        to: 'on'
+    actions:
+      - action: valve.close_valve
+        target:
+          entity_id:
+            - valve.kitchen_water_inlet
+            - valve.kitchen_water_filter_tank
+        continue_on_error: true
+
+      - action: switch.turn_off
+        target:
+          entity_id: switch.dishwasher_plug
+
+  - id: kitchen_water_leak_protection_problem_alert
+    alias: 'Kitchen Water Leak Protection: Problem Alert'
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.kitchen_water_leak_protection_problem
+        to: 'on'
+    conditions:
+      - condition: template
+        value_template: >-
+          {{ trigger.to_state.attributes.get('description') not in ['line_1_attention', 'line_2_attention'] }}
+    actions:
+      - action: notify.dextor
+        data:
+          message: >
+            🚨 Проблема с защитой от протечек на кухне: {{ trigger.to_state.attributes.get('description') }}
 
 binary_sensor:
   - platform: group
@@ -128,8 +177,10 @@ binary_sensor:
     name: Water Leak
     device_class: moisture
     entities:
-      - binary_sensor.kitchen_water_leak
       - binary_sensor.closet_water_leak
+      - binary_sensor.kitchen_water_inlet_leak
+      - binary_sensor.kitchen_water_filter_leak
+      - binary_sensor.kitchen_backup_water_leak
       - binary_sensor.bathroom_washing_machine_water_leak
       - binary_sensor.bathroom_sink_water_leak
       - binary_sensor.bathroom_toilet_water_leak
@@ -144,47 +195,62 @@ input_boolean:
     icon: mdi:water-boiler
 
 template:
+  - binary_sensor:
+      # https://github.com/dext0r/tuya-local/blob/759b2065ac93ec3efd930f71b222522e58ad083e/custom_components/tuya_local/devices/stahlmann_smart_waterleak.yaml#L25
+      - name: Kitchen Water Inlet Leak
+        unique_id: binary_sensor.kitchen_water_inlet_leak
+        state: >-
+          {{ is_state_attr('binary_sensor.kitchen_water_leak_protection_problem',
+                           'description', 'line_1_attention') }}
+        availability: >-
+          {{ is_state('binary_sensor.kitchen_water_leak_protection_problem', ['on', 'off']) }}
+        device_class: moisture
+
+      - name: Kitchen Water Filter Leak
+        unique_id: binary_sensor.kitchen_water_filter_leak
+        state: >-
+          {{ is_state_attr('binary_sensor.kitchen_water_leak_protection_problem',
+                           'description', 'line_2_attention') }}
+        availability: >-
+          {{ is_state('binary_sensor.kitchen_water_leak_protection_problem', ['on', 'off']) }}
+        device_class: moisture
+
   - switch:
+      # только для управления голосом
       - unique_id: switch.water_supply
         name: Water Supply
-        state: >
+        state: >-
           {{
-            is_state('switch.kitchen_hot_water_valve', 'on') or
-            is_state('switch.kitchen_cold_water_valve', 'on') or
-            is_state('switch.bathroom_hot_water_valve', 'on') or
-            is_state('switch.bathroom_cold_water_valve', 'on')
-          }}
-        availability: >
-          {{
-            states('switch.kitchen_hot_water_valve') in ['on', 'off'] and
-            states('switch.kitchen_cold_water_valve') in ['on', 'off'] and
-            states('switch.bathroom_hot_water_valve') in ['on', 'off'] and
-            states('switch.bathroom_cold_water_valve') in ['on', 'off']
+            is_state('valve.bathroom_cold_water', 'open') and
+            is_state('valve.bathroom_hot_water', 'open') and
+            is_state('valve.kitchen_water_inlet', 'open') and
+            is_state('valve.kitchen_water_filter_tank', 'open')
           }}
         turn_on:
-          - service: switch.turn_on
+          - action: switch.turn_on
             target:
               entity_id:
-                - switch.kitchen_hot_water_valve
-                - switch.kitchen_cold_water_valve
-                - switch.bathroom_cold_water_valve
-            continue_on_error: True
+                - switch.dishwasher_plug
+                - switch.washing_machine_plug
+            continue_on_error: true
 
-          - action: switch.turn_on
-            entity_id:
-              - switch.dishwasher_socket
-              - switch.washing_machine_socket
+          - action: valve.open_valve
+            target:
+              entity_id:
+                - valve.bathroom_cold_water
+                - valve.kitchen_water_inlet
+                - valve.kitchen_water_filter_tank
             continue_on_error: true
 
           - if:
-              - condition: state
-                entity_id: input_boolean.hot_water_supply
-                state: 'on'
+              - condition: switch.is_on
+                target:
+                  entity_id: input_boolean.hot_water_supply
             then:
-              - action: switch.turn_on
-                entity_id: switch.bathroom_hot_water_valve
+              - action: valve.open_valve
+                entity_id: valve.bathroom_hot_water
         turn_off:
-          - action: switch.not_supported
+          - action: none.none
 
 utility_meter:
   kitchen_filter_drink_water_daily:

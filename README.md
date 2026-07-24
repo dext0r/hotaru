@@ -181,6 +181,7 @@
 ## Разное
 
 * 4x Приводы на краны Zigbee **[Tuya ZN231392](https://aliexpress.ru/item/1005005837381838.html)**
+* Защита от протечки **Stahlmann Smart** (куплена по очень вкусной цене): типичная туя со своими приколами, подключена через Tuya Local ([PR](https://github.com/make-all/tuya-local/pull/5122)).
 * **Nelma5** управлялка домофоном на ESP32 от [SCratORS](https://github.com/SCratORS/SmartIntercom): [конфиг](esphome/nelma5.yaml) полностью свой.
 * 5x **[PZEM-004](https://ozon.ru/t/uknnLfh)** для мониторинга энергопотребления по всем линиям: подключено к управлялке домофоном ([фото 1](images/pzem-1-26.jpg), [фото 2](images/pzem-2-26.jpg)).
 
@@ -312,11 +313,12 @@ Tion Iris - классный увлажнитель, но у него есть �
 
 ## Статистика по устройствам
 
-* Zigbee устройств: 31 на Z2M + 44 на ZHA = 75
+* Zigbee устройств: 20 на Z2M + 53 на ZHA = 73
 * Esphome устройств: 57
 * BLE датчики: 7
 * Matter на WiFi: 1
 * Камер на WiFi: 2
+* Tuya на WiFi: 1
 * Прочих УД устройств на wifi: 14
 
 ## Ссылки

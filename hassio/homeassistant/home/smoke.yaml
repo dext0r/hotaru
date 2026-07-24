@@ -56,8 +56,7 @@ automation:
           - binary_sensor.porch_smoke
         from: 'on'
         to: 'off'
-    variables:
-      <<: *variables
+    variables: *variables
     actions:
       - action: notify.dextor
         data:

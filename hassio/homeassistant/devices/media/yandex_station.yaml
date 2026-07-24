@@ -58,7 +58,7 @@ automation:
           - service: input_number.set_value
             entity_id: input_number.yandex_station_alert_volume
             data:
-              value: 0.7
+              value: 0.6
 
           - service: input_number.set_value
             entity_id: input_number.yandex_station_attention_volume

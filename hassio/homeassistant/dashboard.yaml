@@ -2867,7 +2867,6 @@ views:
             icon: mdi:cup-water
             name: Drink water
             state_header: Today
-            format: precision1
             entities:
               - entity: sensor.kitchen_filter_drink_water
                 name: Total
@@ -2875,12 +2874,12 @@ views:
               - entity: sensor.kitchen_filter_drink_water_monthly
                 name: Month
                 format: precision1
+            time_format: precision1
           - entity: sensor.kitchen_filter_feed_water_daily
             type: custom:multiple-entity-row
             icon: mdi:water-pump
-            name: Feed water
+            name: Feed water (Filter)
             state_header: Today
-            format: precision1
             entities:
               - entity: sensor.kitchen_filter_feed_water
                 name: Total
@@ -2888,6 +2887,11 @@ views:
               - entity: sensor.kitchen_filter_feed_water_monthly
                 name: Month
                 format: precision1
+            time_format: precision1
+          - entity: sensor.kitchen_cold_water
+            name: Kitchen Cold Water
+          - entity: sensor.kitchen_hot_water
+            name: Kitchen Hot Water
       - square: false
         columns: 2
         type: grid

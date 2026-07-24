@@ -1,80 +1,287 @@
 packages:
-  base: !include common/esp8266.yaml
+  base: !include common/esp32.yaml
   wifi_e: !include common/wifi_e.yaml
 
 esphome:
   friendly_name: Kitchen Water Meter
-  area: Kitchen
+  area:
+    id: kitchen
+    name: Kitchen
   name: kitchen-water-meter
-  model: NodeMCU
+  model: ESP32
   name_add_mac_suffix: false
 
-preferences:
-  flash_write_interval: 10min
+  on_boot:
+    - pulse_counter.set_total_pulses:
+        id: filter_feed_water_flow
+        value: !lambda return id(filter_feed_water_total_pulses);
 
-button:
-  - name: Kitchen Filter Reset Water Consumption
-    platform: template
-    entity_category: diagnostic
-    on_press:
-      - sensor.integration.reset: kitchen_filter_feed_water_total
-      - sensor.integration.reset: kitchen_filter_drink_water_total
+    - pulse_counter.set_total_pulses:
+        id: filter_drink_water_flow
+        value: !lambda return id(filter_drink_water_total_pulses);
+
+  devices:
+    - id: dishwasher_status_light
+      name: Dishwasher Status Light
+      area_id: kitchen
+
+    - id: kitchen_status_light
+      name: Kitchen Status Light
+      area_id: kitchen
+
+    - id: kitchen_path_light
+      name: Kitchen Path Light
+      area_id: kitchen
+
+esp32:
+  board: esp32doit-devkit-v1
+
+preferences:
+  flash_write_interval: 5min
+
+substitutions:
+  # Крутилки YF-S402B: (38xQ) л/мин ±3% (2280 импульсов = 1 литр)
+  # Каждая крутилка откалибрована отдельно под её типичную скорость потока
+  feed_water_pulse_per_liter: 2000
+  drink_water_pulse_per_liter: 1950
+
+globals:
+  - id: cold_water_total_liters
+    type: int
+    restore_value: yes
+
+  - id: hot_water_total_liters
+    type: int
+    restore_value: yes
+
+  - id: filter_feed_water_total_pulses
+    type: int
+    restore_value: yes
+
+  - id: filter_drink_water_total_pulses
+    type: int
+    restore_value: yes
+
+api:
+  actions:
+    - action: set_cold_water_consumption
+      variables:
+        liters: int
+      then:
+        - globals.set:
+            id: cold_water_total_liters
+            value: !lambda return liters;
+        - lambda: |-
+            global_preferences->sync();
+
+    - action: set_hot_water_consumption
+      variables:
+        liters: int
+      then:
+        - globals.set:
+            id: hot_water_total_liters
+            value: !lambda return liters;
+        - lambda: |-
+            global_preferences->sync();
+
+    - action: set_filter_feed_water_consumption
+      variables:
+        liters: int
+      then:
+        - pulse_counter.set_total_pulses:
+            id: filter_feed_water_flow
+            value: !lambda |-
+              return liters * ${feed_water_pulse_per_liter};
+        - lambda: |-
+            global_preferences->sync();
+
+    - action: set_filter_drink_water_consumption
+      variables:
+        liters: int
+      then:
+        - pulse_counter.set_total_pulses:
+            id: filter_drink_water_flow
+            value: !lambda |-
+              return liters * ${drink_water_pulse_per_liter};
+        - lambda: |-
+            global_preferences->sync();
+
+binary_sensor:
+  # Счётчик Itelma WFK24.D080/WFW24.D080
+  # Выдает не "импульс" каждые 10 литров, а замыкает и размыкает контакт на продолжительное время
+  # При х.хх9 - контакт замыкается, при х.хх3 размыкается
+  # По этой причине считаем по 5 литров
+  - name: Hot Water Meter Pulse
+    platform: gpio
+    pin:
+      number: 18
+      mode:
+        input: true
+        pullup: true
+      inverted: true
+    internal: true
+    filters:
+      - delayed_on_off: 20s
+    on_state_change:
+      then:
+        - lambda: !lambda |-
+            if (x_previous.has_value() && x.has_value()) {
+              id(hot_water_total_liters) += 5;
+            }
+
+  - name: Cold Water Meter Pulse
+    platform: gpio
+    pin:
+      number: 19
+      mode:
+        input: true
+        pullup: true
+      inverted: true
+    internal: true
+    filters:
+      - delayed_on_off: 20s
+    on_state_change:
+      then:
+        - lambda: !lambda |-
+            if (x_previous.has_value() && x.has_value()) {
+              id(cold_water_total_liters) += 5;
+            }
 
 sensor:
-  # YF-S402B: (38xQ) л/мин ±3% (2280 импульсов = 1 литр)
-  - id: kitchen_filter_feed_water_lm
-    platform: pulse_counter
-    pin: 12
-    internal: true
-    unit_of_measurement: L/m
-    update_interval: 60s
-    filters:
-      - lambda: |-
-          return x / 2280;
-
-  - id: kitchen_filter_feed_water_total
-    name: Kitchen Filter Feed Water
-    platform: integration
-    sensor: kitchen_filter_feed_water_lm
-    time_unit: min
-    restore: true
+  - &water_consumption_sensor
+    name: Cold Water
+    platform: template
     icon: mdi:water
     state_class: total_increasing
     device_class: water
     unit_of_measurement: L
-    accuracy_decimals: 2
-    filters:
-      - round: 2
+    accuracy_decimals: 0
+    update_interval: 5s
+    lambda: |-
+      return id(cold_water_total_liters);
 
-  - id: kitchen_filter_drink_water_lm
+  - <<: *water_consumption_sensor
+    name: Hot Water
+    icon: mdi:water-thermometer
+    lambda: |-
+      return id(hot_water_total_liters);
+
+  # Ввод в фильтр
+  - id: filter_feed_water_flow
+    name: Filter Feed Water Flow
     platform: pulse_counter
-    pin: 14
+    pin:
+      number: 25
+      mode:
+        input: true
+        pullup: true
+    unit_of_measurement: ml/s
+    accuracy_decimals: 0
+    update_interval: 1s
     internal: true
-    unit_of_measurement: L/m
-    update_interval: 60s
     filters:
       - lambda: |-
-          return x / 2280;
+          return x / ${feed_water_pulse_per_liter} / 60 * 1000;
+      - round: 0
+    total:
+      name: Filter Feed Water
+      icon: mdi:cup-water
+      device_class: water
+      unit_of_measurement: L
+      accuracy_decimals: 2
+      filters:
+        - lambda: |-
+            return x / ${feed_water_pulse_per_liter};
+        - round: 2
+        - throttle: 60s
+      on_raw_value:
+        - globals.set:
+            id: filter_feed_water_total_pulses
+            value: !lambda return x;
 
-  - id: kitchen_filter_drink_water_total
-    name: Kitchen Filter Drink Water
-    platform: integration
-    sensor: kitchen_filter_drink_water_lm
-    time_unit: min
-    restore: true
-    icon: mdi:water
-    state_class: total_increasing
-    device_class: water
-    unit_of_measurement: L
-    accuracy_decimals: 2
+  # Питьевая вода
+  - id: filter_drink_water_flow
+    name: Filter Drink Water Flow
+    platform: pulse_counter
+    pin:
+      number: 26
+      mode:
+        input: true
+        pullup: true
+    unit_of_measurement: ml/s
+    accuracy_decimals: 0
+    update_interval: 1s
+    internal: true
     filters:
-      - round: 2
+      - lambda: |-
+          return x / ${drink_water_pulse_per_liter} / 60 * 1000;
+      - round: 0
+    total:
+      name: Filter Drink Water
+      icon: mdi:water-pump
+      device_class: water
+      unit_of_measurement: L
+      accuracy_decimals: 2
+      filters:
+        - lambda: |-
+            return x / ${drink_water_pulse_per_liter};
+        - round: 2
+        - throttle: 60s
+      on_raw_value:
+        - globals.set:
+            id: filter_drink_water_total_pulses
+            value: !lambda return x;
+
+  - id: tds_voltage
+    name: TDS Voltage
+    platform: adc
+    pin: 34
+    attenuation: 12db
+    raw: true
+    accuracy_decimals: 10
+    update_interval: 500ms
+    internal: true
+    filters:
+      - lambda: |-
+          return x / 1000.0f;
+      # возможно избыточно
+      - median:
+          window_size: 10
+          send_every: 1
+          send_first_at: 1
+      - sliding_window_moving_average:
+          window_size: 25
+          send_every: 6
+
+  - name: Filter Drink Water TDS
+    platform: template
+    icon: mdi:water-opacity
+    unit_of_measurement: ppm
+    state_class: measurement
+    accuracy_decimals: 0
+    update_interval: 60s
+    lambda: |-
+      float waterC = 17; // мне так кажется :D
+      float voltage = id(tds_voltage).state;
+
+      // Temperature compensation (2% per °C from 25°C)
+      float coeff = 1.0f + 0.02f * (waterC - 25.0f);
+      float cv = voltage / coeff;
+
+      // Base TDS formula (DFRobot polynomial)
+      float tds = (133.42f * cv * cv * cv - 255.86f * cv * cv + 857.39f * cv) * 0.5f;
+
+      return tds;
+    filters:
+      - round: 0
 
 light:
-  - name: Dishwasher Status Light
+  - name: ''
     platform: partition
+    device_id: dishwasher_status_light
+    icon: mdi:dome-light
     segments:
-      - id: led
+      - id: led_strip
         from: 0
         to: 0
     gamma_correct: 1
@@ -84,10 +291,12 @@ light:
           update_interval: 2s
           transition_length: 2s
 
-  - name: Kitchen Status Light
+  - name: ''
     platform: partition
+    device_id: kitchen_status_light
+    icon: mdi:dome-light
     segments:
-      - id: led
+      - id: led_strip
         from: 52
         to: 52
     gamma_correct: 1
@@ -97,17 +306,20 @@ light:
           update_interval: 2s
           transition_length: 2s
 
-  - name: Kitchen Path Light
+  - name: ''
     platform: partition
+    device_id: kitchen_path_light
+    icon: mdi:hazard-lights
     segments:
-      - id: led
+      - id: led_strip
         from: 1
         to: 51
     gamma_correct: 1
 
-  - id: led
-    platform: neopixelbus
-    pin: 13
-    type: GRBW
-    variant: SK6812
+  - id: led_strip
+    platform: esp32_rmt_led_strip
+    pin: 23
+    chipset: SK6812
     num_leds: 53
+    rgb_order: GRB
+    is_rgbw: true

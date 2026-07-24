@@ -117,6 +117,10 @@ automation:
               - binary_sensor.kitchen_light_alert_available
             state: 'off'
 
+          - condition: state
+            entity_id: person.layma
+            state: home
+
           - condition: template
             value_template: >-
               {{ (now() - states.input_select.washing_machine_status.last_changed) > timedelta(hours=1) }}

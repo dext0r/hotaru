@@ -16,12 +16,6 @@ binary_sensor.kitchen_water_leak:
   alert_text: на кухне под раковиной
 binary_sensor.closet_water_leak:
   alert_text: в кладовке
-binary_sensor.porch_smoke:
-  alert_text: на крыльце
-binary_sensor.kitchen_smoke:
-  alert_text: на кухне
-binary_sensor.hallway_smoke:
-  alert_text: в коридоре
 
 zone.home:
   track_ios: false

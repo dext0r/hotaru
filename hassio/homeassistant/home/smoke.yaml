@@ -1,8 +1,8 @@
 automation:
   - id: smoke_detected
     alias: 'Smoke: Detected'
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id:
           - binary_sensor.kitchen_smoke
           - binary_sensor.hallway_smoke
@@ -10,8 +10,8 @@ automation:
         from: 'off'
         to: 'on'
 
-      - platform: state
-        id: not_a_drill
+      - id: not_a_drill
+        trigger: state
         entity_id:
           - binary_sensor.kitchen_smoke
           - binary_sensor.hallway_smoke
@@ -20,11 +20,18 @@ automation:
         to: 'on'
         for:
           minutes: 1
+    variables: &variables
+      _area_: >-
+        {{ {
+          'binary_sensor.kitchen_smoke': 'на кухне',
+          'binary_sensor.porch_smoke': 'на крыльце',
+          'binary_sensor.hallway_smoke': 'в коридоре',
+        }.get(trigger.from_state.entity_id, '') }}
     action:
-      - service: notify.mobile_app_misaka
+      - action: notify.mobile_app_misaka
         data:
-          message: >
-            🚨 Обнаружено задымление {{ state_attr(trigger.from_state.entity_id, 'alert_text')|default('', True) }}
+          message: >-
+            🚨 Обнаружено задымление {{ _area_ }}
           data:
             push:
               sound:
@@ -33,29 +40,29 @@ automation:
                 volume: 1
         continue_on_error: true
 
-      - action: notify.send_message
+      - action: notify.dextor
         data:
-          entity_id: notify.dextor
-          message: >
-            🚨 Обнаружено задымление {{ state_attr(trigger.from_state.entity_id, 'alert_text')|default('', True) }}
+          message: >-
+            🚨 Обнаружено задымление {{ _area_ }}
         continue_on_error: true
 
   - id: smoke_resolved
     alias: 'Smoke: Resolved'
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id:
           - binary_sensor.kitchen_smoke
           - binary_sensor.hallway_smoke
           - binary_sensor.porch_smoke
         from: 'on'
         to: 'off'
-    action:
-      - action: notify.send_message
+    variables:
+      <<: *variables
+    actions:
+      - action: notify.dextor
         data:
-          entity_id: notify.dextor
-          message: >
-            🎉 Устранено задымление {{ state_attr(trigger.from_state.entity_id, 'alert_text')|default('', True) }}
+          message: >-
+            🎉 Устранено задымление {{ _area_ }}
 
 binary_sensor:
   - platform: group

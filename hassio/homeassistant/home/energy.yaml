@@ -48,7 +48,7 @@ automation:
       - action: switch.turn_off
         entity_id:
           - switch.water_heater_socket
-          - switch.dryer_socket
+          - switch.dryer_plug
           - switch.bedroom_intake_fan_plug
           - switch.workshop_intake_fan_relay
 
@@ -130,7 +130,7 @@ template:
           {% set bedroom_ac_em = states('sensor.bedroom_ac_energy_meter_boot_time') %}
           {% set bedroom_desk_plug = states('switch.bedroom_desk_plug') %}
           {% set bedroom_intake_fan_plug = states('switch.bedroom_intake_fan_plug') %}
-          {% set dryer_socket = states('switch.dryer_socket') %}
+          {% set dryer_plug = states('switch.dryer_plug') %}
           {% set north_balcony_presence = states('sensor.north_balcony_presence_boot_time') %}
           {% set vacuum_charger = states('switch.vacuum_charger') %}
           {% set washing_machine_plug = states('switch.washing_machine_plug')  %}
@@ -167,7 +167,7 @@ template:
             (bedroom_ac_em, 0.8, none),
             (bedroom_desk_plug, 1.25, 0.7),
             (bedroom_intake_fan_plug, 1.25, 0.7),
-            (dryer_socket, 0.7, 0),
+            (dryer_plug, 0.7, 0),
             (north_balcony_presence, 0.8, none),
             (vacuum_charger, 1.25, 0.7),
             (washing_machine_plug, 0.7, 0),

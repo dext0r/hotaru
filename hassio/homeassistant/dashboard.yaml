@@ -2604,7 +2604,7 @@ views:
                   border: 0;
                 }
           - type: custom:mushroom-entity-card
-            entity: switch.dryer_socket
+            entity: switch.dryer_plug
             primary_info: none
             secondary_info: none
             card_mod:
@@ -3395,16 +3395,16 @@ views:
               - type: custom:mushroom-legacy-template-card
                 primary: Dryer
                 secondary: |-
-                  {{ states('switch.dryer_socket')|capitalize }}
+                  {{ states('switch.dryer_plug')|capitalize }}
                   {% if not is_state('sensor.dryer_power', 'unavailable') %}
                     | {{ states('sensor.dryer_power') }} W
                   {% endif %}
                 icon: mdi:tumble-dryer
-                entity: switch.dryer_socket
+                entity: switch.dryer_plug
                 icon_color: |-
-                  {% if is_state('switch.dryer_socket', 'unavailable') %}
+                  {% if is_state('switch.dryer_plug', 'unavailable') %}
                     var(--rgb-disabled)
-                  {% elif is_state('switch.dryer_socket', 'on') %}
+                  {% elif is_state('switch.dryer_plug', 'on') %}
                     var(--rgb-state-entity)
                   {% else %}
                     var(--rgb-grey)
@@ -3933,8 +3933,8 @@ views:
                 name: Schedule to
       - type: entities
         entities:
-          - input_datetime.pill_taken
-          - input_datetime.next_trip
+          - entity: input_datetime.pill_taken
+          - entity: input_datetime.next_trip
       - type: custom:layout-break
       - square: false
         columns: 2

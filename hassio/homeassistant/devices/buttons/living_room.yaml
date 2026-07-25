@@ -1,64 +1,64 @@
 automation:
-  - id: living_room_dinner_table_button_single_press
-    alias: 'Living Room Dinner Table Button: Single press'
-    trigger:
+  - id: living_room_dinner_table_button_short_press
+    alias: 'Living Room Dinner Table Button: Short press'
+    triggers:
       - trigger: device
-        domain: mqtt
-        device_id: 9c3b7479025f7d66f4dd23a779acfd86
-        type: action
-        subtype: single
-    condition:
+        domain: zha
+        device_id: fec1c0eea33eaec60ec4c2950c5aea57
+        type: remote_button_short_press
+        subtype: remote_button_short_press
+    conditions:
       - condition: state
         entity_id: media_player.tv
         state: 'on'
-    action:
-      - service: script.tv_press_button
+    actions:
+      - action: script.tv_press_button
         data:
           button: play
 
   - id: living_room_dinner_table_button_double_press
     alias: 'Living Room Dinner Table Button: Double press'
-    trigger:
+    triggers:
       - trigger: device
-        domain: mqtt
-        device_id: 9c3b7479025f7d66f4dd23a779acfd86
-        type: action
-        subtype: double
-    condition:
+        domain: zha
+        device_id: fec1c0eea33eaec60ec4c2950c5aea57
+        type: remote_button_double_press
+        subtype: remote_button_double_press
+    conditions:
       - condition: state
         entity_id: media_player.tv
         state: 'on'
-    action:
-      - service: script.tv_press_button
+    actions:
+      - action: script.tv_press_button
         data:
           button: left
 
   - id: living_room_dinner_table_button_triple_press
     alias: 'Living Room Dinner Table Button: Triple press'
-    trigger:
+    triggers:
       - trigger: device
-        domain: mqtt
-        device_id: 9c3b7479025f7d66f4dd23a779acfd86
-        type: action
-        subtype: triple
-    condition:
+        domain: zha
+        device_id: fec1c0eea33eaec60ec4c2950c5aea57
+        type: remote_button_triple_press
+        subtype: remote_button_triple_press
+    conditions:
       - condition: state
         entity_id: media_player.tv
         state: 'on'
-    action:
-      - service: script.tv_press_button
+    actions:
+      - action: script.tv_press_button
         data:
           button: enter
 
-  - id: living_room_dinner_table_button_hold
-    alias: 'Living Room Dinner Table Button: Hold'
-    trigger:
+  - id: living_room_dinner_table_button_long_press
+    alias: 'Living Room Dinner Table Button: Long press'
+    triggers:
       - trigger: device
-        domain: mqtt
-        device_id: 9c3b7479025f7d66f4dd23a779acfd86
-        type: action
-        subtype: hold
-    action:
+        domain: zha
+        device_id: fec1c0eea33eaec60ec4c2950c5aea57
+        type: remote_button_long_press
+        subtype: button
+    actions:
       - event: living_room_dinner_table_button_hold
 
   - id: living_room_light_switch_single_right

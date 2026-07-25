@@ -50,10 +50,10 @@ automation:
 
       - id: bedroom_bed_button_single_press
         trigger: device
-        domain: mqtt
-        device_id: 620c20157f0cbf8a0249f3f083a531ff
-        type: action
-        subtype: single
+        domain: zha
+        device_id: b0906447dde42f48c38c3316f9a7573e
+        type: remote_button_short_press
+        subtype: remote_button_short_press
     condition:
       - condition: state
         entity_id:

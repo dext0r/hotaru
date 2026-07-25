@@ -61,33 +61,6 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/5af4a3a117c693914f063f9e87cd28de.png
-'0x00158d00039723b6':
-  friendly_name: Bedroom Bed Button
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/c7706a8b7bac2de2a6d18635d4047f81.png
-'0x00158d0003cb48af':
-  friendly_name: Bathroom Mirror Button
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/c7706a8b7bac2de2a6d18635d4047f81.png
-'0x00158d0003cfe908':
-  friendly_name: Living Room Dinner Table Button
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/c7706a8b7bac2de2a6d18635d4047f81.png
 '0x00158d0001e53cc5':
   friendly_name: Porch Motion
   homeassistant: {}
@@ -97,15 +70,6 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/2e7485d54446698ed62425812fe12303.png
-'0x00158d0003972602':
-  friendly_name: Bathroom Bathtub Button
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/c7706a8b7bac2de2a6d18635d4047f81.png
 '0x000d6f001329b0b4':
   friendly_name: Hallway Smoke
   homeassistant: {}
@@ -204,9 +168,6 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/5816cec5864b2553c5c835aefa557722.png
-'0x84fd27fffe9c0fbd':
-  friendly_name: Workshop Desk Button
   homeassistant: {}
   optimistic: true
   retain: true
-  icon: device_icons/7146bc3333829dd31b1a37b1f83f6e01.png

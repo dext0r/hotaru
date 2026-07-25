@@ -2,18 +2,20 @@ automation:
   - id: workshop_desk_button_turn_on
     alias: 'Workshop Desk Button: Turn on'
     mode: restart
-    trigger:
+    triggers:
       - trigger: device
-        domain: mqtt
-        device_id: b9daf61de1fcfea52aa888e18dcd46ee
-        type: action
-        subtype: 'on'
-    action:
-      - service: input_boolean.toggle
-        entity_id: input_boolean.workshop_airing_warm
+        domain: zha
+        device_id: 253ac67cab7668b97675475ff6396278
+        type: remote_button_short_press
+        subtype: turn_on
+    actions:
+      - action: input_boolean.toggle
+        target:
+          entity_id: input_boolean.workshop_airing_warm
 
-      - service: script.turn_on
-        entity_id: script.yandex_station_tts
+      - action: script.turn_on
+        target:
+          entity_id: script.yandex_station_tts
         data:
           variables:
             target: media_player.workshop_station
@@ -23,18 +25,20 @@ automation:
   - id: workshop_desk_button_turn_off
     alias: 'Workshop Desk Button: Turn off'
     mode: restart
-    trigger:
+    triggers:
       - trigger: device
-        domain: mqtt
-        device_id: b9daf61de1fcfea52aa888e18dcd46ee
-        type: action
-        subtype: 'off'
-    action:
-      - service: input_boolean.toggle
-        entity_id: input_boolean.workshop_airing_cold
+        domain: zha
+        device_id: 253ac67cab7668b97675475ff6396278
+        type: remote_button_short_press
+        subtype: turn_off
+    actions:
+      - action: input_boolean.toggle
+        target:
+          entity_id: input_boolean.workshop_airing_cold
 
-      - service: script.turn_on
-        entity_id: script.yandex_station_tts
+      - action: script.turn_on
+        target:
+          entity_id: script.yandex_station_tts
         data:
           variables:
             target: media_player.workshop_station

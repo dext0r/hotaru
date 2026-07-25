@@ -1,13 +1,13 @@
 automation:
-  - id: bedroom_bed_button_single_press
-    alias: 'Bedroom Bed Button: Single press'
-    trigger:
+  - id: bedroom_bed_button_short_press
+    alias: 'Bedroom Bed Button: Short press'
+    triggers:
       - trigger: device
-        domain: mqtt
-        device_id: 620c20157f0cbf8a0249f3f083a531ff
-        type: action
-        subtype: single
-    condition:
+        domain: zha
+        device_id: b0906447dde42f48c38c3316f9a7573e
+        type: remote_button_short_press
+        subtype: remote_button_short_press
+    conditions:
       - condition: state
         entity_id: input_select.home_mode
         state:
@@ -23,24 +23,26 @@ automation:
                 match: any
                 state: 'on'
             sequence:
-              - service: light.turn_off
-                entity_id:
-                  - group.living_room_lights
-                  - group.workshop_lights
-                  - light.bedroom_bed
-                  - light.bedroom_moon
-                  - light.hallway_path
-                  - light.wardrobe
+              - action: light.turn_off
+                target:
+                  entity_id:
+                    - group.living_room_lights
+                    - group.workshop_lights
+                    - light.bedroom_bed
+                    - light.bedroom_moon
+                    - light.hallway_path
+                    - light.wardrobe
 
           - conditions:
-              - condition: state
-                entity_id: switch.bedroom_airing
-                state: 'on'
+              - condition: switch.is_on
+                target:
+                  entity_id: switch.bedroom_airing
             sequence:
-              - service: switch.turn_off
-                entity_id: switch.bedroom_airing
+              - action: switch.turn_off
+                target:
+                  entity_id: switch.bedroom_airing
 
-              - service: script.yandex_station_tts
+              - action: script.yandex_station_tts
                 data:
                   target: media_player.bedroom_station
                   text: >
@@ -51,22 +53,23 @@ automation:
                 entity_id: input_select.home_mode
                 state: Night
             sequence:
-              - service: light.turn_off
-                entity_id:
-                  - group.living_room_lights
-                  - group.workshop_lights
-                  - light.bedroom_bed
-                  - light.hallway_path
-                  - light.wardrobe
+              - action: light.turn_off
+                target:
+                  entity_id:
+                    - group.living_room_lights
+                    - group.workshop_lights
+                    - light.bedroom_bed
+                    - light.hallway_path
+                    - light.wardrobe
 
   - id: bedroom_bed_button_double_press
     alias: 'Bedroom Bed Button: Double press'
     triggers:
       - trigger: device
-        domain: mqtt
-        device_id: 620c20157f0cbf8a0249f3f083a531ff
-        type: action
-        subtype: double
+        domain: zha
+        device_id: b0906447dde42f48c38c3316f9a7573e
+        type: remote_button_double_press
+        subtype: remote_button_double_press
     actions:
       - if:
           - condition: state
@@ -87,19 +90,22 @@ automation:
                 state: cool
         then:
           - action: timer.start
-            entity_id: timer.bedroom_airing
+            target:
+              entity_id: timer.bedroom_airing
             data:
               duration:
                 hours: 1
         else:
           - action: timer.start
-            entity_id: timer.bedroom_airing
+            target:
+              entity_id: timer.bedroom_airing
             data:
               duration:
                 minutes: 30
 
       - action: input_boolean.turn_on
-        entity_id: input_boolean.bedroom_airing_cold
+        target:
+          entity_id: input_boolean.bedroom_airing_cold
 
       - action: script.yandex_station_tts
         data:
@@ -107,16 +113,16 @@ automation:
           text: >
             <speaker audio="dialogs-upload/31d7ae1e-6af0-40a0-8721-759585b9c331/4e413dc0-8b7c-4604-b7c4-01019abc3814.opus">
 
-  - id: bedroom_bed_button_hold
-    alias: 'Bedroom Bed Button: Hold'
-    trigger:
+  - id: bedroom_bed_button_long_press
+    alias: 'Bedroom Bed Button: Long press'
+    triggers:
       - trigger: device
-        domain: mqtt
-        device_id: 620c20157f0cbf8a0249f3f083a531ff
-        type: action
-        subtype: hold
-    action:
-      - service: script.yandex_station_tts
+        domain: zha
+        device_id: b0906447dde42f48c38c3316f9a7573e
+        type: remote_button_long_press
+        subtype: button
+    actions:
+      - action: script.yandex_station_tts
         data:
           target: media_player.kitchen_station
           text: >

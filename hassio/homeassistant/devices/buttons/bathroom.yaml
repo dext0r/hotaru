@@ -1,12 +1,12 @@
 automation:
-  - id: bathroom_mirror_button_single_press
-    alias: 'Bathroom Mirror Button: Single press'
+  - id: bathroom_mirror_button_short_press
+    alias: 'Bathroom Mirror Button: Short press'
     triggers:
       - trigger: device
-        domain: mqtt
-        device_id: 88c16946d5bfcee7dfce360e772ab881
-        type: action
-        subtype: single
+        domain: zha
+        device_id: a8db2efb7b2801ccb87006033b3e86b0
+        type: remote_button_short_press
+        subtype: remote_button_short_press
     actions:
       if:
         - condition: state
@@ -22,150 +22,161 @@ automation:
             entity_id: input_boolean.waking_up
       else:
         - action: light.toggle
-          entity_id: light.bathroom_mirror
+          target:
+            entity_id: light.bathroom_mirror
 
   - id: bathroom_mirror_button_double_press
     alias: 'Bathroom Mirror Button: Double press'
     mode: single
     max_exceeded: silent
-    trigger:
+    triggers:
       - trigger: device
-        domain: mqtt
-        device_id: 88c16946d5bfcee7dfce360e772ab881
-        type: action
-        subtype: double
-    action:
+        domain: zha
+        device_id: a8db2efb7b2801ccb87006033b3e86b0
+        type: remote_button_double_press
+        subtype: remote_button_double_press
+    actions:
       - if:
-          - condition: state
-            entity_id: light.bathroom_main
-            state: 'on'
+          - condition: light.is_on
+            target:
+              entity_id: light.bathroom_main
         then:
           - action: script.turn_on
-            entity_id: script.flash_light
+            target:
+              entity_id: script.flash_light
             data:
               variables:
                 entity_id: light.bathroom_main
         else:
           - action: light.toggle
-            entity_id: light.bathroom_bathtub
+            target:
+              entity_id: light.bathroom_bathtub
 
           - delay:
               seconds: 2
 
           - action: light.toggle
-            entity_id: light.bathroom_bathtub
+            target:
+              entity_id: light.bathroom_bathtub
 
       - action: switch.turn_on
-        entity_id: switch.home_airing
+        target:
+          entity_id: switch.home_airing
 
-  - id: bathroom_mirror_button_many_press
-    alias: 'Bathroom Mirror Button: Many press'
-    trigger:
+  - id: bathroom_mirror_button_quintuple_press
+    alias: 'Bathroom Mirror Button: Quintuple press'
+    triggers:
       - trigger: device
-        domain: mqtt
-        device_id: 88c16946d5bfcee7dfce360e772ab881
-        type: action
-        subtype: many
-    action:
+        domain: zha
+        device_id: a8db2efb7b2801ccb87006033b3e86b0
+        type: remote_button_quintuple_press
+        subtype: remote_button_quintuple_press
+    actions:
       - choose:
           - conditions:
-              - condition: state
-                entity_id: light.bathroom_main
-                state: 'on'
+              - condition: light.is_on
+                target:
+                  entity_id: light.bathroom_main
 
               - condition: numeric_state
                 entity_id: light.bathroom_main
                 attribute: brightness
                 below: 250
             sequence:
-              - service: light.turn_on
-                entity_id: light.bathroom_main
+              - action: light.turn_on
+                target:
+                  entity_id: light.bathroom_main
                 data:
                   brightness_pct: 100
 
           - conditions:
-              - condition: state
-                entity_id: light.bathroom_main
-                state: 'on'
+              - condition: light.is_on
+                target:
+                  entity_id: light.bathroom_main
 
               - condition: numeric_state
                 entity_id: light.bathroom_main
                 attribute: brightness
                 above: 250
             sequence:
-              - service: light.turn_on
-                entity_id: light.bathroom_main
+              - action: light.turn_on
+                target:
+                  entity_id: light.bathroom_main
                 data:
                   brightness_pct: 25
 
-  - id: bathroom_mirror_button_hold
-    alias: 'Bathroom Mirror Button: Hold'
-    trigger:
+  - id: bathroom_mirror_button_long_press
+    alias: 'Bathroom Mirror Button: Long press'
+    triggers:
       - trigger: device
-        domain: mqtt
-        device_id: 88c16946d5bfcee7dfce360e772ab881
-        type: action
-        subtype: hold
-    action:
-      - service: light.turn_off
-        entity_id: group.bathroom_path_lights
+        domain: zha
+        device_id: a8db2efb7b2801ccb87006033b3e86b0
+        type: remote_button_long_press
+        subtype: button
+    actions:
+      - action: light.turn_off
+        target:
+          entity_id: group.bathroom_path_lights
 
-  - id: bathroom_bathtub_button_single_press
-    alias: 'Bathroom Bathtub Button: Single press'
-    trigger:
+  - id: bathroom_bathtub_button_short_press
+    alias: 'Bathroom Bathtub Button: Short press'
+    triggers:
       - trigger: device
-        domain: mqtt
-        device_id: f0a662efaa0eddc62b7028e4e5214d8d
-        type: action
-        subtype: single
-    action:
+        domain: zha
+        device_id: 9d04113931a97430ac2c095c1064a61b
+        type: remote_button_short_press
+        subtype: remote_button_short_press
+    actions:
       - if:
           - condition: state
             entity_id: input_select.home_mode
             state: Day
         then:
-          - service: light.toggle
-            entity_id: light.bathroom_bathtub
+          - action: light.toggle
+            target:
+              entity_id: light.bathroom_bathtub
         else:
-          - service: light.turn_off
-            entity_id: light.bathroom_main
+          - action: light.turn_off
+            target:
+              entity_id: light.bathroom_main
 
-          - service: light.turn_on
-            entity_id: group.bathroom_path_lights
+          - action: light.turn_on
+            target:
+              entity_id: group.bathroom_path_lights
             data:
               rgbw_color: [255, 0, 0, 0]
               brightness_pct: 100
 
   - id: bathroom_bathtub_button_call
-    alias: 'Bathroom Bathtube Button: Call'
-    trigger:
+    alias: 'Bathroom Bathtub Button: Call'
+    triggers:
       - trigger: device
-        domain: mqtt
-        device_id: f0a662efaa0eddc62b7028e4e5214d8d
-        type: action
-        subtype: double
+        domain: zha
+        device_id: 9d04113931a97430ac2c095c1064a61b
+        type: remote_button_double_press
+        subtype: remote_button_double_press
 
       - trigger: device
-        domain: mqtt
-        device_id: f0a662efaa0eddc62b7028e4e5214d8d
-        type: action
-        subtype: triple
+        domain: zha
+        device_id: 9d04113931a97430ac2c095c1064a61b
+        type: remote_button_triple_press
+        subtype: remote_button_triple_press
 
       - trigger: device
-        domain: mqtt
-        device_id: f0a662efaa0eddc62b7028e4e5214d8d
-        type: action
-        subtype: many
-    action:
-      - service: script.yandex_station_tts
+        domain: zha
+        device_id: 9d04113931a97430ac2c095c1064a61b
+        type: remote_button_quintuple_press
+        subtype: remote_button_quintuple_press
+    actions:
+      - action: script.yandex_station_tts
         data:
           target: all
           type: alert
           pause_atv: true
-          text: >
+          text: >-
             {{ [
                 'вызывают из ванной, сходи проверь',
                 'нужна помощь в ванной',
                 'тебя очень хотять видеть в ванной',
-                ]|random
+                ] | random
             }}

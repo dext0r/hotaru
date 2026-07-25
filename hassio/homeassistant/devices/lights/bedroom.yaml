@@ -1,6 +1,6 @@
 automation:
-  - id: bedroom_light_turn_on_motion
-    alias: 'Bedroom Light: Turn on (motion)'
+  - id: bedroom_light_on_motion_day
+    alias: 'Bedroom Light: On (motion, day)'
     triggers:
       - trigger: state
         entity_id: binary_sensor.bedroom_motion
@@ -38,23 +38,25 @@ automation:
         state: 'off'
     actions:
       - action: light.turn_on
-        entity_id:
-          - light.bedroom_bed
-          - light.bedroom_moon
+        target:
+          entity_id:
+            - light.bedroom_bed
+            - light.bedroom_moon
         data:
           rgb_color: [10, 214, 255]
           brightness_pct: 100
 
       - action: light.turn_on
-        entity_id:
-          - light.bedroom_cat
-          - light.bedroom_string
+        target:
+          entity_id:
+            - light.bedroom_cat
+            - light.bedroom_string
         data:
           color_temp_kelvin: 2700
           brightness_pct: 100
 
-  - id: bedroom_light_turn_off_no_occupancy
-    alias: 'Bedroom Light: Turn off (no occupancy)'
+  - id: bedroom_light_off_no_occupancy_day
+    alias: 'Bedroom Light: Off (no occupancy, day)'
     mode: restart
     triggers:
       - trigger: state
@@ -84,10 +86,11 @@ automation:
         state: 'off'
 
       - action: light.turn_off
-        entity_id: group.bedroom_lights
+        target:
+          entity_id: group.bedroom_lights
 
-  - id: bedroom_bed_light_turn_on_night
-    alias: 'Bedroom Bed Light: Turn on (night)'
+  - id: bedroom_bed_light_on_motion_night
+    alias: 'Bedroom Bed Light: On (motion, night)'
     triggers:
       - trigger: state
         entity_id: binary_sensor.bedroom_motion
@@ -103,18 +106,19 @@ automation:
         entity_id: input_select.home_mode
         state: Night
 
-      - condition: state
-        entity_id: light.bedroom_bed
-        state: 'off'
+      - condition: light.is_off
+        target:
+          entity_id: light.bedroom_bed
     actions:
       - action: light.turn_on
-        entity_id: light.bedroom_bed
+        target:
+          entity_id: light.bedroom_bed
         data:
           color_name: red
           brightness_pct: 30
 
-  - id: bedroom_main_light_turn_off_occupancy_cleared
-    alias: 'Bedroom Main Light: Turn off (occupancy cleared)'
+  - id: bedroom_main_light_off_occupancy_cleared_day
+    alias: 'Bedroom Main Light: Off (occupancy cleared, day)'
     triggers:
       - trigger: occupancy.cleared
         target:
@@ -145,10 +149,11 @@ automation:
         state: Day
     actions:
       - action: light.turn_off
-        entity_id: light.bedroom_main
+        target:
+          entity_id: light.bedroom_main
 
-  - id: bedroom_bed_light_turn_off
-    alias: 'Bedroom Bed Light: Turn off'
+  - id: bedroom_bed_light_off
+    alias: 'Bedroom Bed Light: Off'
     triggers:
       - trigger: state
         entity_id: input_select.home_mode
@@ -162,16 +167,24 @@ automation:
             seconds: 10
     condition:
       - condition: state
-        entity_id:
-          - input_boolean.light_control
-          - light.bedroom_bed
+        entity_id: input_boolean.light_control
         state: 'on'
+
+      - not:
+          - condition: state
+            entity_id: input_select.home_mode
+            state: Bedtime
+
+      - condition: light.is_on
+        target:
+          entity_id: light.bedroom_bed
     action:
       - action: light.turn_off
-        entity_id: light.bedroom_bed
+        target:
+          entity_id: light.bedroom_bed
 
-  - id: bedroom_aux_light_turn_off
-    alias: 'Bedroom Aux Light: Turn off'
+  - id: bedroom_aux_light_off_day
+    alias: 'Bedroom Aux Light: Off (day)'
     triggers:
       - trigger: occupancy.cleared
         target:
@@ -184,6 +197,10 @@ automation:
       - trigger: light.turned_on
         target:
           entity_id: light.bedroom_main
+
+      - trigger: state
+        entity_id: input_select.home_mode
+        to: Day
     conditions:
       - condition: state
         entity_id: input_boolean.light_control
@@ -202,11 +219,12 @@ automation:
         state: Day
     actions:
       - action: light.turn_off
-        entity_id:
-          - light.bedroom_moon
-          - light.bedroom_bed
-          - light.bedroom_cat
-          - light.bedroom_string
+        target:
+          entity_id:
+            - light.bedroom_moon
+            - light.bedroom_bed
+            - light.bedroom_cat
+            - light.bedroom_string
 
   - id: bedroom_moon_light_charger_turn_on
     alias: 'Bedroom Moon Light Charger: Turn on'

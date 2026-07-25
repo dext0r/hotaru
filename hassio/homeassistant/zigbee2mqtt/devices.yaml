@@ -34,16 +34,6 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/5af4a3a117c693914f063f9e87cd28de.png
-'0x00158d0001d735a5':
-  friendly_name: Fridge Meteo
-  disabled: false
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  icon: device_icons/8da97afa2d57d9d2e86756a4aa2a6072.png
 '0x00158d0003e701ed':
   friendly_name: Kitchen Motion
   homeassistant: {}

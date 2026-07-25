@@ -174,12 +174,22 @@ automation:
           - input_select.dishwasher_status
           - input_select.home_mode
     actions:
-      - choose:
-          - conditions:
+      - if:
+          - not:
               - condition: state
                 entity_id: input_select.home_mode
-                state: Day
+                state:
+                  - Day
+                  - Bedtime
+        then:
+          - action: light.turn_off
+            target:
+              entity_id: light.dishwasher_status
 
+          - stop:
+
+      - choose:
+          - conditions:
               - condition: state
                 entity_id: input_select.dishwasher_status
                 state: Running
@@ -193,10 +203,6 @@ automation:
 
           - conditions:
               - condition: state
-                entity_id: input_select.home_mode
-                state: Day
-
-              - condition: state
                 entity_id: input_select.dishwasher_status
                 state: Done
             sequence:
@@ -208,10 +214,6 @@ automation:
                   rgbw_color: [0, 255, 0, 0]
 
           - conditions:
-              - condition: state
-                entity_id: input_select.home_mode
-                state: Day
-
               - condition: state
                 entity_id: input_select.dishwasher_status
                 state: Dirty

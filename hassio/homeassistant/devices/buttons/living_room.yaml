@@ -63,18 +63,18 @@ automation:
 
   - id: living_room_light_switch_single_right
     alias: 'Living Room Light Switch: Single right'
-    trigger:
+    triggers:
       - trigger: device
-        domain: mqtt
-        device_id: e0a2386c0fbe8ec9b50b6bc773b4d635
-        type: action
-        subtype: single_right
-    action:
+        domain: zha
+        device_id: f54dc74d494e5deb7041ca0d637812db
+        type: button_single
+        subtype: button_2
+    actions:
       - choose:
           - conditions:
-              - condition: state
-                entity_id: light.living_room_backlight
-                state: 'on'
+              - condition: light.is_on
+                target:
+                  entity_id: light.living_room_backlight
 
               - condition: state
                 entity_id: light.living_room_backlight
@@ -86,13 +86,14 @@ automation:
                 attribute: color_temp_kelvin
                 below: 4000
             sequence:
-              - service: light.turn_off
-                entity_id: light.living_room_backlight
+              - action: light.turn_off
+                target:
+                  entity_id: light.living_room_backlight
 
           - conditions:
-              - condition: state
-                entity_id: light.living_room_backlight
-                state: 'on'
+              - condition: light.is_on
+                target:
+                  entity_id: light.living_room_backlight
 
               - condition: state
                 entity_id: light.living_room_backlight
@@ -104,8 +105,9 @@ automation:
                 attribute: color_temp_kelvin
                 above: 4000
             sequence:
-              - service: light.turn_on
-                entity_id: light.living_room_backlight
+              - action: light.turn_on
+                target:
+                  entity_id: light.living_room_backlight
                 data:
                   brightness_pct: 100
                   color_temp_kelvin: 2700
@@ -115,14 +117,16 @@ automation:
                 entity_id: input_select.home_mode
                 state: Night
             then:
-              - service: light.turn_on
-                entity_id: light.living_room_backlight
+              - action: light.turn_on
+                target:
+                  entity_id: light.living_room_backlight
                 data:
                   brightness_pct: 50
                   rgb_color: [255, 0, 0]
             else:
-              - service: light.turn_on
-                entity_id: light.living_room_backlight
+              - action: light.turn_on
+                target:
+                  entity_id: light.living_room_backlight
                 data:
                   brightness_pct: >
                     {% if is_state('binary_sensor.dim_light', 'on') %}
@@ -134,26 +138,27 @@ automation:
 
   - id: living_room_light_switch_double_right
     alias: 'Living Room Light Switch: Double right'
-    trigger:
+    triggers:
       - trigger: device
-        domain: mqtt
-        device_id: e0a2386c0fbe8ec9b50b6bc773b4d635
-        type: action
-        subtype: double_right
-    action:
+        domain: zha
+        device_id: f54dc74d494e5deb7041ca0d637812db
+        type: button_double
+        subtype: button_2
+    actions:
       - action: script.living_room_cozy_light
 
   - id: living_room_light_switch_double_left
     alias: 'Living Room Light Switch: Double left'
     triggers:
       - trigger: device
-        domain: mqtt
-        device_id: e0a2386c0fbe8ec9b50b6bc773b4d635
-        type: action
-        subtype: double_left
+        domain: zha
+        device_id: f54dc74d494e5deb7041ca0d637812db
+        type: button_double
+        subtype: button_1
     actions:
       - action: light.turn_off
-        entity_id: group.living_room_lights
+        target:
+          entity_id: group.living_room_lights
 
   - id: living_room_heater_button_turn_on
     alias: 'Living Room Heater Button: Turn on'

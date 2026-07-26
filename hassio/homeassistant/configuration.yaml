@@ -115,6 +115,8 @@ logger:
     custom_components.yandex_smart_home.notifier: info
     custom_components.yandex_station_intents: debug
     custom_components.yandex_station: debug
+    zigpy: info
+    zha: info
 mobile_app:
 my:
 recorder:

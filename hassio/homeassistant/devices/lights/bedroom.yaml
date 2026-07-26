@@ -165,6 +165,13 @@ automation:
         options:
           for:
             seconds: 10
+
+      - trigger: motion.cleared
+        target:
+          entity_id: binary_sensor.bedroom_motion
+        options:
+          for:
+            seconds: 20
     condition:
       - condition: state
         entity_id: input_boolean.light_control

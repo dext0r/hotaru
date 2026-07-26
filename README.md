@@ -130,7 +130,7 @@
 ## Электричество
 
 * 1x **Энергомонитор [V-WIFI-DL02-ES](https://ozon.ru/t/zMitKk2)**: мониторинг потребления холодильника и чайника
-* 2x **Shelly EM Mini Gen4**: мониторинг потребления кондиционеров
+* 2x **Shelly EM Mini Gen4**: мониторинг потребления кондиционеров ([перешиты](./esphome/generic/shelly_em_mini_gen4.yaml) на ESPHome)
 
 ## Климат
 

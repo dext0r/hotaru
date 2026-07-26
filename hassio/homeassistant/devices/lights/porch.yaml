@@ -226,23 +226,6 @@ automation:
       - action: input_boolean.turn_off
         entity_id: input_boolean.porch_light_dimmed
 
-template:
-  - light:
-      - unique_id: porch_light
-        default_entity_id: light.porch
-        name: Porch Light
-        icon: bha:ceiling-lamp
-        state: >
-          {{ is_state('switch.porch_light_switch', 'on') }}
-        availability: >
-          {{ states('switch.porch_light_switch') in ['on', 'off'] }}
-        turn_on:
-          - action: switch.turn_on
-            entity_id: switch.porch_light_switch
-        turn_off:
-          - action: switch.turn_off
-            entity_id: switch.porch_light_switch
-
 input_boolean:
   porch_light_dimmed:
     name: 'Porch Light: Dimmed'

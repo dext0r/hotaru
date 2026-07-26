@@ -51,8 +51,8 @@
 * ИБП Ippon Back Basic 650S Euro
 * Основной роутер: Mikrotik hAP ax3
 * Дополнительная точка доступа на кухне: Mikrotik hAP
-* Zigbee (Z2M): Sonoff Zigbee Dongle Plus-P
 * Zigbee (ZHA): DIY [V6POE](https://telegra.ph/Zigbee-Coordinator-V6POE-12-12) от Egony под [подвесным потолком](./images/pss-zigbee.jpg)
+* Zigbee (Z2M): Sonoff Zigbee Dongle Plus-P (только для тестов)
 * HA OS в виртуальной машине
 * [Интеграции и аддоны](./INTEGRATIONS.md)
 
@@ -313,7 +313,7 @@ Tion Iris - классный увлажнитель, но у него есть �
 
 ## Статистика по устройствам
 
-* Zigbee устройств: 4 на Z2M + 69 на ZHA = 73
+* Zigbee устройств: 73 на ZHA
 * Esphome устройств: 57
 * BLE датчики: 7
 * Matter на WiFi: 1

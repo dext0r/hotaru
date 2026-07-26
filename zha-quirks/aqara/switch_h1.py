@@ -14,6 +14,7 @@ from zhaquirks.const import (
     ENDPOINT_ID,
     VALUE,
 )
+from zhaquirks.xiaomi.aqara.opple_remote import CustomCluster
 from zhaquirks.xiaomi.aqara.opple_switch import (
     BOTH_BUTTONS,
     PRESS_TYPE,
@@ -41,6 +42,14 @@ class LumiManuSpecificCluster(OppleSwitchCluster):
             zcl_type=DataTypeId.uint16,
             is_manufacturer_specific=True,
         )
+
+    async def bind(self):
+        result = await super(CustomCluster, self).bind()
+        # OppleCluster при bind делает запись в 0x0009
+        # это вызывает ребут выключателя
+        # в итоге ZHA считает, что он полностью не инициализирован и при каждом перезапуске
+        # снова пишет в 0x0009 и снова вызвает ребуты, и так по кругу
+        return result
 
 
 (

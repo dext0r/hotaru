@@ -93,6 +93,7 @@ automation:
 
   - id: washing_machine_done_alert
     alias: 'Washing Machine: Done alert'
+    max_exceeded: silent
     triggers:
       - trigger: time_pattern
         minutes: '/32'

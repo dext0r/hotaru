@@ -18,8 +18,15 @@ device_config:
   44:9f:da:ff:fe:a4:a5:30-2:
     type: light
 
-# Bathroom Presence
+# Bathroom Presence (RTCZCGQ11LM)
 #  monitoring mode: undirect
 #  approach distance: far
 #  motion sensitivity: high
 #  region 1: y4x2/y4x3
+
+# Workshop Presence (_TZE204_qasjif9e)
+#  sensitivity: 6
+#  min range: 0.15,
+#  max range: 3.4
+#  detection delay: 0.5,
+#  fading time: 45

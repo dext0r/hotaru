@@ -106,6 +106,7 @@ automation:
 
   - id: dryer_done_alert
     alias: 'Dryer: Done alert'
+    max_exceeded: silent
     triggers:
       - trigger: time_pattern
         minutes: '/45'

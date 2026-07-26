@@ -16,18 +16,6 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/2e7485d54446698ed62425812fe12303.png
-'0xa4c138edaeb5d672':
-  friendly_name: Workshop Presence
-  homeassistant: {}
-  humidity_precision: 1
-  legacy: false
-  optimistic: true
-  retain: true
-  temperature_precision: 1
-  description: >-
-    sensitivity: 6, min range: 0.15, max range: 3.4, detection delay: 0.5,
-    fading time: 45
-  icon: device_icons/6cd3dca250fd519d5d2a825e5ec08247.png
 '0x00158d0002aef0e9':
   friendly_name: Porch Door
   homeassistant: {}
@@ -37,3 +25,5 @@
   retain: true
   temperature_precision: 1
   icon: device_icons/5816cec5864b2553c5c835aefa557722.png
+'0x54ef441000245d07':
+  friendly_name: '0x54ef441000245d07'

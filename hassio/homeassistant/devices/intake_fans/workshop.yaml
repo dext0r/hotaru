@@ -173,6 +173,13 @@ automation:
           - input_boolean.workshop_intake_fan_control
           - binary_sensor.workshop_occupancy
 
+      - trigger: switch.turned_on
+        target:
+          entity_id: switch.workshop_intake_fan_relay
+        options:
+          for:
+            seconds: 10
+
       - id: room_airing
         platform: state
         entity_id:

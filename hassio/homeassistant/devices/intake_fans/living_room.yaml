@@ -240,6 +240,13 @@ automation:
           - input_boolean.living_room_intake_fan_control
           - switch.ironing_board_socket
 
+      - trigger: switch.turned_on
+        target:
+          entity_id: switch.living_room_intake_fan_plug
+        options:
+          for:
+            seconds: 10
+
       - id: room_airing
         platform: state
         entity_id:

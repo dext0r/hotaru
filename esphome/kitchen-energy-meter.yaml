@@ -97,6 +97,8 @@ sensor:
         - clamp:
             min_value: 0
         - round: 0
+        - lambda: |-
+            return abs(x);
         - timeout: 15s
 
     energy:

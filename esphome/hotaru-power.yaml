@@ -48,5 +48,6 @@ output:
 web_server:
   local: true
   auth:
+    type: basic
     username: admin
     password: !secret hotaru_power_password

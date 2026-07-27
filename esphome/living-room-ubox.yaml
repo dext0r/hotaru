@@ -91,7 +91,8 @@ binary_sensor:
     device_class: presence
 
 light:
-  - name: Left
+  - id: light_status_left
+    name: Left
     platform: partition
     device_id: tv_status_light
     segments:
@@ -100,7 +101,8 @@ light:
         to: 3
     gamma_correct: 1
 
-  - name: Right
+  - id: light_status_right
+    name: Right
     platform: partition
     device_id: tv_status_light
     segments:
@@ -179,3 +181,9 @@ switch:
       name: LD2410 Bluetooth
       device_id: presence
       disabled_by_default: true
+
+script:
+  - id: !extend go_offline
+    then:
+      - light.turn_off: light_status_left
+      - light.turn_off: light_status_right

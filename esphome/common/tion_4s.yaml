@@ -138,3 +138,12 @@ text_sensor:
     type: errors
     device_id: $tion_device_id
     icon: mdi:alert-circle-outline
+
+script:
+  - id: !extend go_offline
+    then:
+      - climate.control:
+          id: tion_climate
+          mode: heat
+          target_temperature: 20
+          custom_fan_mode: '1'

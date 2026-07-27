@@ -6,3 +6,8 @@ esphome:
   area: Bathroom
   name: bathroom-bathtub-light
   name_add_mac_suffix: false
+
+script:
+  - id: !extend go_offline
+    then:
+      - light.turn_off: light_w

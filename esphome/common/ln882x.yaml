@@ -6,5 +6,8 @@ wifi:
 
 captive_portal: !remove
 
+safe_mode:
+  on_safe_mode: !remove
+
 ln882x:
   board: generic-ln882h

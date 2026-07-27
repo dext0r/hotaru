@@ -7,7 +7,21 @@ external_components:
   - source: lib
 
 api:
-  reboot_timeout: 60min
+  # очень сомнительное значение:
+  # компромис между частыми перезагрузками при обслуживании HA
+  # и полным повисанием, когда дома долго никого нет
+  reboot_timeout: 12h
+  on_client_connected:
+    - script.stop: go_offline
+    - script.execute: go_online
+  on_client_disconnected:
+    if:
+      condition:
+        not:
+          api.connected:
+            state_subscription_only: true
+      then:
+        - script.execute: go_offline
 
 captive_portal:
 
@@ -20,7 +34,12 @@ ota:
     password: !secret password
 
 safe_mode:
-  num_attempts: 5
+  num_attempts: 3
+  reboot_timeout: 15min
+  on_safe_mode:
+    then:
+      - lambda: >-
+          id(wifi_).set_ap_timeout(10000);
 
 preferences:
   flash_write_interval: 3min
@@ -33,13 +52,17 @@ time:
         - logger.log: Synchronized system clock
 
 wifi:
+  id: wifi_
   ssid: !secret ssid
   password: !secret password
-  reboot_timeout: 30min
+  reboot_timeout: 0s # перезагрузится по api.reboot_timeout
   fast_connect: true
   ap:
     password: !secret password
-    ap_timeout: 1min
+    # будет включаться только в safe_mode
+    # если включать при каждом недоступности основной точки -
+    # эфир будет заспален 50+ левыми AP, которые не очень нужно видеть соседям
+    ap_timeout: 0s
 
 sensor:
   - platform: uptime
@@ -50,3 +73,19 @@ sensor:
     name: Uptime
     update_interval: 45s
     internal: true
+
+script:
+  # выполняется через 1 минуту после отключения всех API клиентов
+  # расширяется в конкретном устройстве через !extend go_offline
+  - id: go_offline
+    mode: restart
+    then:
+      - delay: 10min
+      - logger.log:
+          format: Going offline
+          level: WARN
+
+  # выполняется при каждом подключении клиента
+  - id: go_online
+    mode: restart
+    then: []

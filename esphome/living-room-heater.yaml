@@ -27,3 +27,8 @@ sensor:
       - lambda: |-
           id(power_avg).publish_state(x);
           id(power_adj).publish_state(x);
+
+script:
+  - id: !extend go_offline
+    then:
+      - switch.turn_off: relay

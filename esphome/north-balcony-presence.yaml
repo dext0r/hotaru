@@ -8,6 +8,9 @@ esphome:
   name: north-balcony-presence
   name_add_mac_suffix: false
 
+api:
+  reboot_timeout: 10min
+
 esp32:
   framework:
     advanced:

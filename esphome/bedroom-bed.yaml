@@ -105,8 +105,13 @@ script:
           id: occupancy
           state: off
 
+  - id: !extend go_offline
+    then:
+      - light.turn_off: light_hallway_path
+
 light:
-  - name: ''
+  - id: light_hallway_path
+    name: ''
     platform: neopixelbus
     pin: 14
     device_id: hallway_path_light

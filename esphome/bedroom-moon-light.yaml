@@ -160,3 +160,10 @@ output:
     pin:
       number: 2
       inverted: true
+
+script:
+  - id: !extend go_offline
+    then:
+      - switch.turn_off: charger_relay
+      - light.turn_off: light_rgb
+      - light.turn_off: string_light_w

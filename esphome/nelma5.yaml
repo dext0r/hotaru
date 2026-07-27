@@ -327,6 +327,12 @@ script:
             return !id(player).is_playing();
       - output.turn_on: phone_hanging
 
+  - id: !extend go_offline
+    then:
+      - select.set:
+          id: intercom_mode_select
+          option: ${intercom_mode_always_accept}
+
 sensor:
   # Розетки: Кухня
   - id: pzem5

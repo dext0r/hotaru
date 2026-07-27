@@ -20,7 +20,13 @@ uart:
   baud_rate: 19200
 
 light:
-  - platform: sonoff_l1
+  - id: light_rgb
+    platform: sonoff_l1
     name: ''
     icon: bha:led-strip
     gamma_correct: 0
+
+script:
+  - id: !extend go_offline
+    then:
+      - light.turn_off: light_rgb

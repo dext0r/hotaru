@@ -114,7 +114,7 @@ binary_sensor:
   - name: Hot Water Meter Pulse
     platform: gpio
     pin:
-      number: 18
+      number: 21
       mode:
         input: true
         pullup: true
@@ -276,7 +276,8 @@ sensor:
       - round: 0
 
 light:
-  - name: ''
+  - id: light_dishwasher_status
+    name: ''
     platform: partition
     device_id: dishwasher_status_light
     icon: mdi:dome-light
@@ -291,7 +292,8 @@ light:
           update_interval: 2s
           transition_length: 2s
 
-  - name: ''
+  - id: light_kitchen_status
+    name: ''
     platform: partition
     device_id: kitchen_status_light
     icon: mdi:dome-light
@@ -306,7 +308,8 @@ light:
           update_interval: 2s
           transition_length: 2s
 
-  - name: ''
+  - id: light_path
+    name: ''
     platform: partition
     device_id: kitchen_path_light
     icon: mdi:hazard-lights
@@ -323,3 +326,10 @@ light:
     num_leds: 53
     rgb_order: GRB
     is_rgbw: true
+
+script:
+  - id: !extend go_offline
+    then:
+      - light.turn_off: light_dishwasher_status
+      - light.turn_off: light_kitchen_status
+      - light.turn_off: light_path

@@ -8,6 +8,10 @@ esphome:
   name: hiper-iot-c1-rgb
   model: HIPER IoT C1 RGB
 
+api:
+  # без перезапуска не может нормально подключаться при долгом недоступности точки
+  reboot_timeout: 10min
+
 bk72xx:
   board: cblc5
 

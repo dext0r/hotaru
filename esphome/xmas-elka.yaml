@@ -7,3 +7,8 @@ substitutions:
 esphome:
   name: xmas-elka
   name_add_mac_suffix: false
+
+script:
+  - id: !extend go_offline
+    then:
+      - light.turn_off: light_w

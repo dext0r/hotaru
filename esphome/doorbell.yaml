@@ -146,6 +146,10 @@ script:
     then:
       - delay: 7s
 
+  - id: !extend go_offline
+    then:
+      - switch.turn_off: doorbell_mute
+
 switch:
   - id: doorbell_mute
     platform: template

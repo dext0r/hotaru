@@ -2,7 +2,7 @@ packages:
   base: !include generic/wbp_1g_relay.yaml
 
 substitutions:
-  relay_restore_mode: ALWAYS_ON
+  relay_restore_mode: ALWAYS_OFF
   bl0942_current_reference: 253350.24461
   bl0942_voltage_reference: 15667.15787
 
@@ -11,3 +11,12 @@ esphome:
   area: Living Room
   name: living-room-backlight-relay
   name_add_mac_suffix: false
+
+script:
+  - id: !extend go_online
+    then:
+      - switch.turn_on: relay
+
+  - id: !extend go_offline
+    then:
+      - switch.turn_off: relay

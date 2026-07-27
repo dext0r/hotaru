@@ -21,3 +21,8 @@ output:
   - id: pwm
     platform: esp8266_pwm
     pin: 12
+
+script:
+  - id: !extend go_offline
+    then:
+      - light.turn_off: light_w

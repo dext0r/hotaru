@@ -84,7 +84,8 @@ automation:
         state: cool
     actions:
       - action: climate.set_temperature
-        entity_id: climate.bedroom_ac
+        target:
+          entity_id: climate.bedroom_ac
         data:
           hvac_mode: cool
           temperature: 22
@@ -93,9 +94,11 @@ automation:
           seconds: 5
 
       - action: climate.set_fan_mode
-        entity_id: climate.bedroom_ac
+        target:
+          entity_id: climate.bedroom_ac
         data:
-          fan_mode: auto
+          fan_mode: >-
+            {{ (states('sensor.outside_temperature') | int(0) > 21) | iif('high', 'auto') }}
 
   - id: bedroom_ac_turn_off
     alias: 'Bedroom AC: Turn off'

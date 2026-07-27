@@ -48,23 +48,18 @@ automation:
 
   - id: living_room_hot
     alias: 'Living Room: Hot'
+    max_exceeded: silent
     triggers:
       - trigger: event
         event_type: yandex_intent
         event_data:
           text: Очень жарко
-          room: Гостиная
     actions:
-      - if:
-          - condition: state
-            entity_id: binary_sensor.workshop_door
-            state: 'on'
-        then:
-          - action: climate.set_temperature
-            entity_id: climate.workshop_ac
-            data:
-              temperature: 22
-              hvac_mode: cool
+      - action: script.yandex_station_tts
+        data:
+          target: >
+            {{ trigger.event.data.get('entity_id', 'last') }}
+          text: Сейчас попробую тебя охладить
 
       - if:
           - condition: state
@@ -72,13 +67,29 @@ automation:
             state: 'off'
         then:
           - action: fan.turn_on
-            entity_id: fan.portable
+            target:
+              entity_id: fan.portable
 
-      - action: script.yandex_station_tts
-        data:
-          target: >
-            {{ trigger.event.data.get('entity_id', 'last') }}
-          text: Сейчас попробую тебя охладить
+      - if:
+          - condition: door.is_open
+            target:
+              entity_id: binary_sensor.workshop_door
+        then:
+          - action: climate.set_temperature
+            target:
+              entity_id: climate.workshop_ac
+            data:
+              temperature: 21
+              hvac_mode: cool
+
+          - delay:
+              seconds: 5
+
+          - action: climate.set_fan_mode
+            target:
+              entity_id: climate.workshop_ac
+            data:
+              fan_mode: high
 
   - id: living_room_cold
     alias: 'Living Room: cold'

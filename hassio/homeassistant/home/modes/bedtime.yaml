@@ -224,5 +224,5 @@ automation:
           target: media_player.bedroom_station
           type: attention
           text: >-
-            {{ ['Не спать, ты забыл', 'Зря ложишься, нужно', 'Давай вставай, нужно'] }}
+            {{ ['Не спать, ты забыл', 'Зря ложишься, нужно', 'Давай вставай, нужно'] | random }}
             {{ states('sensor.chores') }}

@@ -358,6 +358,19 @@ sensor:
             send_first_at: 5
         - throttle: 2.5min
 
+    voltage:
+      name: Kitchen Voltage
+      device_id: power_meter
+      accuracy_decimals: 0
+      filters:
+        - clamp:
+            min_value: 0
+            max_value: 500
+            ignore_out_of_range: true
+        - throttle_average: 5s
+        - round: 0
+        - timeout: 15s
+
   - &pzem_power_avg
     id: pzem5_power_avg
     name: Kitchen Power

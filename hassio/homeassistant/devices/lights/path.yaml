@@ -181,6 +181,7 @@ automation:
     triggers:
       - trigger: state
         entity_id:
+          - binary_sensor.entance_motion
           - binary_sensor.hallway_motion
           - binary_sensor.bedroom_motion
         to: 'on'

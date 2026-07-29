@@ -177,6 +177,10 @@ automation:
         entity_id: input_boolean.light_control
         state: 'on'
 
+      - condition: occupancy.is_not_detected
+        target:
+          entity_id: binary_sensor.bedroom_occupancy
+
       - not:
           - condition: state
             entity_id: input_select.home_mode

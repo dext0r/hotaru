@@ -54,17 +54,18 @@ automation:
                 data:
                   hvac_mode: auto
 
-              - service: script.yandex_station_tts
+              - action: script.yandex_station_tts
                 data:
-                  target: >
+                  target: >-
                     {{ trigger.event.data.get('entity_id', 'last') }}
-                  text: >
+                  text: >-
                     {{ [
                           'Чай скоро будет готов',
-                          'Я включила чайник для %s' % states('sensor.person_pronoun_gen'),
-                          '%s пить чай, кипяток на подходе' % ('Умывайся и готовься' if states('sensor.person_pronoun_nom') == 'ты' else 'Умывайтесь и готовьтесь'),
+                          'Я включила чайник для ' ~ states('sensor.person_pronoun_gen'),
+                          (states('sensor.person_pronoun_nom') == 'ты') |
+                            iif('Умывайся и готовься', 'Умывайтесь и готовьтесь') ~ ' пить чай, водичка закипает',
                           'Какое утро без чая? Я позабочусь о нём',
-                      ]|random
+                      ] | random
                     }}
             else:
               - service: script.yandex_station_tts

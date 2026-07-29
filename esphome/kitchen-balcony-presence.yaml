@@ -5,10 +5,20 @@ packages:
   wifi_e: !include common/wifi_e.yaml
 
 esphome:
-  friendly_name: North Balcony Presence
-  area: North Balcony
-  name: north-balcony-presence
+  friendly_name: Kitchen Balcony Presence
+  name: kitchen-balcony-presence
   name_add_mac_suffix: false
+  area:
+    id: kitchen_balcony
+    name: Kitchen Balcony
+
+  devices:
+    - id: mobile_presence
+      name: Kitchen Balcony Mobile Presence
+      area_id: kitchen_balcony
+
+substitutions:
+  mobile_presence_timeout: 35s
 
 api:
   reboot_timeout: 10min
@@ -17,19 +27,6 @@ esp32:
   framework:
     advanced:
       minimum_chip_revision: '3.0'
-
-binary_sensor:
-  - name: Misaka
-    platform: ble_presence
-    irk: !secret misaka_irk
-    timeout: 30s
-    device_class: presence
-
-  - name: Layma iPhone
-    platform: ble_presence
-    irk: !secret layma_iphone_irk
-    timeout: 30s
-    device_class: presence
 
 switch:
   - name: LED

@@ -99,8 +99,8 @@ automation:
         data:
           message: 🔑 Никого нет дома, а дверь не закрыта. Страшно?
 
-  - id: north_balcony_presence_led_update
-    alias: 'North Balcony Presence: LED Update'
+  - id: kitchen_balcony_presence_led_update
+    alias: 'Kitchen Balcony Presence: LED Update'
     mode: queued
     triggers:
       - trigger: state
@@ -110,7 +110,8 @@ automation:
           - 'off'
     actions:
       - action: switch.turn_{{ trigger.to_state.state }}
-        entity_id: switch.north_balcony_presence_led
+        target:
+          entity_id: switch.kitchen_balcony_presence_led
 
   - id: come_back_soon_on_by_voice
     alias: 'Come Back Soon: On (by voice)'
@@ -155,33 +156,39 @@ device_tracker_template:
   - unique_id: device_tracker.misaka_near_home
     name: Misaka Near Home
     icon: mdi:home-floor-negative-1
-    location: >
-      {{ is_state('binary_sensor.north_balcony_presence_misaka', 'on') | iif ('Near Home', False) }}
+    location: >-
+      {{ is_state('binary_sensor.kitchen_balcony_mobile_presence_misaka', 'on') | iif ('Near Home', False) }}
     source_type: gps
 
   - unique_id: device_tracker.layma_iphone_near_home
     name: Layma iPhone Near Home
     icon: mdi:home-floor-negative-1
-    location: >
-      {{ is_state('binary_sensor.north_balcony_presence_layma_iphone', 'on') | iif ('Near Home', False) }}
+    location: >-
+      {{ is_state('binary_sensor.kitchen_balcony_mobile_presence_layma_iphone', 'on') | iif ('Near Home', False) }}
     source_type: gps
 
   - unique_id: device_tracker.misaka_ble
     name: Misaka BLE
     icon: mdi:bluetooth-connect
-    location: >
-      {{ is_state('binary_sensor.hallway_presence_misaka', 'on') or
-         is_state('binary_sensor.living_room_presence_misaka', 'on') or
-         is_state('binary_sensor.comms_presence_misaka', 'on') }}
+    location: >-
+      {{
+        is_state('binary_sensor.hallway_mobile_presence_misaka', 'on') or
+        is_state('binary_sensor.living_room_mobile_presence_misaka', 'on') or
+        is_state('binary_sensor.comms_mobile_presence_misaka', 'on') or
+        is_state('binary_sensor.kitchen_mobile_presence_misaka', 'on')
+      }}
     source_type: bluetooth_le
 
   - unique_id: device_tracker.layma_iphone_ble
     name: Layma iPhone BLE
     icon: mdi:bluetooth-connect
-    location: >
-      {{ is_state('binary_sensor.hallway_presence_layma_iphone', 'on') or
-         is_state('binary_sensor.living_room_presence_layma_iphone', 'on') or
-         is_state('binary_sensor.comms_presence_layma_iphone', 'on') }}
+    location: >-
+      {{
+        is_state('binary_sensor.hallway_mobile_presence_layma_iphone', 'on') or
+        is_state('binary_sensor.living_room_mobile_presence_layma_iphone', 'on') or
+        is_state('binary_sensor.comms_mobile_presence_layma_iphone', 'on') or
+        is_state('binary_sensor.kitchen_mobile_presence_layma_iphone', 'on')
+      }}
     source_type: bluetooth_le
 
 input_boolean:

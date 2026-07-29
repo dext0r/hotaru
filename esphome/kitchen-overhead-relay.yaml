@@ -1,6 +1,7 @@
 packages:
   base: !include generic/sonoff_dual_r3.yaml
   esp32_ble_tracker: !include common/esp32_ble_tracker.yaml
+  mobile_presence: !include common/mobile_presence.yaml
   wifi_e: !include common/wifi_e.yaml
 
 substitutions:
@@ -26,6 +27,10 @@ esphome:
 
     - id: device_2
       name: Kitchen Overhead Power Line
+      area_id: kitchen
+
+    - id: mobile_presence
+      name: Kitchen Mobile Presence
       area_id: kitchen
 
     - id: closet_meteo

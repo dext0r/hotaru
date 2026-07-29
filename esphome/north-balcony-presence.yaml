@@ -1,6 +1,8 @@
 packages:
   base: !include common/esp32.yaml
   esp32_ble_tracker: !include common/esp32_ble_tracker.yaml
+  mobile_presence: !include common/mobile_presence.yaml
+  wifi_e: !include common/wifi_e.yaml
 
 esphome:
   friendly_name: North Balcony Presence

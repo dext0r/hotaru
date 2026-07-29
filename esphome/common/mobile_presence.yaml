@@ -1,0 +1,20 @@
+substitutions:
+  mobile_presence_timeout: 30s
+  mobile_presence_min_rssi: -100dB
+
+binary_sensor:
+  - name: Misaka
+    platform: ble_presence
+    device_id: mobile_presence
+    irk: !secret misaka_irk
+    min_rssi: $mobile_presence_min_rssi
+    timeout: $mobile_presence_timeout
+    device_class: presence
+
+  - name: Layma iPhone
+    platform: ble_presence
+    device_id: mobile_presence
+    irk: !secret layma_iphone_irk
+    min_rssi: $mobile_presence_min_rssi
+    timeout: $mobile_presence_timeout
+    device_class: presence

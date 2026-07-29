@@ -1,6 +1,7 @@
 packages:
   base: !include generic/sonoff_dual_r3.yaml
   esp32_ble_tracker: !include common/esp32_ble_tracker.yaml
+  mobile_presence: !include common/mobile_presence.yaml
 
 substitutions:
   relay_1_restore_mode: ALWAYS_ON
@@ -23,21 +24,6 @@ esphome:
       name: Ippon Socket
       area_id: comms
 
-    - id: presence
-      name: Comms Presence
+    - id: mobile_presence
+      name: Comms Mobile Presence
       area_id: comms
-
-binary_sensor:
-  - name: Misaka
-    platform: ble_presence
-    device_id: presence
-    irk: !secret misaka_irk
-    timeout: 30s
-    device_class: presence
-
-  - name: Layma iPhone
-    platform: ble_presence
-    device_id: presence
-    irk: !secret layma_iphone_irk
-    timeout: 30s
-    device_class: presence

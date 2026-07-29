@@ -1,6 +1,7 @@
 packages:
   base: !include common/esp32.yaml
   esp32_ble_tracker: !include common/esp32_ble_tracker.yaml
+  mobile_presence: !include common/mobile_presence.yaml
 
 esphome:
   friendly_name: Doorbell
@@ -12,8 +13,8 @@ esphome:
   name_add_mac_suffix: false
 
   devices:
-    - id: hallway_presence
-      name: Hallway Presence
+    - id: mobile_presence
+      name: Hallway Mobile Presence
       area_id: hallway
 
     - id: front_door_lock
@@ -41,6 +42,10 @@ external_components:
       path: esphome-ttlock/components
     components:
       - ttlock
+
+substitutions:
+  # пробивается слабый сигнал оттуда, откуда вообще не должен
+  mobile_presence_min_rssi: -88dB
 
 globals:
   - id: front_door_lock_battery
@@ -88,22 +93,6 @@ binary_sensor:
       delayed_off: 10s
     on_press:
       - script.execute: ring
-
-  - name: Misaka
-    platform: ble_presence
-    device_id: hallway_presence
-    irk: !secret misaka_irk
-    timeout: 28s
-    min_rssi: -88dB
-    device_class: presence
-
-  - name: Layma iPhone
-    platform: ble_presence
-    device_id: hallway_presence
-    irk: !secret layma_iphone_irk
-    timeout: 28s
-    min_rssi: -88dB
-    device_class: presence
 
   - id: front_door_lock_contact
     platform: homeassistant

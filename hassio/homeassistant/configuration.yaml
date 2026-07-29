@@ -103,11 +103,6 @@ notify:
     chat_id: !secret telegram_chat_id
 none:
 logbook:
-  exclude:
-    entity_globs:
-      - automation.*_no_occupancy
-      - sensor.*_uptime
-      - sensor.*_debug
 logger:
   default: warning
   logs:
@@ -161,8 +156,6 @@ recorder:
       - automation.*_timer # включение/отключение различных таймеров
       - cover.*_motor  # сырые моторы для шаблонных штор с ограничением открытия
       - binary_sensor.*_contact  # сырые герконы для шаблонов
-      - binary_sensor.*workday*
-      - binary_sensor.workday*
       - binary_sensor.*_light_alert_available # доступность функции "уведомление через диодик"
       # - binary_sensor.*mobile_presence* # детекция присутствия айфонов на ESPшках, закоментировано для отладки
       - input_boolean.*_airing_* # проветривания, статус отслеживается через выключатель

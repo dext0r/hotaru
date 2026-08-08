@@ -47,7 +47,7 @@ sensor:
       filters:
         - round: 1
         - or:
-          - throttle: 30min
+          - throttle: 15min
           - delta: 0.2
         - timeout: 35min
 
@@ -58,7 +58,7 @@ sensor:
       filters:
         - round: 0
         - or:
-          - throttle: 30min
+          - throttle: 15min
           - delta: 2
         - timeout: 35min
 

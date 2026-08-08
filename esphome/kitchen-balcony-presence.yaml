@@ -28,9 +28,32 @@ esp32:
     advanced:
       minimum_chip_revision: '3.0'
 
+uart:
+  - id: ld2410_uart
+    rx_pin: 16
+    tx_pin: 17
+    baud_rate: 256000
+
+ld2410:
+  # duration: 60
+  # range: 6m
+  # motion: 70 30 30 50 100 100 100 100 100
+  # static: 00 00 25 25 025 025 020 020 020
+
+binary_sensor:
+  - platform: ld2410
+    has_target:
+      name: ''
+      icon: ''
+
 switch:
   - name: LED
     platform: gpio
     pin: 2
     entity_category: diagnostic
     icon: mdi:led-outline
+
+  - platform: ld2410
+    bluetooth:
+      name: LD2410 Bluetooth
+      disabled_by_default: true

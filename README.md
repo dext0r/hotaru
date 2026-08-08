@@ -189,7 +189,7 @@
 
 * 3x CO2 **[SenseAir S8](https://aliexpress.ru/item/32844884313.html)**
 * 1x PM 1/2.5/10 **[PMS5003](https://aliexpress.ru/item/32944660534.html)**
-* 3x Присутствие **[LD2410C](https://aliexpress.ru/item/1005004351593073.html)**. Собраны в совместным корпусах с S8 ([фото 1](images/ubox.jpg), [фото 2](images/ubox-lr-1.jpg)), подключение по UART.
+* 4x Присутствие **[LD2410C](https://aliexpress.ru/item/1005004351593073.html)**. Собраны как в совместным корпусах с S8 ([фото 1](images/ubox.jpg), [фото 2](images/ubox-lr-1.jpg)), так и в простом [напечатанном корпусе](images/ld2410c.jpg) с ESP, подключение по UART.
 * 1x выделенный ESP32 для ловли присутствия телефона у подъезда. Стоит на балконе, пробивает на 4 этажа.
 
 ## Странный DIY

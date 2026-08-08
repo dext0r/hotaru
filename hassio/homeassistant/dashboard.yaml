@@ -315,6 +315,11 @@ views:
                 fill_container: false
                 secondary_info: last-changed
               - type: custom:mushroom-entity-card
+                entity: binary_sensor.kitchen_balcony_occupancy
+                name: Kitchen Balcony
+                fill_container: false
+                secondary_info: last-changed
+              - type: custom:mushroom-entity-card
                 entity: binary_sensor.doorbell_ringing
                 name: Doorbell
                 fill_container: false
@@ -346,6 +351,16 @@ views:
               - type: custom:mushroom-entity-card
                 entity: binary_sensor.kitchen_door
                 name: Kitchen
+                secondary_info: none
+                layout: vertical
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.kitchen_balcony_door
+                name: Kitchen Balcony
+                secondary_info: none
+                layout: vertical
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.living_room_balcony_door
+                name: Room Balcony
                 secondary_info: none
                 layout: vertical
               - type: custom:mushroom-entity-card
@@ -1114,6 +1129,11 @@ views:
                 fill_container: false
                 secondary_info: last-changed
               - type: custom:mushroom-entity-card
+                entity: binary_sensor.kitchen_balcony_occupancy
+                name: Kitchen Balcony
+                fill_container: false
+                secondary_info: last-changed
+              - type: custom:mushroom-entity-card
                 entity: binary_sensor.doorbell_ringing
                 name: Doorbell
                 fill_container: false
@@ -1128,6 +1148,11 @@ views:
             type: grid
             cards:
               - type: custom:mushroom-entity-card
+                entity: binary_sensor.workshop_door
+                name: Workshop
+                secondary_info: none
+                layout: vertical
+              - type: custom:mushroom-entity-card
                 entity: binary_sensor.closet_door
                 name: Closet
                 secondary_info: none
@@ -1138,10 +1163,20 @@ views:
                 secondary_info: none
                 layout: vertical
               - type: custom:mushroom-entity-card
-                entity: binary_sensor.workshop_door
+                entity: binary_sensor.kitchen_door
+                name: Kitchen
                 secondary_info: none
                 layout: vertical
-                name: Workshop
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.kitchen_balcony_door
+                name: Kitchen Balcony
+                secondary_info: none
+                layout: vertical
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.living_room_balcony_door
+                name: Room Balcony
+                secondary_info: none
+                layout: vertical
               - type: custom:mushroom-entity-card
                 entity: binary_sensor.fridge_door
                 name: Fridge
@@ -2833,6 +2868,11 @@ views:
           - type: custom:mushroom-entity-card
             entity: binary_sensor.living_room_balcony_door
             name: Room Balcony
+            secondary_info: none
+            layout: vertical
+          - type: custom:mushroom-entity-card
+            entity: binary_sensor.living_room_balcony_door
+            name: Kitchen Balcony
             secondary_info: none
             layout: vertical
       - type: vertical-stack

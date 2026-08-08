@@ -134,7 +134,7 @@ script:
   - id: use_lock_state
     mode: restart
     then:
-      - delay: 7s
+      - delay: 12s # иногда подключение устанавливается долго
 
   - id: !extend go_offline
     then:
@@ -171,6 +171,11 @@ lock:
     lambda: |-
       auto state = id(lock_control).Lock::state; // TODO: временно
       if (state == LOCK_STATE_LOCKING || state == LOCK_STATE_UNLOCKING) {
+        if (!id(use_lock_state).is_running()) {
+          ESP_LOGE("lock", "run use_lock_state");
+          id(use_lock_state).execute(); // lock не умеет on_state автоматизации
+        }
+
         return state;
       }
 

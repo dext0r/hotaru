@@ -157,7 +157,7 @@ recorder:
       - cover.*_motor  # сырые моторы для шаблонных штор с ограничением открытия
       - binary_sensor.*_contact  # сырые герконы для шаблонов
       - binary_sensor.*_light_alert_available # доступность функции "уведомление через диодик"
-      # - binary_sensor.*mobile_presence* # детекция присутствия айфонов на ESPшках, закоментировано для отладки
+      - binary_sensor.*mobile_presence* # детекция присутствия айфонов на ESPшках
       - input_boolean.*_airing_* # проветривания, статус отслеживается через выключатель
       - input_boolean.porch_light_dimmed
       - light.workshop_main_* # обрабатывается как единое целое

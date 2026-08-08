@@ -45,9 +45,6 @@ class AqaraOccupancyCluster(LocalDataCluster, OccupancyCluster):
         # кеша и дошёл до HA.
         self._loop.call_later(5, self._turn_off)
 
-    def is_attribute_unsupported(self, attr):
-        return True
-
     @property
     def reset_s(self) -> int:
         return self.endpoint.occupancy.get(

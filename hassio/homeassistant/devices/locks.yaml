@@ -3,3 +3,18 @@ input_boolean:
     name: 'Allow automatic lock control'
     initial: true
     icon: mdi:shield-lock-outline
+
+automation:
+  - id: lock_control_on
+    alias: 'Lock Control: On'
+    triggers:
+      - trigger: state
+        entity_id: input_select.home_mode
+    conditions:
+      - condition: state
+        entity_id: input_boolean.lock_control
+        state: 'off'
+    actions:
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.lock_control

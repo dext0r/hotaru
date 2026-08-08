@@ -320,6 +320,11 @@ views:
                 fill_container: false
                 secondary_info: last-changed
               - type: custom:mushroom-entity-card
+                entity: binary_sensor.living_room_balcony_motion
+                name: Room Balcony
+                fill_container: false
+                secondary_info: last-changed
+              - type: custom:mushroom-entity-card
                 entity: binary_sensor.doorbell_ringing
                 name: Doorbell
                 fill_container: false
@@ -1136,6 +1141,11 @@ views:
               - type: custom:mushroom-entity-card
                 entity: binary_sensor.kitchen_balcony_occupancy
                 name: Kitchen Balcony
+                fill_container: false
+                secondary_info: last-changed
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.living_room_balcony_motion
+                name: Living Room Balcony
                 fill_container: false
                 secondary_info: last-changed
               - type: custom:mushroom-entity-card

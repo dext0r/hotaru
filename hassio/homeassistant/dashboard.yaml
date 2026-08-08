@@ -1143,6 +1143,11 @@ views:
                 name: Doorbell
                 fill_container: false
                 secondary_info: last-changed
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.secret_place_door
+                name: Secret Place
+                fill_container: false
+                secondary_info: last-changed
         view_layout:
           show:
             mediaquery: '(max-width: 400px)'

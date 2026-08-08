@@ -1,0 +1,59 @@
+blueprint:
+  name: Cat Trapped Detector
+  domain: automation
+  input:
+    door_sensor:
+      name: Door sensor
+      selector:
+        entity:
+          filter:
+            domain: binary_sensor
+            device_class: door
+    motion_sensor:
+      name: Motion sensor
+      selector:
+        entity:
+          filter:
+            domain: binary_sensor
+            device_class: motion
+    location:
+      name: Location name
+      selector:
+        text:
+mode: restart
+triggers:
+  - trigger: door.closed
+    target:
+      entity_id: !input door_sensor
+    options:
+      for:
+        minutes: 3
+actions:
+  - if:
+      - condition: motion.is_not_detected
+        target:
+          entity_id: !input motion_sensor
+    then:
+      - wait_for_trigger:
+          - trigger: motion.detected
+            target:
+              entity_id: !input motion_sensor
+
+          - trigger: door.opened
+            target:
+              entity_id: !input door_sensor
+        timeout:
+          hours: 2
+        continue_on_timeout: false
+
+  - condition: door.is_closed
+    target:
+      entity_id: !input door_sensor
+
+  - condition: motion.is_detected
+    target:
+      entity_id: !input motion_sensor
+
+  - event: cat_trapped
+    event_data:
+      location: !input location

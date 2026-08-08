@@ -1,0 +1,101 @@
+automation:
+  - id: cat_trapped_alert
+    alias: 'Cat Trapped: Alert'
+    triggers:
+      - trigger: event
+        event_type: cat_trapped
+    actions:
+      - action: notify.dextor
+        data:
+          message: 🐈 Кошатинка заперта {{ trigger.event.data.location }}
+
+      - if:
+          - condition: time
+            after: '11:00:00'
+            before: '8:00:00'
+
+          - condition: state
+            entity_id: binary_sensor.anyone_home
+            state: 'on'
+        then:
+          - action: script.yandex_station_tts
+            data:
+              target: all
+              type: attention
+              text: Кошатинка заперта {{ trigger.event.data.location }}
+
+  - id: cat_trapped_closet
+    alias: 'Cat Trapped: Closet'
+    use_blueprint:
+      path: cat_trapped.yaml
+      input:
+        door_sensor: binary_sensor.closet_door
+        motion_sensor: binary_sensor.closet_motion
+        location: в кладовке
+
+  - id: cat_trapped_wardrobe
+    alias: 'Cat Trapped: Wardrobe'
+    use_blueprint:
+      path: cat_trapped.yaml
+      input:
+        door_sensor: binary_sensor.wardrobe_door
+        motion_sensor: binary_sensor.wardrobe_motion
+        location: в гардеробной
+
+  - id: cat_trapped_workshop
+    alias: 'Cat Trapped: Workshop'
+    use_blueprint:
+      path: cat_trapped.yaml
+      input:
+        door_sensor: binary_sensor.workshop_door
+        motion_sensor: binary_sensor.workshop_motion
+        location: в мастерской
+
+  - id: cat_trapped_living_room_balcony
+    alias: 'Cat Trapped: Living Room Balcony'
+    use_blueprint:
+      path: cat_trapped.yaml
+      input:
+        door_sensor: binary_sensor.living_room_balcony_door
+        motion_sensor: binary_sensor.living_room_balcony_motion
+        location: балкон в гостиной
+
+  - id: cat_trapped_kitchen_balcony
+    alias: 'Cat Trapped: Kitchen Balcony'
+    mode: restart
+    triggers:
+      - trigger: door.closed
+        target:
+          entity_id: binary_sensor.kitchen_balcony_door
+        options:
+          for:
+            minutes: 15
+    actions:
+      - if:
+          - condition: occupancy.is_not_detected
+            target:
+              entity_id: binary_sensor.kitchen_balcony_occupancy
+        then:
+          - wait_for_trigger:
+              - trigger: occupancy.detected
+                target:
+                  entity_id: binary_sensor.kitchen_balcony_occupancy
+
+              - trigger: door.opened
+                target:
+                  entity_id: binary_sensor.kitchen_balcony_door
+            timeout:
+              hours: 3
+            continue_on_timeout: false
+
+      - condition: door.is_closed
+        target:
+          entity_id: binary_sensor.kitchen_balcony_door
+
+      - condition: occupancy.is_detected
+        target:
+          entity_id: binary_sensor.kitchen_balcony_occupancy
+
+      - event: cat_trapped
+        event_data:
+          location: на балконе кухня

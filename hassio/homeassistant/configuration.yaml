@@ -14,6 +14,7 @@ homeassistant:
     activity_cinema: !include activities/cinema.yaml
     activity_meal: !include activities/meal.yaml
     activity_waking_up: !include activities/waking_up.yaml
+    alert_cat: !include alerts/cat.yaml
     alert_devices: !include alerts/devices.yaml
     alert_security: !include alerts/security.yaml
     alert_sensors: !include alerts/sensors.yaml

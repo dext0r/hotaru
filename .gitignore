@@ -8,7 +8,6 @@ hassio/store
 hassio/homeassistant/.*
 !hassio/homeassistant/.HA_VERSION
 hassio/homeassistant/custom_components
-hassio/homeassistant/blueprints
 hassio/homeassistant/image
 hassio/homeassistant/tts
 hassio/homeassistant/zhaquirks/*

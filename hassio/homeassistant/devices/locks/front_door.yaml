@@ -104,6 +104,26 @@ automation:
         target:
           entity_id: lock.front_door
 
+  - id: front_door_unlock
+    alias: 'Front Door: Unlock'
+    mode: restart
+    triggers:
+      - trigger: timer.started
+        target:
+          entity_id: timer.come_back_soon
+    conditions:
+      - condition: state
+        entity_id: input_boolean.lock_control
+        state: 'on'
+
+      - condition: lock.is_locked
+        target:
+          entity_id: lock.front_door
+    actions:
+      - action: lock.unlock
+        target:
+          entity_id: lock.front_door
+
   - id: front_door_auto_lock
     alias: 'Front Door: Auto lock'
     description: Закрытие замка входной двери при взведённом флаге автозакрытия
@@ -154,10 +174,6 @@ automation:
       - trigger: timer.started
         target:
           entity_id: timer.front_door_auto_unlock
-
-      - trigger: timer.started
-        target:
-          entity_id: timer.come_back_soon
     conditions:
       - condition: lock.is_locked
         target:

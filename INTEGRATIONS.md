@@ -39,5 +39,6 @@
 * Matter Server
 * Mosquitto broker
 * NGINX Home Assistant SSL proxy
+* RemoteWebViewServer
 * TimescaleDB
 * Zigbee2MQTT

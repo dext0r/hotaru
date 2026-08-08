@@ -19,6 +19,7 @@
 * [Шторы](#шторы)
 * [Бытовая техника](#бытовая-техника)
 * [Мультимедиа](#мультимедиа)
+* [Панели](#панели)
 * [Разное](#разное)
 * [Датчики DIY](#датчики-diy)
 * [Странный DIY](#странный-diy)
@@ -178,6 +179,12 @@
 * Apple TV
 * PS5 (через [аддон](https://github.com/FunkeyFlo/ps5-mqtt))
 
+## Панели
+
+* 1x **Guition ESP32-S3-4848S040**: в прихожей ([фото](./images/wall-panel.jpg)) на [ESPHome](./esphome/entrance-panel.yaml)
+
+Работает как "тонкий клиент" и транслирует картинку от headless хрома, на котором крутится один из HAшных дашбордов. Используются форкнутые компоненты [RemoteWebViewServer](https://github.com/dext0r/RemoteWebViewServer) и [RemoteWebViewClient](https://github.com/dext0r/RemoteWebViewClient) от [strange-v](https://github.com/strange-v). Переключение вкладок - через Browser Mod.
+
 ## Разное
 
 * 4x Приводы на краны Zigbee **[Tuya ZN231392](https://aliexpress.ru/item/1005005837381838.html)**
@@ -314,7 +321,7 @@ Tion Iris - классный увлажнитель, но у него есть �
 ## Статистика по устройствам
 
 * Zigbee устройств: 75 на ZHA
-* Esphome устройств: 57
+* Esphome устройств: 58
 * BLE датчики: 7
 * Matter на WiFi: 1
 * Камер на WiFi: 2

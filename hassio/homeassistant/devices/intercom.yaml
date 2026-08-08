@@ -198,6 +198,8 @@ automation:
                 target:
                   entity_id: input_boolean.waiting_guests
             sequence:
+              - event: intercom_door_opened_family
+
               - action: script.yandex_station_tts
                 data:
                   target: all
@@ -215,6 +217,8 @@ automation:
                 target:
                   entity_id: input_boolean.waiting_delivery
             sequence:
+              - event: intercom_door_opened_delivery
+
               - action: script.yandex_station_tts
                 data:
                   target: all
@@ -258,6 +262,8 @@ automation:
                 entity_id: person.dextor
                 state: Near Home
             sequence:
+              - event: intercom_door_opened_family
+
               - action: script.yandex_station_tts
                 data:
                   target: all
@@ -278,6 +284,8 @@ automation:
                 entity_id: person.layma
                 state: Near Home
             sequence:
+              - event: intercom_door_opened_family
+
               - action: script.yandex_station_tts
                 data:
                   target: all
@@ -288,6 +296,8 @@ automation:
                 entity_id: light.entrance
 
         default:
+          - event: intercom_door_opened_unwelcome_guests
+
           - action: script.yandex_station_tts
             data:
               target: all

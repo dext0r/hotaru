@@ -1,0 +1,347 @@
+packages:
+  base: !include ../common/base.yaml
+  restart: !include ../common/restart.yaml
+
+esphome:
+  name: Guition Panel
+  model: Guition ESP32-S3-4848S040
+
+esp32:
+  board: esp32-s3-devkitc-1
+  variant: esp32s3
+  flash_size: 16MB
+  framework:
+    type: esp-idf
+    advanced:
+      execute_from_psram: true
+    sdkconfig_options:
+      CONFIG_ESP32S3_DATA_CACHE_64KB: y
+      CONFIG_ESP32S3_DATA_CACHE_LINE_64B: y
+    components:
+      - name: espressif/esp_websocket_client
+        ref: 1.5.0
+      - name: bitbank2/jpegdec
+        source: https://github.com/strange-v/jpegdec-esphome
+
+external_components:
+  - source: github://dext0r/RemoteWebViewClient@0f42e81daa4844537daeb4e3f7c03a892e4b125f
+    components: [ remote_webview ]
+
+logger:
+  hardware_uart: UART0
+  level: VERBOSE
+  # logs:
+  #   i2c.idf: DEBUG
+  #   touchscreen: DEBUG
+  #   ledc.output: DEBUG
+
+psram:
+  mode: octal
+  speed: 80MHz
+
+spi:
+  clk_pin: 48
+  mosi_pin: 47
+
+i2c:
+  sda: 19
+  scl: 45
+
+display:
+  - platform: st7701s
+    update_interval: never
+    dimensions:
+      width: 480
+      height: 480
+    spi_mode: MODE3
+    data_rate: 2MHz
+    color_order: RGB
+    invert_colors: false
+    cs_pin: 39
+    de_pin: 18
+    hsync_pin: 16
+    vsync_pin: 17
+    pclk_pin: 21
+    pclk_frequency: 12MHz
+    pclk_inverted: false
+    hsync_pulse_width: 8
+    hsync_front_porch: 10
+    hsync_back_porch: 20
+    vsync_pulse_width: 8
+    vsync_front_porch: 10
+    vsync_back_porch: 10
+    init_sequence:
+      - 1
+      - [0xFF, 0x77, 0x01, 0x00, 0x00, 0x10]
+      - [0xCD, 0x00]
+    data_pins:
+      red: [11, 12, 13, 14, 0]
+      green: [8, 20, 3, 46, 9, 10]
+      blue: [4, 5, 6, 7, 15]
+
+touchscreen:
+  - platform: gt911
+    on_touch:
+      then:
+        - if:
+            condition:
+              - script.is_running: display_antiburn
+            then:
+              - script.stop: display_antiburn
+              - script.execute: display_antiburn_end
+
+        - script.execute: backlight_activate
+
+output:
+  - id: backlight_pwm
+    platform: ledc
+    pin: 38
+    min_power: 0.16
+    zero_means_zero: true
+
+light:
+  - id: backlight
+    platform: monochromatic
+    name: Backlight
+    icon: mdi:television-ambient-light
+    output: backlight_pwm
+    restore_mode: ALWAYS_ON
+    default_transition_length: 500ms
+
+remote_webview:
+  id: webview
+  server: 192.168.5.6:9123
+  device_id: $browser_id
+  url: http://127.0.0.1:8123/$browser_id/home?BrowserID=$browser_id
+  full_frame_tile_count: 4
+  tile_size: 16
+  max_bytes_per_msg: 204800
+  jpeg_quality: 100
+  rotation: 180
+
+# для антивыгорания
+lvgl:
+  paused: true
+  resume_on_input: false
+
+globals:
+  # целевые уровни, пересчитываются из режима
+  - id: backlight_level_active
+    type: float
+  - id: backlight_level_idle
+    type: float
+
+  # фактическое состояние: сейчас приглушено или нет
+  # для корректного изменения яркости в idle при переключении режима
+  - id: backlight_is_idle
+    type: bool
+    initial_value: 'true' # не надо привлекать к себе внимание после перезагрузки
+
+  # задержка перед затемнением экрана после последнего тача
+  - id: backlight_idle_timeout_s
+    type: int
+    initial_value: '60'
+
+button:
+  - platform: template
+    name: Anti Burn-In
+    icon: mdi:auto-fix
+    on_press:
+      - script.execute:
+          id: display_antiburn
+          quick: true
+
+  - platform: template
+    name: Backlight Dim
+    icon: mdi:brightness-4
+    on_press:
+      - globals.set:
+          id: backlight_is_idle
+          value: 'true'
+      - script.execute: backlight_apply
+
+select:
+  - id: backlight_mode
+    platform: template
+    name: Backlight Mode
+    icon: mdi:auto-mode
+    optimistic: true
+    restore_value: true
+    options:
+      - Normal
+      - 'Off'
+    on_value:
+      then:
+        - lambda: |-
+            switch (i) {
+              case 0:
+                id(backlight_level_active) = 0.80;
+                id(backlight_level_idle) = 0.35;
+                break;
+              case 3:
+                id(backlight_level_active) = 0.35;
+                id(backlight_level_idle) = 0;
+                break;
+            }
+
+        - script.execute: backlight_apply
+
+switch:
+  - id: backlight_auto_dim_on_idle
+    platform: template
+    name: Backlight Auto Dim
+    icon: mdi:weather-sunset-down
+    optimistic: true
+    restore_mode: ALWAYS_ON
+    on_state:
+      then:
+        - if:
+            condition:
+              - script.is_running: display_antiburn
+            then:
+              - script.stop: display_antiburn
+              - script.execute: display_antiburn_end
+
+        - if:
+            condition:
+              - switch.is_off: backlight_auto_dim_on_idle
+            then:
+              - globals.set:
+                  id: backlight_is_idle
+                  value: 'false'
+              - script.execute: backlight_apply
+
+        - script.execute: backlight_idle_timer
+
+script:
+  # обновляет яркость подсветки и активность отправки тач событий в webview
+  # в зависимости от активного режима и флага is_idle
+  - id: backlight_apply
+    mode: restart
+    then:
+      - if:
+          condition:
+            - lambda: |-
+                return id(backlight_is_idle);
+          then:
+            - light.turn_on:
+                id: backlight
+                brightness: !lambda |-
+                  return id(backlight_level_idle);
+
+            - if:
+                condition:
+                  - lambda: |-
+                      return id(backlight_level_idle) == 0;
+                then:
+                  - remote_webview.touch_disable: webview
+                else:
+                  - remote_webview.touch_enable: webview
+          else:
+            - light.turn_on:
+                id: backlight
+                brightness: !lambda |-
+                  return id(backlight_level_active);
+
+            - if:
+                condition:
+                  - lambda: |-
+                      return id(backlight_level_active) == 0;
+                then:
+                  - remote_webview.touch_disable: webview
+                else:
+                  - remote_webview.touch_enable: webview
+
+  # включает яркость подсветки до active уровня (например при таче)
+  - id: backlight_activate
+    mode: restart
+    then:
+      - if:
+          condition:
+            - lambda: |-
+                return id(backlight_is_idle);
+          then:
+            - globals.set:
+                id: backlight_is_idle
+                value: 'false'
+
+            - script.execute: backlight_apply
+
+      - script.execute: backlight_idle_timer
+
+  # приглушает подсветку (например при неактивности)
+  - id: backlight_dim
+    mode: restart
+    then:
+      - logger.log: Dimming backlight
+
+      - globals.set:
+          id: backlight_is_idle
+          value: 'true'
+
+      - script.execute: backlight_apply
+
+  # таймер для приглушения подсветки при неактивности
+  - id: backlight_idle_timer
+    mode: restart
+    then:
+      - delay: !lambda |-
+          return id(backlight_idle_timeout_s) * 1000;
+
+      - if:
+          condition:
+            - switch.is_on: backlight_auto_dim_on_idle
+          then:
+            - script.execute: backlight_dim
+
+  - id: display_antiburn
+    mode: restart
+    parameters:
+      quick: bool
+    then:
+      - remote_webview.touch_disable: webview
+
+      - lvgl.pause:
+          show_snow: true
+
+      - if:
+          condition:
+            - lambda: |-
+                return quick;
+          then:
+            - delay: 5min
+          else:
+            - delay: 30min
+
+      - script.execute: display_antiburn_end
+
+  - id: display_antiburn_end
+    then:
+      - lvgl.pause:
+          show_snow: false
+      - remote_webview.request_full_frame: webview
+      - script.execute: backlight_apply
+
+time:
+  - id: !extend time_ha
+    on_time:
+      - hours: 2,3,4,5,6
+        minutes: 0
+        seconds: 0
+        then:
+          - script.execute:
+              id: display_antiburn
+              quick: false
+
+      - hours: 9,12,15,18,21,23
+        minutes: 0
+        seconds: 0
+        then:
+          - if:
+              condition:
+                - lambda: |-
+                    return id(backlight_is_idle) && id(backlight_level_idle) == 0;
+              then:
+                - script.execute:
+                    id: display_antiburn
+                    quick: true

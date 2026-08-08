@@ -1,0 +1,222 @@
+automation:
+  - id: entrance_panel_home_timeout
+    alias: 'Entrance Panel: Home (timeout)'
+    mode: restart
+    triggers:
+      - trigger: state
+        entity_id: sensor.entrance_panel_browser_path
+        not_to: /entrance-panel/home
+        for:
+          minutes: 2
+    conditions:
+      - not:
+          - condition: state
+            entity_id: sensor.entrance_panel_browser_path
+            state: /entrance-panel/home
+
+          - condition: state
+            entity_id: sensor.entrance_panel_browser_path
+            state: unavailable
+
+      - condition: state
+        entity_id: binary_sensor.entrance_panel_focus
+        state: 'off'
+    actions:
+      - action: switch.turn_on
+        target:
+          entity_id: switch.entrance_panel_backlight_auto_dim
+
+      - action: browser_mod.navigate
+        data:
+          browser_id: entrance-panel
+          path: /entrance-panel/home
+
+  - id: entrance_panel_home_focus_end
+    alias: 'Entrance Panel: Home (focus end)'
+    mode: restart
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.entrance_panel_focus
+        from: 'on'
+        to: 'off'
+        for:
+          seconds: 5
+    conditions:
+      - not:
+          - condition: state
+            entity_id: sensor.entrance_panel_browser_path
+            state: unavailable
+    actions:
+      - action: switch.turn_on
+        target:
+          entity_id: switch.entrance_panel_backlight_auto_dim
+
+      - delay:
+          seconds: 1
+
+      - action: button.press
+        target:
+          entity_id: button.entrance_panel_backlight_dim
+
+      - action: browser_mod.navigate
+        data:
+          browser_id: entrance-panel
+          path: /entrance-panel/home
+
+  - id: entrance_panel_focus
+    alias: 'Entrance Panel: Focus'
+    mode: restart
+    triggers:
+      - trigger: state
+        entity_id: &focus_sensors
+          - binary_sensor.entrance_panel_focus_family_almost_home
+          - binary_sensor.entrance_panel_focus_unwelcome_guests
+          - binary_sensor.entrance_panel_focus_delivery
+          - binary_sensor.entrance_panel_focus_waking_up
+        to: 'on'
+    variables:
+      _view_: >-
+        {{ {
+          'binary_sensor.entrance_panel_focus_family_almost_home': 'elevator-camera',
+          'binary_sensor.entrance_panel_focus_unwelcome_guests': 'cctv',
+          'binary_sensor.entrance_panel_focus_delivery': 'elevator-camera',
+          'binary_sensor.entrance_panel_focus_waking_up': 'waking-up',
+        }.get(trigger.from_state.entity_id, 'home') }}
+    conditions:
+      - not:
+          - condition: state
+            entity_id: sensor.entrance_panel_browser_path
+            state: unavailable
+    actions:
+      - action: switch.turn_off
+        target:
+          entity_id: switch.entrance_panel_backlight_auto_dim
+
+      - action: browser_mod.navigate
+        data:
+          browser_id: entrance-panel
+          path: >-
+            /entrance-panel/{{ _view_ }}
+
+  - id: entrance_panel_backlight_mode_update
+    alias: 'Entrance Panel: Backlight mode update'
+    max_exceeded: silent
+    triggers:
+      - trigger: state
+        entity_id:
+          - light.entrance
+          - input_select.home_mode
+
+      - trigger: state
+        entity_id: select.entrance_panel_backlight_mode
+        from: unavailable
+        for:
+          seconds: 5
+
+      - trigger: time_pattern
+        minutes: /10
+    variables:
+      _backlight_mode_: >-
+        {%- set mode = 'Soft' -%}
+        {%- if is_state('light.entrance', 'on') -%}
+          {%- set mode = 'Normal' -%}
+        {%- elif is_state('input_select.home_mode', 'Night') -%}
+          {%- set mode = 'Faint' -%}
+        {%- endif -%}
+        {{- mode -}}
+    conditions:
+      - not:
+          - condition: state
+            entity_id: select.entrance_panel_backlight_mode
+            state: unavailable
+
+      - condition: template
+        value_template: >-
+          {{ not is_state('select.entrance_panel_backlight_mode', _backlight_mode_)}}
+    actions:
+      - action: select.select_option
+        target:
+          entity_id: select.entrance_panel_backlight_mode
+        data:
+          option: >-
+            {{ _backlight_mode_ }}
+
+binary_sensor:
+  - platform: group
+    unique_id: binary_sensor.entrance_panel_focus
+    name: Entrance Panel Focus
+    device_class: problem
+    entities: *focus_sensors
+
+template:
+  - triggers:
+      - id: intercom
+        trigger: event
+        event_type: intercom_door_opened_family
+
+      - trigger: door.closed
+        target:
+          entity_id: binary_sensor.front_door
+    binary_sensor:
+      name: 'Entrance Panel Focus: Family Almost Home'
+      unique_id: binary_sensor.entrance_panel_focus_family_almost_home
+      state: >-
+        {{ trigger.id == 'intercom' }}
+      auto_off:
+        minutes: 5
+
+  - triggers:
+      - id: intercom
+        trigger: event
+        event_type: intercom_door_opened_unwelcome_guests
+
+      - trigger: door.closed
+        target:
+          entity_id: binary_sensor.front_door
+    binary_sensor:
+      name: 'Entrance Panel Focus: Unwelcome Guests'
+      unique_id: binary_sensor.entrance_panel_focus_unwelcome_guests
+      state: >-
+        {{ trigger.id == 'intercom' }}
+      auto_off:
+        minutes: 3
+
+  - triggers:
+      - id: intercom
+        trigger: event
+        event_type: intercom_door_opened_delivery
+
+      - trigger: state
+        entity_id: input_boolean.waiting_delivery
+        to: 'off'
+    binary_sensor:
+      name: 'Entrance Panel Focus: Delivery'
+      unique_id: binary_sensor.entrance_panel_focus_delivery
+      state: >-
+        {{ trigger.id == 'intercom' }}
+      auto_off:
+        minutes: 5
+
+  - triggers:
+      - id: motion
+        trigger: motion.detected
+        target:
+          entity_id: binary_sensor.entrance_motion
+
+      - trigger: light.turned_off
+        target:
+          entity_id: light.bathroom_main
+    binary_sensor:
+      name: 'Entrance Panel Focus: Waking Up'
+      unique_id: binary_sensor.entrance_panel_focus_waking_up
+      state: >-
+        {{ trigger.id == 'motion' and
+           is_state('input_boolean.waking_up', 'on') and
+           is_state('light.bathroom_main', 'on') }}
+      auto_off:
+        minutes: 10
+
+input_button:
+  entrance_panel_leaving_home:
+    name: 'Entrance Panel: Leaving Home'
+    icon: mdi:home-export-outline

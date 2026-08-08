@@ -111,6 +111,9 @@ automation:
       - trigger: timer.started
         target:
           entity_id: timer.come_back_soon
+
+      - trigger: state
+        entity_id: input_button.entrance_panel_leaving_home
     conditions:
       - condition: state
         entity_id: input_boolean.lock_control
@@ -186,20 +189,31 @@ automation:
   - id: front_door_auto_lock_start_timer
     alias: 'Front Door Auto Lock: Start timer'
     triggers:
-      - trigger: switch.turned_off
+      - id: waking_up
+        trigger: switch.turned_off
         target:
           entity_id: input_boolean.waking_up
 
-      # + планируется экранчик у входной двери
+      - trigger: state
+        entity_id: input_button.entrance_panel_leaving_home
     conditions:
       - condition: state
         entity_id: input_boolean.lock_control
         state: 'on'
 
-      - condition: door.is_open
-        note: Открытие двери -> Завершение waking_up
-        target:
-          entity_id: binary_sensor.front_door
+      - or:
+          - not:
+              - condition: trigger
+                id: waking_up
+
+          - and:
+              - condition: trigger
+                id: waking_up
+
+              - condition: door.is_open
+                note: Открытие двери -> Завершение waking_up
+                target:
+                  entity_id: binary_sensor.front_door
     actions:
       - action: timer.start
         entity_id: timer.front_door_auto_lock

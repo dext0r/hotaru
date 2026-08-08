@@ -82,6 +82,7 @@ homeassistant:
     lock_front_door: !include devices/locks/front_door.yaml
     lock_porch_door: !include devices/locks/porch_door.yaml
     locks: !include devices/locks.yaml
+    panel_entrance: !include devices/panels/entrance.yaml
     media_avr: !include devices/media/avr.yaml
     media_tv: !include devices/media/tv.yaml
     media_yandex_station: !include devices/media/yandex_station.yaml
@@ -158,6 +159,7 @@ recorder:
       - light.workshop_main_* # обрабатывается как единое целое
       - sensor.*_raw
       - sensor.person_pronoun_*
+      - sensor.*_panel_browser_* # browser_mod на экранчиках
 panel_custom:
   - name: config/automation
     sidebar_title: Automations

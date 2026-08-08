@@ -1,0 +1,46 @@
+packages:
+  base: !include generic/guition_4848s040.yaml
+
+esphome:
+  friendly_name: Entrance Panel
+  name: entrance-panel
+  area: Hallway
+  name_add_mac_suffix: false
+
+substitutions:
+  browser_id: entrance-panel
+
+logger:
+  level: DEBUG
+
+select:
+  - id: !remove backlight_mode
+  - id: backlight_mode
+    platform: template
+    name: Backlight Mode
+    icon: mdi:auto-mode
+    optimistic: true
+    restore_value: true
+    options:
+      - Normal # основной свет включен
+      - Soft   # свет только в соседних комнатах
+      - Faint  # ночь, очень тускло
+    on_value:
+      then:
+        - lambda: |-
+            switch (i) {
+              case 0:
+                id(backlight_level_active) = 0.80;
+                id(backlight_level_idle) = 0;
+                break;
+              case 1:
+                id(backlight_level_active) = 0.70;
+                id(backlight_level_idle) = 0;
+                break;
+              case 2:
+                id(backlight_level_active) = 0.35;
+                id(backlight_level_idle) = 0;
+                break;
+            }
+
+        - script.execute: backlight_apply

@@ -227,6 +227,25 @@ timer:
     duration:
       minutes: 45
 
+script:
+  come_back_soon_toggle:
+    alias: 'Come Back Soon: Toggle'
+    description: Переключает состояние таймера "Скоро вернусь"
+    mode: restart
+    sequence:
+      - if:
+          - condition: timer.is_active
+            target:
+              entity_id: timer.come_back_soon
+        then:
+          - action: timer.cancel
+            target:
+              entity_id: timer.come_back_soon
+        else:
+          - action: timer.start
+            target:
+              entity_id: timer.come_back_soon
+
 zone:
   - name: Home
     latitude: !secret geo_home_latitude

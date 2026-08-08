@@ -1,0 +1,224 @@
+kiosk_mode:
+  hide_overflow: true
+views:
+  - type: sections
+    sections:
+      - type: grid
+        cards:
+          - show_name: true
+            show_icon: true
+            type: button
+            entity: timer.front_door_auto_lock
+            show_state: false
+            name: Ухожу из дома
+            tap_action:
+              action: perform-action
+              perform_action: input_button.press
+              target:
+                entity_id: input_button.entrance_panel_leaving_home
+            icon_height: 70px
+            icon: mdi:home-export-outline
+            double_tap_action:
+              action: perform-action
+              perform_action: timer.cancel
+              target:
+                entity_id: timer.front_door_auto_lock
+          - show_name: true
+            show_icon: true
+            type: button
+            entity: timer.come_back_soon
+            show_state: false
+            tap_action:
+              action: perform-action
+              perform_action: script.come_back_soon_toggle
+              target: {}
+            icon: ''
+            name: Скоро вернусь
+            icon_height: 70px
+    max_columns: 4
+    icon: mdi:home
+    cards: []
+    path: home
+    theme: Wall Panel
+  - type: masonry
+    path: elevator-camera
+    cards:
+      - show_state: false
+        show_name: false
+        camera_view: live
+        fit_mode: fill
+        type: picture-entity
+        entity: camera.elevator_480
+        grid_options:
+          rows: auto
+          columns: full
+        show_entity_picture: false
+        aspect_ratio: '1.6'
+      - square: false
+        type: grid
+        cards:
+          - type: tile
+            entity: lock.porch_door
+            name: Крыльцо
+            show_entity_picture: false
+            hide_state: false
+            vertical: false
+            features:
+              - type: lock-commands
+            features_position: bottom
+          - type: tile
+            name: Дверь
+            entity: lock.front_door
+            vertical: false
+            features_position: bottom
+            features:
+              - type: lock-commands
+        columns: 2
+    icon: mdi:elevator
+  - type: masonry
+    path: cctv
+    cards:
+      - show_state: false
+        show_name: false
+        camera_view: live
+        fit_mode: fill
+        type: picture-entity
+        entity: camera.elevator_480_2
+        grid_options:
+          rows: auto
+          columns: full
+        show_entity_picture: false
+        aspect_ratio: '2.2'
+      - show_state: false
+        show_name: false
+        camera_view: live
+        fit_mode: fill
+        type: picture-entity
+        entity: camera.entrance_inside_480
+        show_entity_picture: false
+        aspect_ratio: '2.4'
+        name: Вход в подъезд
+    icon: mdi:cctv
+  - type: sections
+    max_columns: 4
+    icon: mdi:weather-sunset-up
+    path: waking-up
+    sections:
+      - type: grid
+        cards:
+          - show_state: false
+            show_name: false
+            camera_view: live
+            fit_mode: fill
+            type: picture-entity
+            entity: camera.msk_adasov_480
+            grid_options:
+              rows: auto
+              columns: 9
+            show_entity_picture: false
+          - type: custom:mushroom-template-card
+            features_position: bottom
+            primary: >-
+              {{ states('sensor.living_room_intake_fan_outdoor_temperature') |
+              round }} {{
+              state_attr('sensor.living_room_intake_fan_outdoor_temperature',
+              'unit_of_measurement')}}
+            grid_options:
+              rows: 1
+              columns: 3
+            icon: mdi:thermometer
+            color: gray
+            card_mod:
+              style: |
+                ha-tile-icon {
+                  margin-right: -16px !important;
+                }
+          - type: custom:hourly-weather
+            entity: weather.home
+            name: null
+            num_segments: '12'
+            grid_options:
+              columns: full
+            icons: true
+            show_precipitation_probability: true
+            show_precipitation_amounts: true
+            card_mod:
+              style:
+                weather-bar$: |
+                  .wind, .precipitation {
+                    display: none;
+                  }
+  - type: sections
+    max_columns: 4
+    path: panel-settings
+    sections:
+      - type: grid
+        cards:
+          - type: tile
+            entity: light.entrance_panel_backlight
+            name: Яркость подсветки
+            show_entity_picture: false
+            hide_state: false
+            vertical: false
+            icon_tap_action:
+              action: more-info
+            features:
+              - type: light-brightness
+            features_position: inline
+          - type: tile
+            entity: select.entrance_panel_backlight_mode
+            name: Режим подсветки
+            color: blue-grey
+            hide_state: true
+            vertical: false
+            tap_action:
+              action: none
+            features:
+              - type: select-options
+                options:
+                  - Normal
+                  - Soft
+                  - Faint
+                  - 'Off'
+            features_position: inline
+          - type: tile
+            entity: switch.entrance_panel_backlight_auto_dim
+            name: Приглушение при неактивности
+            color: light-blue
+            vertical: false
+            tap_action:
+              action: toggle
+            features_position: bottom
+            grid_options:
+              columns: full
+    icon: yandex:display-xiaomi
+    cards: []
+  - type: sections
+    max_columns: 4
+    icon: mdi:cog
+    path: settings
+    sections:
+      - type: grid
+        cards:
+          - type: tile
+            grid_options:
+              columns: full
+            entity: input_boolean.lock_control
+            name: Управление замками
+            vertical: false
+            tap_action:
+              action: toggle
+            features:
+              - type: toggle
+            features_position: inline
+          - type: tile
+            grid_options:
+              columns: full
+            entity: input_boolean.light_control
+            name: Управление освещением
+            vertical: false
+            tap_action:
+              action: toggle
+            features:
+              - type: toggle
+            features_position: inline

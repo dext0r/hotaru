@@ -29,9 +29,10 @@ automation:
           - Idle
           - Done # повторный цикл без открытия дверцы
 
+      # после завершения цикла проворот антисминания потребляет 150 Вт
       - condition: template
         value_template: >-
-          {{ trigger.to_state.state | int(0) > 10 }}
+          {{ trigger.to_state.state | int(0) > 200 }}
     actions:
       - action: input_select.select_option
         target:
@@ -156,6 +157,10 @@ automation:
         timeout:
           minutes: 33
         continue_on_timeout: true
+
+      - condition: state
+        entity_id: input_select.dryer_status
+        state: Done
 
       - action: script.yandex_station_tts
         data:

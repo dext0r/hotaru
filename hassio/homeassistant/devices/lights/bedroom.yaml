@@ -89,34 +89,6 @@ automation:
         target:
           entity_id: group.bedroom_lights
 
-  - id: bedroom_bed_light_on_motion_night
-    alias: 'Bedroom Bed Light: On (motion, night)'
-    triggers:
-      - trigger: state
-        entity_id: binary_sensor.bedroom_motion
-        to: 'on'
-    conditions:
-      - condition: state
-        entity_id:
-          - input_boolean.light_control
-          - binary_sensor.anyone_home
-        state: 'on'
-
-      - condition: state
-        entity_id: input_select.home_mode
-        state: Night
-
-      - condition: light.is_off
-        target:
-          entity_id: light.bedroom_bed
-    actions:
-      - action: light.turn_on
-        target:
-          entity_id: light.bedroom_bed
-        data:
-          color_name: red
-          brightness_pct: 30
-
   - id: bedroom_main_light_off_occupancy_cleared_day
     alias: 'Bedroom Main Light: Off (occupancy cleared, day)'
     triggers:
@@ -152,13 +124,37 @@ automation:
         target:
           entity_id: light.bedroom_main
 
-  - id: bedroom_bed_light_off
-    alias: 'Bedroom Bed Light: Off'
+  - id: bedroom_bed_light_on_motion_night
+    alias: 'Bedroom Bed Light: On (motion, night)'
     triggers:
       - trigger: state
-        entity_id: input_select.home_mode
-        to: Day
+        entity_id: binary_sensor.bedroom_motion
+        to: 'on'
+    conditions:
+      - condition: state
+        entity_id:
+          - input_boolean.light_control
+          - binary_sensor.anyone_home
+        state: 'on'
 
+      - condition: state
+        entity_id: input_select.home_mode
+        state: Night
+
+      - condition: light.is_off
+        target:
+          entity_id: light.bedroom_bed
+    actions:
+      - action: light.turn_on
+        target:
+          entity_id: light.bedroom_bed
+        data:
+          color_name: red
+          brightness_pct: 30
+
+  - id: bedroom_bed_light_off_night
+    alias: 'Bedroom Bed Light: Off (night)'
+    triggers:
       - trigger: occupancy.detected
         target:
           entity_id: binary_sensor.bedroom_bed_occupancy
@@ -171,20 +167,15 @@ automation:
           entity_id: binary_sensor.bedroom_motion
         options:
           for:
-            seconds: 20
+            minutes: 2
     condition:
       - condition: state
         entity_id: input_boolean.light_control
         state: 'on'
 
-      - condition: occupancy.is_not_detected
-        target:
-          entity_id: binary_sensor.bedroom_occupancy
-
-      - not:
-          - condition: state
-            entity_id: input_select.home_mode
-            state: Bedtime
+      - condition: state
+        entity_id: input_select.home_mode
+        state: Night
 
       - condition: light.is_on
         target:

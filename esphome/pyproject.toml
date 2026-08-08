@@ -3,5 +3,5 @@ name = "hotaru-esphome"
 version = "0.0.0"
 requires-python = ">=3.13"
 dependencies = [
-    "esphome==2026.7.2",
+    "esphome==2026.7.4",
 ]

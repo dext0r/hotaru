@@ -91,12 +91,6 @@ homeassistant:
     washing_machine: !include devices/washing_machine.yaml
     water_heater: !include devices/water_heater.yaml
   customize: !include customize.yaml
-http:
-  server_port: 8123
-  use_x_forwarded_for: true
-  trusted_proxies: 172.30.33.0/24
-  ip_ban_enabled: false
-  login_attempts_threshold: 5
 notify:
   - platform: telegram
     name: dextor

@@ -79,6 +79,15 @@ automation:
             - group.aux_lights
             - group.bedroom_lights
 
+      - if:
+          condition: state
+          entity_id: fan.portable
+          state: 'on'
+        then:
+          - action: fan.turn_off
+            target:
+              entity_id: fan.portable
+
   - id: meal_end
     alias: 'Meal: End'
     triggers:
